@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>KueueWindow</class>
+ <widget class="QMainWindow" name="KueueWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>945</width>
+    <height>664</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>kueue</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../kueue.qrc">
+    <normaloff>:/icons/app/kueue16.png</normaloff>:/icons/app/kueue16.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QGridLayout" name="gridLayout_3"/>
+  </widget>
+  <action name="actionShowUp">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Update required</string>
+   </property>
+  </action>
+  <action name="actionShowStat">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Status check required</string>
+   </property>
+  </action>
+  <action name="actionShowEsc">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Escalation required</string>
+   </property>
+  </action>
+  <action name="actionShowCr">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>CRs</string>
+   </property>
+  </action>
+  <action name="actionShowSr">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>SRs</string>
+   </property>
+  </action>
+  <action name="actionSortAge">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Age</string>
+   </property>
+  </action>
+  <action name="actionSortUpdate">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Last Update</string>
+   </property>
+  </action>
+  <action name="actionConfig">
+   <property name="icon">
+    <iconset resource="../kueue.qrc">
+     <normaloff>:/icons/menus/configure.png</normaloff>:/icons/menus/configure.png</iconset>
+   </property>
+   <property name="text">
+    <string>Configure kueue...</string>
+   </property>
+  </action>
+  <action name="actionRebuildDB">
+   <property name="icon">
+    <iconset resource="../kueue.qrc">
+     <normaloff>:/icons/menus/database.png</normaloff>:/icons/menus/database.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rebuild database</string>
+   </property>
+  </action>
+  <action name="actionShowNothing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>No action required</string>
+   </property>
+  </action>
+  <action name="actionTodoShowUp">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Update</string>
+   </property>
+  </action>
+  <action name="actionTodoShowEsc">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Escalation targets</string>
+   </property>
+  </action>
+  <action name="actionTodoShowStat">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Suspicious status</string>
+   </property>
+  </action>
+  <action name="actionTodoShowSmilies">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show smilies</string>
+   </property>
+  </action>
+  <action name="actionCloseSrTables">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Close all SR tables</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="icon">
+    <iconset resource="../kueue.qrc">
+     <normaloff>:/icons/menus/quit.png</normaloff>:/icons/menus/quit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionConfigNotifications">
+   <property name="text">
+    <string>Configure notifications...</string>
+   </property>
+  </action>
+  <action name="actionShowSS">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Solution Suggested</string>
+   </property>
+  </action>
+  <action name="actionExpandSrTables">
+   <property name="text">
+    <string>Expand all SR tables</string>
+   </property>
+  </action>
+  <action name="actionAwaitingCustomer">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Awaiting Customer</string>
+   </property>
+  </action>
+  <action name="actionAwaitingSupport">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Awaiting Support</string>
+   </property>
+  </action>
+  <action name="actionSuspended">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Suspended</string>
+   </property>
+  </action>
+  <action name="actionOthers">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Others</string>
+   </property>
+  </action>
+  <action name="actionShowSR">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show SRs</string>
+   </property>
+  </action>
+  <action name="actionShowCR">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show CRs</string>
+   </property>
+  </action>
+  <action name="actionStatus">
+   <property name="text">
+    <string>Status</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="icon">
+    <iconset resource="../kueue.qrc">
+     <normaloff>:/icons/menus/help.png</normaloff>:/icons/menus/help.png</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+  </action>
+  <action name="actionBug">
+   <property name="icon">
+    <iconset resource="../kueue.qrc">
+     <normaloff>:/icons/menus/reportbug.png</normaloff>:/icons/menus/reportbug.png</iconset>
+   </property>
+   <property name="text">
+    <string>Report Bug</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="../kueue.qrc">
+     <normaloff>:/icons/menus/about.png</normaloff>:/icons/menus/about.png</iconset>
+   </property>
+   <property name="text">
+    <string>About kueue</string>
+   </property>
+  </action>
+  <action name="actionFeature">
+   <property name="icon">
+    <iconset resource="../kueue.qrc">
+     <normaloff>:/icons/menus/feature.png</normaloff>:/icons/menus/feature.png</iconset>
+   </property>
+   <property name="text">
+    <string>Suggest feature</string>
+   </property>
+  </action>
+  <action name="actionWebsite">
+   <property name="icon">
+    <iconset resource="../kueue.qrc">
+     <normaloff>:/icons/menus/web.png</normaloff>:/icons/menus/web.png</iconset>
+   </property>
+   <property name="text">
+    <string>Visit website</string>
+   </property>
+  </action>
+  <action name="actionAddUnityTab">
+   <property name="icon">
+    <iconset resource="../kueue.qrc">
+     <normaloff>:/icons/menus/siebel.png</normaloff>:/icons/menus/siebel.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Unity tab</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="../kueue.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,41 @@
+
+                 kueue - keep track of your SR queue
+             (C) 2011 Stefan Bogner <sbogner@novell.com>
+
+-------------------------------------------------------------------------------------------
+Shortcuts:
+
+* CTRL-R / global / rebuild the database
+  This is useful if the db got messed up for whatever reason, it will delete
+  and rebuild the whole thing
+
+* CTRL-N / global / test notification
+  Send a test notification - mostly for development/testing/debugging
+
+* F1-F4 / queue browser / filter
+  F1: Show only awaiting support
+  F2: Show only awaiting customer
+  F3: Show all others
+  F4: Show everything
+
+* CTRL-L / unitybrowser / logout
+  This will log you out of unity and relogin right away.
+  Should never be required due to automation, but one never knows ;-)
+
+* CTRL-E / unitybrowser / send email 
+  If you are viewing an SR in unity you can send an email to the sr contact
+  using the template set in the unity settings with one shortcut
+
+* CTRL-S / unitybrowser / set solution suggested
+  If you are viewing an SR in unity you can have kueue create a Solution Suggested
+  activity.
+
+-------------------------------------------------------------------------------------------
+
+Other handy stuff:
+
+* If you have an SR number in your clipboard, you can middle-click somewhere in 
+  a unity browser and it will navigate to that SR
+       
+
+

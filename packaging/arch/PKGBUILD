@@ -1,0 +1,41 @@
+# Maintainer:  Alexandre Bancel <abancel@novell.com>
+
+pkgname=kueue-git
+pkgver=20111028
+pkgrel=1
+pkgdesc="Manage your Unity queue using kueue"
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=('qt' 'phonon')
+makedepends=('cmake' 'git')
+url="http://download.opensuse.org/repositories/home:/stefanbogner:/kueue/KDE_Release_46_openSUSE_11.4/"
+provides=('kueue')
+
+_gitroot="https://github.com/bochi/kueue"
+_gitname="kueue"
+
+build() {
+  cd $srcdir
+  msg "Connecting to the GIT server...."
+  
+  if [[ -d $srcdir/$_gitname ]] ; then
+    cd $_gitname
+    git pull origin
+    msg "The local files are updated."
+  else
+    git clone $_gitroot $_gitname
+  fi
+  
+  msg "GIT checkout done"
+  msg "Starting make..."
+
+  git clone $srcdir/$_gitname $srcdir/$_gitname-build
+  cd $srcdir/$_gitname-build
+
+  cmake -DCMAKE_INSTALL_PREFIX=/usr
+  make
+  make DESTDIR=$pkgdir install
+  
+  rm -rf $srcdir/$_gitname-build
+
+}

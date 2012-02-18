@@ -1,0 +1,62 @@
+<RCC>
+  <qresource prefix="icons">
+    <file alias="kueue.png">ui/icons/app/kueue.png</file>
+    <file alias="app/kueue16.png">ui/icons/app/kueue16.png</file>
+    <file alias="app/kueue32.png">ui/icons/app/kueue32.png</file>
+    <file alias="app/kueue-animated.mng">ui/icons/app/kueue32_ani.mng</file>
+    <file alias="app/kueue64.png">ui/icons/app/kueue64.png</file>
+    <file alias="conf/general.png">ui/icons/conf/general.png</file>
+    <file alias="conf/monitor.png">ui/icons/conf/monitor.png</file>
+    <file alias="conf/notifications.png">ui/icons/conf/notifications.png</file>
+    <file alias="conf/qboss.png">ui/icons/conf/qboss.png</file>
+    <file alias="conf/stats.png">ui/icons/conf/stats.png</file>
+    <file alias="conf/targets.png">ui/icons/conf/targets.png</file>
+    <file alias="menus/clipboard.png">ui/icons/menus/clipboard.png</file>
+    <file alias="menus/configure.png">ui/icons/menus/configure.png</file>
+    <file alias="menus/database.png">ui/icons/menus/database.png</file>
+    <file alias="menus/ddesc.png">ui/icons/menus/ddesc.png</file>
+    <file alias="menus/filter.png">ui/icons/menus/filter.png</file>
+    <file alias="menus/ok.png">ui/icons/menus/ok.png</file>
+    <file alias="menus/quit.png">ui/icons/menus/quit.png</file>
+    <file alias="menus/settings.png">ui/icons/menus/settings.png</file>
+    <file alias="menus/sort.png">ui/icons/menus/sort.png</file>
+    <file alias="menus/srdetails.png">ui/icons/menus/srdetails.png</file>
+    <file alias="menus/take.png">ui/icons/menus/take.png</file>
+    <file alias="menus/todo.png">ui/icons/menus/todo.png</file>
+    <file alias="menus/misc.png">ui/icons/menus/misc.png</file>
+    <file alias="menus/toggle.png">ui/icons/menus/toggle.png</file>
+    <file alias="menus/add.png">ui/icons/menus/add.png</file>
+    <file alias="menus/down.png">ui/icons/menus/down.png</file>
+    <file alias="menus/remove.png">ui/icons/menus/remove.png</file>
+    <file alias="menus/up.png">ui/icons/menus/up.png</file>
+    <file alias="menus/folder.png">ui/icons/menus/folder.png</file>
+    <file alias="menus/play.png">ui/icons/menus/play.png</file>
+    <file alias="menus/help.png">ui/icons/menus/help.png</file>
+    <file alias="menus/about.png">ui/icons/menus/about.png</file>
+    <file alias="menus/reportbug.png">ui/icons/menus/reportbug.png</file>
+    <file alias="menus/feature.png">ui/icons/menus/feature.png</file>
+    <file alias="menus/web.png">ui/icons/menus/web.png</file>
+    <file alias="menus/siebel.png">ui/icons/menus/siebel.png</file>
+    <file alias="menus/newtab.png">ui/icons/menus/newtab.png</file>	
+    <file alias="menus/save.png">ui/icons/menus/save.png</file>
+    <file alias="menus/download.png">ui/icons/menus/download.png</file>
+    <file alias="menus/back.png">ui/icons/menus/back.png</file>
+    <file alias="menus/nsa.png">ui/icons/menus/nsa.png</file>
+
+  </qresource>
+  <qresource prefix="images">
+    <file alias="bg.gif">ui/icons/images/bg.gif</file>
+    <file alias="chat.png">ui/icons/images/chat.png</file>
+    <file alias="dotlinebg_horiz.gif">ui/icons/images/dotlinebg_horiz.gif</file>
+    <file alias="dotlinebg_vert.gif">ui/icons/images/dotlinebg_vert.gif</file>
+    <file alias="filler.gif">ui/icons/images/filler.gif</file>
+    <file alias="gfx_top_in.gif">ui/icons/images/gfx_top_in.gif</file>
+    <file alias="logo_im.gif">ui/icons/images/logo_im.gif</file>
+    <file alias="logo_im_end.gif">ui/icons/images/logo_im_end.gif</file>
+    <file alias="ni_gadget_arrow.gif">ui/icons/images/ni_gadget_arrow.gif</file>
+    <file alias="sad.gif">ui/icons/images/sad.gif</file>
+    <file alias="spacer.gif">ui/icons/images/spacer.gif</file>
+    <file alias="und.gif">ui/icons/images/und.gif</file>
+    <file alias="yay.gif">ui/icons/images/yay.gif</file>
+  </qresource>
+</RCC>

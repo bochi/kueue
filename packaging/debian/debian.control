@@ -1,0 +1,14 @@
+Source: kueue
+Section: Qt
+Priority: optional
+Maintainer: Christian Kornacker <ckornacker@suse.com>
+Build-Depends: debhelper (>= 7.0.50~), cmake (>= 2.6~), libphonon-dev, libqt4-dev, libqtwebkit-dev
+Standards-Version: git 
+Homepage: http://kueue.tk
+
+Package: kueue
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: kueue
+ Manage your SR queue with kueue
+

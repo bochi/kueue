@@ -1,0 +1,131 @@
+#!/bin/bash
+
+if [ "$1" = "" ]; then
+
+    echo ""
+    echo "Usage: mkdmg VERSION"
+    exit
+
+fi
+
+function check_rc() {
+  if [ $1 -gt 0 ]; then
+    echo "$2 failed with return value $1"
+    exit 1
+  fi
+}
+
+echo "Do you want to create a dmg now? (y/n)"
+read CONF
+
+if [ "$CONF" = "y" ]; then
+
+    echo ""
+    echo "Building dmg..."
+    echo ""
+
+else
+
+    exit
+
+fi    
+
+APP=kueue.app
+VER=$1
+VOL="kueue $1"
+
+# running macdeployqt to add libraries
+echo "Adding required libraries to app bundle..."
+macdeployqt $APP
+
+# unmount existing mounts
+echo "Unmounting existing mounts..."
+if [ -d "/Volumes/${VOL}" ]; then
+  umount "/Volumes/${VOL}" >/dev/null 2>&1;
+fi
+
+# build the dmg volume
+DMG_TMP="tmp.dmg"
+DMG_FINAL="kueue-${VER}.dmg"
+DMG_BACK="../packaging/osx/dmg-background.png"
+
+echo "Deleting existing dmg files..."
+rm *.dmg >/dev/null 2>&1;
+
+echo "Creating empty image..."
+hdiutil create \
+    -srcfolder ${APP} \
+    -volname "${VOL}" \
+    -fs HFS+ \
+    -fsargs "-c c=64,a=16,e=16" \
+    -format UDRW \
+    -size 122880k \
+    "${DMG_TMP}" >/dev/null 2>&1;
+check_rc $? "dmg build"
+
+# mount the dmg
+echo "Mounting the image..."
+sleep 2
+device=$(hdiutil attach -readwrite -noverify -noautoopen "${DMG_TMP}" | egrep '^/dev/' | sed 1q | awk '{print $1}') >/dev/null 2>&1;
+sleep 5
+
+# copy the background image in
+echo "Copying background to image..."
+mkdir "/Volumes/${VOL}/.background" 
+cp ${DMG_BACK} "/Volumes/${VOL}/.background/"
+check_rc $? "copy background img"
+
+# create an alias to Applications
+echo "Creating a link to Applications..."
+ln -sf /Applications "/Volumes/${VOL}/Applications"
+
+# dmg window dimensions
+dmg_width=700
+dmg_height=400
+dmg_topleft_x=200
+dmg_topleft_y=200
+dmg_bottomright_x=`expr $dmg_topleft_x + $dmg_width`
+dmg_bottomright_y=`expr $dmg_topleft_y + $dmg_height`
+
+echo "Formatting installer..."
+echo '
+   tell application "Finder"
+     tell disk "'${VOL}'"
+           open
+           set current view of container window to icon view
+           set toolbar visible of container window to false
+           set statusbar visible of container window to false
+           set the bounds of container window to {'${dmg_topleft_x}', '${dmg_topleft_y}', '${dmg_bottomright_x}', '${dmg_bottomright_y}'}
+           set theViewOptions to the icon view options of container window
+           set arrangement of theViewOptions to not arranged
+           set icon size of theViewOptions to 104
+           set background picture of theViewOptions to file ".background:dmg-background.png"
+           set position of item "kueue" of container window to {135, 268}
+           set position of item "'Applications'" of container window to {550, 262}
+           close
+           open
+           update without registering applications
+delay 5
+           eject
+           delay 5
+     end tell
+   end tell
+' | osascript
+
+
+# convert to compressed image, delete temp image
+echo "Compressing image..."
+hdiutil convert "${DMG_TMP}" -format UDZO -imagekey zlib-level=9 -o "${DMG_FINAL}" >/dev/null 2>&1;
+check_rc $? "dmg compressing"
+if [ -f "${DMG_TMP}" ]; then
+  rm -f "${DMG_TMP}"
+fi
+
+echo "Copying image to your home directory..."
+cp kueue-$VER.dmg $HOME
+echo ""
+echo "Successfully built dmg installer"
+echo $HOME/kueue-$VER.dmg
+echo "Have fun :-)" 
+
+exit 0

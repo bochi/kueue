@@ -1,0 +1,404 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.docbook.org/xml/4.5/docbookx.dtd">
+
+<book lang="en">
+
+<bookinfo>
+
+  <title>The kueue Handbook</title>
+
+  <authorgroup>
+    <author>
+      <personname>
+        <firstname>Stefan</firstname>
+        <surname>Bogner</surname>
+      </personname>
+      <email>sbogner@suse.com</email>
+    </author>
+  </authorgroup>
+
+  <copyright>
+    <year>2012</year>
+    <holder>Stefan Bogner</holder>
+  </copyright>
+
+  <date>DATE</date>
+  <releaseinfo>VERSION</releaseinfo>
+
+  <abstract>
+    <para>kueue is an SR queue manager and more :-)</para>
+  </abstract>
+
+  <keywordset>
+    <keyword>Qt</keyword>
+    <keyword>kueue</keyword>
+    <keyword>queue</keyword>
+    <keyword>qmon</keyword>
+    <keyword>unity</keyword>
+  </keywordset>
+
+</bookinfo>
+
+<chapter id="introduction">
+<title>Introduction</title>
+
+  <para>kueue is an SR queue manager, queue monitor and custom Unity browser. It provides the following features:</para>
+
+  <para>
+    <itemizedlist>
+      <listitem><para>Personal queue view/sorting</para></listitem>
+      <listitem><para>Queue monitor incl. Bomgar features</para></listitem>
+      <listitem><para>Statistics (CSAT, Closed SRs)</para></listitem>
+      <listitem><para>Customized webbrowser for Unity</para></listitem>
+    </itemizedlist>
+  </para>
+
+  <para>For bug reports, feature requests etc please contact <email>sbogner@suse.com</email></para>
+
+</chapter>
+
+<chapter id="config">
+<title>Configuration</title>
+
+    <para>Before you can actually start using kueue, you should go to kueue -> Configure kueue and set its options to fit your needs.</para>
+
+  <sect1 id="general">
+  <title>General</title>
+   
+    <para>This section includes the general options</para>
+   
+    <para>
+      <screenshot><screeninfo>Multiple tabs</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="config_general.png" width="95%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+
+    <para>
+        <itemizedlist>
+            <listitem><para>DB-Server defines the server for kueue to get the data from</para></listitem>
+            <listitem><para>Your login needs to be set to your innerweb/unity login</para></listitem>
+        </itemizedlist>
+    </para>
+    
+    <para>The rest of the options should be self explaining.</para>
+    
+  </sect1>
+   
+  <sect1 id="qmon">
+  <title>Monitor</title>
+   
+    <para>This section includes the options for the Queue Monitor</para>
+   
+    <para>
+      <screenshot><screeninfo>Monitor</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="config_qmon.png" width="95%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+
+    <para>
+        Here you can set which queues you would like to monitor for new SRs. The custom name can be self-defined, the dropdown box will give you a list of available queues.
+    </para>
+
+  </sect1>
+
+  <sect1 id="qboss">
+  <title>QBoss</title>
+   
+    <para>This section includes the options for kueue's QBoss features</para>
+   
+    <para>
+      <screenshot><screeninfo>QBoss</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="config_qboss.png" width="95%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+
+   <para>If you are qboss you can make your life easier with kueue's QBoss features. You can set a list of engineers that appear as assignees in the defails window of an SR. </para>
+   <para>Also, if you are using KDE/Kopete as IM client, you can have kueue automatically notify an assignee after assignment.</para>
+
+  </sect1>
+
+  <sect1 id="stats">
+  <title>Stats</title>
+   
+    <para>This section includes the options for the Statistics feature </para>
+   
+    <para>
+      <screenshot><screeninfo>Stats</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="config_stats.png" width="95%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+
+    <para>The statistics feature is not complete yet, as you can see in the configuration dialog.</para>
+    <para>The team-stats stuff is not yet used at all, so don't fill it out :-)</para>
+
+  </sect1>
+
+  <sect1 id="uconf">
+  <title>Unity</title>
+   
+    <para>This section includes the options for the Unity integration</para>
+   
+    <para>
+      <screenshot><screeninfo>Unity</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="config_unity.png" width="95%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+
+    <para>
+        <itemizedlist>
+            <listitem><para>Unity password needs to be set to your innerweb/unity password</para></listitem>
+            <listitem><para>Unity URL needs to be set to the URL for the SI client</para></listitem>
+            <listitem><para>Download Directory specifies the directory for Unity to download files to per default</para></listitem>
+            <listitem><para>Use DownloadDirectory/SRNUMBER... - if checked, files will automatically be downloaded in seperate directories per SR</para></listitem>
+            <listitem><para>Automatically extract archives - the name says it all</para></listitem>
+            <listitem><para>Enable editing with an external Editor - see the feature description in the "Unity Integration" section for details. If you'd like to use this feature, the next 2 options need to be set as well.</para></listitem>
+        </itemizedlist>
+    </para>
+
+  </sect1>
+
+  <sect1 id="notifications">
+  <title>Notifications</title>
+   
+    <para>This section includes the notification options</para>
+   
+    <para>
+      <screenshot><screeninfo>Notifications</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="config_notifications.png" width="95%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+
+    <para>In this dialog you can configure notifications for different events</para>
+
+  </sect1>
+
+</chapter>
+
+<chapter id="personal">
+<title>Personal Queue</title>
+
+    <para>The Personal Queue browser gives an overview about the current SR queue for an engineer, sorted by last activity or age.</para>
+    <para>In the default view, it will show the SR number, brief description, status, age and last update.</para>
+    <para>By clicking either on the arrow on the right side of the SR box, or using the context menu one can open a table that shows additional information on the SR.</para>
+    <para>By default, leftclick on an SR will show a context menu, middle click will toggle the table (show/hide info) and right click will copy the SR number to clipboard. The mouse button order can be changed in the General settings section though.</para>
+
+    <para>
+      <screenshot><screeninfo>Personal queue</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="personal.png" width="95%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+    
+    <para>
+        <itemizedlist><title>There are some shortcuts one can use to filter/sort the queue and change view options</title>
+        <listitem><para><emphasis role="bold">F1</emphasis> &nbsp;&nbsp;Show only "Awaiting Novell Support"</para></listitem>
+        <listitem><para><emphasis role="bold">F2</emphasis> &nbsp;&nbsp;Show only "Awaiting Customer"</para></listitem>
+        <listitem><para><emphasis role="bold">F3</emphasis> &nbsp;&nbsp;Show all other SRs</para></listitem>
+        <listitem><para><emphasis role="bold">F4</emphasis> &nbsp;&nbsp;Show all SRs (no filter)</para></listitem>
+        <listitem><para><emphasis role="bold">F5</emphasis> &nbsp;&nbsp;Expand/Close all SR tables (show/hide additional info)</para></listitem>
+        <listitem><para><emphasis role="bold">F6</emphasis> &nbsp;&nbsp;Switch sort type (age/last activity)</para></listitem>
+        <listitem><para><emphasis role="bold">F7</emphasis> &nbsp;&nbsp;Switch sort order (ascending/descending)</para></listitem>
+      </itemizedlist>
+    </para>
+    
+</chapter>
+
+<chapter id="monitor">
+<title>Queue Monitor</title>
+
+   <para>The Queue Monitor browser shows an overview about SRs that are currently in selected pseudo queues.</para>
+   <para>One can directly assign/take SRs from the context menu or the details window.</para>
+   <para>If one of the customers is in Bomgar, it will show a little bomgar icon next to the SR number. The bomgar queue (or owner) is shown in the details (when expanding the SR table).</para>
+    <para>
+      <screenshot><screeninfo>Queue Monitor</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="monitor.png" width="95%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+    
+</chapter>
+
+<chapter id="statsbrowser">
+<title>Statistics</title>
+
+   <para>The Statistics browser shows some personal statistics, ie. Customer Satisfaction and Closed SRs.</para>
+   <para>It is not yet complete and still very beta.</para>
+   
+    <para>
+      <screenshot><screeninfo>Statistics</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="stats.png" width="95%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+    
+</chapter>
+
+<chapter id="nsa">
+<title>Novell Support Advisor</title>
+
+    <para>kueue can create Novell Support Advisor reports for you from supportconfig archives.</para>
+    <para>Either load an archive from the menu (see screenshot), or create the report right after downloading the archive from the download manager.</para>
+    <para>Novell Support Advisor itself is not required for that, it works "out of the box".</para>
+   
+    <para>
+      <screenshot><screeninfo>NSA</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="nsa.png" width="50%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+     
+</chapter>
+
+<chapter id="unity">
+<title>Unity integration</title>
+  
+  <para>kueue comes with an integrated webbrowser that tries to workaround some of the flaws one faces when using the Siebel SI client.</para>
+  <para>This chapter describes the features one can use in the Unity browser.</para>
+
+  <sect1 id="shortcut">
+  <title>Shortcuts</title>
+  
+    <para>Here is a quick overview about the shortcuts that can be used within the Unity browser</para>
+    
+    <para>
+      <itemizedlist>
+        <listitem><para><emphasis role="bold">F1</emphasis> &nbsp;&nbsp;Send Email</para></listitem>
+        <listitem><para><emphasis role="bold">F2</emphasis> &nbsp;&nbsp;Set Solution Suggested</para></listitem>
+        <listitem><para><emphasis role="bold">F3</emphasis> &nbsp;&nbsp;Set Schedule For Close</para></listitem>
+      </itemizedlist>
+    </para>
+    
+  </sect1>
+  
+  <sect1 id="tabs">
+  <title>Multiple Tabs</title>
+
+    <para>Using kueue, one can open as many Unity tabs as needed in parallel. With other browsers, this can be achieved by blocking cookies, but that approach also has its downsides (some of Unity's features seem to rely on cookies). That is not the case with kueue – it uses a seperate cookiejar for each open tab.</para>
+    
+    <para>A new tab can be opened either from the menu or using the button in the tab bar.</para>
+
+   <para>
+      <screenshot>
+      <screeninfo>Multiple tabs</screeninfo>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="kueue_unitytabs.png" width="95%" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+  </para>
+
+  </sect1>
+
+  <sect1 id="nav">
+  <title>Easier navigation</title>
+  
+    <para>Rather than using Unity's query function to navigate to an SR, one can simply copy the SR number to clipboard and middle-click anywhere in the Unity browser or on the tab – this will automatically navigate to the SR. </para>
+    
+    <para>Also, one can directly open Srs from the context menu in the other (Personal/Monitor) browsers.</para>
+
+  </sect1>
+
+  <sect1 id="prod">
+  <title>Set product family and product</title>
+  
+    <para>Since clicking through the product/product family popup windows can be quite annoying, one can simply right-click either in the „Product Family“ or „Product“ input-box and select the product there (see screenshot). This will automatically fill in the information and save the SR.</para>
+
+    <para>
+      <screenshot>
+      <screeninfo>Multiple tabs</screeninfo>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="kueue_products.png" width="95%" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </para>
+  
+  </sect1>
+  
+  <sect1 id="ss">
+  <title>Set solution suggested activity</title>
+
+    <para>After suggesting a solution to the customer, one can use CTRL-S to set the activity automatically. </para>
+      
+    <para><screenshot><screeninfo>Set solution suggested</screeninfo>
+    <mediaobject><imageobject>
+    <imagedata fileref="kueue_ss.png" width="95%" format="PNG"/>
+    </imageobject></mediaobject></screenshot></para>
+
+  </sect1>
+
+  <sect1 id="dl">
+  <title>Smart download manager</title>
+
+    <para>One can set a download directory in the settings and also have kueue put the files into seperate directories per SR automatically. Also, it will automatically extract the archives.</para>
+    
+    <para>After downloading a supportconfig tarball, kueue can create an NSA report directly from the download manager using the „NSA“ button. NSA is not required for this at all (it's a pain to install on Linux anyway these days). </para>
+      
+    <para><screenshot><screeninfo>INFO</screeninfo>
+    <mediaobject><imageobject>
+    <imagedata fileref="kueue_nsa.png" width="95%" format="PNG"/>
+    </imageobject></mediaobject></screenshot></para>
+
+  </sect1>
+  
+  <sect1 id="navback">
+  <title>Navigate back from „points of no return“</title>
+
+    <para>Sometimes Unity gets to a point where returning to the SR is not possible – which is a pain if additional changes have to be done in the SR (ie. Changing the status). Best example is after writing an email using the „Reply“ button. Kueue has a „Go back to SR“ option in the context menu which tries to eliminate that pain.</para>
+      
+    <para><screenshot><screeninfo>INFO</screeninfo>
+    <mediaobject><imageobject>
+    <imagedata fileref="kueue_goback.png" width="95%" format="PNG"/>
+    </imageobject></mediaobject></screenshot></para>
+
+  </sect1>
+  
+  <sect1 id="save">
+  <title>Save images and NSA reports</title>
+
+    <para>When viewing an image in Unity it will try to save it as „start.swe“ or if viewing an NSA report it will not let you save it at all. This is fixed with kueue, just check the context menu on an image or NSA report. </para>
+      
+    <para><screenshot><screeninfo>INFO</screeninfo>
+    <mediaobject><imageobject>
+    <imagedata fileref="kueue_images.png" width="95%" format="PNG"/>
+    </imageobject></mediaobject></screenshot></para>
+
+  </sect1>
+  
+  <sect1 id="extedit">
+  <title>Open textboxes in external editor</title>
+
+    <para>Kueue lets you open textboxes in an external editor for editing. This is useful when writing emails etc from within Unity. When the document is saved in the editor it will automatically be written back into the textbox. Also, it will save the files so one can use tools like grep to find specific emails etc later on.</para>
+      
+    <para><screenshot><screeninfo>INFO</screeninfo>
+    <mediaobject><imageobject>
+    <imagedata fileref="kueue_editor.png" width="95%" format="PNG"/>
+    </imageobject></mediaobject></screenshot></para>
+
+  </sect1>
+  
+  <sect1 id="sched">
+  <title>Set SR to „Schedule For Close“</title>
+
+    <para>Customer stops replying at some point? OK, one may want to set an ultimatum for the customer and set the SR to „Schedule For Close“ in X days. This can easily be done using the „CTRL-C“ shortcut in the Unity browser when viewing the respective SR.</para>
+    
+    <para>It will create the „Schedule For Close“ activity for you as well as set the correct status. </para>
+      
+    <para><screenshot><screeninfo>INFO</screeninfo>
+    <mediaobject><imageobject>
+    <imagedata fileref="kueue_schedule.png" width="95%" format="PNG"/>
+    </imageobject></mediaobject></screenshot></para>
+
+    </sect1>
+
+</chapter>
+
+</book>

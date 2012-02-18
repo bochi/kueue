@@ -1,0 +1,10 @@
+[Desktop Entry]
+X-SuSE-translate=false
+Type=Application
+Version=git
+Name=kueue
+GenericName=Queue Manager
+Exec=kueue
+Icon=kueue
+Terminal=false
+Categories=Qt;Office;Database;
