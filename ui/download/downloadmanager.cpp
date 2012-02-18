@@ -69,7 +69,6 @@ DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString 
     , mGettingFilename( false )
     , mCanceledFileSelect( false )
     , mDownloadDir( dir + "/" )
-
 {
     setupUi( this );
     
@@ -78,7 +77,6 @@ DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString 
     downloadInfoLabel->setPalette(p);
     
     nsaButton->setVisible( false );
-    //nsaButton->setEnabled( false );
     
     progressBar->setMaximum(0);
     
@@ -102,6 +100,7 @@ void DownloadItem::init()
     }
 
     mStartedSaving = false;
+    
     mFinishedDownloading = false;
 
     openButton->setEnabled(false);
@@ -385,6 +384,11 @@ void DownloadItem::downloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 
     emit progress( currentValue, totalValue );
     updateInfoLabel();
+    
+    if ( mBytesReceived == bytesTotal )
+    {
+        downloadReadyRead();
+    }
 }
 
 qint64 DownloadItem::bytesTotal() const
@@ -540,7 +544,6 @@ void DownloadItem::nsaFinished()
     nsaButton->setEnabled( true );
 }
 
-
 /*!
     DownloadManager is a Dialog that contains a list of DownloadItems
 
@@ -682,7 +685,7 @@ void DownloadManager::addItem(DownloadItem *item)
     connect(item, SIGNAL(downloadFinished()), this, SLOT(finished()));
     int row = mDownloads.count();
     mModel->beginInsertRows(QModelIndex(), 0, 0 );
-    mDownloads.append(item);
+    mDownloads.prepend(item);
     mModel->endInsertRows();
     updateItemCount();
     downloadsView->setIndexWidget(mModel->index( 0, 0 ), item);
@@ -747,7 +750,7 @@ void DownloadManager::updateRow(DownloadItem *item)
     if (remove)
         mModel->removeRow(row);
 
-    cleanupButton->setEnabled( false );//(mDownloads.count() - activeDownloads() > 0);
+    cleanupButton->setEnabled( mDownloads.count() - activeDownloads() > 0);
 }
 
 DownloadManager::RemovePolicy DownloadManager::removePolicy() const
@@ -824,7 +827,7 @@ void DownloadManager::load()
         }
         key = QString(QLatin1String("download_%1_")).arg(++i);
     }
-    cleanupButton->setEnabled( false );//(mDownloads.count() - activeDownloads() > 0);
+    cleanupButton->setEnabled( mDownloads.count() - activeDownloads() > 0);
     updateActiveItemCount();
 }
 
