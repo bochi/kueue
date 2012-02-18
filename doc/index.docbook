@@ -6,7 +6,7 @@
 <bookinfo>
 
   <title>The kueue Handbook</title>
-
+  
   <authorgroup>
     <author>
       <personname>
@@ -42,6 +42,12 @@
 <chapter id="introduction">
 <title>Introduction</title>
 
+  <mediaobject>
+  <imageobject>
+    <imagedata fileref="nts.png" role="top" />
+  </imageobject>
+  </mediaobject>
+  
   <para>kueue is an SR queue manager, queue monitor and custom Unity browser. It provides the following features:</para>
 
   <para>
@@ -271,6 +277,7 @@
         <listitem><para><emphasis role="bold">F1</emphasis> &nbsp;&nbsp;Send Email</para></listitem>
         <listitem><para><emphasis role="bold">F2</emphasis> &nbsp;&nbsp;Set Solution Suggested</para></listitem>
         <listitem><para><emphasis role="bold">F3</emphasis> &nbsp;&nbsp;Set Schedule For Close</para></listitem>
+        <listitem><para><emphasis role="bold">F4</emphasis> &nbsp;&nbsp;Open filebrowser with the current SR's download dir</para></listitem>
       </itemizedlist>
     </para>
     

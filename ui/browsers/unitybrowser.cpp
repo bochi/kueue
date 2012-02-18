@@ -71,7 +71,7 @@ UnityBrowser::UnityBrowser( QWidget *parent )
         connect( logOut, SIGNAL( activated() ), 
                 mUnityPage, SLOT( logout() ) );
         
-        QShortcut* fileBrowser = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_D ), this );
+        QShortcut* fileBrowser = new QShortcut( QKeySequence( Qt::Key_F4 ), this );
     
         connect( fileBrowser, SIGNAL( activated() ), 
                 this, SLOT( openFileBrowser() ) );
