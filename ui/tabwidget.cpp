@@ -488,15 +488,10 @@ QMenu* TabWidget::kueueMainMenu()
     mActionAbout->setText( "About kueue" );
     mActionAbout->setIcon( QIcon( ":/icons/menus/about.png" ) );
     
-    mActionWebsite = new QAction( help );
-    mActionWebsite->setText( "Visit website" );
-    mActionWebsite->setIcon( QIcon( ":/icons/menus/web.png" ) );
-    
     help->addAction( mActionHelp );
     help->addAction( mActionBug );
     help->addAction( mActionFeature );
     help->addAction( mActionAbout );
-    help->addAction( mActionWebsite );
     
     menu->addMenu( kueue );
     menu->addMenu( view );
@@ -540,8 +535,6 @@ QMenu* TabWidget::kueueMainMenu()
              this, SLOT( suggestFeature() ) );
     connect( mActionHelp, SIGNAL( activated() ),
              this, SLOT( openHelp() ) );
-    connect( mActionWebsite, SIGNAL( activated() ), 
-             this, SLOT( openWebsite() ) );
     
     if ( Settings::unityEnabled() )
     {
