@@ -240,7 +240,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_queuesToMonitor->addItems( Settings::queuesToMonitor() );
     cfg_monitorPersonalBomgar->setChecked( Settings::monitorPersonalBomgar() );
     cfg_bomgarName->setText( Settings::bomgarName() );
-    cfg_timezoneCorrection->setValue( Settings::timezoneCorrection() );
     
     cfg_qbossFeatures->setChecked( Settings::qbossFeatures() );
     cfg_wikiURL->setText( Settings::wikiURL() );
@@ -260,7 +259,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_unityURL->setText( Settings::unityURL() );
     cfg_useIdleTimeout->setChecked( Settings::useIdleTimeout() );
     cfg_idleTimeoutMinutes->setValue( Settings::idleTimeoutMinutes() );
-    cfg_defaultEmailTemplate->setText( Settings::defaultEmailTemplate() );
     cfg_minimumFontSize->setValue( Settings::minimumFontSize() );
     cfg_defaultFontSize->setValue( Settings::defaultFontSize() );
     cfg_externalEditorEnabled->setChecked( Settings::externalEditorEnabled() );
@@ -443,7 +441,6 @@ void ConfigDialog::writeSettings()
     Settings::setUnityURL( cfg_unityURL->text() );
     Settings::setUseIdleTimeout( cfg_useIdleTimeout->isChecked() );
     Settings::setIdleTimeoutMinutes( cfg_idleTimeoutMinutes->value() );
-    Settings::setDefaultEmailTemplate( cfg_defaultEmailTemplate->text() );
     Settings::setDownloadDirectory( cfg_downloadDirectory->text() );
     Settings::setMinimumFontSize( cfg_minimumFontSize->value() );
     Settings::setDefaultFontSize( cfg_defaultFontSize->value() );
@@ -473,7 +470,6 @@ void ConfigDialog::writeSettings()
 
     Settings::setMonitorPersonalBomgar( cfg_monitorPersonalBomgar->isChecked() );
     Settings::setBomgarName( cfg_bomgarName->text() );
-    Settings::setTimezoneCorrection( cfg_timezoneCorrection->value() );
     
     Settings::setQbossFeatures( cfg_qbossFeatures->isChecked() );
     Settings::setWikiURL( cfg_wikiURL->text() );
@@ -651,7 +647,6 @@ void ConfigDialog::toggleMonitor( const bool& b )
     monitorGeneralGroupBox->setEnabled( b );
     monitorQueuesGroupBox->setEnabled( b );
     monitorBomgarGroupBox->setEnabled( b );
-    monitorLocalGroupBox->setEnabled( b );
 }
 
 void ConfigDialog::toggleQboss( const bool& b )
@@ -669,7 +664,6 @@ void ConfigDialog::toggleStats( const bool& b )
 
 void ConfigDialog::toggleNotifications( const bool& b )
 {
-    notificationGeneralGroupBox->setEnabled( b );
     notificationSettingsGroupBox->setEnabled( b );
 }
 

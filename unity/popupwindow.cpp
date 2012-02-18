@@ -370,11 +370,11 @@ void PopupWindowWebPage::pageLoaded()
         // First, reset the mEmailStage as we are in the final stage now
         
         mEmailStage = 0;
-        QString defaultJS;
+        //QString defaultJS;
         
         // Find all "select" and "option" elements on the email page
         
-        QWebElementCollection c = mainFrame()->findAllElements( "select" );
+        /*QWebElementCollection c = mainFrame()->findAllElements( "select" );
         QWebElementCollection d = mainFrame()->findAllElements( "option" );
         
         for ( int i = 0; i < c.count(); ++i )
@@ -402,7 +402,8 @@ void PopupWindowWebPage::pageLoaded()
         // The email window will now display the default response template
         
         mainFrame()->evaluateJavaScript( defaultJS );
-    } 
+	    } */
+	}
 }
 
 static bool contentSniff( const QByteArray &data )

@@ -64,9 +64,6 @@ class Settings
         static int idleTimeoutMinutes();
         static void setIdleTimeoutMinutes( const int& );
         
-        static QString defaultEmailTemplate();
-        static void setDefaultEmailTemplate( const QString& );
-
         static int minimumFontSize();
         static void setMinimumFontSize( const int& );
         
@@ -183,9 +180,6 @@ class Settings
         
         static QString bomgarName();
         static void setBomgarName( const QString& );
-        
-        static int timezoneCorrection();
-        static void setTimezoneCorrection( const int& );        
         
         /* QBoss Group */
         

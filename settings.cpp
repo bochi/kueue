@@ -162,19 +162,6 @@ void Settings::setIdleTimeoutMinutes( const int& i )
     settings.sync();
 }
 
-QString Settings::defaultEmailTemplate()
-{
-    QSettings settings;
-    return settings.value( "defaultEmailTemplate", "Default_response" ).toString();
-}
-
-void Settings::setDefaultEmailTemplate( const QString& s )
-{
-    QSettings settings;
-    settings.setValue( "defaultEmailTemplate", s );
-    settings.sync();
-}
-
 int Settings::minimumFontSize()
 {
     QSettings settings;
@@ -656,19 +643,6 @@ void Settings::setBomgarName( const QString& s )
     settings.sync();
 }
         
-int Settings::timezoneCorrection()
-{
-    QSettings settings;
-    return settings.value( "timezoneCorrection" ).toInt();
-}
-
-void Settings::setTimezoneCorrection( const int& i )        
-{
-    QSettings settings;
-    settings.setValue( "timezoneCorrection", i );
-    settings.sync();
-}
-
 bool Settings::qbossFeatures()
 {
     QSettings settings;
