@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationName( "nts" );
     QApplication::setOrganizationDomain( "novell.com" );
     QApplication::setApplicationName( "kueue" );
-    QApplication::setApplicationVersion( "git" );
+    QApplication::setApplicationVersion( "3.9.1" );
     QApplication::setQuitOnLastWindowClosed( false );
 
     KueueApp kueueapp;

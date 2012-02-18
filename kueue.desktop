@@ -1,7 +1,7 @@
 [Desktop Entry]
 X-SuSE-translate=false
 Type=Application
-Version=git
+Version=3.9.1
 Name=kueue
 GenericName=Queue Manager
 Exec=kueue
