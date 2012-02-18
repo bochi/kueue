@@ -57,6 +57,7 @@ class UnityPage : public QWebPage
         void saveNsaReport();
         void handleUnsupportedContent(QNetworkReply*);
         void fillOutProduct( const QString&, const QString& );
+        void saveCurrentSR();
         
     private slots:
         void pageLoaded();
@@ -81,7 +82,6 @@ class UnityPage : public QWebPage
         void selectionToClipboard();
         void download( const QNetworkRequest& );
         void fillOutProductNext();
-        void saveCurrentSR();
         void saveCurrentActivity();
         void setScConfirmed( const QDateTime&, const QString& );
         void setScFirst();

@@ -1326,6 +1326,19 @@ QString Settings::appVersion()
     return settings.value( "appVersion", "NEW" ).toString();
 }
 
+bool Settings::dontShow40()
+{
+    QSettings settings;
+    return settings.value( "dontShow40", false ).toBool();
+}
+
+void Settings::setDontShow40( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "dontShow40", b );
+    settings.sync();   
+}
+
 void Settings::setAppVersion( const QString& s )
 {
     QSettings settings;

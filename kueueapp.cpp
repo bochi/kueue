@@ -30,6 +30,7 @@
 #include "settings.h"
 #include "kueue.h"
 #include "ui/configdialog.h"
+#include "ui/updatedialog.h"
 #include "nsa/nsa.h"
 
 #include <QProgressDialog>
@@ -103,6 +104,15 @@ void KueueApp::createApp()
    
     if ( Settings::appVersion() != QApplication::applicationVersion() )
     {
+        UpdateDialog* ud = new UpdateDialog( this );
+        
+        if ( ud->smthToSay() )
+        {
+            ud->exec();
+        }
+        
+        delete ud;
+        
         qDebug() << "[KUEUE] New version, rebuilding DB" << Settings::appVersion() << "vs" << QApplication::applicationVersion();
         Settings::setAppVersion( QApplication::applicationVersion() );
         mDB->newDB( false );

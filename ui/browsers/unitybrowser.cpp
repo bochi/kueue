@@ -62,34 +62,31 @@ UnityBrowser::UnityBrowser( QWidget *parent )
                  this, SIGNAL( currentSrChanged( QString ) ) );
         
         QShortcut* sendEmail = new QShortcut( QKeySequence( Qt::Key_F1 ), this );
-   
-        connect( sendEmail, SIGNAL( activated() ), 
-                mUnityPage, SLOT( sendEmail() ) );
+        QShortcut* saveSr = new QShortcut( QKeySequence( Qt::Key_F2 ), this );
+        QShortcut* fileBrowser = new QShortcut( QKeySequence( Qt::Key_F3 ), this );
+        QShortcut* goBack = new QShortcut( QKeySequence( Qt::Key_F4 ), this );
+        QShortcut* ss = new QShortcut( QKeySequence( Qt::Key_F5 ), this );
+        QShortcut* sc = new QShortcut( QKeySequence( Qt::Key_F6 ), this );
         
         QShortcut* logOut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_L ), this );
-    
+        QShortcut* webInspector = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_I ), this );
+        
+        connect( sendEmail, SIGNAL( activated() ), 
+                mUnityPage, SLOT( sendEmail() ) );
+        connect( goBack, SIGNAL( activated() ), 
+                this, SLOT( goBackToSr() ) );
         connect( logOut, SIGNAL( activated() ), 
                 mUnityPage, SLOT( logout() ) );
-        
-        QShortcut* fileBrowser = new QShortcut( QKeySequence( Qt::Key_F4 ), this );
-    
         connect( fileBrowser, SIGNAL( activated() ), 
                 this, SLOT( openFileBrowser() ) );
-        
-        QShortcut* shortcut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_I ), this );
-    
-        connect( shortcut, SIGNAL( activated() ), 
+        connect( webInspector, SIGNAL( activated() ), 
                 this, SLOT( openWebInspector() ) );
-        
-        QShortcut* ss = new QShortcut( QKeySequence( Qt::Key_F2 ), this );
-    
         connect( ss, SIGNAL( activated() ), 
                 mUnityPage, SLOT( setSS() ) );
-        
-        QShortcut* sc = new QShortcut( QKeySequence( Qt::Key_F3 ), this );
-    
         connect( sc, SIGNAL( activated() ), 
                 mUnityPage, SLOT( setSC() ) );
+        connect( saveSr, SIGNAL( activated() ),
+                mUnityPage, SLOT( saveCurrentSR() ) );
     }
 }
 
@@ -554,8 +551,6 @@ void UnityWidget::currentSrChanged( QString sr )
     {
         mSrButton->setEnabled( true );
     }
-    
 }
-
 
 #include "unitybrowser.moc"

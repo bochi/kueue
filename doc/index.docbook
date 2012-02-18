@@ -275,9 +275,11 @@
     <para>
       <itemizedlist>
         <listitem><para><emphasis role="bold">F1</emphasis> &nbsp;&nbsp;Send Email</para></listitem>
-        <listitem><para><emphasis role="bold">F2</emphasis> &nbsp;&nbsp;Set Solution Suggested</para></listitem>
-        <listitem><para><emphasis role="bold">F3</emphasis> &nbsp;&nbsp;Set Schedule For Close</para></listitem>
-        <listitem><para><emphasis role="bold">F4</emphasis> &nbsp;&nbsp;Open filebrowser with the current SR's download dir</para></listitem>
+        <listitem><para><emphasis role="bold">F2</emphasis> &nbsp;&nbsp;Save currently displayed SR</para></listitem>
+        <listitem><para><emphasis role="bold">F3</emphasis> &nbsp;&nbsp;Open filebrowser with the current SR's download dir</para></listitem>
+        <listitem><para><emphasis role="bold">F4</emphasis> &nbsp;&nbsp;Go back to current SR</para></listitem>
+        <listitem><para><emphasis role="bold">F5</emphasis> &nbsp;&nbsp;Set Solution Suggested</para></listitem>
+        <listitem><para><emphasis role="bold">F6</emphasis> &nbsp;&nbsp;Set Schedule For Close</para></listitem>
       </itemizedlist>
     </para>
     
@@ -333,7 +335,7 @@
   <sect1 id="ss">
   <title>Set solution suggested activity</title>
 
-    <para>After suggesting a solution to the customer, one can use CTRL-S to set the activity automatically. </para>
+    <para>After suggesting a solution to the customer, one can use F5 to set the activity automatically. </para>
       
     <para><screenshot><screeninfo>Set solution suggested</screeninfo>
     <mediaobject><imageobject>

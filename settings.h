@@ -344,6 +344,9 @@ class Settings
         
         static bool settingsOK();
    
+        static bool dontShow40();
+        static void setDontShow40( const bool& );
+
         static QString appVersion();
         static void setAppVersion( const QString& );
         

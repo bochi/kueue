@@ -119,6 +119,7 @@ SET( kueue_CPP  main.cpp
                 ui/systray.cpp
                 ui/statusbar.cpp
                 ui/ssdialog.cpp
+		ui/updatedialog.cpp
 		ui/calendardialog.cpp
 		ui/download/edittableview.cpp
 		ui/download/downloadmanager.cpp
@@ -155,7 +156,8 @@ SET( kueue_UI   ui/detailwindow.ui
 		ui/browsers/search/searchbanner.ui
                 ui/ssdialog.ui
 	        ui/calendardialog.ui
-                ui/browsers/helpbrowser.ui )
+                ui/browsers/helpbrowser.ui
+		ui/updatedialog.ui )
 
 #
 # Default Qt stuff...
