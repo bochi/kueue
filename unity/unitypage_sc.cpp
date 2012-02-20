@@ -31,46 +31,42 @@
 */
 
 #include "unitypage.h"
-#include "ui/calendardialog.h"
 
 // Set "Schedule for close" activity and change status accordingly
 
 void UnityPage::setSC( const QString& sr )
 {
-    CalendarDialog* cd;
-    
     if ( sr == "NONE" )
     {
-        cd = new CalendarDialog( this, mCurrentSR );
+        mCalendarDialog = new CalendarDialog( this, mCurrentSR );
     }
     else
     {
-        cd = new CalendarDialog( this, sr );
+        mCalendarDialog = new CalendarDialog( this, sr );
     }
     
-    connect( cd, SIGNAL( datePicked( QDateTime, QString ) ),
-             this, SLOT( setScConfirmed( QDateTime, QString ) ) );
+    connect( mCalendarDialog, SIGNAL( accepted() ),
+             this, SLOT( setScConfirmed() ) );
     
-    cd->exec();
-    delete cd;
+    connect( mCalendarDialog, SIGNAL( rejected() ), 
+             this, SLOT( setScRejected() ) );
+    
+    mCalendarDialog->exec();
 }
 
 // If confirmed, we first navigate to the SR
 
-void UnityPage::setScConfirmed( const QDateTime& dt, const QString& sr )
+void UnityPage::setScConfirmed()
 {
     emit pageErbert();
     mSetSC = true;
-    mScDateTime = dt;
     
-    if ( sr == "NONE" )
-    {
-        querySR( mCurrentSR );
-    }
-    else
-    {
-        querySR( sr );
-    }
+    querySR( mCalendarDialog->sr() );
+}
+
+void UnityPage::setScRejected()
+{
+    delete mCalendarDialog;
 }
 
 // Then we set the activity audience to "Public"
@@ -195,7 +191,7 @@ void UnityPage::setScThird()
         if ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2008" ) ) )
         {
             changeJS = rc.at( i ).attribute( "onchange" );
-            rc.at( i ).setAttribute( "value", mScDateTime.toString( "M/d/yyyy hh:mm:ss AP" ) );
+            rc.at( i ).setAttribute( "value", mCalendarDialog->dateTime().toString( "M/d/yyyy hh:mm:ss AP" ) );
         }
     }
     
@@ -279,6 +275,7 @@ void UnityPage::setScSixth()
     
     saveCurrentSR();
     
+    delete mCalendarDialog;
     emit pageErbertNed();
     
     mSetSC = false;

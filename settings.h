@@ -55,6 +55,9 @@ class Settings
         static bool unityEnabled();
         static void setUnityEnabled( const bool& );
         
+        static bool unityToolbarEnabled();
+        static void setUnityToolbarEnabled( const bool& );
+        
         static QString unityURL();
         static void setUnityURL( const QString& );
         

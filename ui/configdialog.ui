@@ -1026,7 +1026,7 @@
          <item row="1" column="0">
           <widget class="QCheckBox" name="cfg_unityEnabled">
            <property name="text">
-            <string>Enable Unity integration</string>
+            <string>Enable Unity integration (requires restart!)</string>
            </property>
           </widget>
          </item>
@@ -1102,7 +1102,7 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0">
+            <item row="4" column="0">
              <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
                <widget class="QCheckBox" name="cfg_useIdleTimeout">
@@ -1144,6 +1144,13 @@
                </widget>
               </item>
              </layout>
+            </item>
+            <item row="3" column="0">
+             <widget class="QCheckBox" name="cfg_toolbarEnabled">
+              <property name="text">
+               <string>Enable toolbar (requires restart!)</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>

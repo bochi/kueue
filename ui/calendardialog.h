@@ -39,6 +39,9 @@ class CalendarDialog : public QDialog, private Ui::CalendarDialog
     public:
         CalendarDialog( QObject* parent = 0L, QString sr = 0 );
          ~CalendarDialog();
+         
+         QDateTime dateTime() { return mDateTimeEdit->dateTime(); }
+         QString sr() { return mSr; }
             
     private:
         QString mSr;
@@ -48,13 +51,9 @@ class CalendarDialog : public QDialog, private Ui::CalendarDialog
     private slots:
         void calendarDateChanged();
         void widgetDateChanged();
-    	void calAccepted();
 
     protected:
         void closeEvent( QCloseEvent* event );
-        
-    signals:
-        void datePicked( QDateTime, QString );
 };
  
 #endif

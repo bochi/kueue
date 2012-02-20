@@ -30,6 +30,8 @@
 #include "ui/statusbar.h"
 #include "ui/notedialog.h"
 #include "ui/closedialog.h"
+#include "ui/calendardialog.h"
+#include "ui/ssdialog.h"
 
 #include <QWebPage>
 #include <QWebElement>
@@ -76,7 +78,8 @@ class UnityPage : public QWebPage
         void doQuery();
         void goToActivities();
         void newActivity();
-        void setSSconfirmed( const QString&, const QString& );
+        void setSSconfirmed();
+        void setSSrejected();
         void setSSfirst();
         void setSSsecond();
         void setSSthird();
@@ -87,7 +90,8 @@ class UnityPage : public QWebPage
         void download( const QNetworkRequest& );
         void fillOutProductNext();
         void saveCurrentActivity();
-        void setScConfirmed( const QDateTime&, const QString& );
+        void setScConfirmed();
+        void setScRejected();
         void setScFirst();
         void setScSecond();
         void setScThird();
@@ -120,6 +124,8 @@ class UnityPage : public QWebPage
         
         NoteDialog* mNoteDialog;
         CloseDialog* mCloseDialog;
+        CalendarDialog* mCalendarDialog;
+        SsDialog* mSsDialog;
         
         QString mQuerySR;
         QString mServiceJS;
@@ -130,12 +136,9 @@ class UnityPage : public QWebPage
         QString mFileName;
         QString mProduct;
         QString mSaveJS;
-        QString mSsReason;
         QString mCloseStatus;
         
         QStringList mNote;
-        
-        QDateTime mScDateTime;
         
         QTimer* mTimer;
 

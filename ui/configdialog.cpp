@@ -255,6 +255,7 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     
     cfg_unityEnabled->setChecked( Settings::unityEnabled() );
     
+    cfg_toolbarEnabled->setChecked( Settings::unityToolbarEnabled() );
     cfg_unityPassword->setText( Settings::unityPassword() );
     cfg_unityURL->setText( Settings::unityURL() );
     cfg_useIdleTimeout->setChecked( Settings::useIdleTimeout() );
@@ -438,6 +439,7 @@ void ConfigDialog::writeSettings()
     Settings::setShowAppWindow( cfg_showAppWindow->isChecked() );
     Settings::setShowTabsAtTop( cfg_showTabsAtTop->isChecked() );
     Settings::setUnityEnabled( cfg_unityEnabled->isChecked() );
+    Settings::setUnityToolbarEnabled( cfg_toolbarEnabled->isChecked() );
     Settings::setUnityURL( cfg_unityURL->text() );
     Settings::setUseIdleTimeout( cfg_useIdleTimeout->isChecked() );
     Settings::setIdleTimeoutMinutes( cfg_idleTimeoutMinutes->value() );

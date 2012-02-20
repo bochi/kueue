@@ -35,18 +35,15 @@ class SsDialog : public QDialog, private Ui::SsDialog
     public:
         SsDialog( QObject* parent = 0L, QString sr = 0 );
          ~SsDialog();
-        
-    private slots:
-        void ssAccepted();
+         
+         QString sr() { return mSr; }
+         QString ssText() { return reasonLineEdit->text(); }
         
     private: 
         QString mSr;
         
     protected:
-        void closeEvent( QCloseEvent* event );
-        
-    signals:
-        void startSs( QString, QString );     
+        void closeEvent( QCloseEvent* event );  
 };
  
 #endif

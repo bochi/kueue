@@ -36,19 +36,11 @@ SsDialog::SsDialog( QObject* parent, QString sr )
     
     setupUi( this ); 
     setWindowTitle( "Solution Suggested for SR#" + mSr );
-    
-    connect( this, SIGNAL( accepted() ), 
-             this, SLOT( ssAccepted() ) );
 }
 
 SsDialog::~SsDialog()
 {
     qDebug() << "[SSDIALOG] Destroying";
-}
-
-void SsDialog::ssAccepted()
-{
-    emit startSs( mSr, reasonLineEdit->text() );
 }
 
 void SsDialog::closeEvent( QCloseEvent* event )

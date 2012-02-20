@@ -35,31 +35,35 @@
 
 void UnityPage::setSS( const QString& sr )
 {
-    SsDialog* sd;
-    
     if ( sr == "NONE" )
     {
-        sd = new SsDialog( this, mCurrentSR );
+        mSsDialog = new SsDialog( this, mCurrentSR );
     }
     else
     {
-        sd = new SsDialog( this, sr );
+        mSsDialog = new SsDialog( this, sr );
     }
     
-    connect( sd, SIGNAL( startSs( QString, QString ) ),
-             this, SLOT( setSSconfirmed( QString, QString ) ) );
+    connect( mSsDialog, SIGNAL( accepted() ),
+             this, SLOT( setSSconfirmed() ) );
     
-    sd->exec();
-    delete sd;
+    connect( mSsDialog, SIGNAL( rejected() ),
+             this, SLOT( setSSrejected() ) );
+    
+    mSsDialog->exec();
 }
 
-void UnityPage::setSSconfirmed( const QString& sr, const QString& reason )
+void UnityPage::setSSconfirmed()
 {
     emit pageErbert();
     mSetSS = true;
-    mSsReason = reason;
 
-    querySR( sr );
+    querySR( mSsDialog->sr() );
+}
+
+void UnityPage::setSSrejected()
+{
+    delete mSsDialog;
 }
 
 void UnityPage::setSSfirst()
@@ -177,12 +181,12 @@ void UnityPage::setSSthird()
     {  
         if ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2014" ) ) )
         {
-            rc.at(i).setInnerXml( mSsReason );
-            mSsReason.clear();
+            rc.at(i).setInnerXml( mSsDialog->ssText() );
         }
     }
     
     saveCurrentActivity();
+    delete mSsDialog;
     emit pageErbertNed();
     mSetSS = false;
 }

@@ -47,9 +47,6 @@ CalendarDialog::CalendarDialog( QObject* parent, QString sr )
     setWindowTitle( "Schedule For Close" );
     textLabel->setText( "<b>Schedule For Close for SR#" + mSr + "</b>" );
     
-    connect( this, SIGNAL( accepted() ), 
-             this, SLOT( calAccepted() ) );
-    
     connect( mCalWidget, SIGNAL( selectionChanged() ),
              this, SLOT( calendarDateChanged() ) );
     
@@ -70,11 +67,6 @@ void CalendarDialog::calendarDateChanged()
 void CalendarDialog::widgetDateChanged()
 {
     mCalWidget->setSelectedDate( mDateTimeEdit->date() );
-}
-
-void CalendarDialog::calAccepted()
-{
-    emit datePicked( mDateTimeEdit->dateTime(), mSr );
 }
 
 void CalendarDialog::closeEvent( QCloseEvent* event )

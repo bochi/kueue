@@ -583,7 +583,7 @@ UnityWidget::UnityWidget( QObject* parent )
     connect( mUnityBrowser, SIGNAL( enableToolbar() ),
              this, SLOT( enableToolbar() ) );
     
-    WebViewWithSearch* mWebViewWithSearch = new WebViewWithSearch( mUnityBrowser, this );
+    //WebViewWithSearch* mWebViewWithSearch = new WebViewWithSearch( mUnityBrowser, this );
     setLayout( unityBrowserLayout );
 
     QToolButton* back = new QToolButton;
@@ -653,6 +653,9 @@ UnityWidget::UnityWidget( QObject* parent )
 
     connect( mCloseSrButton, SIGNAL( pressed() ), 
              mUnityBrowser, SLOT( closeSr() ) );
+    
+    connect( queryGo, SIGNAL( pressed() ),
+             this, SLOT( querySR() ) );
 
     QWidget* spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -681,8 +684,12 @@ UnityWidget::UnityWidget( QObject* parent )
     mToolBar->addWidget( mQueryLine );
     mToolBar->addWidget( queryGo );
     
-    unityBrowserLayout->addWidget( mToolBar );
-    unityBrowserLayout->addWidget( mWebViewWithSearch );
+    if ( Settings::unityToolbarEnabled() )
+    {
+        unityBrowserLayout->addWidget( mToolBar );
+    }
+    
+    unityBrowserLayout->addWidget( mUnityBrowser );
 }
 
 UnityWidget::~UnityWidget()
@@ -699,7 +706,7 @@ void UnityWidget::currentSrChanged( QString sr )
 {
     mSrButton->setText( "SR#" + sr );
     
-    if ( sr == "" )
+    if ( ( sr == "" ) || ( !Kueue::isSrNr( sr ) ) )
     {
         disableToolbar();
     }
@@ -724,6 +731,7 @@ void UnityWidget::querySR()
     if ( Kueue::isSrNr( mQueryLine->text() ) )
     {
         mUnityBrowser->querySR( mQueryLine->text() );
+        mQueryLine->clear();
     }
 }
 
