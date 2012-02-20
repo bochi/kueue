@@ -31,42 +31,39 @@
 */
 
 #include "unitypage.h"
-#include "ui/ssdialog.h"
 
-void UnityPage::setSS( const QString& sr )
+void UnityPage::addNote()
 {
-    SsDialog* sd;
+    mNoteDialog = new NoteDialog( this, mCurrentSR );
+     
+    connect( mNoteDialog, SIGNAL( addNoteAccepted() ), 
+             this, SLOT( addNoteAccepted() ) );
     
-    if ( sr == "NONE" )
-    {
-        sd = new SsDialog( this, mCurrentSR );
-    }
-    else
-    {
-        sd = new SsDialog( this, sr );
-    }
-    
-    connect( sd, SIGNAL( startSs( QString, QString ) ),
-             this, SLOT( setSSconfirmed( QString, QString ) ) );
-    
-    sd->exec();
-    delete sd;
+    mNoteDialog->exec();
 }
 
-void UnityPage::setSSconfirmed( const QString& sr, const QString& reason )
+void UnityPage::addNoteAccepted()
 {
     emit pageErbert();
-    mSetSS = true;
-    mSsReason = reason;
-
-    querySR( sr );
+    
+    mAddNote = true;
+    
+    querySR( mNoteDialog->sr() );
 }
 
-void UnityPage::setSSfirst()
-{   
+void UnityPage::addNoteRejected()
+{
+    delete mNoteDialog;
+}
+
+void UnityPage::addNoteFirst()
+{
     mNoJsConfirm = true;
     
     disconnect( mViewFrame, 0, 0, 0 );
+    
+    connect( mViewFrame, SIGNAL( loadFinished(bool) ),
+             this, SLOT( addNoteSecond() ) );
 
     QString changeJS;
 
@@ -84,9 +81,14 @@ void UnityPage::setSSfirst()
             
             for ( int i = 0; i < d.count(); ++i )
             {
-                d.at(i).removeAttribute("selected");
+                d.at(i).removeAttribute( "selected");
                 
-                if ( d.at( i ).attribute( "value" ) == "Internal" )
+                if ( ( d.at( i ).attribute( "value" ) == "Public" ) && ( mNoteDialog->type() == NoteDialog::Public ) )
+                {
+                    e = d.at( i );
+                }
+                
+                if ( ( d.at( i ).attribute( "value" ) == "Internal" ) && ( mNoteDialog->type() == NoteDialog::Internal ) )
                 {
                     e = d.at( i );
                 }
@@ -104,9 +106,9 @@ void UnityPage::setSSfirst()
             
             for ( int i = 0; i < d.count(); ++i )
             {
-                d.at(i).removeAttribute("selected");
+                d.at(i).removeAttribute( "selected" );
                 
-                if ( d.at( i ).attribute( "value" ) == "Solution Suggested" )
+                if ( d.at( i ).attribute( "value" ) == "Engineer Note" )
                 {
                     e = d.at( i );
                 }
@@ -116,18 +118,18 @@ void UnityPage::setSSfirst()
             mViewFrame->evaluateJavaScript( changeJS );
         }
     }
-
-    connect( mViewFrame, SIGNAL( loadFinished(bool) ),
-             this, SLOT( setSSsecond() ) );
     
-    mSetSS = false;
+    mAddNote = false;
 }
 
-void UnityPage::setSSsecond()
+void UnityPage::addNoteSecond()
 {
-    mSetSS = true; 
+    mAddNote = true; 
     
     disconnect( mViewFrame, 0, 0, 0 );
+    
+    connect( mViewFrame, SIGNAL( loadFinished(bool) ),
+             this, SLOT( addNoteThird() ) );
 
     QString changeJS;
     QWebElementCollection c = mViewFrame->findAllElements( "select" );
@@ -155,16 +157,13 @@ void UnityPage::setSSsecond()
             mViewFrame->evaluateJavaScript( changeJS );
         }
     }
-
-    connect( mViewFrame, SIGNAL( loadFinished(bool) ),
-             this, SLOT( setSSthird() ) );
     
-    mSetSS = false;
+    mAddNote = false; 
 }
 
-void UnityPage::setSSthird()
+void UnityPage::addNoteThird()
 {
-    mSetSS = true;
+    mAddNote = true;
     
     disconnect( mViewFrame, 0, 0, 0 );
 
@@ -177,12 +176,17 @@ void UnityPage::setSSthird()
     {  
         if ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2014" ) ) )
         {
-            rc.at(i).setInnerXml( mSsReason );
-            mSsReason.clear();
+            rc.at(i).setInnerXml( mNoteDialog->comment() );
+        }
+        
+        if ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2005" ) ) )
+        {
+            rc.at(i).setInnerXml( mNoteDialog->briefDesc() );
         }
     }
     
+    delete mNoteDialog;
+    mAddNote = false;
     saveCurrentActivity();
     emit pageErbertNed();
-    mSetSS = false;
 }

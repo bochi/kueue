@@ -31,9 +31,7 @@
 
 #include <QDebug>
 #include <QMenu>
-#include <QToolButton>
 #include <QWidgetAction>
-#include <QShortcut>
 #include <QDesktopServices>
 #include <QWebInspector>
 #include <QWebHistory>
@@ -61,32 +59,28 @@ UnityBrowser::UnityBrowser( QWidget *parent )
         connect( mUnityPage, SIGNAL( currentSrChanged( QString ) ),
                  this, SIGNAL( currentSrChanged( QString ) ) );
         
-        QShortcut* sendEmail = new QShortcut( QKeySequence( Qt::Key_F1 ), this );
-        QShortcut* saveSr = new QShortcut( QKeySequence( Qt::Key_F2 ), this );
-        QShortcut* fileBrowser = new QShortcut( QKeySequence( Qt::Key_F3 ), this );
-        QShortcut* goBack = new QShortcut( QKeySequence( Qt::Key_F4 ), this );
-        QShortcut* ss = new QShortcut( QKeySequence( Qt::Key_F5 ), this );
-        QShortcut* sc = new QShortcut( QKeySequence( Qt::Key_F6 ), this );
+        connect( mUnityPage, SIGNAL( pageErbert() ),
+                 this, SLOT( pageErbert() ) );
         
-        QShortcut* logOut = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_L ), this );
-        QShortcut* webInspector = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_I ), this );
+        connect( mUnityPage, SIGNAL( pageErbertNed() ),
+                 this, SLOT( pageErbertNed() ) );
         
-        connect( sendEmail, SIGNAL( activated() ), 
-                mUnityPage, SLOT( sendEmail() ) );
-        connect( goBack, SIGNAL( activated() ), 
-                this, SLOT( goBackToSr() ) );
-        connect( logOut, SIGNAL( activated() ), 
-                mUnityPage, SLOT( logout() ) );
-        connect( fileBrowser, SIGNAL( activated() ), 
-                this, SLOT( openFileBrowser() ) );
-        connect( webInspector, SIGNAL( activated() ), 
-                this, SLOT( openWebInspector() ) );
-        connect( ss, SIGNAL( activated() ), 
-                mUnityPage, SLOT( setSS() ) );
-        connect( sc, SIGNAL( activated() ), 
-                mUnityPage, SLOT( setSC() ) );
-        connect( saveSr, SIGNAL( activated() ),
-                mUnityPage, SLOT( saveCurrentSR() ) );
+        connect( mUnityPage, SIGNAL( linkClicked( QUrl ) ),
+                 this, SLOT( linkClicked( QUrl ) ) );
+        
+        mSendEmailSC = new QShortcut( QKeySequence( Qt::Key_F1 ), this );
+        mSaveSrSC = new QShortcut( QKeySequence( Qt::Key_F2 ), this );
+        mFileBrowserSC = new QShortcut( QKeySequence( Qt::Key_F3 ), this );
+        mGoBackSC = new QShortcut( QKeySequence( Qt::Key_F4 ), this );
+        mSsSC = new QShortcut( QKeySequence( Qt::Key_F5 ), this );
+        mScSC = new QShortcut( QKeySequence( Qt::Key_F6 ), this );
+        mAddNoteSC = new QShortcut( QKeySequence( Qt::Key_F7 ), this );
+        mCloseSrSC = new QShortcut( QKeySequence( Qt::Key_F8 ), this );
+
+        mLogOutSC = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_L ), this );
+        mWebInspectorSC = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_I ), this );
+        
+        connectShortcuts();
     }
 }
 
@@ -94,6 +88,100 @@ UnityBrowser::~UnityBrowser()
 {
     delete mUnityPage;
     qDebug() << "[UNITYBROWSER] Destroying";
+}
+
+void UnityBrowser::connectShortcuts()
+{
+    connect( mSendEmailSC, SIGNAL( activated() ), 
+             mUnityPage, SLOT( sendEmail() ) );
+    
+    connect( mGoBackSC, SIGNAL( activated() ), 
+             this, SLOT( goBackToSr() ) );
+    
+    connect( mLogOutSC, SIGNAL( activated() ), 
+             mUnityPage, SLOT( logout() ) );
+    
+    connect( mFileBrowserSC, SIGNAL( activated() ), 
+             this, SLOT( openFileBrowser() ) );
+    
+    connect( mWebInspectorSC, SIGNAL( activated() ), 
+             this, SLOT( openWebInspector() ) );
+    
+    connect( mSsSC, SIGNAL( activated() ), 
+             mUnityPage, SLOT( setSS() ) );
+    
+    connect( mScSC, SIGNAL( activated() ), 
+             mUnityPage, SLOT( setSC() ) );
+    
+    connect( mSaveSrSC, SIGNAL( activated() ),
+             mUnityPage, SLOT( saveCurrentSR() ) );
+    
+    connect( mCloseSrSC, SIGNAL( activated() ), 
+             mUnityPage, SLOT( closeSr() ) );
+    
+    connect( mAddNoteSC, SIGNAL( activated() ), 
+             mUnityPage, SLOT( addNote() ) );
+}
+
+void UnityBrowser::disconnectShortcuts()
+{
+    disconnect( mSendEmailSC, 0, 0, 0 );
+    disconnect( mGoBackSC, 0, 0, 0 );
+    disconnect( mLogOutSC, 0, 0, 0 );
+    disconnect( mFileBrowserSC, 0, 0, 0 );
+    disconnect( mWebInspectorSC, 0, 0, 0 );
+    disconnect( mSsSC, 0, 0, 0 );
+    disconnect( mScSC, 0, 0, 0 );
+    disconnect( mSaveSrSC, 0, 0, 0 );
+    disconnect( mCloseSrSC, 0, 0, 0 );
+    disconnect( mAddNoteSC, 0, 0, 0 );
+}
+
+void UnityBrowser::pageErbert()
+{
+    disconnectShortcuts();
+    emit disableToolbar();
+}
+
+void UnityBrowser::pageErbertNed()
+{
+    connectShortcuts();
+    emit enableToolbar();
+}
+
+void UnityBrowser::linkClicked( const QUrl& url )
+{
+    QDesktopServices::openUrl( url );
+}
+
+void UnityBrowser::sendEmail()
+{
+    mUnityPage->sendEmail();
+}
+
+void UnityBrowser::saveSr()
+{
+    mUnityPage->saveCurrentSR();
+}
+
+void UnityBrowser::solutionSuggested()
+{
+    mUnityPage->setSS();
+}
+
+void UnityBrowser::scheduleForClose()
+{
+    mUnityPage->setSC();
+}
+
+void UnityBrowser::addNote()
+{
+    mUnityPage->addNote();
+}
+
+void UnityBrowser::closeSr()
+{
+    mUnityPage->closeSr();
 }
 
 void UnityBrowser::openWebInspector()
@@ -112,7 +200,6 @@ void UnityBrowser::openWebInspector()
 
 void UnityBrowser::querySR( const QString& sr )
 {
-    qDebug() << "[UNITYBROWSER] Trying to show SR#" << sr << "in Unity";
     mUnityPage->querySR( sr );
 }
 
@@ -388,7 +475,14 @@ void UnityBrowser::goBackToSr()
 {
     QAction* action = qobject_cast<QAction*>( QObject::sender() );
     
-    mUnityPage->querySR( action->data().toString() );
+    if ( !action )
+    {
+        mUnityPage->querySR( currentSR() );
+    }
+    else
+    {    
+        mUnityPage->querySR( action->data().toString() );
+    }
 }
 
 void UnityBrowser::saveImage()
@@ -474,7 +568,8 @@ UnityWidget::UnityWidget( QObject* parent )
     qDebug() << "[UNITYWIDGET] Constructing";
     
     mToolBar = new QToolBar( this );
-    mToolBar->setIconSize( QSize( 12, 12 ) );
+    mToolBar->setIconSize( QSize( 22, 22 ) );
+    mToolBar->setEnabled( false );
     
     QGridLayout* unityBrowserLayout = new QGridLayout();
     mUnityBrowser = new UnityBrowser( this );
@@ -482,50 +577,111 @@ UnityWidget::UnityWidget( QObject* parent )
     connect( mUnityBrowser, SIGNAL( currentSrChanged( QString ) ),
              this, SLOT( currentSrChanged( QString ) ) );
     
+    connect( mUnityBrowser, SIGNAL( disableToolbar() ),
+             this, SLOT( disableToolbar() ) );
+    
+    connect( mUnityBrowser, SIGNAL( enableToolbar() ),
+             this, SLOT( enableToolbar() ) );
+    
     WebViewWithSearch* mWebViewWithSearch = new WebViewWithSearch( mUnityBrowser, this );
     setLayout( unityBrowserLayout );
 
     QToolButton* back = new QToolButton;
     back->setIcon(QIcon( ":/icons/menus/back.png" ) );
-    
-    QToolButton* backToSR = new QToolButton;
-    backToSR->setIcon(QIcon( ":/icons/menus/srdetails.png" ) );
-    
+
     QToolButton* queryGo = new QToolButton;
     queryGo->setIcon(QIcon( ":/icons/menus/ok.png" ) );
     
+    mSendEmailButton = new QToolButton( mToolBar );
+    mSendEmailButton->setIcon( QIcon( ":/icons/toolbar/send_email.png" ) );
+    mSendEmailButton->setToolTip( "Send Email" );
+    
+    mSaveSrButton = new QToolButton( mToolBar );
+    mSaveSrButton->setIcon( QIcon( ":/icons/toolbar/save_sr.png" ) );
+    mSaveSrButton->setToolTip( "Save SR" );
+    
+    mFileBrowserButton = new QToolButton( mToolBar );
+    mFileBrowserButton->setIcon( QIcon( ":/icons/toolbar/filebrowser.png" ) );
+    mFileBrowserButton->setToolTip( "Open Filebrowser for current SR" );
+    
+    mGoBackButton = new QToolButton( mToolBar );
+    mGoBackButton->setIcon( QIcon( ":/icons/menus/srdetails.png" ) );
+    mGoBackButton->setToolTip( "Go back to SR" );
+    
+    mSsButton = new QToolButton( mToolBar );
+    mSsButton->setIcon( QIcon( ":/icons/toolbar/solution_suggested.png" ) );
+    mSsButton->setToolTip( "Set Solution Suggested" );
+    
+    mScButton = new QToolButton( mToolBar );
+    mScButton->setIcon( QIcon( ":/icons/toolbar/schedule_for_close.png" ) );
+    mScButton->setToolTip( "Set Schedule For Close" );
+    
+    mAddNoteButton = new QToolButton( mToolBar );
+    mAddNoteButton->setIcon( QIcon( ":/icons/toolbar/add_note.png" ) );
+    mAddNoteButton->setToolTip( "Add engineer note" );
+    
+    mCloseSrButton = new QToolButton( mToolBar );
+    mCloseSrButton->setIcon( QIcon( ":/icons/toolbar/close_sr.png" ) );
+    mCloseSrButton->setToolTip( "Close SR" );
     
     mSrButton = new QToolButton;
-    mSrButton->setEnabled(false);
     mSrButton->setText( "SR" );
     
     connect( back, SIGNAL( pressed() ),
              mUnityBrowser, SLOT( historyBack() ) );
     
+    connect( mGoBackButton, SIGNAL( pressed() ),
+             mUnityBrowser, SLOT( goBackToSr() ) );
     
-    connect( backToSR, SIGNAL( pressed() ),
-             mUnityBrowser, SLOT( historyBack() ) );
-    
+    connect( mSaveSrButton, SIGNAL( pressed() ), 
+             mUnityBrowser, SLOT( saveSr() ) );
+
+    connect( mSendEmailButton, SIGNAL( pressed() ), 
+             mUnityBrowser, SLOT( sendEmail() ) );
+
+    connect( mFileBrowserButton, SIGNAL( pressed() ), 
+             mUnityBrowser, SLOT( openFileBrowser() ) );
+
+    connect( mSsButton, SIGNAL( pressed() ), 
+             mUnityBrowser, SLOT( solutionSuggested() ) );
+
+    connect( mScButton, SIGNAL( pressed() ), 
+             mUnityBrowser, SLOT( scheduleForClose() ) );
+
+    connect( mAddNoteButton, SIGNAL( pressed() ), 
+             mUnityBrowser, SLOT( addNote() ) );
+
+    connect( mCloseSrButton, SIGNAL( pressed() ), 
+             mUnityBrowser, SLOT( closeSr() ) );
+
     QWidget* spacer = new QWidget();
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    QLineEdit* line = new QLineEdit;
-    line->setMaximumWidth( 150 );
+    mQueryLine = new QLineEdit;
+    mQueryLine->setMaximumWidth( 150 );
     
     //line->setFont();
     QLabel* label = new QLabel;
     label->setText( "Query" );
     
     mToolBar->addWidget( back );
-    mToolBar->addWidget( backToSR );
+    mToolBar->addWidget( mGoBackButton );
     mToolBar->addSeparator();
     mToolBar->addWidget( mSrButton );
+    mToolBar->addSeparator();
+    mToolBar->addWidget( mSendEmailButton );
+    mToolBar->addWidget( mSaveSrButton );
+    mToolBar->addWidget( mFileBrowserButton );
+    mToolBar->addWidget( mSsButton );
+    mToolBar->addWidget( mScButton );
+    mToolBar->addWidget( mAddNoteButton );
+    mToolBar->addWidget( mCloseSrButton );
     mToolBar->addWidget( spacer );
     mToolBar->addWidget( label );
-    mToolBar->addWidget( line );
+    mToolBar->addWidget( mQueryLine );
     mToolBar->addWidget( queryGo );
     
-    //unityBrowserLayout->addWidget( mToolBar );
+    unityBrowserLayout->addWidget( mToolBar );
     unityBrowserLayout->addWidget( mWebViewWithSearch );
 }
 
@@ -545,12 +701,31 @@ void UnityWidget::currentSrChanged( QString sr )
     
     if ( sr == "" )
     {
-        mSrButton->setEnabled( false );
+        disableToolbar();
     }
     else
     {
-        mSrButton->setEnabled( true );
+        enableToolbar();
     }
 }
+
+void UnityWidget::disableToolbar()
+{
+    mToolBar->setEnabled( false );
+}
+
+void UnityWidget::enableToolbar()
+{
+    mToolBar->setEnabled( true );
+}
+
+void UnityWidget::querySR()
+{
+    if ( Kueue::isSrNr( mQueryLine->text() ) )
+    {
+        mUnityBrowser->querySR( mQueryLine->text() );
+    }
+}
+
 
 #include "unitybrowser.moc"

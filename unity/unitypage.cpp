@@ -50,7 +50,9 @@ UnityPage::UnityPage( QObject *parent )
     mLoggedIn = false;
     mDontLogin = false;
     mIsNsaReport = false;
+    mSetSC = false;
     mSetSS = false;
+    mAddNote = false;
     mNoJsConfirm = false;
     
     mStatusBar = &mStatusBar->getInstance();
@@ -327,6 +329,11 @@ void UnityPage::doQuery()
     // need to make sure all fields are empty first, otherwise it won't work if 
     // a default query is selected and has some fields filled out automatically
     
+    disconnect( mViewFrame, 0, 0, 0 );    
+    
+    connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+             this, SLOT( goToActivities() ) );
+    
     QWebElementCollection fc = mViewFrame->findAllElements( "*" );   
     
     for ( int i = 0; i < fc.count(); ++i ) 
@@ -352,17 +359,24 @@ void UnityPage::doQuery()
     }
     
     mViewFrame->evaluateJavaScript( js );
-
-    disconnect( mViewFrame, 0, 0, 0 );    
-    
-    connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
-             this, SLOT( goToActivities() ) );
 }
 
 void UnityPage::goToActivities()
 {
     disconnect( mViewFrame, 0, 0, 0 );
- 
+
+    if ( ( mSetSS ) || ( mSetSC ) || ( mAddNote ) )
+    {
+        connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+                 this, SLOT( newActivity()) );
+    }
+    
+    if ( mCloseSR )
+    {
+        connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+                 this, SLOT( closeSrFirst() ) );
+    }
+    
     QWebElementCollection fc = mViewFrame->findAllElements( "a" );
     
     for ( int i = 0; i < fc.count(); ++i ) 
@@ -373,17 +387,27 @@ void UnityPage::goToActivities()
             mViewFrame->evaluateJavaScript( js );
         }
     }
-
-    if ( ( mSetSS ) || ( mSetSC ) )
-    {
-        connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
-                 this, SLOT( newActivity()) );
-    }
 }
 
 void UnityPage::newActivity()
 {
     disconnect( mViewFrame, 0, 0, 0 );
+
+    if ( mSetSS )
+    {                
+        connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+                 this, SLOT( setSSfirst() ) );
+    }   
+    else if ( mSetSC )
+    {
+        connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+                 this, SLOT( setScFirst() ) );
+    }       
+    else if ( mAddNote )
+    {
+        connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+                 this, SLOT( addNoteFirst() ) );
+    }       
     
     QWebElementCollection fc = mViewFrame->findAllElements( "a" );
     QString newJS;
@@ -397,17 +421,6 @@ void UnityPage::newActivity()
     }
     
     mViewFrame->evaluateJavaScript( newJS );
-    
-    if ( mSetSS )
-    {                
-        connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
-                 this, SLOT( setSSfirst() ) );
-    }   
-    else if ( mSetSC )
-    {
-        connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
-                 this, SLOT( setScFirst() ) );
-    }       
 }
 
 void UnityPage::getServiceJS()
@@ -752,5 +765,7 @@ void UnityPage::saveCurrentActivity()
 #include "unitypage_prod.cpp"
 #include "unitypage_ss.cpp"
 #include "unitypage_sc.cpp"
+#include "unitypage_close.cpp"
+#include "unitypage_note.cpp"
 
 #include "unitypage.moc"

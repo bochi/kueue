@@ -636,27 +636,20 @@ bool DownloadManager::externalDownload(const QUrl &url)
 
 void DownloadManager::download(const QNetworkRequest &request, QNetworkAccessManager* nam,  QString dir, bool requestFileName)
 {
-    /*if (request.url().isEmpty()){
-        qDebug() << "dl nourl";
-        //return;
-        
-    }
-        
-    if (externalDownload(request.url())){
-        qDebug() << "dl ex";
-        //return;
-        
-    } */
-    
-    handleUnsupportedContent(nam->get(request), dir, requestFileName);
+    handleUnsupportedContent( nam->get(request), dir, requestFileName );
 }
 
 void DownloadManager::handleUnsupportedContent(QNetworkReply *reply, QString dir, bool requestFileName)
 {
     if (!reply || reply->url().isEmpty())
+    {
         return;
+    }
+    
     if (externalDownload(reply->url()))
+    {
         return;
+    }
 
     QVariant header = reply->header(QNetworkRequest::ContentLengthHeader);
     bool ok;

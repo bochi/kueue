@@ -51,4 +51,10 @@ void SsDialog::ssAccepted()
     emit startSs( mSr, reasonLineEdit->text() );
 }
 
+void SsDialog::closeEvent( QCloseEvent* event )
+{
+    emit rejected();
+    QDialog::closeEvent( event );
+}
+
 #include "ssdialog.moc"

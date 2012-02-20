@@ -42,8 +42,15 @@
     <file alias="menus/download.png">ui/icons/menus/download.png</file>
     <file alias="menus/back.png">ui/icons/menus/back.png</file>
     <file alias="menus/nsa.png">ui/icons/menus/nsa.png</file>
-
+    <file alias="toolbar/add_note.png">ui/icons/toolbar/add_note.png</file>
+    <file alias="toolbar/close_sr.png">ui/icons/toolbar/close_sr.png</file>
+    <file alias="toolbar/save_sr.png">ui/icons/toolbar/save_sr.png</file>
+    <file alias="toolbar/schedule_for_close.png">ui/icons/toolbar/schedule_for_close.png</file>
+    <file alias="toolbar/send_email.png">ui/icons/toolbar/send_email.png</file>
+    <file alias="toolbar/solution_suggested.png">ui/icons/toolbar/solution_suggested.png</file>
+    <file alias="toolbar/filebrowser.png">ui/icons/toolbar/filebrowser.png</file>
   </qresource>
+
   <qresource prefix="images">
     <file alias="bg.gif">ui/icons/images/bg.gif</file>
     <file alias="chat.png">ui/icons/images/chat.png</file>
@@ -59,4 +66,5 @@
     <file alias="und.gif">ui/icons/images/und.gif</file>
     <file alias="yay.gif">ui/icons/images/yay.gif</file>
   </qresource>
+  
 </RCC>

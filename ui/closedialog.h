@@ -23,38 +23,27 @@
 
 */
 
-#ifndef CALENDARDIALOG_H
-#define CALENDARDIALOG_H
+#ifndef CLOSEDIALOG_H
+#define CLOSEDIALOG_H
  
-#include <QDateTime>
-#include <QCalendarWidget>
-#include <QDateTimeEdit>
-
-#include "ui_calendardialog.h"
+#include "ui_closedialog.h"
  
-class CalendarDialog : public QDialog, private Ui::CalendarDialog
+class CloseDialog : public QDialog, private Ui::CloseDialog
 {
     Q_OBJECT
 
     public:
-        CalendarDialog( QObject* parent = 0L, QString sr = 0 );
-         ~CalendarDialog();
-            
+        CloseDialog( QObject* parent = 0L, const QString& sr = "NONE" );
+         ~CloseDialog();
+  
+         QString sr() { return mSr; }
+         QString closeReason() { return closeCombo->currentText(); }
+         
     private:
         QString mSr;
-        QCalendarWidget* mCalWidget;
-        QDateTimeEdit* mDateTimeEdit;
-    
-    private slots:
-        void calendarDateChanged();
-        void widgetDateChanged();
-    	void calAccepted();
-
-    protected:
-        void closeEvent( QCloseEvent* event );
         
-    signals:
-        void datePicked( QDateTime, QString );
+    protected:
+        void closeEvent( QCloseEvent *event );
 };
  
 #endif

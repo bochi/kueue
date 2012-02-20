@@ -77,4 +77,10 @@ void CalendarDialog::calAccepted()
     emit datePicked( mDateTimeEdit->dateTime(), mSr );
 }
 
+void CalendarDialog::closeEvent( QCloseEvent* event )
+{
+    emit rejected();
+    QDialog::closeEvent( event );
+}
+
 #include "calendardialog.moc"

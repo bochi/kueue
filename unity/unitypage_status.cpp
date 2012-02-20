@@ -32,7 +32,6 @@
 
 #include "unitypage.h"
 #include "ui/calendardialog.h"
-#include <../qt-examples/tools/customcompleter/textedit.h>
 
 void UnityPage::setSC( const QString& sr )
 {
@@ -48,6 +47,7 @@ void UnityPage::setSC( const QString& sr )
 
 void UnityPage::setScConfirmed( const QDateTime& dt, const QString& sr )
 {
+    disconnectShortcuts();
     mSetSC = true;
     mScDateTime = dt;
     
@@ -209,5 +209,6 @@ void UnityPage::setScFourth()
     connect( mViewFrame, SIGNAL( loadFinished(bool) ),
              this, SLOT( unsetJsConfirm() ) );
     
+    connectShortcuts();
     mSetSS = false;
 }

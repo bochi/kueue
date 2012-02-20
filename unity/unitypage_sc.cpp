@@ -59,6 +59,7 @@ void UnityPage::setSC( const QString& sr )
 
 void UnityPage::setScConfirmed( const QDateTime& dt, const QString& sr )
 {
+    emit pageErbert();
     mSetSC = true;
     mScDateTime = dt;
     
@@ -277,6 +278,8 @@ void UnityPage::setScSixth()
              this, SLOT( unsetJsConfirm() ) );
     
     saveCurrentSR();
+    
+    emit pageErbertNed();
     
     mSetSC = false;
 }

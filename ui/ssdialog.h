@@ -42,6 +42,9 @@ class SsDialog : public QDialog, private Ui::SsDialog
     private: 
         QString mSr;
         
+    protected:
+        void closeEvent( QCloseEvent* event );
+        
     signals:
         void startSs( QString, QString );     
 };

@@ -28,6 +28,8 @@
 
 #include "unity/unitynetwork.h"
 #include "ui/statusbar.h"
+#include "ui/notedialog.h"
+#include "ui/closedialog.h"
 
 #include <QWebPage>
 #include <QWebElement>
@@ -58,6 +60,8 @@ class UnityPage : public QWebPage
         void handleUnsupportedContent(QNetworkReply*);
         void fillOutProduct( const QString&, const QString& );
         void saveCurrentSR();
+        void addNote();
+        void closeSr();
         
     private slots:
         void pageLoaded();
@@ -90,7 +94,16 @@ class UnityPage : public QWebPage
         void setScFourth();
         void setScFifth();
         void setScSixth();
-
+        void closeSrAccepted();
+        void closeSrRejected();
+        void closeSrFirst();
+        void closeSrSecond();
+        void closeSrThird();
+        void addNoteAccepted();
+        void addNoteRejected();
+        void addNoteFirst();
+        void addNoteSecond();
+        void addNoteThird();
         
     private:
         QWebPage* createWindow( QWebPage::WebWindowType type );
@@ -105,6 +118,9 @@ class UnityPage : public QWebPage
         
         StatusBar* mStatusBar;
         
+        NoteDialog* mNoteDialog;
+        CloseDialog* mCloseDialog;
+        
         QString mQuerySR;
         QString mServiceJS;
         QString mLogoutJS;
@@ -115,6 +131,9 @@ class UnityPage : public QWebPage
         QString mProduct;
         QString mSaveJS;
         QString mSsReason;
+        QString mCloseStatus;
+        
+        QStringList mNote;
         
         QDateTime mScDateTime;
         
@@ -128,7 +147,10 @@ class UnityPage : public QWebPage
         bool mIsNsaReport;
         bool mSetSS;
         bool mSetSC;
+        bool mCloseSR;
+        bool mAddNote;
         bool mNoJsConfirm;
+        bool checkMandatoryForClose();
         
     protected:
         void javaScriptAlert( QWebFrame*, const QString& );
@@ -137,6 +159,8 @@ class UnityPage : public QWebPage
     signals:
         void contentChanged();
         void currentSrChanged( QString );
+        void pageErbert();
+        void pageErbertNed();
 };
 
 #endif

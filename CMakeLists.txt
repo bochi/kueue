@@ -121,6 +121,8 @@ SET( kueue_CPP  main.cpp
                 ui/ssdialog.cpp
 		ui/updatedialog.cpp
 		ui/calendardialog.cpp
+                ui/notedialog.cpp
+                ui/closedialog.cpp
 		ui/download/edittableview.cpp
 		ui/download/downloadmanager.cpp
 		ui/download/squeezelabel.cpp
@@ -157,7 +159,9 @@ SET( kueue_UI   ui/detailwindow.ui
                 ui/ssdialog.ui
 	        ui/calendardialog.ui
                 ui/browsers/helpbrowser.ui
-		ui/updatedialog.ui )
+		ui/updatedialog.ui 
+                ui/notedialog.ui
+                ui/closedialog.ui )
 
 #
 # Default Qt stuff...

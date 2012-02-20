@@ -23,38 +23,44 @@
 
 */
 
-#ifndef CALENDARDIALOG_H
-#define CALENDARDIALOG_H
+#ifndef NOTEDIALOG_H
+#define NOTEDIALOG_H
  
-#include <QDateTime>
-#include <QCalendarWidget>
-#include <QDateTimeEdit>
-
-#include "ui_calendardialog.h"
+#include "ui_notedialog.h"
  
-class CalendarDialog : public QDialog, private Ui::CalendarDialog
+class NoteDialog : public QDialog, private Ui::NoteDialog
 {
     Q_OBJECT
 
     public:
-        CalendarDialog( QObject* parent = 0L, QString sr = 0 );
-         ~CalendarDialog();
-            
+        NoteDialog( QObject* parent = 0L, QString = "NOSR" );
+         ~NoteDialog();
+        
+        enum type
+        {
+            Internal = 1,
+            Public = 2
+        };
+ 
+        QString sr() { return mSr; }
+        QString briefDesc() { return briefDescription->text(); }
+        QString comment() { return commentBox->toPlainText(); }
+        int type() { return mType; }
+        
     private:
         QString mSr;
-        QCalendarWidget* mCalWidget;
-        QDateTimeEdit* mDateTimeEdit;
-    
+        int mType;
+        
     private slots:
-        void calendarDateChanged();
-        void widgetDateChanged();
-    	void calAccepted();
-
+        void noteAccepted();
+        void changeCheckBoxInt( bool );
+        void changeCheckBoxExt( bool );
+        
     protected:
-        void closeEvent( QCloseEvent* event );
+        void closeEvent( QCloseEvent *event );
         
     signals:
-        void datePicked( QDateTime, QString );
+        void addNoteAccepted();
 };
  
 #endif

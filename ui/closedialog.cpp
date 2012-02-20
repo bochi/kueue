@@ -23,38 +23,30 @@
 
 */
 
-#ifndef CALENDARDIALOG_H
-#define CALENDARDIALOG_H
- 
-#include <QDateTime>
-#include <QCalendarWidget>
-#include <QDateTimeEdit>
+#include "closedialog.h"
 
-#include "ui_calendardialog.h"
- 
-class CalendarDialog : public QDialog, private Ui::CalendarDialog
+#include <QDebug>
+
+CloseDialog::CloseDialog( QObject* parent, const QString& sr )
 {
-    Q_OBJECT
-
-    public:
-        CalendarDialog( QObject* parent = 0L, QString sr = 0 );
-         ~CalendarDialog();
-            
-    private:
-        QString mSr;
-        QCalendarWidget* mCalWidget;
-        QDateTimeEdit* mDateTimeEdit;
+    qDebug() << "[CLOSEDIALOG] Constructing";
     
-    private slots:
-        void calendarDateChanged();
-        void widgetDateChanged();
-    	void calAccepted();
+    mSr = sr;
+    
+    setupUi( this ); 
+    
+    closeLabel->setText( "<b>Close SR#" + mSr + "?</b>" );
+}
 
-    protected:
-        void closeEvent( QCloseEvent* event );
-        
-    signals:
-        void datePicked( QDateTime, QString );
-};
- 
-#endif
+CloseDialog::~CloseDialog()
+{
+    qDebug() << "[CLOSEDIALOG] Destroying";
+}
+
+void CloseDialog::closeEvent( QCloseEvent* event )
+{
+    emit rejected();
+    QDialog::closeEvent( event );
+}
+
+#include "closedialog.moc"

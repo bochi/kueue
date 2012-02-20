@@ -36,6 +36,8 @@
 #include <QDialog>
 #include <QMenu>
 #include <QToolBar>
+#include <QShortcut>
+#include <QToolButton>
 
 class UnityBrowser : public QWebView
 {
@@ -48,24 +50,35 @@ class UnityBrowser : public QWebView
         QString currentSR();
           
     public slots:
-        void querySR( const QString& );
+        void querySR( const QString& = QString::Null() );
         void historyBack();
         QWebPage* newWindow();
-        
+        void sendEmail();
+        void saveSr();
+        void solutionSuggested();
+        void scheduleForClose();
+        void addNote();
+        void closeSr();
+        void openFileBrowser();
+        void goBackToSr();
+
     private slots:
+        void disconnectShortcuts();
+        void connectShortcuts();
+        void pageErbert();
+        void pageErbertNed();
         void mousePressEvent( QMouseEvent* );
         void urlHovered( const QString&, const QString& = 0, const QString& = 0 );
         void contextMenu( QMouseEvent*, const QString& );
         void contextMenuEvent( QContextMenuEvent * ev );
-        void openFileBrowser();
         void openSearch();
         void fillOutProduct();
         
         void openWebEditor();
         void copyToClipboard();
-        void goBackToSr();
         void saveImage();
         void openWebInspector();
+        void linkClicked( const QUrl& );
 
     private:
         UnityPage* mUnityPage;
@@ -74,9 +87,22 @@ class UnityBrowser : public QWebView
         bool isTextArea( QWebElement );     
         bool isProductField( QWebElement );
         
+        QShortcut* mSendEmailSC;
+        QShortcut* mSaveSrSC;
+        QShortcut* mFileBrowserSC;
+        QShortcut* mGoBackSC;
+        QShortcut* mSsSC;
+        QShortcut* mScSC;
+        QShortcut* mAddNoteSC;
+        QShortcut* mCloseSrSC;
+        QShortcut* mLogOutSC;
+        QShortcut* mWebInspectorSC;
+        
     signals:
         void searchRequested( QString );
         void currentSrChanged( QString );
+        void disableToolbar();
+        void enableToolbar();
 };
 
 class UnityWidget : public QWidget
@@ -93,12 +119,28 @@ class UnityWidget : public QWidget
     private:
         UnityBrowser* mUnityBrowser;
         QToolBar* mToolBar;
-        QToolButton* mSrButton;
         int mTabId;
+
+        QLineEdit* mQueryLine;
+        QToolButton* mSrButton;
+        QToolButton* mSendEmailButton;
+        QToolButton* mSaveSrButton;
+        QToolButton* mFileBrowserButton;
+        QToolButton* mGoBackButton;
+        QToolButton* mSsButton;
+        QToolButton* mScButton;
+        QToolButton* mAddNoteButton;
+        QToolButton* mCloseSrButton;
         
     public slots:
         void currentSrChanged( QString );
         void setTabId( int );
+        
+    private slots:
+        void disableToolbar();
+        void enableToolbar(); 
+        void querySR();
+        
 };
 
 #endif

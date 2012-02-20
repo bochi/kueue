@@ -280,6 +280,9 @@
         <listitem><para><emphasis role="bold">F4</emphasis> &nbsp;&nbsp;Go back to current SR</para></listitem>
         <listitem><para><emphasis role="bold">F5</emphasis> &nbsp;&nbsp;Set Solution Suggested</para></listitem>
         <listitem><para><emphasis role="bold">F6</emphasis> &nbsp;&nbsp;Set Schedule For Close</para></listitem>
+        <listitem><para><emphasis role="bold">F7</emphasis> &nbsp;&nbsp;Add Engineer Note</para></listitem>
+        <listitem><para><emphasis role="bold">F8</emphasis> &nbsp;&nbsp;Close SR</para></listitem>
+        
       </itemizedlist>
     </para>
     
@@ -351,7 +354,7 @@
     
     <para>After downloading a supportconfig tarball, kueue can create an NSA report directly from the download manager using the „NSA“ button. NSA is not required for this at all (it's a pain to install on Linux anyway these days). </para>
       
-    <para><screenshot><screeninfo>INFO</screeninfo>
+    <para><screenshot><screeninfo>Download Manager</screeninfo>
     <mediaobject><imageobject>
     <imagedata fileref="kueue_nsa.png" width="95%" format="PNG"/>
     </imageobject></mediaobject></screenshot></para>
@@ -363,7 +366,7 @@
 
     <para>Sometimes Unity gets to a point where returning to the SR is not possible – which is a pain if additional changes have to be done in the SR (ie. Changing the status). Best example is after writing an email using the „Reply“ button. Kueue has a „Go back to SR“ option in the context menu which tries to eliminate that pain.</para>
       
-    <para><screenshot><screeninfo>INFO</screeninfo>
+    <para><screenshot><screeninfo>Return</screeninfo>
     <mediaobject><imageobject>
     <imagedata fileref="kueue_goback.png" width="95%" format="PNG"/>
     </imageobject></mediaobject></screenshot></para>
@@ -375,7 +378,7 @@
 
     <para>When viewing an image in Unity it will try to save it as „start.swe“ or if viewing an NSA report it will not let you save it at all. This is fixed with kueue, just check the context menu on an image or NSA report. </para>
       
-    <para><screenshot><screeninfo>INFO</screeninfo>
+    <para><screenshot><screeninfo>NSA</screeninfo>
     <mediaobject><imageobject>
     <imagedata fileref="kueue_images.png" width="95%" format="PNG"/>
     </imageobject></mediaobject></screenshot></para>
@@ -387,7 +390,7 @@
 
     <para>Kueue lets you open textboxes in an external editor for editing. This is useful when writing emails etc from within Unity. When the document is saved in the editor it will automatically be written back into the textbox. Also, it will save the files so one can use tools like grep to find specific emails etc later on.</para>
       
-    <para><screenshot><screeninfo>INFO</screeninfo>
+    <para><screenshot><screeninfo>External Editor</screeninfo>
     <mediaobject><imageobject>
     <imagedata fileref="kueue_editor.png" width="95%" format="PNG"/>
     </imageobject></mediaobject></screenshot></para>
@@ -397,13 +400,37 @@
   <sect1 id="sched">
   <title>Set SR to „Schedule For Close“</title>
 
-    <para>Customer stops replying at some point? OK, one may want to set an ultimatum for the customer and set the SR to „Schedule For Close“ in X days. This can easily be done using the „CTRL-C“ shortcut in the Unity browser when viewing the respective SR.</para>
+    <para>Customer stops replying at some point? OK, one may want to set an ultimatum for the customer and set the SR to „Schedule For Close“ in X days. This can easily be done using the F6 shortcut in the Unity browser when viewing the respective SR.</para>
     
     <para>It will create the „Schedule For Close“ activity for you as well as set the correct status. </para>
       
-    <para><screenshot><screeninfo>INFO</screeninfo>
+    <para><screenshot><screeninfo>Schedule For Close</screeninfo>
     <mediaobject><imageobject>
     <imagedata fileref="kueue_schedule.png" width="95%" format="PNG"/>
+    </imageobject></mediaobject></screenshot></para>
+
+    </sect1>
+    
+    <sect1 id="engnote">
+    <title>Add engineer note</title>
+
+    <para>One can use F7 to add an engineer note to an SR</para>
+    
+    <para><screenshot><screeninfo>Note</screeninfo>
+    <mediaobject><imageobject>
+    <imagedata fileref="kueue_note.png" width="95%" format="PNG"/>
+    </imageobject></mediaobject></screenshot></para>
+
+    </sect1>
+    
+    <sect1 id="closesr">
+    <title>Close SR</title>
+
+    <para>With F8, one can close an SR</para>
+    
+    <para><screenshot><screeninfo>Note</screeninfo>
+    <mediaobject><imageobject>
+    <imagedata fileref="kueue_close.png" width="95%" format="PNG"/>
     </imageobject></mediaobject></screenshot></para>
 
     </sect1>
