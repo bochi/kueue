@@ -61,6 +61,12 @@ class Settings
         static QString unityURL();
         static void setUnityURL( const QString& );
         
+        static bool useDefaultFileManager();
+        static void setUseDefaultFileManager( const bool& );
+        
+        static QString otherFileManagerCommand();
+        static void setOtherFileManagerCommand( const QString& );
+        
         static bool useIdleTimeout();
         static void setUseIdleTimeout( const bool& );
         

@@ -149,6 +149,32 @@ void Settings::setUnityURL( const QString& s )
     settings.sync();
 }
 
+bool Settings::useDefaultFileManager()
+{
+    QSettings settings;
+    return settings.value( "useDefaultFileManager", true ).toBool();
+}
+
+void Settings::setUseDefaultFileManager( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "useDefaultFileManager", b );
+    settings.sync();
+}
+
+QString Settings::otherFileManagerCommand()
+{
+    QSettings settings;
+    return settings.value( "otherFileManagerCommand" ).toString();
+}
+
+void Settings::setOtherFileManagerCommand( const QString& s )
+{
+    QSettings settings;
+    settings.setValue( "otherFileManagerCommand", s );
+    settings.sync();
+}
+
 bool Settings::useIdleTimeout()
 {
     QSettings settings;

@@ -68,6 +68,8 @@ class ConfigDialog : public QDialog, private Ui_ConfigDialog
         void toggleUnity( const bool& );
         void toggleUnityEditor( const bool& );
         void toggleUnityTimeout( const bool& );
+        void toggleUnityDefaultFileManager( const bool& );
+        void toggleUnityOtherFileManager( const bool& );
         void getDownloadDirectory();
         
         void getGeneralNotificationSoundFile();

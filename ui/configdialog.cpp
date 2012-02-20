@@ -48,6 +48,10 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              this, SLOT( toggleUnityEditor( bool ) ) );
     connect( cfg_useIdleTimeout, SIGNAL( toggled( bool ) ),
              this, SLOT( toggleUnityTimeout( bool ) ) );
+    connect( cfg_defaultFileManager, SIGNAL( toggled( bool ) ),
+             this, SLOT( toggleUnityDefaultFileManager(bool) ) );
+    connect( cfg_otherFileManager, SIGNAL( toggled( bool ) ),
+             this, SLOT( toggleUnityOtherFileManager( bool ) ) );
     
     connect( editorCommandButton, SIGNAL( pressed() ), 
              this, SLOT( getExternalEditorFile() ) );
@@ -254,6 +258,9 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_teamMembers->addItems( Settings::teamMembers() );
     
     cfg_unityEnabled->setChecked( Settings::unityEnabled() );
+    cfg_otherFileManager->setChecked( !Settings::useDefaultFileManager() );
+    cfg_defaultFileManager->setChecked( Settings::useDefaultFileManager() );
+    cfg_otherFileManagerCommand->setText( Settings::otherFileManagerCommand() );
     
     cfg_toolbarEnabled->setChecked( Settings::unityToolbarEnabled() );
     cfg_unityPassword->setText( Settings::unityPassword() );
@@ -439,6 +446,8 @@ void ConfigDialog::writeSettings()
     Settings::setShowAppWindow( cfg_showAppWindow->isChecked() );
     Settings::setShowTabsAtTop( cfg_showTabsAtTop->isChecked() );
     Settings::setUnityEnabled( cfg_unityEnabled->isChecked() );
+    Settings::setUseDefaultFileManager( cfg_defaultFileManager->isChecked() );
+    Settings::setOtherFileManagerCommand( cfg_otherFileManagerCommand->text() );
     Settings::setUnityToolbarEnabled( cfg_toolbarEnabled->isChecked() );
     Settings::setUnityURL( cfg_unityURL->text() );
     Settings::setUseIdleTimeout( cfg_useIdleTimeout->isChecked() );
@@ -674,6 +683,7 @@ void ConfigDialog::toggleUnity( const bool& b )
     unityGeneralGroupBox->setEnabled( b );
     unityAppearanceGroupBox->setEnabled( b );
     cfg_externalEditorEnabled->setEnabled( b );
+    downloadManagerBox->setEnabled( b );
     
     if ( !Settings::externalEditorEnabled() )
     {
@@ -714,6 +724,15 @@ void ConfigDialog::toggleUnityTimeout( const bool& b )
     idleTimeoutLabel->setEnabled( b );
 }
 
+void ConfigDialog::toggleUnityDefaultFileManager( const bool& b )
+{
+    cfg_otherFileManager->setChecked( !b );
+}
+
+void ConfigDialog::toggleUnityOtherFileManager( const bool& b )
+{
+    cfg_defaultFileManager->setChecked( !b );
+}
 
 void ConfigDialog::getGeneralNotificationSoundFile()
 {

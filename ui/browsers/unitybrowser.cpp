@@ -36,6 +36,8 @@
 #include <QWebInspector>
 #include <QWebHistory>
 #include <QFileDialog>
+#include <QDir>
+#include <QProcess>
 
 UnityBrowser::UnityBrowser( QWidget *parent )
         : QWebView( ( QWidget* ) 0 )
@@ -537,7 +539,26 @@ QWebPage* UnityBrowser::newWindow()
 
 void UnityBrowser::openFileBrowser()
 {
-    QDesktopServices::openUrl( "file://" + Settings::downloadDirectory() + "/" + mUnityPage->currentSr() );
+    QDir dir( Settings::downloadDirectory() + "/" + mUnityPage->currentSr() );
+    
+    if ( dir.exists() )
+    {
+        if ( Settings::useDefaultFileManager() )
+        {
+            QDesktopServices::openUrl( "file://" + Settings::downloadDirectory() + "/" + mUnityPage->currentSr() );     
+        }
+        else
+        {
+            QStringList arg;
+            arg.append( Settings::downloadDirectory() + "/" + mUnityPage->currentSr() );
+            QProcess* p = new QProcess( this );
+            p->start( Settings::otherFileManagerCommand(), arg );
+        }
+    }
+    else
+    {
+        QMessageBox::critical( this, "Error", "No download directory for SR#" + mUnityPage->currentSr() );
+    }
 }
 
 void UnityBrowser::openSearch()

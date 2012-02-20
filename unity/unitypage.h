@@ -136,10 +136,7 @@ class UnityPage : public QWebPage
         QString mFileName;
         QString mProduct;
         QString mSaveJS;
-        QString mCloseStatus;
-        
-        QStringList mNote;
-        
+
         QTimer* mTimer;
 
         UnityNetwork* mNAM;
