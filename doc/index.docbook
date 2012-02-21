@@ -165,7 +165,7 @@
             <listitem><para>Automatically extract archives - the name says it all</para></listitem>
             <listitem><para>Enable editing with an external Editor - see the feature description in the "Unity Integration" section for details. If you'd like to use this feature, the next 2 options need to be set as well.</para></listitem>
             <listitem><para>Open download directory - select either the default filemanager or a custom filemanager to open the download directories.</para>
-                      <para>As an example, here is what I am using: <ulink url="qrc:/help/scripts/kueue_yakuake">kueue_yakuake</ulink></para>
+            <para>As an example, here is what I am using: <ulink url="qrc:/help/scripts/kueue_yakuake">kueue_yakuake</ulink></para></listitem>
         </itemizedlist>
     </para>
 
@@ -224,11 +224,21 @@
    <para>The Queue Monitor browser shows an overview about SRs that are currently in selected pseudo queues.</para>
    <para>One can directly assign/take SRs from the context menu or the details window.</para>
    <para>If one of the customers is in Bomgar, it will show a little bomgar icon next to the SR number. The bomgar queue (or owner) is shown in the details (when expanding the SR table).</para>
-    <para>
+    
+   <para>
       <screenshot><screeninfo>Queue Monitor</screeninfo>
       <mediaobject><imageobject>
           <imagedata fileref="monitor.png" width="95%" format="PNG"/>
       </imageobject></mediaobject></screenshot>
+    </para>
+    
+    <para>
+        <itemizedlist><title>There are some shortcuts one can use to filter queues</title>
+          <listitem><para><emphasis role="bold">F1</emphasis> &nbsp;&nbsp;Show only EMEA SRs</para></listitem>
+          <listitem><para><emphasis role="bold">F2</emphasis> &nbsp;&nbsp;Show only US SRs</para></listitem>
+          <listitem><para><emphasis role="bold">F3</emphasis> &nbsp;&nbsp;Show only APAC SRs</para></listitem>
+          <listitem><para><emphasis role="bold">F4</emphasis> &nbsp;&nbsp;Show all SRs</para></listitem>
+        </itemizedlist>
     </para>
     
 </chapter>

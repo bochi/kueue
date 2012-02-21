@@ -692,14 +692,27 @@ void Database::deleteBomgarItemFromDB( const QString& id )
     query.exec();
 }
 
-QList< SiebelItem* > Database::getSrsForQueue( const QString& queue )
+QList< SiebelItem* > Database::getSrsForQueue( const QString& queue, QString geo )
 {
     QSqlQuery query;
     QList< SiebelItem* > list;
     
-    query.prepare( "SELECT ID, SEVERITY, HOURS, SOURCE, CONTACTVIA, ODATE, ADATE, STATUS, CONTRACT, GEO, BDESC, SLA, DISPLAY, TIQ, BOMQ "
-                   "FROM qmon_siebel WHERE ( QUEUE = :queue )" );
-    query.bindValue( ":queue", queue );
+    if ( geo == QString::Null() )
+    {
+        query.prepare( "SELECT ID, SEVERITY, HOURS, SOURCE, CONTACTVIA, ODATE, ADATE, STATUS, CONTRACT, GEO, BDESC, SLA, DISPLAY, TIQ, BOMQ "
+                       "FROM qmon_siebel WHERE ( QUEUE = :queue )" );
+        
+        query.bindValue( ":queue", queue );
+    }
+    else
+    {
+        query.prepare( "SELECT ID, SEVERITY, HOURS, SOURCE, CONTACTVIA, ODATE, ADATE, STATUS, CONTRACT, GEO, BDESC, SLA, DISPLAY, TIQ, BOMQ "
+                       "FROM qmon_siebel WHERE ( QUEUE = :queue ) AND ( GEO = :geo )" );
+        
+        query.bindValue( ":queue", queue );
+        query.bindValue( ":geo", geo );
+    }
+    
     query.exec();
     
     while ( query.next() ) 

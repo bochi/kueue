@@ -41,6 +41,7 @@ class QMonBrowser : public QWebView
         QNetworkReply* mAssign;
         QProgressDialog* mProgress;
         QUrl mUrl;
+        QString mFilter;
         
     public slots:
         void update();
@@ -56,6 +57,7 @@ class QMonBrowser : public QWebView
         void takeSR( const QString& );
         void showProgress();
         void assignFinished();
+        void setFilter();
                       
     signals:
         void updateUi();

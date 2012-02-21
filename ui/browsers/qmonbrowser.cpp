@@ -50,6 +50,8 @@ QMonBrowser::QMonBrowser( QObject *parent )
     
     (void)parent;
     
+    mFilter = QString::Null();
+    
     connect( page(), SIGNAL( linkHovered( const QString&, const QString&, const QString& ) ), 
              this, SLOT( urlHovered( const QString&, const QString&, const QString& ) ) );
         
@@ -57,6 +59,30 @@ QMonBrowser::QMonBrowser( QObject *parent )
    
     connect( shortcut, SIGNAL( activated() ), 
              this, SLOT( openWebInspector() ) );
+    
+    QShortcut* emea = new QShortcut( QKeySequence( Qt::Key_F1 ), this );
+    emea->setObjectName( "emea" );
+    
+    connect( emea, SIGNAL( activated() ), 
+             this, SLOT( setFilter() ) );
+    
+    QShortcut* us = new QShortcut( QKeySequence( Qt::Key_F2 ), this );
+    us->setObjectName( "us" );
+    
+    connect( us, SIGNAL( activated() ), 
+             this, SLOT( setFilter() ) );
+    
+    QShortcut* apac = new QShortcut( QKeySequence( Qt::Key_F3 ), this );
+    apac->setObjectName( "apac" );
+    
+    connect( apac, SIGNAL( activated() ), 
+             this, SLOT( setFilter() ) );
+    
+    QShortcut* all = new QShortcut( QKeySequence( Qt::Key_F4 ), this );
+    all->setObjectName( "all" );
+    
+    connect( all, SIGNAL( activated() ), 
+             this, SLOT( setFilter() ) );
     
     update();
 }
@@ -113,7 +139,7 @@ void QMonBrowser::update()
             html += HTML::qmonTableHeader( list.at( i ).split( "|" ).at( 0 ) );
         }
         
-        QList< SiebelItem* > l( Database::getSrsForQueue( list.at( i ).split( "|" ).at( 1 ) ) );
+        QList< SiebelItem* > l( Database::getSrsForQueue( list.at( i ).split( "|" ).at( 1 ), mFilter ) );
     
         for ( int i = 0; i < l.size(); ++i ) 
         {
@@ -395,5 +421,30 @@ void QMonBrowser::assignFinished()
     
     return;
 }
+
+void QMonBrowser::setFilter()
+{
+    QShortcut* sc = qobject_cast<QShortcut*>( sender() );
+    
+    if ( sc->objectName() == "emea" )
+    {
+        mFilter = "EMEA";
+    }
+    else if ( sc->objectName() == "us" )
+    {
+        mFilter = "USA";
+    }
+    else if ( sc->objectName() == "apac" )
+    {
+        mFilter  = "APAC";
+    }
+    else
+    {
+        mFilter = QString::Null();
+    }
+    
+    update();
+}
+
 
 #include "qmonbrowser.moc"

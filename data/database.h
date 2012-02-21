@@ -73,7 +73,7 @@ class Database : public QThread
         
         static void updateBomgarItemInDB( BomgarItem* );
         static void deleteBomgarItemFromDB( const QString& );
-        static QList< SiebelItem* > getSrsForQueue( const QString& );
+        static QList< SiebelItem* > getSrsForQueue( const QString&, QString = QString::Null() );
         static QStringList getQmonBomgarList();
         static bool bomgarExistsInDB( const QString& );
         static QString getBomgarQueue( const QString& );
