@@ -1,0 +1,17 @@
+If you want to compile kueue, please run "mkdoc.sh" in the 
+doc directory first, otherwise it won't build properly. 
+
+Other than that, it's a straight-forward cmake process:
+
+  # mkdir build
+  # cmake .. -DCMAKE_INSTALL_PREFIX=/Usr
+  # sudo make install
+
+Dependencies:
+
+  * LibArchive
+  * Qt 4
+  * Qt Sqlite
+  * Qt WebKit
+
+Have a lot of fun...
