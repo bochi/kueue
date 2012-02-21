@@ -166,7 +166,6 @@
             <listitem><para>Enable editing with an external Editor - see the feature description in the "Unity Integration" section for details. If you'd like to use this feature, the next 2 options need to be set as well.</para></listitem>
             <listitem><para>Open download directory - select either the default filemanager or a custom filemanager to open the download directories.</para>
                       <para>As an example, here is what I am using: <ulink url="qrc:/help/scripts/kueue_yakuake">kueue_yakuake</ulink></para>
-                      <para>This will open the download directory in a new tab in yakuake and show the window.</para></listitem>
         </itemizedlist>
     </para>
 
