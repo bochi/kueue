@@ -73,6 +73,7 @@ class UnityBrowser : public QWebView
         void contextMenuEvent( QContextMenuEvent * ev );
         void openSearch();
         void fillOutProduct();
+        void openInBugzilla();
         
         void openWebEditor();
         void copyToClipboard();
@@ -86,6 +87,7 @@ class UnityBrowser : public QWebView
         QUrl mUrl;
         bool isTextArea( QWebElement );     
         bool isProductField( QWebElement );
+        bool isBugzillaField( QWebElement );
         
         QShortcut* mSendEmailSC;
         QShortcut* mSaveSrSC;

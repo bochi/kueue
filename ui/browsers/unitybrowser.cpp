@@ -254,6 +254,7 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
     QAction* back = new QAction( "Go back to SR", menu );
     QAction* nsa = new QAction( "Save NSA Report", menu );
     QAction* dlimg = new QAction( "Save image...", menu );
+    QAction* bz = new QAction( "Open in bugzilla...", menu );
     
     QWidgetAction* wa = new QWidgetAction( menu );
     
@@ -274,6 +275,9 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
     
     connect( dlimg, SIGNAL( triggered( bool ) ),
              this, SLOT( saveImage() ) );
+    
+    connect( bz, SIGNAL( triggered(bool) ), 
+             this, SLOT( openInBugzilla() ) );
     
     QFont font = head->font();
     font.setBold( true );
@@ -354,6 +358,12 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
     if ( isProductField( element ) )
     {
         menu->addMenu( productMenu( menu ) );
+    }
+    
+    if ( ( isBugzillaField( element ) ) && ( !element.attribute( "value" ).isEmpty() ) )
+    {
+        bz->setData( element.attribute( "value" ) );
+        menu->addAction( bz );
     }
     
     menu->exec( event->globalPos() );
@@ -529,6 +539,25 @@ bool UnityBrowser::isProductField( QWebElement element )
     {
         return false;
     }
+}
+
+bool UnityBrowser::isBugzillaField( QWebElement element )
+{
+    if ( ( element.attribute("tabindex") == "1036" ) && 
+         ( element.attribute("onchange").startsWith("trackChange") ) )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void UnityBrowser::openInBugzilla()
+{
+    QAction* a = qobject_cast< QAction* >( sender() );
+    QDesktopServices::openUrl( "https://bugzilla.novell.com/show_bug.cgi?id=" + a->data().toString() );
 }
 
 QWebPage* UnityBrowser::newWindow()

@@ -348,6 +348,24 @@
   
   </sect1>
   
+  <sect1 id="bug">
+  <title>Open in Bugzilla</title>
+  
+    <para>If there is a defect ID in the SR one can open bugzilla with the ID right away (see screenshot).</para>
+
+    <para>
+      <screenshot>
+      <screeninfo>Bugzilla</screeninfo>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="kueue_bugzilla.png" width="95%" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </para>
+  
+  </sect1>
+  
   <sect1 id="ss">
   <title>Set solution suggested activity</title>
 
