@@ -27,6 +27,14 @@ for i in $(ls *.png); do
 
 done
 
+cd ../scripts
+
+for i in $(ls kueue*); do
+
+    echo "<file alias=\"scripts/$i\">doc/scripts/$i</file>" >> ../../doc.qrc
+
+done
+
 cd ../..
 
 echo "</qresource>" >> doc.qrc

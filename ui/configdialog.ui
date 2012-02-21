@@ -123,7 +123,7 @@
         <enum>QFrame::NoFrame</enum>
        </property>
        <property name="currentIndex">
-        <number>4</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="page">
         <layout class="QVBoxLayout" name="verticalLayout">
@@ -1306,6 +1306,17 @@
              <widget class="QLabel" name="dlDirLabel">
               <property name="text">
                <string>You can use any command here that takes a directory as argument (ie. an own script)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QPushButton" name="filemanagerButton">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../kueue.qrc">
+                <normaloff>:/icons/menus/folder.png</normaloff>:/icons/menus/folder.png</iconset>
               </property>
              </widget>
             </item>

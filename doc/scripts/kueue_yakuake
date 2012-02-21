@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# This script will open a new session in yakuake, cd to a directory and list it,
+# and then raise the yakuake window
+
+qdbus org.kde.yakuake /yakuake/sessions addSession
+SESSION=$(qdbus org.kde.yakuake /yakuake/sessions activeTerminalId)
+qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal $SESSION "cd $1"
+qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal $SESSION "ls"
+qdbus org.kde.yakuake /yakuake/window toggleWindowState
+
+
+

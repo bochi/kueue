@@ -161,8 +161,12 @@
             <listitem><para>Unity URL needs to be set to the URL for the SI client</para></listitem>
             <listitem><para>Download Directory specifies the directory for Unity to download files to per default</para></listitem>
             <listitem><para>Use DownloadDirectory/SRNUMBER... - if checked, files will automatically be downloaded in seperate directories per SR</para></listitem>
+            <listitem><para>Enable toolbar - enable the unity toolbar with all shortcuts accessible via icons</para></listitem>
             <listitem><para>Automatically extract archives - the name says it all</para></listitem>
             <listitem><para>Enable editing with an external Editor - see the feature description in the "Unity Integration" section for details. If you'd like to use this feature, the next 2 options need to be set as well.</para></listitem>
+            <listitem><para>Open download directory - select either the default filemanager or a custom filemanager to open the download directories.</para>
+                      <para>As an example, here is what I am using: <ulink url="qrc:/help/scripts/kueue_yakuake">kueue_yakuake</ulink></para>
+                      <para>This will open the download directory in a new tab in yakuake and show the window.</para></listitem>
         </itemizedlist>
     </para>
 
@@ -389,7 +393,9 @@
   <title>Open textboxes in external editor</title>
 
     <para>Kueue lets you open textboxes in an external editor for editing. This is useful when writing emails etc from within Unity. When the document is saved in the editor it will automatically be written back into the textbox. Also, it will save the files so one can use tools like grep to find specific emails etc later on.</para>
-      
+    <para>One can use a custom script as editor, ie. for formatting and quoting (put ">" before each line) before opening in the editor. This saves quite some work when replying to emails.</para>
+    <para>As an example, here is what I am using: <ulink url="qrc:/help/scripts/kueue_kate_quote">kueue_kate_quote</ulink></para>
+    
     <para><screenshot><screeninfo>External Editor</screeninfo>
     <mediaobject><imageobject>
     <imagedata fileref="kueue_editor.png" width="95%" format="PNG"/>

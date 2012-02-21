@@ -52,7 +52,9 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              this, SLOT( toggleUnityDefaultFileManager(bool) ) );
     connect( cfg_otherFileManager, SIGNAL( toggled( bool ) ),
              this, SLOT( toggleUnityOtherFileManager( bool ) ) );
-    
+    connect( filemanagerButton, SIGNAL( pressed() ),
+             this, SLOT( getFilemanagerCommand() ) );
+             
     connect( editorCommandButton, SIGNAL( pressed() ), 
              this, SLOT( getExternalEditorFile() ) );
     connect( editorSaveLocationButton, SIGNAL( pressed() ), 
@@ -886,6 +888,12 @@ void ConfigDialog::getDownloadDirectory()
 {
     QString fileName = QFileDialog::getExistingDirectory( this, tr("Select location"), QDir::homePath() );
     cfg_downloadDirectory->setText( fileName );
+}
+
+void ConfigDialog::getFilemanagerCommand()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Select command"), QDir::homePath() );
+    cfg_otherFileManagerCommand->setText( fileName );
 }
 
 BasicConfig::BasicConfig()

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# First, reformat the text:
+# * Add linebreaks after 72 characters
+# * Put "> " in front of each line
+# Put the result into a temp file (/tmp/tmp)
+
+fmt -s -w 72 $1 | sed "s/^/> /g" > /tmp/tmp
+
+# Move the temp file back to the original filename...
+
+mv /tmp/tmp $1
+
+# ...and open it in kate :-)
+
+kate -u $1
+

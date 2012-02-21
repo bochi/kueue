@@ -106,6 +106,7 @@ class ConfigDialog : public QDialog, private Ui_ConfigDialog
         
         void getExternalEditorFile();
         void getEditorSaveLocation();
+        void getFilemanagerCommand();
         
     signals:
         void settingsChanged();  
