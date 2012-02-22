@@ -108,7 +108,7 @@ void UnityPage::addNoteFirst()
             {
                 d.at(i).removeAttribute( "selected" );
                 
-                if ( d.at( i ).attribute( "value" ) == "Engineer Note" )
+                if ( d.at( i ).attribute( "value" ) == mNoteDialog->noteType() )
                 {
                     e = d.at( i );
                 }

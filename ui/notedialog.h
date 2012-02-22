@@ -45,6 +45,7 @@ class NoteDialog : public QDialog, private Ui::NoteDialog
         QString sr() { return mSr; }
         QString briefDesc() { return briefDescription->text(); }
         QString comment() { return commentBox->toPlainText(); }
+        QString noteType() { return noteTypeCombo->currentText(); }
         int type() { return mType; }
         
     private:

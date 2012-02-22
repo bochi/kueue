@@ -74,6 +74,7 @@ class UnityBrowser : public QWebView
         void openSearch();
         void fillOutProduct();
         void openInBugzilla();
+        void processFinished();
         
         void openWebEditor();
         void copyToClipboard();

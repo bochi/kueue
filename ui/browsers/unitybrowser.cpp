@@ -397,6 +397,29 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     slesmenu->addAction( "SUSE Linux Enterprise Server 11 SP1", this, SLOT( fillOutProduct() ) );
     slesmenu->addAction( "SUSE Linux Enterprise Server 11 SP2", this, SLOT( fillOutProduct() ) );
     
+    slesmenu->addSeparator();
+    
+    QMenu* smtmenu = new QMenu( "Subscription Management Tool", menu );
+    
+    smtmenu->addAction( "Subscription Management Tool 10", this, SLOT( fillOutProduct() ) );
+    smtmenu->addAction( "Subscription Management Tool 11", this, SLOT( fillOutProduct() ) );
+    
+    slesmenu->addMenu( smtmenu );
+    
+    QMenu* haemenu = new QMenu( "SUSE Linux Enterprise High Availability Extension", slesmenu );
+    
+    haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11", this, SLOT( fillOutProduct() ) );
+    haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11 SP1", this, SLOT( fillOutProduct() ) );
+    
+    slesmenu->addMenu( haemenu );
+    
+    QMenu* posmenu = new QMenu( "SUSE Linux Enterprise Point of Service", slesmenu );
+    
+    posmenu->addAction( "SUSE Linux Enterprise Point of Service 10", this, SLOT( fillOutProduct() ) );
+    posmenu->addAction( "SUSE Linux Enterprise Point of Service 11", this, SLOT( fillOutProduct() ) );
+    
+    slesmenu->addMenu( posmenu );
+    
     QMenu* sledmenu = new QMenu( "SUSE Linux Enterprise Desktop", menu );
           
     sledmenu->addAction( "SUSE Linux Enterprise Desktop 10", this, SLOT( fillOutProduct() ) );
@@ -413,7 +436,6 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     
     QMenu* oesmenu = new QMenu( "Open Enterprise Server", menu );
     
-    oesmenu->addAction( "Open Enterprise Server", this, SLOT( fillOutProduct() ) );
     oesmenu->addAction( "Open Enterprise Server 2.0.1 Support Pack 1", this, SLOT( fillOutProduct() ) );
     oesmenu->addAction( "Open Enterprise Server 2.0.2 Support Pack 2", this, SLOT( fillOutProduct() ) );
     oesmenu->addAction( "Open Enterprise Server 2.0.3 Support Pack 3", this, SLOT( fillOutProduct() ) );
@@ -437,6 +459,10 @@ void UnityBrowser::fillOutProduct()
     {
         mUnityPage->fillOutProduct( "SUSE Linux Enterprise Server", action->text() );
     }
+    else if ( action->text().startsWith( "SUSE Linux Enterprise High Availability Extension" ) )
+    {
+        mUnityPage->fillOutProduct( "SUSE Linux Enterprise High Availability Extension", action->text() );
+    }
     else if ( action->text().startsWith( "SUSE Linux Enterprise Desktop" ) )
     {
         mUnityPage->fillOutProduct( "SUSE Linux Enterprise Desktop", action->text() );
@@ -444,6 +470,10 @@ void UnityBrowser::fillOutProduct()
     else if ( action->text().startsWith( "Open Enterprise Server" ) )
     {
         mUnityPage->fillOutProduct( "Open Enterprise Server", action->text() );
+    }
+    else if ( action->text().startsWith( "Subscription" ) )
+    {
+        mUnityPage->fillOutProduct( "SUSE Linux Enterprise Server", action->text() );
     }
 }
 
@@ -582,12 +612,22 @@ void UnityBrowser::openFileBrowser()
             arg.append( Settings::downloadDirectory() + "/" + mUnityPage->currentSr() );
             QProcess* p = new QProcess( this );
             p->start( Settings::otherFileManagerCommand(), arg );
+            
+            connect( p, SIGNAL( finished(int) ),
+                     this, SLOT( processFinished() ) );
         }
     }
     else
     {
         QMessageBox::critical( this, "Error", "No download directory for SR#" + mUnityPage->currentSr() );
     }
+}
+
+void UnityBrowser::processFinished()
+{
+    QProcess* p = qobject_cast<QProcess*>( sender() );
+    
+    p->deleteLater();
 }
 
 void UnityBrowser::openSearch()
@@ -722,9 +762,10 @@ UnityWidget::UnityWidget( QObject* parent )
     mToolBar->addSeparator();
     mToolBar->addWidget( mSrButton );
     mToolBar->addSeparator();
-    mToolBar->addWidget( mSendEmailButton );
     mToolBar->addWidget( mSaveSrButton );
     mToolBar->addWidget( mFileBrowserButton );
+    mToolBar->addSeparator();
+    mToolBar->addWidget( mSendEmailButton );
     mToolBar->addWidget( mSsButton );
     mToolBar->addWidget( mScButton );
     mToolBar->addWidget( mAddNoteButton );

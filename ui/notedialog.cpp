@@ -43,7 +43,7 @@ NoteDialog::NoteDialog( QObject* parent, QString sr )
     connect( checkBoxExt, SIGNAL( toggled( bool ) ),
              this, SLOT( changeCheckBoxInt( bool ) ) );
     
-    titleLabel->setText( "<b>Add an engineer note to SR#" + mSr + "</b>" );
+    titleLabel->setText( "<b>Add a note to SR#" + mSr + "</b>" );
 }
 
 NoteDialog::~NoteDialog()
