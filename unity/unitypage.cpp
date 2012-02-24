@@ -54,6 +54,7 @@ UnityPage::UnityPage( QObject *parent )
     mSetSS = false;
     mAddNote = false;
     mNoJsConfirm = false;
+    mCloseSR = false;
     
     mStatusBar = &mStatusBar->getInstance();
     
