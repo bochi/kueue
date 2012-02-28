@@ -622,38 +622,47 @@ void UnityPage::setElementText( QWebElement element, const QString& text )
 void UnityPage::getCurrentSR()
 {
     // sets mCurrentSR to the SR that is currently displayed 
-    
-    QWebElementCollection fc = mViewFrame->findAllElements( "*" );
     bool keep = false;
     QString title = mViewFrame->findFirstElement( "title" ).toInnerXml();
+    QString srnr = mViewFrame->findFirstElement( "span#s_1_1_69_0" ).toInnerXml().trimmed();
     
-    for ( int i = 0; i < fc.count(); ++i ) 
-    {  
-        if ( fc.at( i ).attribute( "id" ).contains( "LoginName" ) ||
-             fc.at( i ).attribute( "value" ).contains( Settings::engineer().toUpper() ) )
-        {
-            QString csr = fc.at( i ).attribute( "value" ).remove( Settings::engineer().toUpper() + ":" );
-            
-            if ( mCurrentSR != csr )
-            {
-                mCurrentSR = csr;
-                emit currentSrChanged( csr );
-            }
-            
-            i = fc.count();
-            keep = true;
-        }
-        else if ( fc.at( i ).attribute( "id" ).contains( "s_tb_" ) )
-        {
-            i = fc.count();
-            keep = true;
-        }
-    }
-    
-    if ( !keep && !title.isEmpty() ) 
+    if ( !srnr.isEmpty() )
     {
-        mCurrentSR = "";
-        emit currentSrChanged( "" );
+        mCurrentSR = srnr;
+        emit currentSrChanged( srnr );
+    }
+    else
+    {
+        QWebElementCollection fc = mViewFrame->findAllElements( "*" );
+        
+        for ( int i = 0; i < fc.count(); ++i ) 
+        {  
+            if ( fc.at( i ).attribute( "id" ).contains( "LoginName" ) ||
+                fc.at( i ).attribute( "value" ).contains( Settings::engineer().toUpper() ) )
+            {
+                QString csr = fc.at( i ).attribute( "value" ).remove( Settings::engineer().toUpper() + ":" );
+                
+                if ( mCurrentSR != csr )
+                {
+                    mCurrentSR = csr;
+                    emit currentSrChanged( csr );
+                }
+                
+                i = fc.count();
+                keep = true;
+            }
+            else if ( fc.at( i ).attribute( "id" ).contains( "s_tb_" ) )
+            {
+                i = fc.count();
+                keep = true;
+            }
+        }
+        
+        if ( !keep && !title.isEmpty() ) 
+        {
+            mCurrentSR = "";
+            emit currentSrChanged( "" );
+        }
     }
 }    
 
