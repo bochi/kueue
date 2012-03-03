@@ -32,8 +32,6 @@
 #include <QProgressDialog>
 
 class SiebelItem;
-class BomgarItem;
-class WhoIsInBomgarItem;
 
 class Qmon : public QObject
 {
@@ -46,7 +44,6 @@ class Qmon : public QObject
     private:
         QStringList mNotifiedList;
         QStringList mQueueList;
-        QNetworkReply* mBomgarReply;
         QNetworkReply* mSiebelReply;
         QTimer* mTimer;
                 
@@ -55,8 +52,6 @@ class Qmon : public QObject
     
     private slots:
         void siebelJobDone();
-        void bomgarJobDone();
-        void whoIsInBomgarJobDone( QNetworkReply* );
         
     signals:
         void initialUpdate( int, int );
@@ -66,50 +61,30 @@ class Qmon : public QObject
 };
 
 class SiebelItem 
-{
+{ 
     public:
         QString id;
         QString queue;
-        QString severity;
         QString hours;
-        QString source;
-        QString contactvia;
+        QString geo;
+        QString display;
         QString status;
+        QString severity;
         QString contract;
-        QString queue1; 
-        QString phone;
-        QString onsitephone;
-        QString geo; 
-        QString wtf;
-        QString routing;
+        QString sla;
+        QString creator;
         QString bdesc;
-	QString display;
+        QString customer;
         QString bomgarQ;
-        int slaSec;
-        int openedSec;
-        int activitySec;
-        int queueSec;
+        QString contactvia;
+        uint age;
+        uint lastAct;
+        uint timeInQ;
+        uint slaLeft;
+        bool isCr;
         bool isChat;
-};
-
-class BomgarItem 
-{
-    public:
-        QString id;
-        QString sr;
-        QString repteam;
-        QString name;
-        QString date;
-        QString someNumber;
-};
-
-class WhoIsInBomgarItem
-{
-    public:
-        QString name;
-        QString sr;
-        QString timeInQueue;
-        QString timeInSystem;
+        bool highValue;
+        bool critSit;
 };
 
 

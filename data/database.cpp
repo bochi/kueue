@@ -82,10 +82,9 @@ Database::Database()
         qDebug() << "[DATABASE] Error:" << query.lastError();
     }
 
-    if ( !query.exec( "CREATE TABLE IF NOT EXISTS qmon_siebel( ID INTEGER PRIMARY KEY UNIQUE, QUEUE TEXT, SEVERITY TEXT, HOURS TEXT, "
-                      "SOURCE TEXT, CONTACTVIA TEXT, ODATE TEXT, ADATE TEXT, STATUS TEXT, "
-                      "CONTRACT TEXT, QUEUE1 TEXT, PHONE TEXT, ONSITEPHONE TEXT, GEO TEXT, "
-                      "WTF TEXT, ROUTING TEXT, BDESC TEXT, SLA TEXT, DISPLAY TEXT, TIQ TEXT, BOMQ TEXT )" ) )
+    if ( !query.exec( "CREATE TABLE IF NOT EXISTS qmon_siebel( ID INTEGER PRIMARY KEY UNIQUE, QUEUE TEXT, SEVERITY TEXT,  STATUS TEXT, "
+                      "BDESC TEXT, GEO TEXT, HOURS TEXT, CUSTOMER TEXT, CONTACTVIA TEXT, CONTRACT TEXT, CREATOR TEXT, BOMGARQ TEXT, "
+                      "HIGHVALUE BOOLEAN, CRITSIT BOOLEAN, AGE INTEGER, LASTACT INTEGER, TIQ INTEGER, SLA INTEGER, DISPLAY TEXT )" ) )
     {
         qDebug() << "[DATABASE] Error:" << query.lastError();
     }
@@ -447,80 +446,64 @@ QString Database::getBriefDescription( const QString& id )
 void Database::insertSiebelItemIntoDB( SiebelItem* item )
 {
     qDebug() << "[DATABASE] Inserting SiebelItem for " << item->id << item->queue;
-      
-    QSqlQuery query( "INSERT INTO qmon_siebel( ID, QUEUE, SEVERITY, HOURS, SOURCE, CONTACTVIA, ODATE, ADATE, "
-                     "STATUS, CONTRACT, QUEUE1, PHONE, ONSITEPHONE, GEO, WTF, ROUTING, BDESC, SLA, TIQ, BOMQ )"
+    
+    QSqlQuery query( "INSERT INTO qmon_siebel( ID, QUEUE, SEVERITY, STATUS,  BDESC, GEO, HOURS, CUSTOMER, CONTACTVIA, "
+                     "CONTRACT, CREATOR, BOMGARQ, HIGHVALUE, CRITSIT, AGE, LASTACT, TIQ, SLA, DISPLAY )"
                      "VALUES"
-                     "( :id, :queue, :severity, :hours, :source, :contactvia, :odate, :adate, :status, :contract, "
-                     ":queue1, :phone, :onsitephone, :geo, :wtf, :routing, :bdesc, :sla, :tiq, :bomq )" );
+                     "( :id, :queue, :severity, :status, :bdesc, :geo, :hours, :customer, :contactvia, :contract, :creator, "
+                     ":bomgarq, :highvalue, :critsit, :age, :lastact, :tiq, :sla, :display )" );
   
     query.bindValue( ":id", item->id );
     query.bindValue( ":queue", item->queue );
     query.bindValue( ":severity", item->severity );
-    query.bindValue( ":hours", item->hours );
-    query.bindValue( ":source", item->source );
-    query.bindValue( ":contactvia", item->contactvia );
-    query.bindValue( ":odate", item->openedSec );
-    query.bindValue( ":adate", item->activitySec );
     query.bindValue( ":status", item->status );
-    query.bindValue( ":contract", item->contract );
-    query.bindValue( ":queue1", item->queue1 );
-    query.bindValue( ":phone", item->phone );
-    query.bindValue( ":onsitephone", item->onsitephone );
-    query.bindValue( ":geo", item->geo );
-    query.bindValue( ":wtf", item->wtf );
-    query.bindValue( ":routing", item->routing );
     query.bindValue( ":bdesc", item->bdesc );
-    query.bindValue( ":sla", item->slaSec );
-    query.bindValue( ":tiq", item->queueSec );
-    query.bindValue( ":bomq", item->bomgarQ );
-
+    query.bindValue( ":geo", item->geo );
+    query.bindValue( ":hours", item->hours );
+    query.bindValue( ":customer", item->customer );
+    query.bindValue( ":contactvia", item->contactvia );
+    query.bindValue( ":contract", item->contract );
+    query.bindValue( ":creator", item->creator );
+    query.bindValue( ":bomgarq", item->bomgarQ );
+    query.bindValue( ":highvalue", item->highValue );
+    query.bindValue( ":critsit", item->critSit );
+    query.bindValue( ":age", item->age );
+    query.bindValue( ":lastact", item->lastAct );
+    query.bindValue( ":tiq", item->timeInQ );
+    query.bindValue( ":sla", item->slaLeft );
+    query.bindValue( ":display", item->display );
+    
     query.exec();
 }
 
 void Database::updateSiebelItemInDB( SiebelItem* item )
 {
-    QSqlQuery query;
-    
-    query.prepare(  "UPDATE qmon_siebel SET "
-                    "QUEUE=:queue, SEVERITY=:severity, ODATE=:odate, ADATE=:adate, STATUS=:status, "
-                    "SLA=:sla, TIQ=:tiq, BOMQ=:bomq WHERE id = :id" );
+    QSqlQuery query( "UPDATE qmon_siebel SET ID=:id, QUEUE=:queue, SEVERITY=:severity, STATUS=:status,  BDESC=:bdesc, GEO=:geo, "
+                     "HOURS=:hours, CUSTOMER=:customer, CONTACTVIA=:contactvia, CONTRACT=:contract, CREATOR=:creator, BOMGARQ=:bomgarq, "
+                     "HIGHVALUE=:highvalue, CRITSIT=:critsit, AGE=:age, LASTACT=:lastact, TIQ=:tiq, SLA=:sla )" );
 
+    query.bindValue( ":id", item->id );
     query.bindValue( ":queue", item->queue );
     query.bindValue( ":severity", item->severity );
-    query.bindValue( ":odate", item->openedSec );
-    query.bindValue( ":adate", item->activitySec );
     query.bindValue( ":status", item->status );
-    query.bindValue( ":sla", item->slaSec );
-    query.bindValue( ":tiq", item->queueSec );
-    query.bindValue( ":bomq", item->bomgarQ );
-    query.bindValue( ":id", item->id );    
+    query.bindValue( ":bdesc", item->bdesc );
+    query.bindValue( ":geo", item->geo );
+    query.bindValue( ":hours", item->hours );
+    query.bindValue( ":customer", item->customer );
+    query.bindValue( ":contactvia", item->contactvia );
+    query.bindValue( ":contract", item->contract );
+    query.bindValue( ":creator", item->creator );
+    query.bindValue( ":bomgarq", item->bomgarQ );
+    query.bindValue( ":highvalue", item->highValue );
+    query.bindValue( ":critsit", item->critSit );
+    query.bindValue( ":age", item->age );
+    query.bindValue( ":lastact", item->lastAct );
+    query.bindValue( ":tiq", item->timeInQ );
+    query.bindValue( ":sla", item->slaLeft );
     
     query.exec();
 }
 
-
-void Database::updateSiebelQueue( SiebelItem* si )
-{
-    qDebug() << "[DATABASE] Updating Siebel Queue" << si->id << si->queue;
-    QSqlQuery query( "UPDATE qmon_siebel SET QUEUE = :queue WHERE id = :id" );
-                
-    query.bindValue( ":queue", si->queue );
-    query.bindValue( ":id", si->id );
-                
-    query.exec();
-}
-
-void Database::updateSiebelSeverity( SiebelItem* si )
-{
-    qDebug() << "[DATABASE] Updating Siebel Severity" << si->id << si->severity;
-    QSqlQuery query( "UPDATE qmon_siebel SET SEVERITY = :severity WHERE id = :id" );
-                
-    query.bindValue( ":severity", si->severity );
-    query.bindValue( ":id", si->id );
-                
-    query.exec();
-}
 
 void Database::updateSiebelDisplay( const QString& display )
 {
@@ -574,124 +557,6 @@ bool Database::siebelExistsInDB( const QString& id )
     }
 }
 
-bool Database::siebelQueueChanged( SiebelItem* si  )
-{
-    QSqlQuery query;
-    query.prepare( "SELECT QUEUE FROM qmon_siebel WHERE ( ID = :id )" );
-    query.bindValue( ":id", si->id );
-    query.exec();
-
-    if ( query.next() )
-    {
-        if ( query.value( 0 ).toString() == si->queue )
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-    else
-    {
-        return true;
-    }
-}
-
-bool Database::siebelSeverityChanged( SiebelItem* si  )
-{
-    QSqlQuery query;
-    query.prepare( "SELECT SEVERITY FROM qmon_siebel WHERE ( ID = :id )" );
-    query.bindValue( ":id", si->id );
-    query.exec();
-
-    if ( query.next() )
-    {
-        if ( query.value( 0 ).toString() == si->severity )
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-    else
-    {
-        return true;
-    }
-}
-
-bool Database::isChat( const QString& id )
-{
-    QSqlQuery query;
-    query.prepare( "SELECT ID FROM qmon_chat WHERE ( SR = :id )" );
-    query.bindValue( ":id", id );
-    query.exec();
-    
-    if ( query.next() )
-    {
-        return true;
-    }
-    else 
-    {    
-        return false;
-    }
-}
-
-QString Database::getQmonBdesc( const QString& id )
-{
-    QSqlQuery query;
-    query.prepare( "SELECT BDESC FROM qmon_siebel WHERE ( ID = :id )" );
-    query.bindValue( ":id", id );
-    query.exec();
-    
-    if ( query.next() )
-    {
-        return query.value( 0 ).toString();
-    }
-    else
-    {
-        return "ERROR";
-    }
-}
-
-
-/*
-
-
-                B O M G A R 
-
-
-*/
-
-void Database::updateBomgarItemInDB( BomgarItem* bi )
-{
-    qDebug() << "[DATABASE] Inserting BomgarItem" << bi->id << bi->sr;
-        
-    QSqlQuery query( "INSERT INTO qmon_chat( ID, SR, REPTEAM, NAME, DATE, SOMENR )"
-                     "VALUES"
-                     "( :id, :sr, :repteam, :name, :date, :somenr )" );
-                     
-    query.bindValue( ":id", bi->id );
-    query.bindValue( ":sr", bi->sr );
-    query.bindValue( ":repteam", bi->repteam );
-    query.bindValue( ":name", bi->name );
-    query.bindValue( ":date", bi->date );
-    query.bindValue( ":somenr", bi->someNumber );
-    query.exec();
-}
-
-void Database::deleteBomgarItemFromDB( const QString& id )
-{
-    qDebug() << "[DATABASE] Deleting BomgarItem" << id;
-    
-    QSqlQuery query;
-    query.prepare( "DELETE FROM qmon_chat WHERE ID = :id" );
-    query.bindValue( ":id", id );
-    query.exec();
-}
-
 QList< SiebelItem* > Database::getSrsForQueue( const QString& queue, QString geo )
 {
     QSqlQuery query;
@@ -699,14 +564,16 @@ QList< SiebelItem* > Database::getSrsForQueue( const QString& queue, QString geo
     
     if ( geo == QString::Null() )
     {
-        query.prepare( "SELECT ID, SEVERITY, HOURS, SOURCE, CONTACTVIA, ODATE, ADATE, STATUS, CONTRACT, GEO, BDESC, SLA, DISPLAY, TIQ, BOMQ "
+        query.prepare( "SELECT ID, QUEUE, SEVERITY, STATUS,  BDESC, GEO, HOURS, CUSTOMER, CONTACTVIA, "
+                       "CONTRACT, CREATOR, BOMGARQ, HIGHVALUE, CRITSIT, AGE, LASTACT, TIQ, SLA, DISPLAY "
                        "FROM qmon_siebel WHERE ( QUEUE = :queue )" );
         
         query.bindValue( ":queue", queue );
     }
     else
     {
-        query.prepare( "SELECT ID, SEVERITY, HOURS, SOURCE, CONTACTVIA, ODATE, ADATE, STATUS, CONTRACT, GEO, BDESC, SLA, DISPLAY, TIQ, BOMQ "
+        query.prepare( "SELECT ID, QUEUE, SEVERITY, STATUS,  BDESC, GEO, HOURS, CUSTOMER, CONTACTVIA, "
+                       "CONTRACT, CREATOR, BOMGARQ, HIGHVALUE, CRITSIT, AGE, LASTACT, TIQ, SLA, DISPLAY "
                        "FROM qmon_siebel WHERE ( QUEUE = :queue ) AND ( GEO = :geo )" );
         
         query.bindValue( ":queue", queue );
@@ -720,108 +587,48 @@ QList< SiebelItem* > Database::getSrsForQueue( const QString& queue, QString geo
         SiebelItem* si = new SiebelItem;
         
         si->id = query.value( 0 ).toString();
-        si->severity = query.value( 1 ).toString();
-        si->hours = query.value( 2 ).toString();
-        si->source = query.value( 3 ).toString();
-        si->contactvia = query.value( 4 ).toString();
-        si->activitySec = query.value( 5 ).toInt();
-        si->openedSec = query.value( 6 ).toInt();
-        si->status = query.value( 7 ).toString();
-        si->contract = query.value( 8 ).toString();
-        si->geo = query.value( 9 ).toString();
-        si->bdesc = query.value( 10 ).toString();
-        si->slaSec = query.value( 11 ).toInt();
-        si->display = query.value( 12 ).toString();
-        si->queueSec = query.value( 13 ).toInt();
-        si->bomgarQ = query.value( 14 ).toString();
+        si->queue = query.value( 1 ).toString();
+        si->severity = query.value( 2 ).toString();
+        si->status = query.value( 3 ).toString();
+        si->bdesc = query.value( 4 ).toString();
+        si->geo = query.value( 5 ).toString();
+        si->hours = query.value( 6 ).toString();
+        si->customer = query.value( 7 ).toString();
+        si->contactvia = query.value( 8 ).toString();
+        si->contract = query.value( 9 ).toString();
         
-        if ( si->bomgarQ.isEmpty() )
+        if ( query.value( 10 ).toString().isEmpty() )
+        {
+            si->isCr = false;
+        }
+        else
+        {
+            si->isCr = true;
+            si->creator = query.value( 10 ).toString();
+        }
+        
+        if ( query.value( 11 ).toString().isEmpty() )
         {
             si->isChat = false;
         }
         else
         {
             si->isChat = true;
+            si->bomgarQ = query.value( 11 ).toString();
         }
         
+        si->highValue = query.value( 12 ).toBool();
+        si->critSit = query.value( 13 ).toBool();
+        si->age = query.value( 14 ).toInt();
+        si->lastAct = query.value( 15 ).toInt();
+        si->timeInQ = query.value( 16 ).toInt();
+        si->slaLeft = query.value( 17 ).toInt();
+        si->display = query.value( 18 ).toString();
+    
         list.append( si );
     }
         
     return list;
-}
-
-QStringList Database::getQmonBomgarList()
-{
-    QSqlQuery query;
-    QStringList l;
-    query.prepare( "SELECT ID FROM qmon_chat" );
-    query.exec();
-    
-    while( query.next() ) l.append( query.value( 0 ).toString() );
-    
-    return l;    
-}
-
-bool Database::bomgarExistsInDB( const QString& id )
-{
-    QSqlQuery query;
-    query.prepare( "SELECT ID FROM qmon_chat WHERE ( ID = :id )" );
-    query.bindValue( ":id", id );
-    query.exec();
-    
-    if ( query.next() )
-    {
-        return true;
-    }
-    else 
-    {
-        return false;
-    }
-}
-
-void Database::updateBomgarQueue( BomgarItem* bi )
-{
-    qDebug() << "[DATABASE] Updating BomgarQueue for" << bi->id << bi->sr << " to " << bi->name;
-    
-    QSqlQuery query;
-    query.prepare( "UPDATE qmon_chat SET NAME = :name WHERE ID = :id" );
-    query.bindValue( ":name", bi->name );
-    query.bindValue( ":id", bi->id );
-    query.exec();
-}
-
-QString Database::getBomgarQueue( const QString& id )
-{
-    QSqlQuery query;
-    query.prepare( "SELECT NAME FROM qmon_chat WHERE ( SR = :id )" );
-    query.bindValue( ":id", id );
-    query.exec();
-    
-    if( query.next() ) 
-    {
-        return query.value( 0 ).toString();
-    }
-    else
-    {
-        return "NOCHAT";
-    }
-}
-
-QString Database::getBomgarQueueById( const QString& id )
-{
-    QSqlQuery query;
-    query.prepare( "SELECT NAME FROM qmon_chat WHERE ( ID = :id )" );
-    query.bindValue( ":id", id );
-    query.exec();
-    
-    if( query.next() ) 
-    {
-        return query.value( 0 ).toString();
-    }
-    else
-    {
-        return "NOCHAT";
-    }
 }
 
 /*
@@ -929,6 +736,23 @@ QList< CsatItem* > Database::getCsatList( const QString& engineer )
     }
     
     return list;
+}
+
+QString Database::getQmonBdesc( const QString& id )
+{
+    QSqlQuery query;
+    query.prepare( "SELECT BDESC FROM qmon_siebel WHERE ( ID = :id )" );
+    query.bindValue( ":id", id );
+    query.exec();
+    
+    if ( query.next() )
+    {
+        return query.value( 0 ).toString();
+    }
+    else
+    {
+        return "ERROR";
+    }
 }
 
 QStringList Database::getCsatExistList()

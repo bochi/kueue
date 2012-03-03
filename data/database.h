@@ -31,9 +31,8 @@
 #include "data/sr.h"
 
 #include <QtSql>
-#include <QThread>
 
-class Database : public QThread
+class Database : public QObject
 {
     Q_OBJECT
 
@@ -71,14 +70,7 @@ class Database : public QThread
         static bool isChat( const QString& );
         static QString getQmonBdesc( const QString& );
         
-        static void updateBomgarItemInDB( BomgarItem* );
-        static void deleteBomgarItemFromDB( const QString& );
         static QList< SiebelItem* > getSrsForQueue( const QString&, QString = QString::Null() );
-        static QStringList getQmonBomgarList();
-        static bool bomgarExistsInDB( const QString& );
-        static QString getBomgarQueue( const QString& );
-        static QString getBomgarQueueById( const QString& );
-        static void updateBomgarQueue( BomgarItem* );
         
         static void updateCsatData( CsatItem* );
         static void deleteCsatItemFromDB( const QString&, const QString& );

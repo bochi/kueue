@@ -53,6 +53,7 @@
 
   <qresource prefix="images">
     <file alias="bg.gif">ui/icons/images/bg.gif</file>
+    <file alias="obacht.png">ui/icons/images/obacht.png</file>
     <file alias="chat.png">ui/icons/images/chat.png</file>
     <file alias="dotlinebg_horiz.gif">ui/icons/images/dotlinebg_horiz.gif</file>
     <file alias="dotlinebg_vert.gif">ui/icons/images/dotlinebg_vert.gif</file>

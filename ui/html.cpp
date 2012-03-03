@@ -446,7 +446,7 @@ QString HTML::qmonSrInQueue( SiebelItem* si )
                                             "<td class='gadgetHead'>" );
 
  
-    if (  si->source == "Internal" )
+    if (  si->isCr )
     {
         srtab += QString ( "<b>CR# " );
     }
@@ -461,6 +461,11 @@ QString HTML::qmonSrInQueue( SiebelItem* si )
     {
         srtab += QString( "<img src='qrc:/images/chat.png'></img>" );
     }    
+    
+    if ( ( si->highValue ) || ( si->critSit ) )
+    {
+        srtab += QString( "<img src='qrc:/images/obacht.png'></img>" );
+    }   
     
     srtab += QString( "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;" + si->geo + " (" + si->hours + ")&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;" );
     
@@ -477,12 +482,12 @@ QString HTML::qmonSrInQueue( SiebelItem* si )
         srtab += QString( si->severity );
     }
        
-    srtab += QString (  "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Age: " + timeString( si->openedSec ) );
-    srtab += QString (  "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Time in queue: " + timeString( si->queueSec ) );
+    srtab += QString (  "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Age: " + timeString( si->age ) );
+    srtab += QString (  "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Time in queue: " + timeString( si->timeInQ ) );
    
-    if ( si->slaSec > 0 )      
+    if ( si->slaLeft > 0 )      
     {
-        srtab += QString ( "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;SLA left: " + timeString( si->slaSec ) );
+        srtab += QString ( "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;SLA left: " + timeString( si->slaLeft ) );
     }
     
     srtab += QString (  "</b><br><i>" +  si->bdesc + "</i>"
@@ -524,12 +529,25 @@ QString HTML::qmonSrInQueue( SiebelItem* si )
                     "<table cellpadding='0' cellspacing='0' border='0'>"
                         "<tr>"
                             "<td class='gadgetText'>" );
+
+    srtab += QString( "<tr>"
+                        "<td class='gadgetText'>Customer</td>"
+                        "<td class='gadgetText'>" + si->customer + "</td>"
+                       "</tr>" );
     
     if ( si->isChat )
     {
         srtab += QString(       "<tr>"
                                     "<td class='gadgetText'>Bomgar Queue/Owner&nbsp;&nbsp;&nbsp;</td>"
                                     "<td class='gadgetText'>" + si->bomgarQ + "</td>"
+                                "</tr>" );
+    }
+    
+    if ( si->isCr )
+    {
+        srtab += QString(       "<tr>"
+                                    "<td class='gadgetText'>Opened by&nbsp;&nbsp;&nbsp;</td>"
+                                    "<td class='gadgetText'>" + si->creator + "</td>"
                                 "</tr>" );
     }
     
@@ -543,9 +561,39 @@ QString HTML::qmonSrInQueue( SiebelItem* si )
                                 "</tr>"
                                 "<tr>"
                                     "<td class='gadgetText'>Last Update&nbsp;&nbsp;&nbsp;</td>"
-                                    "<td class='gadgetText'>" + QString::number( secDays( si->activitySec ) ) + " days ago</td>"
+                                    "<td class='gadgetText'>" + QString::number( secDays( si->lastAct ) ) + " days ago</td>"
                                 "</tr>" );
+    
+    if ( si->highValue )
+    {
+        srtab += QString(       "<tr>"
+                                    "<td class='gadgetText'>High Value&nbsp;&nbsp;&nbsp;</td>"
+                                    "<td class='gadgetText'>Yes</td>"
+                                "</tr>" );
+    }
+    else
+    {
+        srtab += QString(       "<tr>"
+                                    "<td class='gadgetText'>High Value&nbsp;&nbsp;&nbsp;</td>"
+                                    "<td class='gadgetText'>No</td>"
+                                "</tr>" );
+    }
 
+    if ( si->critSit )
+    {
+        srtab += QString(       "<tr>"
+                                    "<td class='gadgetText'>CritSit&nbsp;&nbsp;&nbsp;</td>"
+                                    "<td class='gadgetText'>Yes</td>"
+                                "</tr>" );
+    }
+    else
+    {
+        srtab += QString(       "<tr>"
+                                    "<td class='gadgetText'>CritSit&nbsp;&nbsp;&nbsp;</td>"
+                                    "<td class='gadgetText'>No</td>"
+                                "</tr>" );
+    }
+    
     srtab +=( "</td></tr>" );
   
     srtab+= (   "</table></a></a></td><td width='1' rowspan='4' class='dotlinevert'><img src='qrc:/images/spacer.gif'"
