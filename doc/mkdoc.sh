@@ -6,7 +6,7 @@
 #
 
 xsltproc --output index.html /usr/share/xml/docbook/stylesheet/suse/xhtml/chunk.xsl index.docbook
-cp /usr/share/doc/manual/opensuse-manuals_en/manual/susebooks.css html
+cp /usr/share/doc/manual/opensuse-manuals_en/susebooks.css html
 
 echo "<RCC>" > ../doc.qrc
 echo "<qresource prefix=\"help\">" >> ../doc.qrc
