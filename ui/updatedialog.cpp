@@ -44,7 +44,7 @@ UpdateDialog::~UpdateDialog()
 
 bool UpdateDialog::smthToSay()
 {
-    if ( textBrowser->document()->isEmpty() )
+    if ( textBrowser->document()->toPlainText().isEmpty() )
     {
         return false;
     }

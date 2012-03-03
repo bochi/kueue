@@ -43,7 +43,7 @@ void UnityPage::closeSr()
              this, SLOT( closeSrRejected() ) );
     
     connect( mCloseDialog, SIGNAL( accepted() ), 
-             this, SLOT( closeSrFirst() ) );
+             this, SLOT( closeSrAccepted() ) );
     
     mCloseDialog->exec();
 }
@@ -56,7 +56,6 @@ void UnityPage::closeSrRejected()
 void UnityPage::closeSrAccepted()
 {
     mCloseSR = true;
-    
     querySR( mCloseDialog->sr() );
 }
 

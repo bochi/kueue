@@ -39,6 +39,9 @@ void UnityPage::addNote()
     connect( mNoteDialog, SIGNAL( addNoteAccepted() ), 
              this, SLOT( addNoteAccepted() ) );
     
+    connect( mNoteDialog, SIGNAL( rejected() ),
+             this, SLOT( addNoteRejected() ) );
+    
     mNoteDialog->exec();
 }
 

@@ -94,6 +94,8 @@ UnityBrowser::~UnityBrowser()
 
 void UnityBrowser::connectShortcuts()
 {
+    qDebug() << "[UNITYBROWSER] Connecting shortcuts";
+    
     connect( mSendEmailSC, SIGNAL( activated() ), 
              mUnityPage, SLOT( sendEmail() ) );
     
@@ -127,6 +129,8 @@ void UnityBrowser::connectShortcuts()
 
 void UnityBrowser::disconnectShortcuts()
 {
+    qDebug() << "[UNITYBROWSER] Disconnecting shortcuts";
+    
     disconnect( mSendEmailSC, 0, 0, 0 );
     disconnect( mGoBackSC, 0, 0, 0 );
     disconnect( mLogOutSC, 0, 0, 0 );
@@ -188,7 +192,7 @@ void UnityBrowser::closeSr()
 
 void UnityBrowser::openWebInspector()
 {
-    QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+    QWebSettings::globalSettings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
     
     QWidget* w = new QWidget;
     QGridLayout* l = new QGridLayout;
@@ -196,7 +200,7 @@ void UnityBrowser::openWebInspector()
     QWebInspector* i = new QWebInspector( w );
     l->addWidget( i );
     i->setPage( page() );
-    w->setWindowTitle( "Webinspector - qmonbrowser" );
+    w->setWindowTitle( "Webinspector - unitybrowser" );
     w->show();
 }
 
@@ -446,6 +450,9 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     
     menu->addMenu( slesmenu );
     menu->addMenu( sledmenu );
+    menu->addSeparator();
+    menu->addAction( "Red Hat Linux", this, SLOT( fillOutProduct() ) );
+    menu->addSeparator();
     menu->addMenu( oesmenu );
     
     return menu;
@@ -453,27 +460,28 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
 
 void UnityBrowser::fillOutProduct()
 {
-    QAction* action = qobject_cast<QAction*>( QObject::sender() );
+    QAction* action = qobject_cast< QAction* >( QObject::sender() );
 
-    if ( action->text().startsWith( "SUSE Linux Enterprise Server" ) )
+    if ( ( action->text().startsWith( "SUSE Linux Enterprise Server" ) ) ||
+         ( action->text().startsWith( "Subscription" ) ) ||
+         ( action->text().startsWith( "Red Hat" ) ) )
     {
         mUnityPage->fillOutProduct( "SUSE Linux Enterprise Server", action->text() );
     }
+    
     else if ( action->text().startsWith( "SUSE Linux Enterprise High Availability Extension" ) )
     {
         mUnityPage->fillOutProduct( "SUSE Linux Enterprise High Availability Extension", action->text() );
     }
+    
     else if ( action->text().startsWith( "SUSE Linux Enterprise Desktop" ) )
     {
         mUnityPage->fillOutProduct( "SUSE Linux Enterprise Desktop", action->text() );
     }
+    
     else if ( action->text().startsWith( "Open Enterprise Server" ) )
     {
         mUnityPage->fillOutProduct( "Open Enterprise Server", action->text() );
-    }
-    else if ( action->text().startsWith( "Subscription" ) )
-    {
-        mUnityPage->fillOutProduct( "SUSE Linux Enterprise Server", action->text() );
     }
 }
 
@@ -529,16 +537,18 @@ void UnityBrowser::goBackToSr()
 
 void UnityBrowser::saveImage()
 {
-    QAction* action = qobject_cast<QAction*>( QObject::sender() );
+    QAction* action = qobject_cast< QAction* >( QObject::sender() );
+    
     QString data = action->data().toString();
 
     QPoint p;
-    p.setX( data.split("||").at(0).toInt() );
-    p.setY( data.split("||").at(1).toInt() );
+    p.setX( data.split( "||" ).at( 0 ).toInt() );
+    p.setY( data.split( "||" ).at( 1 ).toInt() );
     
-    QPixmap pix = mUnityPage->viewFrame()->hitTestContent(p).pixmap();
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Select filename..."), Settings::downloadDirectory() + "/" + mUnityPage->currentSr() + ".jpg" );
-    pix.save(fileName);
+    QPixmap pix = mUnityPage->viewFrame()->hitTestContent( p ).pixmap();
+    QString fileName = QFileDialog::getSaveFileName( this, "Select filename...", Settings::downloadDirectory() + "/" + mUnityPage->currentSr() + ".jpg" );
+    
+    pix.save( fileName );
 }
 
 bool UnityBrowser::isTextArea( QWebElement element )
@@ -558,10 +568,10 @@ bool UnityBrowser::isTextArea( QWebElement element )
 
 bool UnityBrowser::isProductField( QWebElement element )
 {
-    if ( ( ( element.attribute("tabindex") == "1024" ) && 
-           ( element.attribute("onchange").startsWith("trackChange") ) ) ||
-         ( ( element.attribute("tabindex") == "1025" ) && 
-           ( element.attribute("onchange").startsWith("trackChange") ) ) )
+    if ( ( ( element.attribute( "tabindex" ) == "1024" ) && 
+           ( element.attribute( "onchange" ).startsWith( "trackChange" ) ) ) ||
+         ( ( element.attribute( "tabindex" ) == "1025" ) && 
+           ( element.attribute( "onchange" ).startsWith( "trackChange" ) ) ) )
     {
         return true;
     }
@@ -573,8 +583,8 @@ bool UnityBrowser::isProductField( QWebElement element )
 
 bool UnityBrowser::isBugzillaField( QWebElement element )
 {
-    if ( ( element.attribute("tabindex") == "1036" ) && 
-         ( element.attribute("onchange").startsWith("trackChange") ) )
+    if ( ( element.attribute( "tabindex" ) == "1036" ) && 
+         ( element.attribute( "onchange" ).startsWith( "trackChange" ) ) )
     {
         return true;
     }
@@ -613,7 +623,7 @@ void UnityBrowser::openFileBrowser()
             QProcess* p = new QProcess( this );
             p->start( Settings::otherFileManagerCommand(), arg );
             
-            connect( p, SIGNAL( finished(int) ),
+            connect( p, SIGNAL( finished( int ) ),
                      this, SLOT( processFinished() ) );
         }
     }
@@ -625,7 +635,7 @@ void UnityBrowser::openFileBrowser()
 
 void UnityBrowser::processFinished()
 {
-    QProcess* p = qobject_cast<QProcess*>( sender() );
+    QProcess* p = qobject_cast< QProcess* >( sender() );
     
     p->deleteLater();
 }
@@ -708,7 +718,7 @@ UnityWidget::UnityWidget( QObject* parent )
     
     mAddNoteButton = new QToolButton( mToolBar );
     mAddNoteButton->setIcon( QIcon( ":/icons/toolbar/add_note.png" ) );
-    mAddNoteButton->setToolTip( "Add engineer note" );
+    mAddNoteButton->setToolTip( "Add note" );
     
     mCloseSrButton = new QToolButton( mToolBar );
     mCloseSrButton->setIcon( QIcon( ":/icons/toolbar/close_sr.png" ) );
@@ -748,7 +758,7 @@ UnityWidget::UnityWidget( QObject* parent )
              this, SLOT( querySR() ) );
 
     QWidget* spacer = new QWidget();
-    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    spacer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     mQueryLine = new QLineEdit;
     mQueryLine->setMaximumWidth( 150 );
