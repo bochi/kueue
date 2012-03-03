@@ -530,45 +530,51 @@ QString HTML::qmonSrInQueue( SiebelItem* si )
                         "<tr>"
                             "<td class='gadgetText'>" );
 
-    srtab += QString( "<tr>"
-                        "<td class='gadgetText'>Customer</td>"
-                        "<td class='gadgetText'>" + si->customer + "</td>"
-                       "</tr>" );
+    if ( si->isCr )
+    {
+        srtab += QString( "<tr>"
+                            "<td class='gadgetText'>Opened by&nbsp;&nbsp;&nbsp;</td>"
+                            "<td class='gadgetText'>" + si->creator + "</td>"
+                          "</tr>" );
+    }
+    else
+    {
+        srtab += QString( "<tr>"
+                            "<td class='gadgetText'>Customer</td>"
+                            "<td class='gadgetText'>" + si->customer + "</td>"
+                         "</tr>" );
+    }
     
     if ( si->isChat )
     {
         srtab += QString(       "<tr>"
-                                    "<td class='gadgetText'>Bomgar Queue/Owner&nbsp;&nbsp;&nbsp;</td>"
-                                    "<td class='gadgetText'>" + si->bomgarQ + "</td>"
-                                "</tr>" );
-    }
-    
-    if ( si->isCr )
-    {
-        srtab += QString(       "<tr>"
-                                    "<td class='gadgetText'>Opened by&nbsp;&nbsp;&nbsp;</td>"
-                                    "<td class='gadgetText'>" + si->creator + "</td>"
+                                   "<td class='gadgetText'>Bomgar Queue/Owner&nbsp;&nbsp;&nbsp;</td>"
+                                   "<td class='gadgetText'>" + si->bomgarQ + "</td>"
                                 "</tr>" );
     }
     
     srtab += QString(           "<tr>"
-                                    "<td class='gadgetText'>Status</td>"
-                                    "<td class='gadgetText'>" + si->status + "</td>"
-                                "</tr>"
-                                "<tr>"
-                                    "<td class='gadgetText'>Contract</td>"
-                                    "<td class='gadgetText'>" + si->contract + "</td>"
-                                "</tr>"
-                                "<tr>"
-                                    "<td class='gadgetText'>Last Update&nbsp;&nbsp;&nbsp;</td>"
-                                    "<td class='gadgetText'>" + QString::number( secDays( si->lastAct ) ) + " days ago</td>"
+                                   "<td class='gadgetText'>Status</td>"
+                                   "<td class='gadgetText'>" + si->status + "</td>"
+                                "</tr>" );
+    if ( !si->isCr )
+    {
+        srtab += QString(       "<tr>"
+                                   "<td class='gadgetText'>Contract</td>"
+                                   "<td class='gadgetText'>" + si->contract + "</td>"
+                                "</tr>" );
+    }
+                                
+     srtab += QString(          "<tr>"
+                                   "<td class='gadgetText'>Last Update&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>"
+                                   "<td class='gadgetText'>" + QString::number( secDays( si->lastAct ) ) + " days ago</td>"
                                 "</tr>" );
     
     if ( si->highValue )
     {
         srtab += QString(       "<tr>"
-                                    "<td class='gadgetText'>High Value&nbsp;&nbsp;&nbsp;</td>"
-                                    "<td class='gadgetText'>Yes</td>"
+                                   "<td class='gadgetText'>High Value&nbsp;&nbsp;&nbsp;</td>"
+                                   "<td class='gadgetText'>Yes</td>"
                                 "</tr>" );
     }
     else

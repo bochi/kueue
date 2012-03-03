@@ -478,11 +478,10 @@ void Database::insertSiebelItemIntoDB( SiebelItem* item )
 
 void Database::updateSiebelItemInDB( SiebelItem* item )
 {
-    QSqlQuery query( "UPDATE qmon_siebel SET ID=:id, QUEUE=:queue, SEVERITY=:severity, STATUS=:status,  BDESC=:bdesc, GEO=:geo, "
+    QSqlQuery query( "UPDATE qmon_siebel SET QUEUE=:queue, SEVERITY=:severity, STATUS=:status,  BDESC=:bdesc, GEO=:geo, "
                      "HOURS=:hours, CUSTOMER=:customer, CONTACTVIA=:contactvia, CONTRACT=:contract, CREATOR=:creator, BOMGARQ=:bomgarq, "
-                     "HIGHVALUE=:highvalue, CRITSIT=:critsit, AGE=:age, LASTACT=:lastact, TIQ=:tiq, SLA=:sla )" );
+                     "HIGHVALUE=:highvalue, CRITSIT=:critsit, AGE=:age, LASTACT=:lastact, TIQ=:tiq, SLA=:sla WHERE ID=:id" );
 
-    query.bindValue( ":id", item->id );
     query.bindValue( ":queue", item->queue );
     query.bindValue( ":severity", item->severity );
     query.bindValue( ":status", item->status );
@@ -500,6 +499,7 @@ void Database::updateSiebelItemInDB( SiebelItem* item )
     query.bindValue( ":lastact", item->lastAct );
     query.bindValue( ":tiq", item->timeInQ );
     query.bindValue( ":sla", item->slaLeft );
+    query.bindValue( ":id", item->id );
     
     query.exec();
 }
