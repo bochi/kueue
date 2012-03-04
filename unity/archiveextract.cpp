@@ -26,8 +26,10 @@
 
 #include "archiveextract.h"
 
+#ifndef IS_WIN32
 #include <archive.h>
 #include <archive_entry.h>
+#endif
 #include <sys/stat.h>
 
 #include <QDebug>
