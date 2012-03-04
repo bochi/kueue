@@ -61,11 +61,11 @@ struct ArchiveExtract::ArchiveWriteCustomDeleter
 };
 
 ArchiveExtract::ArchiveExtract( const QString& file, const QString& dest ) : ThreadWeaver::Job()
+    #ifndef IS_WIN32
     , mFileName( file )
     , mDestination( dest )
     , m_cachedArchiveEntryCount( 0 )
     , m_extractedFilesSize( 0 )
-    #ifndef IS_WIN32
     , m_archiveReadDisk( archive_read_disk_new() )
     #endif
     
