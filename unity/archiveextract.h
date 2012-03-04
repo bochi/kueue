@@ -30,6 +30,7 @@
 #include <QDir>
 
 #include "kueuethreads.h"
+#include "config.h" 
 
 class ArchiveExtract: public ThreadWeaver::Job 
 {
@@ -46,10 +47,12 @@ class ArchiveExtract: public ThreadWeaver::Job
     private:
         void copyData(struct archive *source, struct archive *dest, bool partialprogress = true);
 
-        struct ArchiveReadCustomDeleter;
+        #ifndef IS_WIN32
+	struct ArchiveReadCustomDeleter;
         struct ArchiveWriteCustomDeleter;
         typedef QScopedPointer<struct archive, ArchiveReadCustomDeleter> ArchiveRead;
         typedef QScopedPointer<struct archive, ArchiveWriteCustomDeleter> ArchiveWrite;
+        #endif
 
         int m_cachedArchiveEntryCount;
         qlonglong m_currentExtractedFilesSize;
