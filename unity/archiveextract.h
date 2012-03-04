@@ -35,6 +35,7 @@
 class ArchiveExtract: public ThreadWeaver::Job 
 {
     Q_OBJECT
+#ifndef IS_WIN32
 
     public:
         ArchiveExtract( const QString&, const QString& );
@@ -47,10 +48,8 @@ class ArchiveExtract: public ThreadWeaver::Job
     private:
         void copyData(struct archive *source, struct archive *dest, bool partialprogress = true);
 
-        #ifndef IS_WIN32
 	struct ArchiveReadCustomDeleter;
         struct ArchiveWriteCustomDeleter;
-#endif
         typedef QScopedPointer<struct archive, ArchiveReadCustomDeleter> ArchiveRead;
         typedef QScopedPointer<struct archive, ArchiveWriteCustomDeleter> ArchiveWrite;
 
@@ -69,6 +68,7 @@ class ArchiveExtract: public ThreadWeaver::Job
     
     signals:
         void extracted( const QString&, const QString& );
+#endif
 };
 
 #endif
