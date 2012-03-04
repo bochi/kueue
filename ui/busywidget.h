@@ -27,8 +27,7 @@
 #define BUSYWIDGET_H
  
 #include <QWidget>
-
-#include "QProgressIndicator.h"
+#include "QProgressIndicator"
 
 class BusyWidget : public QWidget
 {
@@ -40,11 +39,9 @@ class BusyWidget : public QWidget
          
     private: 
         QProgressIndicator* mProgress;
-            protected:
-     
-        //overload from QWidget
-        void paintEvent(QPaintEvent* event);
 
+    protected:
+        void paintEvent( QPaintEvent* );
 };
  
 #endif
