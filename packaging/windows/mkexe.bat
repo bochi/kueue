@@ -25,6 +25,7 @@ copy %QTDIR%\bin\QtGui4.dll kueue
 copy %QTDIR%\bin\QtNetwork4.dll kueue
 copy %QTDIR%\bin\QtSql4.dll kueue
 copy %QTDIR%\bin\QtOpenGL4.dll kueue
+copy %QTDIR%\bin\QtXml4.dll kueue
 copy %QTDIR%\bin\QtWebKit4.dll kueue   
 copy %QTDIR%\bin\phonon4.dll kueue
 copy %MINGWDIR%\mingwm10.dll kueue
@@ -32,6 +33,9 @@ copy %MINGWDIR%\libgcc_s_dw2-1.dll kueue
 
 copy C:\OpenSSL\libeay32.dll kueue
 copy C:\OpenSSL\libssl32.dll kueue
+copy "C:\Program Files\libarchive\bin\libarchive.dll" kueue
+copy "C:\Program Files\kueue\*.dll" kueue
+copy c:\dev\zlibwapi.dll kueue
 copy C:\OpenSSL\ssleay32.dll kueue
 
 copy %QTDIR%\plugins\codecs\qcncodecs4.dll kueue\codecs
