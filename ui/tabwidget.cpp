@@ -373,7 +373,9 @@ QMenu* TabWidget::kueueMainMenu()
         kueue->addAction( mActionAddUnityTab );
     }
     
+    #ifndef IS_WIN32
     kueue->addAction( mActionNSA );    
+    #endif
     kueue->addAction( mActionQuit );
     
     QMenu* view = new QMenu( menu );

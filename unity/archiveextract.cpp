@@ -34,6 +34,7 @@
 
 struct ArchiveExtract::ArchiveReadCustomDeleter
 {
+    #ifndef IS_WIN32
     static inline void cleanup( struct archive *a )
     {
         if ( a ) 
@@ -41,10 +42,12 @@ struct ArchiveExtract::ArchiveReadCustomDeleter
             archive_read_finish( a );
         }
     }
+    #endif
 };
 
 struct ArchiveExtract::ArchiveWriteCustomDeleter
 {
+    #ifndef IS_WIN32
     static inline void cleanup( struct archive *a )
     {
         if ( a ) 
@@ -52,6 +55,7 @@ struct ArchiveExtract::ArchiveWriteCustomDeleter
             archive_write_finish( a );
         }
     }
+    #endif
 };
 
 ArchiveExtract::ArchiveExtract( const QString& file, const QString& dest ) : ThreadWeaver::Job()
@@ -59,7 +63,10 @@ ArchiveExtract::ArchiveExtract( const QString& file, const QString& dest ) : Thr
     , mDestination( dest )
     , m_cachedArchiveEntryCount( 0 )
     , m_extractedFilesSize( 0 )
+    #ifndef IS_WIN32
     , m_archiveReadDisk( archive_read_disk_new() )
+    #endif
+    
 {
     qDebug() << "[ARCHIVEEXTRACT] Constructing";
 }
@@ -71,12 +78,15 @@ ArchiveExtract::~ArchiveExtract()
 
 void ArchiveExtract::run()
 {
+    #ifndef IS_WIN32
     archive_read_disk_set_standard_lookup( m_archiveReadDisk.data() );
     copyFiles();
+    #endif
 }
 
 bool ArchiveExtract::list()
 {
+    #ifndef IS_WIN32
     ArchiveRead arch_reader( archive_read_new() );
 
     if ( !( arch_reader.data() ) ) 
@@ -121,10 +131,12 @@ bool ArchiveExtract::list()
     }
 
     return archive_read_close( arch_reader.data() ) == ARCHIVE_OK;
+    #endif
 }
 
 bool ArchiveExtract::copyFiles()
 {
+    #ifndef IS_WIN32
     qDebug() << "[ARCHIVEEXTRACT] Extracting" << mFileName.remove( mDestination + "/" ) << "to" << mDestination;
     QDir::setCurrent( mDestination );
 
@@ -208,10 +220,12 @@ bool ArchiveExtract::copyFiles()
     qDebug() << "[ARCHIVEEXTRACT] Finished extracting" << mFinalDir;
 
     return archive_read_close( arch.data() ) == ARCHIVE_OK;
+    #endif
 }
 
 void ArchiveExtract::copyData( struct archive *source, struct archive *dest, bool partialprogress )
 {
+    #ifndef IS_WIN32
     char buff[ 10240 ];
     ssize_t readBytes;
 
@@ -241,6 +255,7 @@ void ArchiveExtract::copyData( struct archive *source, struct archive *dest, boo
         emit done( this );
         emit jobFinished( this );
     }
+    #endif
 }
 
 #include "archiveextract.moc"
