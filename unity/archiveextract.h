@@ -50,9 +50,9 @@ class ArchiveExtract: public ThreadWeaver::Job
         #ifndef IS_WIN32
 	struct ArchiveReadCustomDeleter;
         struct ArchiveWriteCustomDeleter;
+#endif
         typedef QScopedPointer<struct archive, ArchiveReadCustomDeleter> ArchiveRead;
         typedef QScopedPointer<struct archive, ArchiveWriteCustomDeleter> ArchiveWrite;
-        #endif
 
         int m_cachedArchiveEntryCount;
         qlonglong m_currentExtractedFilesSize;
