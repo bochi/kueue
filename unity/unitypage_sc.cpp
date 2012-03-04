@@ -269,14 +269,11 @@ void UnityPage::setScSixth()
     
     disconnect( mViewFrame, 0, 0, 0 );
     
-        
-    connect( mViewFrame, SIGNAL( loadFinished(bool) ),
-             this, SLOT( unsetJsConfirm() ) );
+    connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+             this, SLOT( actionDone() ) );
     
     saveCurrentSR();
     
     delete mCalendarDialog;
-    emit pageErbertNed();
-    
     mSetSC = false;
 }

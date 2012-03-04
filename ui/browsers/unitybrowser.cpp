@@ -34,6 +34,7 @@
 #include <QWidgetAction>
 #include <QDesktopServices>
 #include <QWebInspector>
+#include <QStackedLayout>
 #include <QWebHistory>
 #include <QFileDialog>
 #include <QDir>
@@ -147,12 +148,14 @@ void UnityBrowser::pageErbert()
 {
     disconnectShortcuts();
     emit disableToolbar();
+    emit enableProgressIndicator();
 }
 
 void UnityBrowser::pageErbertNed()
 {
     connectShortcuts();
     emit enableToolbar();
+    emit disableProgressIndicator();
 }
 
 void UnityBrowser::linkClicked( const QUrl& url )
@@ -672,7 +675,14 @@ UnityWidget::UnityWidget( QObject* parent )
     mToolBar->setEnabled( false );
     
     QGridLayout* unityBrowserLayout = new QGridLayout();
+    QStackedLayout* overlayLayout = new QStackedLayout();
+    overlayLayout->setStackingMode(QStackedLayout::StackAll);
+    
     mUnityBrowser = new UnityBrowser( this );
+    mBusyWidget = new BusyWidget( this );
+    
+    overlayLayout->addWidget( mUnityBrowser );
+    overlayLayout->addWidget( mBusyWidget );
     
     connect( mUnityBrowser, SIGNAL( currentSrChanged( QString ) ),
              this, SLOT( currentSrChanged( QString ) ) );
@@ -682,6 +692,12 @@ UnityWidget::UnityWidget( QObject* parent )
     
     connect( mUnityBrowser, SIGNAL( enableToolbar() ),
              this, SLOT( enableToolbar() ) );
+    
+    connect( mUnityBrowser, SIGNAL( enableProgressIndicator() ),
+             this, SLOT( activateProgressWidget() ) );
+    
+    connect( mUnityBrowser, SIGNAL( disableProgressIndicator() ),
+             this, SLOT( deactivateProgressWidget() ) );
     
     //WebViewWithSearch* mWebViewWithSearch = new WebViewWithSearch( mUnityBrowser, this );
     setLayout( unityBrowserLayout );
@@ -790,12 +806,35 @@ UnityWidget::UnityWidget( QObject* parent )
         unityBrowserLayout->addWidget( mToolBar );
     }
     
-    unityBrowserLayout->addWidget( mUnityBrowser );
+    unityBrowserLayout->addLayout( overlayLayout, 1, 0 );
 }
 
 UnityWidget::~UnityWidget()
 {
     qDebug() << "[UNITYWIDGET] Destroying id" << mTabId;
+}
+
+void UnityWidget::activateProgressWidget()
+{
+    mBusyWidget->activate();
+}
+
+void UnityWidget::deactivateProgressWidget()
+{
+    mBusyWidget->deactivate();
+}
+
+void UnityWidget::resizeEvent(QResizeEvent* event )
+{
+   mBusyWidget->resize(event->size());
+   event->accept();
+}
+
+void UnityWidget::moveEvent(QMoveEvent* event )
+{
+    qDebug()  << "move" << event->pos();
+    mBusyWidget->move( event->pos() );
+    event->accept();
 }
 
 void UnityWidget::setTabId( int id )
@@ -811,7 +850,7 @@ void UnityWidget::currentSrChanged( QString sr )
     {
         disableToolbar();
     }
-    else
+    else if ( !mToolbarDisabled )
     {
         enableToolbar();
     }
@@ -819,11 +858,13 @@ void UnityWidget::currentSrChanged( QString sr )
 
 void UnityWidget::disableToolbar()
 {
+    mToolbarDisabled = true;
     mToolBar->setEnabled( false );
 }
 
 void UnityWidget::enableToolbar()
 {
+    mToolbarDisabled = false;
     mToolBar->setEnabled( true );
 }
 
@@ -835,6 +876,5 @@ void UnityWidget::querySR()
         mQueryLine->clear();
     }
 }
-
 
 #include "unitybrowser.moc"

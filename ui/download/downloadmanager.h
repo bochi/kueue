@@ -161,6 +161,9 @@ private:
     QString mDownloadDir;
 
     friend class DownloadModel;
+    
+signals:
+    void downloadFinished();
 };
 
 class DownloadModel : public QAbstractListModel

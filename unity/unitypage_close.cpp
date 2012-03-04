@@ -171,7 +171,10 @@ void UnityPage::closeSrSecond()
 void UnityPage::closeSrThird()
 {
     disconnect( mViewFrame, 0, 0, 0 );
+    
+    connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+             this, SLOT( actionDone() ) );
+    
     saveCurrentSR();
     delete mCloseDialog;
-    emit pageErbertNed();
 }

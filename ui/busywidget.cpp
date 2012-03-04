@@ -24,6 +24,7 @@
 */
 
 #include "busywidget.h"
+#include "kueue.h"
 
 #include <QDebug>
 #include <QHBoxLayout>
@@ -34,17 +35,19 @@ BusyWidget::BusyWidget( QObject* parent )
     qDebug() << "[BUSYWIDGET] Constructing";
 
     setAttribute( Qt::WA_TranslucentBackground, true );
-
+    
     QHBoxLayout* hLayout = new QHBoxLayout( this );
 
     mProgress = new QProgressIndicator( this, QSize( 160, 160 ) );
     mProgress->setAnimationDelay( 90 );
-    mProgress->startAnimation();
+    mProgress->stopAnimation();
     mProgress->show();
     
     hLayout->addStretch();
     hLayout->addWidget( mProgress );
     hLayout->addStretch();
+    
+    hide();
 }
 
 BusyWidget::~BusyWidget()
@@ -59,5 +62,18 @@ void BusyWidget::paintEvent(QPaintEvent* event)
     QPainter customPainter( this );
     customPainter.fillRect( rect(), backgroundColor );
 }
+
+void BusyWidget::activate()
+{
+    mProgress->startAnimation();
+    show();
+}
+
+void BusyWidget::deactivate()
+{
+    mProgress->stopAnimation();
+    hide();
+}
+
 
 #include "busywidget.moc"

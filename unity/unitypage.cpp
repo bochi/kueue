@@ -272,6 +272,7 @@ void UnityPage::querySR( const QString& sr )
 
     if ( mNavReady )
     {
+        emit pageErbert();
         mQuerySR = sr;
         
         disconnect( mViewFrame, 0, 0, 0 );
@@ -371,11 +372,15 @@ void UnityPage::goToActivities()
         connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
                  this, SLOT( newActivity()) );
     }
-    
-    if ( mCloseSR )
+    else if ( mCloseSR )
     {
         connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
                  this, SLOT( closeSrFirst() ) );
+    }
+    else
+    {
+        connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+                 this, SLOT( actionDone() ) );
     }
     
     QWebElementCollection fc = mViewFrame->findAllElements( "a" );
@@ -388,6 +393,13 @@ void UnityPage::goToActivities()
             mViewFrame->evaluateJavaScript( js );
         }
     }
+}
+
+void UnityPage::actionDone()
+{
+    disconnect( mViewFrame, 0, 0, 0 );
+    unsetJsConfirm();
+    emit pageErbertNed();
 }
 
 void UnityPage::newActivity()

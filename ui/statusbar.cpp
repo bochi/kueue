@@ -1,7 +1,3 @@
-
-
-
-
 /*
                 kueue - keep track of your SR queue
              (C) 2011 Stefan Bogner <sbogner@suse.com>
@@ -28,6 +24,7 @@
 */
 
 #include "statusbar.h"
+#include "settings.h"
 
 StatusBar* StatusBar::instance = 0;
 
@@ -63,6 +60,9 @@ StatusBar::StatusBar()
     connect( mDownloadButton, SIGNAL( clicked(bool) ), 
              this, SLOT( toggleDownloadManager()) );
     
+    connect( mDownloadManager, SIGNAL( downloadFinished() ),
+             this, SLOT( popupDownloadManager() ) );
+    
     setMaximumHeight( 20 );
     
     QFont font;
@@ -93,13 +93,7 @@ void StatusBar::toggleDownloadManager()
 {
     if ( mDownloadManager->isHidden() )
     {
-        mDownloadManager->setGeometry( window()->x() + window()->width() - mDownloadManager->width(), window()->y() + window()->height() - mDownloadManager->height(), 
-                                       ( window()->width() / 3 ), ( window()->height() / 4 * 3 ) );
-        
-        mDownloadManager->move( window()->x() + window()->width() - mDownloadManager->width(), 
-                                window()->y() + window()->height() - mDownloadManager->height() );
-        
-        mDownloadManager->show();   
+        showDownloadManager();
     }
     else
     {
@@ -107,6 +101,24 @@ void StatusBar::toggleDownloadManager()
     }
 }
 
+void StatusBar::showDownloadManager()
+{
+    mDownloadManager->setGeometry( window()->x() + window()->width() - mDownloadManager->width(), window()->y() + window()->height() - mDownloadManager->height(), 
+                                    ( window()->width() / 3 ), ( window()->height() / 4 * 3 ) );
+    
+    mDownloadManager->move( window()->x() + window()->width() - mDownloadManager->width(), 
+                            window()->y() + window()->height() - mDownloadManager->height() );
+    
+    mDownloadManager->show();   
+}
+
+void StatusBar::popupDownloadManager()
+{
+    if ( Settings::showDownloadManager() )
+    {
+        showDownloadManager();
+    }
+}
 
 void StatusBar::addDownloadJobImpl( QNetworkReply* reply, QString dir, bool ask )
 {

@@ -27,7 +27,7 @@
 #define BUSYWIDGET_H
  
 #include <QWidget>
-#include "QProgressIndicator"
+#include "qprogressindicator.h"
 
 class BusyWidget : public QWidget
 {
@@ -36,6 +36,10 @@ class BusyWidget : public QWidget
     public:
         BusyWidget( QObject* parent = 0L );
          ~BusyWidget();
+         
+    public slots:
+        void activate();
+        void deactivate();
          
     private: 
         QProgressIndicator* mProgress;

@@ -103,9 +103,6 @@ void KueueApp::createApp()
     createQueue();
     createQmon();
     createStats();
-    
-    BusyWidget* w = new BusyWidget(this);
-    w->show();
    
     if ( Settings::appVersion() != QApplication::applicationVersion() )
     {

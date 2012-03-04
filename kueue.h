@@ -62,6 +62,16 @@ namespace Kueue
         KueueWindow::win().toggleWindow();
     }
     
+    static QSize getWindowSize()
+    {
+        return KueueWindow::win().windowSize();
+    }
+    
+    static QPoint getWindowPos()
+    {
+        return KueueWindow::win().windowPos();
+    }
+    
     static void attention( bool a )
     {
         Systray::tray().requiresAttention( a );

@@ -170,8 +170,8 @@ void UnityPage::addNoteThird()
     
     disconnect( mViewFrame, 0, 0, 0 );
 
-    connect( mViewFrame, SIGNAL( loadFinished(bool) ),
-             this, SLOT( unsetJsConfirm() ) );
+    connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+             this, SLOT( actionDone() ) );
         
     QWebElementCollection rc = mViewFrame->findAllElements( "textarea" );
     
@@ -191,5 +191,4 @@ void UnityPage::addNoteThird()
     delete mNoteDialog;
     mAddNote = false;
     saveCurrentActivity();
-    emit pageErbertNed();
 }

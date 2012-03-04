@@ -74,6 +74,8 @@ class KueueWindow : public QMainWindow
         static KueueWindow& win();
         static void destroy();
         
+        QSize windowSize() { return size(); }
+        QPoint windowPos() { return pos(); }
         void playSound( const QString& file );
         void showDetailedDescription( QString = "", bool = false );
         void showDetailedDescriptionNB( QString = "" );

@@ -30,6 +30,7 @@
 #include "ui/kueuewindow.h"
 #include "unity/unitypage.h"
 #include "ui/browsers/search/webviewsearch.h"
+#include "ui/busywidget.h"
 
 #include <QWebView>
 #include <QWebFrame>
@@ -84,6 +85,7 @@ class UnityBrowser : public QWebView
 
     private:
         UnityPage* mUnityPage;
+        
         QMenu* productMenu( QMenu* parent );
         QUrl mUrl;
         bool isTextArea( QWebElement );     
@@ -106,6 +108,8 @@ class UnityBrowser : public QWebView
         void currentSrChanged( QString );
         void disableToolbar();
         void enableToolbar();
+        void enableProgressIndicator();
+        void disableProgressIndicator();
 };
 
 class UnityWidget : public QWidget
@@ -122,7 +126,9 @@ class UnityWidget : public QWidget
     private:
         UnityBrowser* mUnityBrowser;
         QToolBar* mToolBar;
+        BusyWidget* mBusyWidget;
         int mTabId;
+        bool mToolbarDisabled;
 
         QLineEdit* mQueryLine;
         QToolButton* mSrButton;
@@ -135,9 +141,15 @@ class UnityWidget : public QWidget
         QToolButton* mAddNoteButton;
         QToolButton* mCloseSrButton;
         
+    protected:
+        void resizeEvent( QResizeEvent* );
+        void moveEvent( QMoveEvent* );
+        
     public slots:
         void currentSrChanged( QString );
         void setTabId( int );
+        void activateProgressWidget();
+        void deactivateProgressWidget();
         
     private slots:
         void disableToolbar();

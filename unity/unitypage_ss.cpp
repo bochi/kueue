@@ -172,9 +172,9 @@ void UnityPage::setSSthird()
     
     disconnect( mViewFrame, 0, 0, 0 );
 
-    connect( mViewFrame, SIGNAL( loadFinished(bool) ),
-             this, SLOT( unsetJsConfirm() ) );
-        
+    connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+             this, SLOT( actionDone() ) );
+    
     QWebElementCollection rc = mViewFrame->findAllElements( "textarea" );
     
     for ( int i = 0; i < rc.count(); ++i ) 
@@ -187,6 +187,5 @@ void UnityPage::setSSthird()
     
     saveCurrentActivity();
     delete mSsDialog;
-    emit pageErbertNed();
     mSetSS = false;
 }

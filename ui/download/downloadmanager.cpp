@@ -704,7 +704,8 @@ void DownloadManager::finished()
     updateActiveItemCount();
     if (isVisible()) {
         QApplication::alert(this);
-    }                                    
+    }         
+    emit downloadFinished();
 }
 
 

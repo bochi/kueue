@@ -77,6 +77,7 @@ class UnityPage : public QWebPage
         void goHomeFirst();
         void doQuery();
         void goToActivities();
+        void actionDone();
         void newActivity();
         void setSSconfirmed();
         void setSSrejected();

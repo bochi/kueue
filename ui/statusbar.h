@@ -91,6 +91,8 @@ class StatusBar : public QStatusBar
         void undefinedDownload();
         void resetStatusBarImpl();
         void toggleDownloadManager();
+        void showDownloadManager();
+        void popupDownloadManager();
     
 };
 
