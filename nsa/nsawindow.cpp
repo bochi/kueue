@@ -66,7 +66,9 @@ NSAWindow::NSAWindow( const QString& filename, const QString& html )
     
     setCentralWidget( mView );
     setWindowTitle( "NSA Report - " + filename );
-    
+        
+    mView->page()->settings()->setFontSize( QWebSettings::MinimumFontSize, Settings::minimumFontSize() );
+    mView->page()->settings()->setFontSize( QWebSettings::DefaultFontSize, Settings::defaultFontSize() );
     mView->setHtml( mHtml );
     
     setWindowIcon( QIcon( ":/icons/kueue.png" ) );

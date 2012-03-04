@@ -263,6 +263,7 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_otherFileManager->setChecked( !Settings::useDefaultFileManager() );
     cfg_defaultFileManager->setChecked( Settings::useDefaultFileManager() );
     cfg_otherFileManagerCommand->setText( Settings::otherFileManagerCommand() );
+    cfg_showDownloadManager->setChecked( Settings::showDownloadManager() );
     
     cfg_toolbarEnabled->setChecked( Settings::unityToolbarEnabled() );
     cfg_unityPassword->setText( Settings::unityPassword() );
@@ -445,6 +446,7 @@ void ConfigDialog::writeSettings()
     Settings::setdBServer( cfg_dBServer->text() );
     Settings::setEngineer( cfg_engineer->text() );
     Settings::setUnityPassword( cfg_unityPassword->text() );
+    Settings::setShowDownloadManager( cfg_showDownloadManager->isChecked() );
     Settings::setShowAppWindow( cfg_showAppWindow->isChecked() );
     Settings::setShowTabsAtTop( cfg_showTabsAtTop->isChecked() );
     Settings::setUnityEnabled( cfg_unityEnabled->isChecked() );

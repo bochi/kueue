@@ -57,6 +57,9 @@ class Settings
         
         static bool unityToolbarEnabled();
         static void setUnityToolbarEnabled( const bool& );
+
+        static bool showDownloadManager();
+        static void setShowDownloadManager( const bool& );
         
         static QString unityURL();
         static void setUnityURL( const QString& );

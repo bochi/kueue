@@ -127,6 +127,8 @@ SET( kueue_CPP  main.cpp
 		ui/download/downloadmanager.cpp
 		ui/download/squeezelabel.cpp
 		ui/download/autosaver.cpp
+		ui/QProgressIndicator.cpp
+		ui/busywidget.cpp
                 
                 ui/browsers/unitybrowser.cpp 
                 ui/browsers/qmonbrowser.cpp

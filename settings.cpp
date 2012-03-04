@@ -136,6 +136,19 @@ void Settings::setUnityToolbarEnabled( const bool& b )
     settings.sync();
 }
 
+bool Settings::showDownloadManager()
+{
+    QSettings settings;
+    return settings.value( "showDownloadManager", false ).toBool();
+}
+
+void Settings::setShowDownloadManager( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "showDownloadManager", b );
+    settings.sync();
+}
+
 QString Settings::unityURL()
 {
     QSettings settings;

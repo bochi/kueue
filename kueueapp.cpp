@@ -33,6 +33,8 @@
 #include "ui/updatedialog.h"
 #include "nsa/nsa.h"
 
+#include "ui/busywidget.h"
+
 #include <QProgressDialog>
 #include <QShortcut>
 #include <QKeySequence>
@@ -101,6 +103,9 @@ void KueueApp::createApp()
     createQueue();
     createQmon();
     createStats();
+    
+    BusyWidget* w = new BusyWidget(this);
+    w->show();
    
     if ( Settings::appVersion() != QApplication::applicationVersion() )
     {
