@@ -519,8 +519,10 @@ void DownloadItem::finished()
          ( QFileInfo( mOutput.fileName() ).suffix() == "zip" ) ||
          ( QFileInfo( mOutput.fileName() ).suffix() == "tbz" ) ) )
     {
+	#ifndef IS_WIN32
         ArchiveExtract* x = new ArchiveExtract( mOutput.fileName(), QFileInfo( mOutput.fileName() ).dir().absolutePath() );
         KueueThreads::enqueue( x );
+	#endif
     }
     
     Kueue::notify( "kueue-general", "Download finished", "<b>" + QFileInfo( mOutput.fileName() ).fileName() +
