@@ -1,6 +1,6 @@
 /*
                 kueue - keep track of your SR queue
-             (C) 2011 Stefan Bogner <sbogner@suse.com>
+          (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -822,19 +822,6 @@ void UnityWidget::activateProgressWidget()
 void UnityWidget::deactivateProgressWidget()
 {
     mBusyWidget->deactivate();
-}
-
-void UnityWidget::resizeEvent(QResizeEvent* event )
-{
-   mBusyWidget->resize(event->size());
-   event->accept();
-}
-
-void UnityWidget::moveEvent(QMoveEvent* event )
-{
-    qDebug()  << "move" << event->pos();
-    mBusyWidget->move( event->pos() );
-    event->accept();
 }
 
 void UnityWidget::setTabId( int id )

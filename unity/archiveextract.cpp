@@ -1,6 +1,6 @@
 /*
                 kueue - keep track of your SR queue
-             (C) 2011 Stefan Bogner <sbogner@suse.com>
+          (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
              
             Thanks to the ark Team for the inspiration :-)
     

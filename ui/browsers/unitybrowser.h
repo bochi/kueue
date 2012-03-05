@@ -1,6 +1,6 @@
 /*
                 kueue - keep track of your SR queue
-             (C) 2011 Stefan Bogner <sbogner@suse.com>
+          (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -140,10 +140,6 @@ class UnityWidget : public QWidget
         QToolButton* mScButton;
         QToolButton* mAddNoteButton;
         QToolButton* mCloseSrButton;
-        
-    protected:
-        void resizeEvent( QResizeEvent* );
-        void moveEvent( QMoveEvent* );
         
     public slots:
         void currentSrChanged( QString );
