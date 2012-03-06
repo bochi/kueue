@@ -27,6 +27,8 @@
 #define HELPBROWSER_H
  
 #include "ui_helpbrowser.h"
+
+#include <QWebView>
  
 class HelpBrowser : public QDialog, private Ui::HelpBrowser
 {
@@ -36,6 +38,12 @@ class HelpBrowser : public QDialog, private Ui::HelpBrowser
         HelpBrowser( QObject* parent = 0L );
          ~HelpBrowser();
 
+    private:
+        QWebView* mWebView;
+        
+    private slots:
+        void goBack();
+        
     protected:
         void closeEvent( QCloseEvent *event );
 };

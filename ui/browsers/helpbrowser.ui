@@ -7,21 +7,18 @@
     <x>0</x>
     <y>0</y>
     <width>682</width>
-    <height>619</height>
+    <height>624</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>The kueue Handbook</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../kueue.qrc">
+   <iconset resource="../../kueue.qrc">
     <normaloff>:/icons/app/kueue32.png</normaloff>:/icons/app/kueue32.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0" colspan="2">
-    <layout class="QGridLayout" name="browserLayout"/>
-   </item>
-   <item row="1" column="0">
+   <item row="1" column="1">
     <spacer name="horizontalSpacer">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -34,18 +31,31 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="1">
+   <item row="1" column="2">
     <widget class="QPushButton" name="closeButton">
      <property name="text">
       <string>Close</string>
      </property>
     </widget>
    </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="backButton">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../kueue.qrc">
+       <normaloff>:/icons/menus/back.png</normaloff>:/icons/menus/back.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="3">
+    <layout class="QGridLayout" name="browserLayout"/>
+   </item>
   </layout>
  </widget>
  <resources>
-  <include location="../kueue.qrc"/>
-  <include location="../doc.qrc"/>
+  <include location="../../kueue.qrc"/>
  </resources>
  <connections/>
 </ui>

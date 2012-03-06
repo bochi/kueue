@@ -44,7 +44,7 @@
 
   <mediaobject>
   <imageobject>
-    <imagedata fileref="nts.png" role="top" />
+    <imagedata fileref="nts.png" role="top" width="95%"/>
   </imageobject>
   </mediaobject>
   
@@ -165,7 +165,7 @@
             <listitem><para>Automatically extract archives - the name says it all</para></listitem>
             <listitem><para>Enable editing with an external Editor - see the feature description in the "Unity Integration" section for details. If you'd like to use this feature, the next 2 options need to be set as well.</para></listitem>
             <listitem><para>Open download directory - select either the default filemanager or a custom filemanager to open the download directories.</para>
-            <para>As an example, here is what I am using: <ulink url="qrc:/help/scripts/kueue_yakuake">kueue_yakuake</ulink></para></listitem>
+            <para>As an example, here is what I am using: <ulink url="scripts/kueue_yakuake">kueue_yakuake</ulink></para></listitem>
         </itemizedlist>
     </para>
 
@@ -433,7 +433,7 @@
 
     <para>Kueue lets you open textboxes in an external editor for editing. This is useful when writing emails etc from within Unity. When the document is saved in the editor it will automatically be written back into the textbox. Also, it will save the files so one can use tools like grep to find specific emails etc later on.</para>
     <para>One can use a custom script as editor, ie. for formatting and quoting (put ">" before each line) before opening in the editor. This saves quite some work when replying to emails.</para>
-    <para>As an example, here is what I am using: <ulink url="qrc:/help/scripts/kueue_kate_quote">kueue_kate_quote</ulink></para>
+    <para>As an example, here is what I am using: <ulink url="scripts/kueue_kate_quote">kueue_kate_quote</ulink></para>
     
     <para><screenshot><screeninfo>External Editor</screeninfo>
     <mediaobject><imageobject>

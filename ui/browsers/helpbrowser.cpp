@@ -39,17 +39,20 @@ HelpBrowser::HelpBrowser( QObject* parent )
     int h = w->height();
     int res = ( ( h / 100 ) * 95 );
     
-    QWebView* v = new QWebView( this );
-    v->setUrl( QUrl( "qrc:/help/index.html" ) );
+    mWebView = new QWebView( this );
+    mWebView->setUrl( QUrl( "http://kueue.hwlab.suse.de/doc" ) );
     
     //resize( width(), res );
-    int nw = ( v->page()->settings()->fontSize(QWebSettings::DefaultFontSize) * 50 + 100 );
+    int nw = ( mWebView->page()->settings()->fontSize(QWebSettings::DefaultFontSize) * 50 + 100 );
     resize( ( nw + ( nw / 12 ) ), res );
     //resize( v->width(), res );
-    browserLayout->addWidget( v );
+    browserLayout->addWidget( mWebView );
     
     connect( closeButton, SIGNAL( clicked() ), 
              this, SIGNAL( rejected() ) );
+    
+    connect( backButton, SIGNAL( clicked() ),
+             this, SLOT( goBack() ) );
 }
 
 HelpBrowser::~HelpBrowser()
@@ -62,5 +65,11 @@ void HelpBrowser::closeEvent( QCloseEvent* event )
     emit rejected();
     QDialog::closeEvent( event );
 }
+
+void HelpBrowser::goBack()
+{
+    mWebView->triggerPageAction( QWebPage::Back );
+}
+
 
 #include "helpbrowser.moc"

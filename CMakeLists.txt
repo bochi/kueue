@@ -160,8 +160,7 @@ SET( kueue_CPP  main.cpp
 		nsa/nsawindow.cpp
 	        nsa/nsajob.cpp )
                 
-SET( kueue_QRC  kueue.qrc 
-	        doc.qrc )
+SET( kueue_QRC  kueue.qrc )
 
 SET( kueue_UI   ui/detailwindow.ui
                 ui/kueuewindow.ui
