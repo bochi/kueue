@@ -196,7 +196,7 @@ void UnityPage::pageLoaded()
     {
         QString title = mViewFrame->findFirstElement( "title" ).toInnerXml();
     
-        qDebug() << "Title:" << title;
+        //qDebug() << "Title:" << title;
         
         if ( title.startsWith( "NSA Report -" ) )
         {
@@ -687,53 +687,9 @@ void UnityPage::setElementText( QWebElement element, const QString& text )
 void UnityPage::getCurrentSR()
 {
     // sets mCurrentSR to the SR that is currently displayed 
-    bool keep = false;
-    QString title = mViewFrame->findFirstElement( "title" ).toInnerXml();
-    QString srnr = mViewFrame->findFirstElement( "span#s_1_1_69_0" ).toInnerXml().trimmed();
     
-    if ( !srnr.isEmpty() )
-    {
-        mCurrentSR = srnr;
-        emit currentSrChanged( srnr );
-    }
-    else
-    {
-        QWebElementCollection fc = mViewFrame->findAllElements( "*" );
-        
-        for ( int i = 0; i < fc.count(); ++i ) 
-        {  
-            if ( fc.at( i ).attribute( "id" ).contains( "LoginName" ) ||
-                fc.at( i ).attribute( "value" ).contains( Settings::engineer().toUpper() ) )
-            {
-                QString csr = fc.at( i ).attribute( "value" ).remove( Settings::engineer().toUpper() + ":" );
-                
-                if ( mCurrentSR != csr )
-                {
-                    mCurrentSR = csr;
-                    emit currentSrChanged( csr );
-                }
-                
-                i = fc.count();
-                keep = true;
-            }
-            else if ( fc.at( i ).attribute( "id" ).contains( "s_tb_" ) )
-            {
-                i = fc.count();
-                keep = true;
-            }
-        }
-        
-        if ( ( !keep ) && 
-             ( !title.isEmpty() ) && 
-             ( title != "Body" ) && 
-             ( title != "Service Request Attachments" ) &&
-             ( title != "Service Request Activities" ) )
-        {
-            mCurrentSR = "";
-            emit currentSrChanged( "" );
-        }
-    }
-        
+    QString title = mViewFrame->findFirstElement( "title" ).toInnerXml();
+    
     if ( ( title == "All Service Requests" ) ||
             ( title == "My Team's Service Requests" ) ||
             ( title == "My Service Requests" ) ||
@@ -741,6 +697,54 @@ void UnityPage::getCurrentSR()
     {
         mCurrentSR = "";
         emit currentSrChanged( "" );
+    }
+    else
+    {
+        bool keep = false;
+        QString srnr = mViewFrame->findFirstElement( "span#s_1_1_69_0" ).toInnerXml().trimmed();
+        
+        if ( !srnr.isEmpty() )
+        {
+            mCurrentSR = srnr;
+            emit currentSrChanged( srnr );
+        }
+        else
+        {
+            QWebElementCollection fc = mViewFrame->findAllElements( "*" );
+            
+            for ( int i = 0; i < fc.count(); ++i ) 
+            {  
+                if ( fc.at( i ).attribute( "id" ).contains( "LoginName" ) ||
+                    fc.at( i ).attribute( "value" ).contains( Settings::engineer().toUpper() ) )
+                {
+                    QString csr = fc.at( i ).attribute( "value" ).remove( Settings::engineer().toUpper() + ":" );
+                    
+                    if ( mCurrentSR != csr )
+                    {
+                        mCurrentSR = csr;
+                        emit currentSrChanged( csr );
+                    }
+                    
+                    i = fc.count();
+                    keep = true;
+                }
+                else if ( fc.at( i ).attribute( "id" ).contains( "s_tb_" ) )
+                {
+                    i = fc.count();
+                    keep = true;
+                }
+            }
+            
+            if ( ( !keep ) && 
+                ( !title.isEmpty() ) && 
+                ( title != "Body" ) && 
+                ( title != "Service Request Attachments" ) &&
+                ( title != "Service Request Activities" ) )
+            {
+                mCurrentSR = "";
+                emit currentSrChanged( "" );
+            }
+        }
     }
 }    
 

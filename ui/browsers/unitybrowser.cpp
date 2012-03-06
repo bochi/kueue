@@ -776,7 +776,7 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     mCloseSrButton->setToolTip( "Close SR" );
     
     mSrButton = new QToolButton;
-    mSrButton->setText( "SR" );
+    mSrButton->setText( "No SR" );
     
     connect( back, SIGNAL( pressed() ),
              mUnityBrowser, SLOT( historyBack() ) );
@@ -820,7 +820,6 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     mQueryLine = new QLineEdit;
     mQueryLine->setMaximumWidth( 150 );
     
-    //line->setFont();
     QLabel* label = new QLabel;
     label->setText( "Query" );
     
@@ -874,15 +873,19 @@ void UnityWidget::setTabId( int id )
 
 void UnityWidget::currentSrChanged( QString sr )
 {
-    mSrButton->setText( "SR#" + sr );
-    
     if ( ( sr == "" ) || ( !Kueue::isSrNr( sr ) ) )
     {
+        mSrButton->setText( "No SR" );
         mToolBar->setEnabled( false );
     }
     else if ( !mToolbarDisabled )
     {
+        mSrButton->setText( "SR#" + sr );
         mToolBar->setEnabled( true );
+    }
+    else
+    {
+        mSrButton->setText( "SR#" + sr );
     }
 }
 
@@ -926,6 +929,5 @@ void UnityWidget::changeStatus( QAction* action )
 {
     mUnityBrowser->setStatus( action->text() );
 }
-
 
 #include "unitybrowser.moc"
