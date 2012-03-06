@@ -196,7 +196,7 @@ void UnityPage::pageLoaded()
     {
         QString title = mViewFrame->findFirstElement( "title" ).toInnerXml();
     
-        //qDebug() << "Title:" << title;
+        qDebug() << "Title:" << title;
         
         if ( title.startsWith( "NSA Report -" ) )
         {
@@ -723,11 +723,24 @@ void UnityPage::getCurrentSR()
             }
         }
         
-        if ( !keep && !title.isEmpty() ) 
+        if ( ( !keep ) && 
+             ( !title.isEmpty() ) && 
+             ( title != "Body" ) && 
+             ( title != "Service Request Attachments" ) &&
+             ( title != "Service Request Activities" ) )
         {
             mCurrentSR = "";
             emit currentSrChanged( "" );
         }
+    }
+        
+    if ( ( title == "All Service Requests" ) ||
+            ( title == "My Team's Service Requests" ) ||
+            ( title == "My Service Requests" ) ||
+            ( title == "All Service Request across Organizations" ) )
+    {
+        mCurrentSR = "";
+        emit currentSrChanged( "" );
     }
 }    
 

@@ -878,11 +878,11 @@ void UnityWidget::currentSrChanged( QString sr )
     
     if ( ( sr == "" ) || ( !Kueue::isSrNr( sr ) ) )
     {
-        disableToolbar();
+        mToolBar->setEnabled( false );
     }
     else if ( !mToolbarDisabled )
     {
-        enableToolbar();
+        mToolBar->setEnabled( true );
     }
 }
 
