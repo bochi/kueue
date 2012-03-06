@@ -9,6 +9,7 @@
 <file alias="statsbrowser.html">doc/html/statsbrowser.html</file>
 <file alias="susebooks.css">doc/html/susebooks.css</file>
 <file alias="unity.html">doc/html/unity.html</file>
+<file alias="images/chat.png">doc/images/chat.png</file>
 <file alias="images/config_general.png">doc/images/config_general.png</file>
 <file alias="images/config_notifications.png">doc/images/config_notifications.png</file>
 <file alias="images/config_qboss.png">doc/images/config_qboss.png</file>
@@ -30,6 +31,7 @@
 <file alias="images/monitor.png">doc/images/monitor.png</file>
 <file alias="images/nsa.png">doc/images/nsa.png</file>
 <file alias="images/nts.png">doc/images/nts.png</file>
+<file alias="images/obacht.png">doc/images/obacht.png</file>
 <file alias="images/personal.png">doc/images/personal.png</file>
 <file alias="images/stats.png">doc/images/stats.png</file>
 <file alias="scripts/kueue_kate_quote">doc/scripts/kueue_kate_quote</file>

@@ -223,13 +223,25 @@
 
    <para>The Queue Monitor browser shows an overview about SRs that are currently in selected pseudo queues.</para>
    <para>One can directly assign/take SRs from the context menu or the details window.</para>
-   <para>If one of the customers is in Bomgar, it will show a little bomgar icon next to the SR number. The bomgar queue (or owner) is shown in the details (when expanding the SR table).</para>
     
    <para>
       <screenshot><screeninfo>Queue Monitor</screeninfo>
       <mediaobject><imageobject>
           <imagedata fileref="monitor.png" width="95%" format="PNG"/>
       </imageobject></mediaobject></screenshot>
+    </para>
+    
+    <para>As you can see, one can select several queues to be monitored. Kueue will notify when a new SR appears in a queue.</para>
+    <para>To get more details about an SR/CR, just open the details table. For information on what is shown, please see the screenshot.</para>
+    
+    <para>     
+      <imagedata fileref="chat.png" format="PNG"/>
+      This icon indicates that the customer is waiting in Bomgar. You can see the current Bomgar queue in the details for that SR.
+    </para>
+    
+    <para>     
+      <imagedata fileref="obacht.png" format="PNG"/>
+      This icon indicates that either the "High Value" or "Crit Sit" flag is set for that customer.
     </para>
     
     <para>
