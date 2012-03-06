@@ -28,6 +28,8 @@
 #include <QDebug>
 #include <QtWebKit>
 #include <QDesktopWidget>
+#include <QDesktopServices>
+#include <QtNetwork>
 
 HelpBrowser::HelpBrowser( QObject* parent )
 {
@@ -35,17 +37,22 @@ HelpBrowser::HelpBrowser( QObject* parent )
     
     setupUi( this ); 
     
+    QDir cacheDir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "/cache" );
+        
     QDesktopWidget* w = QApplication::desktop();
     int h = w->height();
     int res = ( ( h / 100 ) * 95 );
     
+    QNetworkDiskCache *diskCache = new QNetworkDiskCache( this );
+    diskCache->setCacheDirectory( cacheDir.absolutePath() );
+    
     mWebView = new QWebView( this );
+    mWebView->page()->networkAccessManager()->setCache( diskCache );
     mWebView->setUrl( QUrl( "http://kueue.hwlab.suse.de/doc" ) );
     
-    //resize( width(), res );
     int nw = ( mWebView->page()->settings()->fontSize(QWebSettings::DefaultFontSize) * 50 + 100 );
     resize( ( nw + ( nw / 12 ) ), res );
-    //resize( v->width(), res );
+
     browserLayout->addWidget( mWebView );
     
     connect( closeButton, SIGNAL( clicked() ), 
@@ -70,6 +77,5 @@ void HelpBrowser::goBack()
 {
     mWebView->triggerPageAction( QWebPage::Back );
 }
-
 
 #include "helpbrowser.moc"
