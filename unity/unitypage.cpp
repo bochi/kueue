@@ -184,6 +184,13 @@ void UnityPage::pageLoaded()
         mLoggedIn = false;
         loggedOut();
     }
+    
+    else if ( mainFrame()->toHtml().contains( "The server you are trying to access is either busy" ) )
+    {
+        emit pageErbertNed();
+        mLoggedIn = false;
+        loggedOut();
+    }
    
     else if ( ( mViewFrame != 0 ) && ( mLoggedIn ) )
     {
