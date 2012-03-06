@@ -46,10 +46,12 @@ bool UpdateDialog::smthToSay()
 {
     if ( textBrowser->document()->toPlainText().isEmpty() )
     {
+        qDebug() << "[UPDATEDIALOG] Nope, I'm good, thanks.";
         return false;
     }
     else
     {
+        qDebug() << "[UPDATEDIALOG] Yes, I do. " << textBrowser->document()->toPlainText();
         return true;
     }
 }

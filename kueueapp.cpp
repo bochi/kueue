@@ -108,14 +108,18 @@ void KueueApp::createApp()
     {
         UpdateDialog* ud = new UpdateDialog( this );
         
+        qDebug() << "[KUEUE] Update detected: " << Settings::appVersion() << "vs." << QApplication::applicationVersion();
+        qDebug() << "[KUEUE] Updatedialog? Anything you'd like to share?";
+        
         if ( ud->smthToSay() )
         {
             ud->exec();
         }
         
+        qDebug() << "[KUEUE] OK, thanks. I'll delete you and rebuild the DB.";
+        
         delete ud;
         
-        qDebug() << "[KUEUE] New version, rebuilding DB" << Settings::appVersion() << "vs" << QApplication::applicationVersion();
         Settings::setAppVersion( QApplication::applicationVersion() );
         mDB->newDB( false );
     }   
