@@ -318,7 +318,7 @@ void KueueApp::updateProgress( int max, int type )
 
 void KueueApp::sendTestNotification()
 {
-    Kueue::notify( "kueue-monitor-low", "Test Notification", "This is a <b>test notification</b> of type<br><br>kueue-monitor-low", "12345678910" );
+    Kueue::notify( "kueue-sr-update", "Test Notification", "This is a <b>test notification</b> of type<br><br>kueue-sr-update", "10750506911" );
 }
 
 #include "kueueapp.moc"

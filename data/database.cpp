@@ -771,6 +771,54 @@ QStringList Database::getCsatExistList()
     return list;
 }
 
+bool Database::siebelQueueChanged( SiebelItem* si  )
+{
+    QSqlQuery query;
+    query.prepare( "SELECT QUEUE FROM qmon_siebel WHERE ( ID = :id )" );
+    query.bindValue( ":id", si->id );
+    query.exec();
+
+    if ( query.next() )
+    {
+        if ( query.value( 0 ).toString() == si->queue )
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    else
+    {
+        return true;
+    }
+}
+
+bool Database::siebelSeverityChanged( SiebelItem* si  )
+{
+    QSqlQuery query;
+    query.prepare( "SELECT SEVERITY FROM qmon_siebel WHERE ( ID = :id )" );
+    query.bindValue( ":id", si->id );
+    query.exec();
+
+    if ( query.next() )
+    {
+        if ( query.value( 0 ).toString() == si->severity )
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    else
+    {
+        return true;
+    }
+}
+
 int Database::csatEngAverage( const QString& engineer )
 {
     QSqlQuery query;

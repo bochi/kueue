@@ -39,10 +39,16 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 
-UnityPage::UnityPage( QObject *parent )
+UnityPage::UnityPage( QObject *parent, QString sr )
         : QWebPage( ( QWidget* ) 0 )
 {
     qDebug() << "[UNITYPAGE] Constructing";
+    
+    if ( sr != QString::Null() )
+    {
+        emit pageErbert();
+        mStartSR = sr;
+    }
     
     mViewFrame = 0;
     
@@ -55,6 +61,7 @@ UnityPage::UnityPage( QObject *parent )
     mAddNote = false;
     mNoJsConfirm = false;
     mCloseSR = false;
+    mSetStatus = false;
     
     mStatusBar = &mStatusBar->getInstance();
     
@@ -106,6 +113,9 @@ void UnityPage::addFrame( QWebFrame* f )
     {
         mViewFrame = f;
         mLoggedIn = true;
+        
+        connect( mViewFrame, SIGNAL( loadFinished(bool) ),
+                 this, SLOT( viewFrameStarted() ) );
     }
     
     // Set the mBarFrame (the one that holds the navigation bar)    
@@ -133,6 +143,18 @@ void UnityPage::addFrame( QWebFrame* f )
 
         connect( mViewBarFrame, SIGNAL( loadFinished( bool ) ), 
                  this, SLOT( fixQueryBox() ) );
+    }
+}
+
+void UnityPage::viewFrameStarted()
+{
+    disconnect( mViewFrame, 0, 0, 0 );
+    
+    if ( !mStartSR.isEmpty() )
+    {
+        emit pageErbert();
+        querySR( mStartSR );
+        mStartSR.clear();
     }
 }
 
@@ -264,6 +286,11 @@ QWebPage* UnityPage::createWindow( QWebPage::WebWindowType type )
     return webPage;
 }
 
+void UnityPage::goToService()
+{
+    mViewFrame->evaluateJavaScript( mServiceJS );
+}
+
 void UnityPage::querySR( const QString& sr )
 {
     mNoJsConfirm = false;
@@ -272,6 +299,7 @@ void UnityPage::querySR( const QString& sr )
 
     if ( mNavReady )
     {
+        mPageErbert = true;
         emit pageErbert();
         mQuerySR = sr;
         
@@ -331,7 +359,7 @@ void UnityPage::doQuery()
     // need to make sure all fields are empty first, otherwise it won't work if 
     // a default query is selected and has some fields filled out automatically
     
-    disconnect( mViewFrame, 0, 0, 0 );    
+    disconnect( mViewFrame, 0, 0, 0 );
     
     connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
              this, SLOT( goToActivities() ) );
@@ -348,7 +376,7 @@ void UnityPage::doQuery()
     
     QWebElement sr = mViewFrame->findFirstElement( "input#s_2_2_94_0" );
     sr.setAttribute( "value", mQuerySR );
-
+    
     QWebElementCollection c = mViewFrame->findAllElements( "a" );   
     QString js;
     
@@ -377,9 +405,14 @@ void UnityPage::goToActivities()
         connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
                  this, SLOT( closeSrFirst() ) );
     }
-    else
+    else if ( mSetStatus )
     {
         connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+                 this, SLOT( setStatusFirst() ) );
+    }
+    else
+    {
+        connect( mViewFrame, SIGNAL( loadFinished(bool) ), 
                  this, SLOT( actionDone() ) );
     }
     
@@ -399,6 +432,7 @@ void UnityPage::actionDone()
 {
     disconnect( mViewFrame, 0, 0, 0 );
     unsetJsConfirm();
+    mPageErbert = false;
     emit pageErbertNed();
 }
 
@@ -438,6 +472,8 @@ void UnityPage::newActivity()
 
 void UnityPage::getServiceJS()
 {
+    disconnect( mBarFrame, 0, 0, 0 );
+    
     // get the Javascript that can be used to navigate to the "home" (service) tab
     // it contains some kind of session id, thus needs to be retrieved every time
     
@@ -573,6 +609,11 @@ QWebHitTestResult UnityPage::getElementAt( const QPoint& pos )
 
 void UnityPage::javaScriptAlert( QWebFrame* frame, const QString& msg )
 {
+    if ( mPageErbert )
+    {
+        emit pageErbertNed();
+    }
+    
     if ( msg.contains( "Error[0]:The user ID or password" ) && !mDontLogin )
     {
         mDontLogin = true;
@@ -613,6 +654,11 @@ void UnityPage::javaScriptAlert( QWebFrame* frame, const QString& msg )
     else
     {  
         return QWebPage::javaScriptAlert( frame, msg );
+    }
+    
+    if ( mPageErbert )
+    {
+        emit pageErbert();
     }
 }
 
@@ -789,5 +835,6 @@ void UnityPage::saveCurrentActivity()
 #include "unitypage_sc.cpp"
 #include "unitypage_close.cpp"
 #include "unitypage_note.cpp"
+#include "unitypage_status.cpp"
 
 #include "unitypage.moc"

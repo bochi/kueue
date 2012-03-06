@@ -254,11 +254,19 @@ void TabWidget::showUnityTab( bool b )
     }
 }
 
-void TabWidget::addUnityBrowser()
+void TabWidget::addUnityBrowser( const QString& sr )
 {   
     // create a new unitywidget and add it as a tab
+    UnityWidget* w;
     
-    UnityWidget* w = new UnityWidget( this );
+    if ( sr == QString::Null() )
+    {
+        w = new UnityWidget( this );
+    }
+    else
+    {
+        w = new UnityWidget( this, sr );
+    }
 
     int tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
     
@@ -271,6 +279,11 @@ void TabWidget::addUnityBrowser()
     
     mUnityWidgetList.append( w );
     mUnityBrowserMap[ tab ] = w->browser();
+    
+    if ( sr != QString::Null() )
+    {
+        switchToTab( tab );
+    }
 }
 
 void TabWidget::removeUnityBrowser( int tab )

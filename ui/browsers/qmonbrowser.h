@@ -42,6 +42,7 @@ class QMonBrowser : public QWebView
         QProgressDialog* mProgress;
         QUrl mUrl;
         QString mFilter;
+        QString mSR;
         
     public slots:
         void update();

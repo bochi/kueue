@@ -234,8 +234,9 @@ void QMonBrowser::contextMenu( QMouseEvent* event, const QString& id )
     QAction* oc = new QAction( "Show/Hide SR details", menu );
     QAction* dd = new QAction( "Show detailed description", menu );
     QAction* cb = new QAction( "Copy SR# to clipboard", menu );
-    QAction* ts = new QAction( "Take SR and copy SR# to clipboard", menu );
-    QAction* ou = new QAction( "Show in Unity", menu );
+    QAction* ts = new QAction( "Take SR and open in new Unity browser", menu );
+    QAction* ou = new QAction( "Open in first Unity browser", menu );
+    QAction* on = new QAction( "Open in new Unity browser", menu );
     QWidgetAction* wa = new QWidgetAction( menu );
     
     QFont font = ba->font();
@@ -259,12 +260,14 @@ void QMonBrowser::contextMenu( QMouseEvent* event, const QString& id )
     cb->setData( id + "|cb" );
     ts->setData( id + "|ts" );
     ou->setData( id + "|ou" );
+    on->setData( id + "|on" );
     
     oc->setIcon( QIcon( ":/icons/menus/toggle.png" ) );
     dd->setIcon( QIcon( ":/icons/menus/ddesc.png" ) );
     cb->setIcon( QIcon( ":/icons/menus/clipboard.png" ) );
     ts->setIcon( QIcon( ":/icons/menus/take.png" ) );
     ou->setIcon( QIcon( ":/icons/menus/siebel.png" ) );
+    on->setIcon( QIcon( ":/icons/menus/siebel.png" ) );
     
     menu->addAction( wa );
     menu->addAction( oc );
@@ -279,6 +282,7 @@ void QMonBrowser::contextMenu( QMouseEvent* event, const QString& id )
     {
         menu->addSeparator();
         menu->addAction( ou );
+        menu->addAction( on );
     }
     
     connect( menu, SIGNAL( triggered( QAction* ) ), 
@@ -322,6 +326,10 @@ void QMonBrowser::contextMenuItemTriggered( QAction* a )
     {
         TabWidget::openInUnity( a->data().toString().remove( "|ou" ) );
     }
+    else if ( a->data().toString().contains( "|on" ) )
+    {
+        TabWidget::newUnityWithSR( a->data().toString().remove( "|on" ) );
+    }
 
 }
 
@@ -364,6 +372,7 @@ void QMonBrowser::takeSR( const QString& sr )
     if ( reply == QMessageBox::Yes ) 
     {
         showProgress();
+        mSR = sr;
         mAssign = Kueue::download( QUrl( Settings::dBServer() + "/assign.asp?sr=" + sr + "&owner=" + Settings::engineer().toUpper() ) );
         connect( mAssign, SIGNAL( finished() ), this, SLOT( assignFinished() ) );
     }
@@ -415,7 +424,11 @@ void QMonBrowser::assignFinished()
         QMessageBox::critical( this, "Error", "General failure" );
 
     else if ( data.startsWith( "SUCCESS" ) )
+    {
         QMessageBox::information( this, "Done", "SR successfully assigned to " + Settings::engineer() );
+        TabWidget::newUnityWithSR( mSR );
+        mSR.clear();
+    }
     
     else QMessageBox::critical( this, "Error", "Unknown reply: " + data );
     

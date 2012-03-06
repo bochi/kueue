@@ -56,9 +56,18 @@ void UnityPage::setSS( const QString& sr )
 void UnityPage::setSSconfirmed()
 {
     emit pageErbert();
-    mSetSS = true;
-
-    querySR( mSsDialog->sr() );
+    
+    if ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) &&
+         ( mCurrentSR == mSsDialog->sr() ) )
+    {
+        mSetSS = true;
+        newActivity();
+    }
+    else
+    {
+        mSetSS = true;
+        querySR( mSsDialog->sr() );
+    }
 }
 
 void UnityPage::setSSrejected()

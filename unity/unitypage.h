@@ -41,7 +41,7 @@ class UnityPage : public QWebPage
     Q_OBJECT
      
     public:
-        explicit UnityPage( QObject* parent = 0L );
+        explicit UnityPage( QObject* parent = 0L, QString sr = QString::Null() );
         ~UnityPage();
         
         bool navReady() { return mNavReady; }
@@ -64,6 +64,8 @@ class UnityPage : public QWebPage
         void saveCurrentSR();
         void addNote();
         void closeSr();
+        void setStatus( const QString& );
+        void goToService();
         
     private slots:
         void pageLoaded();
@@ -72,6 +74,7 @@ class UnityPage : public QWebPage
         void passwordReceived();
         void antiIdle();
         void addFrame( QWebFrame* );
+        void viewFrameStarted();
         void fixQueryBox();
         void goHome();
         void goHomeFirst();
@@ -79,11 +82,13 @@ class UnityPage : public QWebPage
         void goToActivities();
         void actionDone();
         void newActivity();
+        
         void setSSconfirmed();
         void setSSrejected();
         void setSSfirst();
         void setSSsecond();
         void setSSthird();
+        
         void unsetJsConfirm();
         void getServiceJS();
         void getCurrentSR();
@@ -91,6 +96,7 @@ class UnityPage : public QWebPage
         void download( const QNetworkRequest& );
         void fillOutProductNext();
         void saveCurrentActivity();
+        
         void setScConfirmed();
         void setScRejected();
         void setScFirst();
@@ -99,16 +105,21 @@ class UnityPage : public QWebPage
         void setScFourth();
         void setScFifth();
         void setScSixth();
+        
         void closeSrAccepted();
         void closeSrRejected();
         void closeSrFirst();
         void closeSrSecond();
         void closeSrThird();
+        
         void addNoteAccepted();
         void addNoteRejected();
         void addNoteFirst();
         void addNoteSecond();
         void addNoteThird();
+        
+        void setStatusFirst();
+        void setStatusSecond();
         
     private:
         QWebPage* createWindow( QWebPage::WebWindowType type );
@@ -129,6 +140,7 @@ class UnityPage : public QWebPage
         SsDialog* mSsDialog;
         
         QString mQuerySR;
+        QString mStartSR;
         QString mServiceJS;
         QString mLogoutJS;
         QString mNewJS();
@@ -151,8 +163,10 @@ class UnityPage : public QWebPage
         bool mCloseSR;
         bool mAddNote;
         bool mNoJsConfirm;
+        bool mPageErbert;
+        bool mSetStatus;
         bool checkMandatoryForClose();
-        
+
     protected:
         void javaScriptAlert( QWebFrame*, const QString& );
         bool javaScriptConfirm( QWebFrame*, const QString& );

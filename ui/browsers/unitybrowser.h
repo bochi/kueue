@@ -45,7 +45,7 @@ class UnityBrowser : public QWebView
     Q_OBJECT
      
     public:
-        explicit UnityBrowser( QWidget* parent = 0L );
+        explicit UnityBrowser( QWidget* parent = 0L, QString sr = QString::Null() );
         ~UnityBrowser();
         
         QString currentSR();
@@ -62,6 +62,8 @@ class UnityBrowser : public QWebView
         void closeSr();
         void openFileBrowser();
         void goBackToSr();
+        void setStatus( const QString& );
+        void goToService();
 
     private slots:
         void disconnectShortcuts();
@@ -117,7 +119,7 @@ class UnityWidget : public QWidget
     Q_OBJECT
 
     public:
-        explicit UnityWidget( QObject* parent = 0L );
+        explicit UnityWidget( QObject* parent = 0L, QString sr = QString::Null() );
         ~UnityWidget();
         
         UnityBrowser* browser() { return mUnityBrowser; }
@@ -129,7 +131,8 @@ class UnityWidget : public QWidget
         BusyWidget* mBusyWidget;
         int mTabId;
         bool mToolbarDisabled;
-
+        QMenu* statusMenu();
+        
         QLineEdit* mQueryLine;
         QToolButton* mSrButton;
         QToolButton* mSendEmailButton;
@@ -140,6 +143,8 @@ class UnityWidget : public QWidget
         QToolButton* mScButton;
         QToolButton* mAddNoteButton;
         QToolButton* mCloseSrButton;
+        QToolButton* mHomeButton;
+        QToolButton* mChangeStatusButton;
         
     public slots:
         void currentSrChanged( QString );
@@ -151,6 +156,7 @@ class UnityWidget : public QWidget
         void disableToolbar();
         void enableToolbar(); 
         void querySR();
+        void changeStatus( QAction* );
         
 };
 

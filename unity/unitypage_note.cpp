@@ -49,9 +49,17 @@ void UnityPage::addNoteAccepted()
 {
     emit pageErbert();
     
-    mAddNote = true;
-    
-    querySR( mNoteDialog->sr() );
+    if ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) &&
+         ( mCurrentSR == mNoteDialog->sr() ) )
+    {
+        mAddNote = true;
+        newActivity();
+    }
+    else
+    {
+        mAddNote = true;
+        querySR( mNoteDialog->sr() );
+    }
 }
 
 void UnityPage::addNoteRejected()

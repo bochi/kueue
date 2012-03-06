@@ -189,9 +189,12 @@ void Queue::jobDone()
                         {
                             Database::updateSRData( sr );
                             
-                            if ( !initial )
+                            if ( ( !initial ) && 
+                                 ( ( status == "Awaiting Novell Support" ) || 
+                                   ( status == "Escalate" ) ||
+                                   ( status == "Assigned" ) ) )
                             {
-                                Kueue::notify( "kueue-sr-update", "SR Updated", "<b>" + sr->id() + 
+                                Kueue::notify( "kueue-sr-update", "SR Updated", "<b>SR#" + sr->id() + 
                                                    "</b><br>" + sr->briefDesc(), sr->id() );
                                 
                                 if ( Settings::animateQueue() ) 
@@ -208,7 +211,7 @@ void Queue::jobDone()
                             
                             if ( !initial )
                             {
-                                Kueue::notify( "kueue-sr-new", "New SR in your queue", "<b>" + id +
+                                Kueue::notify( "kueue-sr-new", "New SR in your queue", "<b>SR#" + id +
                                                    "</b><br>" + sr->briefDesc(), sr->id() );
                                 
                                 if ( Settings::animateQueue() ) 

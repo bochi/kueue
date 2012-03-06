@@ -232,6 +232,66 @@ void Qmon::siebelJobDone()
             }
             else
             {
+                if ( ( Database::siebelQueueChanged( si ) ) &&
+                     ( mQueueList.contains( si->queue ) ) )
+                {
+                    if ( si->severity == "Low" )
+                    {               
+                        Kueue::notify( "kueue-monitor-low", "New SR in " + QString( si->queue ), 
+                                            "<b>SR#" + si->id + "</b><br>" + si->bdesc, si->id );
+                    }
+                    else if ( si->severity == "Medium" )
+                    {
+                        Kueue::notify( "kueue-monitor-medium", "New SR in " + QString( si->queue ), 
+                                            "<b>SR#" + si->id + "</b><br>" + si->bdesc, si->id );
+                    }
+                    else if ( si->severity == "Urgent" )
+                    {
+                        Kueue::notify( "kueue-monitor-urgent", "New SR in " + QString( si->queue ), 
+                                            "<b>SR#" + si->id + "</b><br>" + si->bdesc, si->id );
+                    }
+                    else if ( si->severity == "High" )
+                    {
+                        Kueue::notify( "kueue-monitor-high", "New SR in " + QString( si->queue ), 
+                                            "<b>SR#" + si->id + "</b><br>" + si->bdesc, si->id );
+                    }
+
+                    if ( Settings::animateQmon() ) 
+                    {
+                        Kueue::attention( true );
+                    }
+                }
+                
+                if ( ( Database::siebelSeverityChanged( si ) ) &&
+                     ( mQueueList.contains( si->queue ) ) )
+                {
+                    if ( si->severity == "Low" )
+                    {               
+                        Kueue::notify( "kueue-monitor-low", "Severity for <b>SR#" + si->id + "</b> changed", 
+                                                            "Severity is now<b> " + si->severity + "</b>", si->id );
+                    }
+                    else if ( si->severity == "Medium" )
+                    {
+                        Kueue::notify( "kueue-monitor-medium", "Severity for <b>SR#" + si->id + "</b> changed", 
+                                                            "Severity is now<b> " + si->severity + "</b>", si->id );
+                    }
+                    else if ( si->severity == "Urgent" )
+                    {
+                        Kueue::notify( "kueue-monitor-urgent", "Severity for <b>SR#" + si->id + "</b> changed", 
+                                                            "Severity is now<b> " + si->severity + "</b>", si->id );
+                    }
+                    else if ( si->severity == "High" )
+                    {
+                        Kueue::notify( "kueue-monitor-high", "Severity for <b>SR#" + si->id + "</b> changed", 
+                                                            "Severity is now<b> " + si->severity + "</b>", si->id );
+                    }
+
+                    if ( Settings::animateQmon() ) 
+                    {
+                        Kueue::attention( true );
+                    }
+                }
+                
                 Database::updateSiebelItemInDB( si );
             }
             

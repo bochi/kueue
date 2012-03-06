@@ -59,9 +59,18 @@ void UnityPage::setSC( const QString& sr )
 void UnityPage::setScConfirmed()
 {
     emit pageErbert();
-    mSetSC = true;
-    
-    querySR( mCalendarDialog->sr() );
+ 
+    if ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) &&
+         ( mCurrentSR == mCalendarDialog->sr() ) )
+    {
+        mSetSC = true;
+        newActivity();
+    }
+    else
+    {
+        mSetSC = true;
+        querySR( mCalendarDialog->sr() );
+    }
 }
 
 void UnityPage::setScRejected()

@@ -40,7 +40,7 @@
 #include <QDir>
 #include <QProcess>
 
-UnityBrowser::UnityBrowser( QWidget *parent )
+UnityBrowser::UnityBrowser( QWidget *parent, QString sr )
         : QWebView( ( QWidget* ) 0 )
 {
     qDebug() << "[UNITYBROWSER] Constructing";
@@ -53,7 +53,15 @@ UnityBrowser::UnityBrowser( QWidget *parent )
         QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptCanCloseWindows, true );
         QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptCanAccessClipboard, true );
         
-        mUnityPage = new UnityPage( this );
+        if ( sr != QString::Null() )
+        {
+            mUnityPage = new UnityPage( this, sr );
+        }
+        else
+        {
+            mUnityPage = new UnityPage( this );
+        }
+        
         setPage( mUnityPage );
     
         connect( mUnityPage, SIGNAL( linkHovered( QString, QString, QString ) ), 
@@ -191,6 +199,16 @@ void UnityBrowser::addNote()
 void UnityBrowser::closeSr()
 {
     mUnityPage->closeSr();
+}
+
+void UnityBrowser::goToService()
+{
+    mUnityPage->goToService();
+}
+
+void UnityBrowser::setStatus( const QString& status )
+{
+    mUnityPage->setStatus( status );
 }
 
 void UnityBrowser::openWebInspector()
@@ -666,7 +684,7 @@ QString UnityBrowser::currentSR()
  * 
  */
 
-UnityWidget::UnityWidget( QObject* parent )
+UnityWidget::UnityWidget( QObject* parent, QString sr )
 {
     qDebug() << "[UNITYWIDGET] Constructing";
     
@@ -678,7 +696,15 @@ UnityWidget::UnityWidget( QObject* parent )
     QStackedLayout* overlayLayout = new QStackedLayout();
     overlayLayout->setStackingMode(QStackedLayout::StackAll);
     
-    mUnityBrowser = new UnityBrowser( this );
+    if ( sr != QString::Null() )
+    {
+        mUnityBrowser = new UnityBrowser( this, sr );
+    }
+    else
+    {
+        mUnityBrowser = new UnityBrowser( this );
+    }
+    
     mBusyWidget = new BusyWidget( this );
     
     overlayLayout->addWidget( mUnityBrowser );
@@ -711,6 +737,15 @@ UnityWidget::UnityWidget( QObject* parent )
     mSendEmailButton = new QToolButton( mToolBar );
     mSendEmailButton->setIcon( QIcon( ":/icons/toolbar/send_email.png" ) );
     mSendEmailButton->setToolTip( "Send Email" );
+ 
+    mHomeButton = new QToolButton( mToolBar );
+    mHomeButton->setIcon( QIcon( ":/icons/toolbar/home.png" ) );
+    mHomeButton->setToolTip( "Go Home" );
+    
+    mChangeStatusButton = new QToolButton( mToolBar );
+    mChangeStatusButton->setIcon( QIcon( ":/icons/toolbar/status.png" ) );
+    mChangeStatusButton->setToolTip( "Change Status" );
+    mChangeStatusButton->setMenu( statusMenu() );
     
     mSaveSrButton = new QToolButton( mToolBar );
     mSaveSrButton->setIcon( QIcon( ":/icons/toolbar/save_sr.png" ) );
@@ -749,9 +784,15 @@ UnityWidget::UnityWidget( QObject* parent )
     connect( mGoBackButton, SIGNAL( pressed() ),
              mUnityBrowser, SLOT( goBackToSr() ) );
     
+    connect( mHomeButton, SIGNAL( pressed() ),
+             mUnityBrowser, SLOT( goToService() ) );
+        
     connect( mSaveSrButton, SIGNAL( pressed() ), 
              mUnityBrowser, SLOT( saveSr() ) );
 
+    connect( mChangeStatusButton, SIGNAL( clicked() ),
+             mChangeStatusButton, SLOT( showMenu()) );
+        
     connect( mSendEmailButton, SIGNAL( pressed() ), 
              mUnityBrowser, SLOT( sendEmail() ) );
 
@@ -785,6 +826,7 @@ UnityWidget::UnityWidget( QObject* parent )
     
     mToolBar->addWidget( back );
     mToolBar->addWidget( mGoBackButton );
+    mToolBar->addWidget( mHomeButton );
     mToolBar->addSeparator();
     mToolBar->addWidget( mSrButton );
     mToolBar->addSeparator();
@@ -792,6 +834,7 @@ UnityWidget::UnityWidget( QObject* parent )
     mToolBar->addWidget( mFileBrowserButton );
     mToolBar->addSeparator();
     mToolBar->addWidget( mSendEmailButton );
+    mToolBar->addWidget( mChangeStatusButton );
     mToolBar->addWidget( mSsButton );
     mToolBar->addWidget( mScButton );
     mToolBar->addWidget( mAddNoteButton );
@@ -863,5 +906,26 @@ void UnityWidget::querySR()
         mQueryLine->clear();
     }
 }
+
+QMenu* UnityWidget::statusMenu()
+{
+    QMenu* menu = new QMenu( this );
+    menu->addAction( "Awaiting Customer" );
+    menu->addAction( "Awaiting Novell Support" );
+    menu->addAction( "Awaiting Novell Engineering" );
+    menu->addAction( "Monitor Solution" );
+    menu->addAction( "Suspended" );
+    
+    connect( menu, SIGNAL( triggered( QAction* ) ),
+             this, SLOT( changeStatus( QAction* ) ) );
+    
+    return menu;
+}
+
+void UnityWidget::changeStatus( QAction* action )
+{
+    mUnityBrowser->setStatus( action->text() );
+}
+
 
 #include "unitybrowser.moc"

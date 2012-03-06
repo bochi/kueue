@@ -26,6 +26,7 @@
 #include "systray.h"
 #include "kueue.h"
 #include "settings.h"
+#include "tabwidget.h"
 
 #include <QMenu>
 #include <QShortcut>
@@ -229,7 +230,7 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
             
             if ( type.startsWith( "kueue-sr" ) || type.startsWith( "kueue-monitor" ) )
             {
-                actions = QStringList() << "det|" + sr << "Details" << "cb|" + sr << "Clipboard" << "cl|" + sr << "Close";
+                actions = QStringList() << "det|" + sr << "Details" << "un|" + sr << "Unity" << "cl|" + sr << "Close";
             }
 
             if ( mIsGnome )
@@ -470,9 +471,9 @@ void Systray::notificationActionInvoked( uint id, QString type )
         Kueue::showDetailedDescription( type.remove( "det|" ) );
         requiresAttention( false );
     }
-    else if ( type.startsWith( "cb|" ) )
+    else if ( type.startsWith( "un|" ) )
     {
-        Kueue::setClipboard( type.remove( "cb|" ) );
+        TabWidget::newUnityWithSR( type.remove( "un|" ) );
         requiresAttention( false );
     }
     else if ( type.startsWith( "cl|" ) )
