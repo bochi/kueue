@@ -34,7 +34,7 @@
 
 void UnityPage::setStatus( const QString& status )
 {
-    emit pageErbert();
+    emit pageErbert( "Changing Status for SR#" + mCurrentSR );
     mNewStatus = status;
     mNoJsConfirm = true;
     

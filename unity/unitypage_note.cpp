@@ -47,7 +47,7 @@ void UnityPage::addNote()
 
 void UnityPage::addNoteAccepted()
 {
-    emit pageErbert();
+    emit pageErbert( "Adding Note to SR#" + mNoteDialog->sr() );
     
     if ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) &&
          ( mCurrentSR == mNoteDialog->sr() ) )

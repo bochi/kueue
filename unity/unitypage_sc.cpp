@@ -58,7 +58,7 @@ void UnityPage::setSC( const QString& sr )
 
 void UnityPage::setScConfirmed()
 {
-    emit pageErbert();
+    emit pageErbert( "Setting SR#" + mCalendarDialog->sr() + " to Schedule For Close" );
  
     if ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) &&
          ( mCurrentSR == mCalendarDialog->sr() ) )

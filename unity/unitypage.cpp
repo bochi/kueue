@@ -46,7 +46,6 @@ UnityPage::UnityPage( QObject *parent, QString sr )
     
     if ( sr != QString::Null() )
     {
-        emit pageErbert();
         mStartSR = sr;
     }
     
@@ -152,7 +151,6 @@ void UnityPage::viewFrameStarted()
     
     if ( !mStartSR.isEmpty() )
     {
-        emit pageErbert();
         querySR( mStartSR );
         mStartSR.clear();
     }
@@ -306,8 +304,19 @@ void UnityPage::querySR( const QString& sr )
 
     if ( mNavReady )
     {
-        mPageErbert = true;
-        emit pageErbert();
+        if ( ( mSetSS ) || 
+             ( mSetSC ) || 
+             ( mAddNote ) || 
+             ( mCloseSR ) ||
+             ( mSetStatus ) )
+        {
+            mPageErbert = true;
+        }
+        else
+        {
+            emit pageErbert( "Browsing to SR#" + sr );
+        }
+            
         mQuerySR = sr;
         
         disconnect( mViewFrame, 0, 0, 0 );

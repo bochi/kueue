@@ -27,6 +27,9 @@
 #define BUSYWIDGET_H
  
 #include <QWidget>
+#include <QLabel>
+#include <QPushButton>
+
 #include "qprogressindicator.h"
 
 class BusyWidget : public QWidget
@@ -38,12 +41,14 @@ class BusyWidget : public QWidget
          ~BusyWidget();
          
     public slots:
-        void activate();
+        void activate( const QString& text = QString::Null() );
         void deactivate();
          
     private: 
         QProgressIndicator* mProgress;
-
+        QLabel* mLabel;
+        QPushButton* mButton;
+        
     protected:
         void paintEvent( QPaintEvent* );
 };

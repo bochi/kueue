@@ -97,7 +97,7 @@ bool UnityPage::checkMandatoryForClose()
 
 void UnityPage::closeSrFirst()
 {
-    emit pageErbert();
+    disconnect( mViewFrame, 0, 0, 0 );    
     
     if ( !checkMandatoryForClose() )
     {
@@ -105,7 +105,7 @@ void UnityPage::closeSrFirst()
     }
     else
     {   
-        disconnect( mViewFrame, 0, 0, 0 );
+        emit pageErbert( "Closing SR#" + mCloseDialog->sr() );
         
         connect( mViewFrame, SIGNAL( loadFinished( bool ) ),
                 this, SLOT( closeSrSecond() ) );   

@@ -55,7 +55,7 @@ void UnityPage::setSS( const QString& sr )
 
 void UnityPage::setSSconfirmed()
 {
-    emit pageErbert();
+    emit pageErbert( "Setting Solution Suggested for SR#" + mSsDialog->sr() );
     
     if ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) &&
          ( mCurrentSR == mSsDialog->sr() ) )

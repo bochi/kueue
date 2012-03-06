@@ -73,6 +73,9 @@ UnityBrowser::UnityBrowser( QWidget *parent, QString sr )
         connect( mUnityPage, SIGNAL( pageErbert() ),
                  this, SLOT( pageErbert() ) );
         
+        connect( mUnityPage, SIGNAL( pageErbert( QString ) ),
+                 this, SLOT( pageErbert( QString ) ) );
+        
         connect( mUnityPage, SIGNAL( pageErbertNed() ),
                  this, SLOT( pageErbertNed() ) );
         
@@ -152,11 +155,11 @@ void UnityBrowser::disconnectShortcuts()
     disconnect( mAddNoteSC, 0, 0, 0 );
 }
 
-void UnityBrowser::pageErbert()
+void UnityBrowser::pageErbert( const QString& text )
 {
     disconnectShortcuts();
     emit disableToolbar();
-    emit enableProgressIndicator();
+    emit enableProgressIndicator( text );
 }
 
 void UnityBrowser::pageErbertNed()
@@ -719,8 +722,8 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     connect( mUnityBrowser, SIGNAL( enableToolbar() ),
              this, SLOT( enableToolbar() ) );
     
-    connect( mUnityBrowser, SIGNAL( enableProgressIndicator() ),
-             this, SLOT( activateProgressWidget() ) );
+    connect( mUnityBrowser, SIGNAL( enableProgressIndicator(QString) ),
+             this, SLOT( activateProgressWidget(QString) ) );
     
     connect( mUnityBrowser, SIGNAL( disableProgressIndicator() ),
              this, SLOT( deactivateProgressWidget() ) );
@@ -856,9 +859,9 @@ UnityWidget::~UnityWidget()
     qDebug() << "[UNITYWIDGET] Destroying id" << mTabId;
 }
 
-void UnityWidget::activateProgressWidget()
+void UnityWidget::activateProgressWidget( const QString& text )
 {
-    mBusyWidget->activate();
+    mBusyWidget->activate( text );
 }
 
 void UnityWidget::deactivateProgressWidget()

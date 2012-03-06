@@ -36,17 +36,32 @@ BusyWidget::BusyWidget( QObject* parent )
 
     setAttribute( Qt::WA_TranslucentBackground, true );
     
-    QHBoxLayout* hLayout = new QHBoxLayout( this );
-
+    QGridLayout* layout = new QGridLayout(this);
+    
     mProgress = new QProgressIndicator( this, QSize( 160, 160 ) );
     mProgress->setAnimationDelay( 90 );
     mProgress->stopAnimation();
     mProgress->show();
     
-    hLayout->addStretch();
-    hLayout->addWidget( mProgress );
-    hLayout->addStretch();
+    mLabel = new QLabel( this );
+    mButton = new QPushButton( this );
+    mButton->setStyleSheet( "background-color: rgba( 255, 255, 255, 0% );" );
     
+    connect( mButton, SIGNAL( pressed() ),
+             this, SLOT( deactivate() ) );
+
+    mButton->setIcon( QIcon(":/icons/menus/quit.png"));
+    
+    layout->addWidget(mLabel, 0, 2, Qt::AlignRight );
+    layout->addWidget(mProgress, 2, 2, Qt::AlignCenter);
+    layout->addWidget(mButton, 4, 2, Qt::AlignRight );
+    
+    layout->setRowStretch(0,0);
+    layout->setRowStretch(1,10);
+    layout->setRowStretch(2,5);
+    layout->setRowStretch(3,10);
+    layout->setRowStretch(4,0);
+        
     hide();
 }
 
@@ -63,8 +78,17 @@ void BusyWidget::paintEvent(QPaintEvent* event)
     customPainter.fillRect( rect(), backgroundColor );
 }
 
-void BusyWidget::activate()
+void BusyWidget::activate( const QString& text )
 {
+    if ( text == QString::Null() )
+    {
+        mLabel->setText( "" );
+    }
+    else
+    {
+        mLabel->setText( "<font size='+1'><b><i>" + text + "</i><b></font>" );
+    }
+    
     mProgress->startAnimation();
     show();
 }

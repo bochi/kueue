@@ -68,7 +68,7 @@ class UnityBrowser : public QWebView
     private slots:
         void disconnectShortcuts();
         void connectShortcuts();
-        void pageErbert();
+        void pageErbert( const QString& = QString::Null() );
         void pageErbertNed();
         void mousePressEvent( QMouseEvent* );
         void urlHovered( const QString&, const QString& = 0, const QString& = 0 );
@@ -110,7 +110,7 @@ class UnityBrowser : public QWebView
         void currentSrChanged( QString );
         void disableToolbar();
         void enableToolbar();
-        void enableProgressIndicator();
+        void enableProgressIndicator( QString );
         void disableProgressIndicator();
 };
 
@@ -149,7 +149,7 @@ class UnityWidget : public QWidget
     public slots:
         void currentSrChanged( QString );
         void setTabId( int );
-        void activateProgressWidget();
+        void activateProgressWidget( const QString& );
         void deactivateProgressWidget();
         
     private slots:

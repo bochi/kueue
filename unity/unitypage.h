@@ -175,6 +175,7 @@ class UnityPage : public QWebPage
         void contentChanged();
         void currentSrChanged( QString );
         void pageErbert();
+        void pageErbert( QString );
         void pageErbertNed();
 };
 
