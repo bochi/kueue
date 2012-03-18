@@ -1,7 +1,7 @@
 /*
                 kueue - keep track of your SR queue
           (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
-             
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -23,42 +23,23 @@
 
 */
 
-#ifndef STATS_H
-#define STATS_H
+#ifndef DATA_H
+#define DATA_H
 
 #include "settings.h"
+#include "dataclasses.h"
 
 #include <QWebView>
-#include <QContextMenuEvent>
+#include <QProgressDialog>
 
-class Stats : public QObject
+class Data : public QObject
 {
     Q_OBJECT
 
     public: 
-        Stats();
-        ~Stats();
+        Data();
+        ~Data();
         
-    private:
-        QTimer* mTimer;
-        QString getWF( const QString& );
-        QNetworkReply* mTts;
-        QNetworkReply* mCsat;
-
-    public slots:
-        void update();
-        void updatePersonal();
-        void updateTeam();
-
-    private slots:
-        void csatJobDone();
-        void ttsJobDone();
-        
-    signals:
-        void statsChanged();
-        void initialUpdate( int, int );
-        void initialUpdateProgress( int );
-        void initialUpdateDone();
-};     
+};
 
 #endif

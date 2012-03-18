@@ -29,23 +29,24 @@
 #include "data/qmon.h"
 #include "data/stats.h"
 #include "data/sr.h"
+#include "data/dataclasses.h"
 
 #include <QtSql>
 
-class Database : public QObject
+class Database
 {
-    Q_OBJECT
-
-    public: 
-        Database();
-        ~Database();
+    public:
+        static void openDbConnection( const QString = QString::Null() );
         
-        static void getSRData( SR* );
+        static bool srWasUpdated( QueueSR );
+        
+        static void getSRData( SR*, const QString& = "default" );
         static void updateSRData( SR* );
         static void insertSRData( SR* );
         static void deleteSrFromDB( const QString& );
         static bool srExistsInDB( const QString& );
         static QString getAdate( const QString& );
+        
         static QString getStatus( const QString& );
         static void setDisplay( const QString& );
         static void closeAllTables();
@@ -71,29 +72,7 @@ class Database : public QObject
         static QString getQmonBdesc( const QString& );
         
         static QList< SiebelItem* > getSrsForQueue( const QString&, QString = QString::Null() );
-        
-        static void updateCsatData( CsatItem* );
-        static void deleteCsatItemFromDB( const QString&, const QString& );
-        static bool csatExistsInDB( const QString&, const QString& );
-        static QList< CsatItem* > getCsatList( const QString& = "NONE" );
-        static QStringList getCsatExistList();
-        static int csatEngAverage( const QString& = "NONE" );
-        static int csatSrAverage( const QString& = "NONE" );
-        static int csatRtsPercent( const QString& = "NONE" );
-        
-        static void updateTtsData( TtsItem* );
-        static void deleteTtsItemFromDB( const QString& );
-        static bool ttsExistsInDB( const QString& );
-        static QStringList getTtsExistList( const QString& engineer = "NONE" );
-        static QList< TtsItem* > getTtsList( const QString& = "NONE" );
-        static int ttsAverage( const QString& = "NONE" );
-        
-        static QString getWfid( const QString& );
-        static QString getEngineerForWfid( const QString& );
-        static void updateWFID( const QString&, const QString& );
-
-        static int closedTotal( const QString& = "NONE" );
-        
+               
         static QString convertTime( const QString& );
         
     private:
@@ -101,7 +80,7 @@ class Database : public QObject
         QString mDBfile;
    
     public slots:
-        void newDB( bool = true );
+        //void newDB( bool = true );
                         
     signals:
         void dbDeleted();

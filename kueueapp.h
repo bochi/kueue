@@ -31,7 +31,6 @@
 #include "ui/kueuewindow.h"
 #include "ui/tabwidget.h"
 #include "ui/statusbar.h"
-#include "data/queue.h"
 #include "config.h"
 
 class TabWidget;
@@ -48,10 +47,6 @@ class KueueApp : public QObject
         QString mSr;
         KueueWindow* mWindow; 
         TabWidget* mTabWidget;
-	Database* mDB;
-        Queue* mQueue;
-        Qmon* mQmon;
-        Stats* mStats;
         Systray* mSystray;
         StatusBar* mStatusBar;
         QShortcut* mDbRebuild;

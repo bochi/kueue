@@ -143,7 +143,7 @@ void QMonBrowser::update()
     
         for ( int i = 0; i < l.size(); ++i ) 
         {
-            html += HTML::qmonSrInQueue( l.at( i ) );
+//            html += HTML::qmonSrInQueue( l.at( i ) );
             delete l.at( i );
         }
         

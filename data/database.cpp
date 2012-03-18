@@ -32,10 +32,8 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 
-Database::Database()
-{   
-    qDebug() << "[DATABASE] Constructing";
-    
+void Database::openDbConnection( QString dbname )
+{
     QDir dir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) );
 
     if ( !dir.exists() )
@@ -43,82 +41,94 @@ Database::Database()
         dir.mkpath( dir.path() );
     }
     
-    mDBfile = dir.path() + "/database.sqlite";
-    
-    mDb = QSqlDatabase::addDatabase( "QSQLITE" );
-    mDb.setDatabaseName( mDBfile );
-    
-    if ( !mDb.open() )
+    if ( dbname.isNull() )
     {
-        qDebug() << "[DATABASE] Failed to open the database.";
-    }
-                         
-    QSqlQuery query( mDb );
-    
-    if ( !query.exec("PRAGMA temp_store = MEMORY") )
-    {
-        qDebug() << "[DATABASE] Error:" << query.lastError();
+        dbname = "default";
     }
     
-    if ( !query.exec("PRAGMA synchronous = OFF") )
-    {
-        qDebug() << "[DATABASE] Error:" << query.lastError();
-    }
-    
-    if ( !query.exec("PRAGMA journal_mode = MEMORY") )
-    {
-        qDebug() << "[DATABASE] Error:" << query.lastError();
-    }
-    
-    if ( !query.exec("PRAGMA locking_mode = EXCLUSIVE") )
-    {
-        qDebug() << "[DATABASE] Error:" << query.lastError();
-    }
-    
-    if ( !query.exec( "CREATE TABLE IF NOT EXISTS " + Settings::engineer() +
-                      "( ID INTEGER PRIMARY KEY UNIQUE, CDATE TEXT, ADATE TEXT, STATUS TEXT, CUSTOMER TEXT, CONTACT TEXT, "
-                      "BDESC TEXT, DDESC TEXT, SS INTEGER, DISPLAY TEXT )" ) )
-    {
-        qDebug() << "[DATABASE] Error:" << query.lastError();
-    }
-
-    if ( !query.exec( "CREATE TABLE IF NOT EXISTS qmon_siebel( ID INTEGER PRIMARY KEY UNIQUE, QUEUE TEXT, SEVERITY TEXT,  STATUS TEXT, "
-                      "BDESC TEXT, GEO TEXT, HOURS TEXT, CUSTOMER TEXT, CONTACTVIA TEXT, CONTRACT TEXT, CREATOR TEXT, BOMGARQ TEXT, "
-                      "HIGHVALUE BOOLEAN, CRITSIT BOOLEAN, AGE INTEGER, LASTACT INTEGER, TIQ INTEGER, SLA INTEGER, DISPLAY TEXT )" ) )
-    {
-        qDebug() << "[DATABASE] Error:" << query.lastError();
-    }
-    
-    if ( !query.exec( "CREATE TABLE IF NOT EXISTS qmon_chat( ID TEXT PRIMARY KEY UNIQUE, SR INTEGER, REPTEAM TEXT, "
-                      "NAME TEXT, DATE TEXT, SOMENR INTEGER )" ) )
-        {
-        qDebug() << "[DATABASE] Error:" << query.lastError();
-    }
-    
-    if ( !query.exec( "CREATE TABLE IF NOT EXISTS workforce_ids( ENGINEER TEXT, WFID INTEGER PRIMARY KEY UNIQUE )" ) )
-    {
-        qDebug() << "[DATABASE] Error:" << query.lastError();
-    }
-    
-    if ( !query.exec( "CREATE TABLE IF NOT EXISTS csat ( ENGINEER TEXT, SR INTEGER PRIMARY KEY UNIQUE, CUSTOMER TEXT, "
-                      "BDESC TEXT, SRSAT INTEGER, ENGSAT INTEGER, RTS INTEGER )" ) )
-    {
-        qDebug() << "[DATABASE] Error:" << query.lastError();
-    }
+    QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE", dbname );
+    db.setDatabaseName( dir.path() + "/database.sqlite" );
         
-    if ( !query.exec( "CREATE TABLE IF NOT EXISTS tts ( ENGINEER TEXT, SR INTEGER PRIMARY KEY UNIQUE, TTS INTEGER, BDESC TEXT, CUSTOMER TEXT )" ) )
+    if ( !db.open() )
     {
-        qDebug() << "[DATABASE] Error:" << query.lastError();
+        qDebug() << "[DATABASE] Failed to open the database " + dbname ;
+    }
+    else
+    {                         
+        QSqlQuery query( db );
+        
+        if ( !query.exec("PRAGMA temp_store = MEMORY") )
+        {
+            qDebug() << "[DATABASE] Error:" << query.lastError();
+        }
+        
+        if ( !query.exec("PRAGMA synchronous = OFF") )
+        {
+            qDebug() << "[DATABASE] Error:" << query.lastError();
+        }
+        
+        if ( !query.exec("PRAGMA journal_mode = MEMORY") )
+        {
+            qDebug() << "[DATABASE] Error:" << query.lastError();
+        }
+        
+        if ( !query.exec("PRAGMA locking_mode = NORMAL") )
+        {
+            qDebug() << "[DATABASE] Error:" << query.lastError();
+        }
+        
+        if ( !query.exec(   "CREATE TABLE IF NOT EXISTS " + Settings::engineer().toUpper() +
+                            "( ID INTEGER PRIMARY KEY UNIQUE, SRTYPE TEXT, CREATOR TEXT, CUS_ACCOUNT TEXT, "
+                            "  CUS_FIRSTNAME TEXT, CUS_LASTNAME TEXT, CUS_TITLE TEXT, CUS_EMAIL TEXT, CUS_PHONE TEXT, "
+                            "  CUS_ONSITEPHONE TEXT, CUS_LANG TEXT, SEVERITY TEXT, STATUS TEXT, BDESC TEXT, DDESC TEXT, "
+                            "  GEO TEXT, HOURS TEXT, CONTRACT TEXT, SERVICE_LEVEL INTEGER, CREATED TEXT, LASTUPDATE TEXT, "
+                            "  HIGHVALUE INTEGER, CRITSIT INTEGER, DISPLAY TEXT )" ) )
+        {
+            qDebug() << "[DATABASE] Error:" << query.lastError();
+        }
+
+        if ( !query.exec( "CREATE TABLE IF NOT EXISTS qmon_siebel( ID INTEGER PRIMARY KEY UNIQUE, QUEUE TEXT, SEVERITY TEXT,  STATUS TEXT, "
+                        "BDESC TEXT, GEO TEXT, HOURS TEXT, CUSTOMER TEXT, CONTACTVIA TEXT, CONTRACT TEXT, CREATOR TEXT, BOMGARQ TEXT, "
+                        "HIGHVALUE BOOLEAN, CRITSIT BOOLEAN, AGE INTEGER, LASTACT INTEGER, TIQ INTEGER, SLA INTEGER, DISPLAY TEXT )" ) )
+        {
+            qDebug() << "[DATABASE] Error:" << query.lastError();
+        }
+
+        if ( !query.exec(   "CREATE TABLE IF NOT EXISTS STATS "
+                            "( CLOSED_SR INTEGER, CLOSED_CR INTEGER, SR_TTS_AVG INTEGER, CSAT_ENG_AVG INTEGER, "
+                            "  CSAT_SR_AVG INTEGER, CSAT_RTS_PERCENT INTEGER )" ) )
+        {
+            qDebug() << "[DATABASE] Error:" << query.lastError();
+        }
+
+        if ( !query.exec(   "CREATE TABLE IF NOT EXISTS STATS_SURVEYS "
+                            "( ID INTEGER PRIMARY KEY UNIQUE, RTS INTEGER, ENGSAT INTEGER, SRSAT INTEGER, "
+                            " CUSTOMER TEXT, BDESC TEXT )" ) )
+        {
+            qDebug() << "[DATABASE] Error:" << query.lastError();
+        }
+
+        if ( !query.exec(   "CREATE TABLE IF NOT EXISTS STATS_CLOSED "
+                            "( ID INTEGER PRIMARY KEY UNIQUE, TTS INTEGER, CUSTOMER TEXT, BDESC TEXT )" ) )
+            
+        {
+            qDebug() << "[DATABASE] Error:" << query.lastError();
+        }
+        
+        if ( !query.exec(   "CREATE TABLE IF NOT EXISTS QMON "
+                            "( ID INTEGER PRIMARY KEY UNIQUE, QUEUE TEXT, BOMGARQ TEXT, SRTYPE TEXT, CREATOR TEXT, "
+                            "  CUS_ACCOUNT TEXT, CUS_FIRSTNAME TEXT, CUS_LASTNAME TEXT, CUS_TITLE TEXT, CUS_EMAIL TEXT, "
+                            "  CUS_PHONE TEXT, CUS_ONSITEPHONE TEXT, CUS_LANG TEXT, SEVERITY TEXT, STATUS TEXT, BDESC TEXT, "
+                            "  DDESC TEXT, GEO TEXT, HOURS TEXT, SOURCE TEXT, SUPPORT_PROGRAM TEXT, SUPPORT_PROGRAM_LONG TEXT, "
+                            "  ROUTING_PRODUCT TEXT, SUPPORT_GROUP_ROUTING TEXT, INT_TYPE TEXT, SUBTYPE TEXT, "
+                            "  SERVICE_LEVEL INTEGER, CATEGORY TEXT, RESPOND_VIA TEXT, CREATED TEXT, LASTUPDATE TEXT, "
+                            "  QUEUEDATE TEXT, SLA TEXT, HIGHVALUE INTEGER, CRITSIT INTEGER, DISPLAY TEXT )" ) )
+        {
+            qDebug() << "[DATABASE] Error:" << query.lastError();
+        }
     }
 }
 
-Database::~Database()
-{   
-    qDebug() << "[DATABASE] Destroying";
-
-    mDb.close();    
-    QSqlDatabase::removeDatabase( mDb.connectionName() );
-}
 
 /*
 
@@ -129,7 +139,7 @@ Database::~Database()
 */
 
 
-void Database::getSRData( SR* sr )
+void Database::getSRData( SR* sr, const QString& dbname )
 {
     QSqlQuery query;
     query.prepare( "SELECT ID, CDATE, ADATE, STATUS, CUSTOMER, CONTACT, BDESC, DDESC, SS, DISPLAY "
@@ -140,7 +150,7 @@ void Database::getSRData( SR* sr )
 
     if ( query.next() )
     {
-        sr->setOpened( QDateTime::fromString( query.value( 1 ).toString(), "yyyy-MM-dd hh:mm:ss" ) );
+        /*sr->setOpened( QDateTime::fromString( query.value( 1 ).toString(), "yyyy-MM-dd hh:mm:ss" ) );
         sr->setLastUpdate( QDateTime::fromString( query.value( 2 ).toString(), "yyyy-MM-dd hh:mm:ss" ) );
         sr->setStatus( query.value( 3 ).toString() );
         sr->setCustomer( query.value( 4 ).toString() );
@@ -171,10 +181,10 @@ void Database::getSRData( SR* sr )
         QDateTime now = QDateTime::currentDateTime();
    
         sr->setAge( sr->opened().daysTo( now ) );
-        sr->setLastUpdateDays( sr->lastUpdate().daysTo( now ) );
+        sr->setLastUpdateDays( sr->lastUpdate().daysTo( now ) );*/
 
     }
-    else qDebug() << "[DATABASE] Failed to get SR data for" << sr->id() << query.executedQuery() << query.lastError();
+//    else qDebug() << "[DATABASE] Failed to get SR data for" << sr->id() << query.executedQuery() << query.lastError();
 }
 
 void Database::updateSRData( SR* sr )
@@ -184,8 +194,11 @@ void Database::updateSRData( SR* sr )
     qDebug() << "[DATABASE] Updating SR data for" << sr->id();
     
     query.prepare(  "UPDATE " + Settings::engineer() + " SET "
-                    "CDATE=:cdate, ADATE=:adate, STATUS=:status, CUSTOMER=:customer, CONTACT=:contact, "
-                    "BDESC=:bdesc, DDESC=:ddesc, SS=:ss WHERE id = :id" );
+                    "SRTYPE=:srtype, CREATOR=:creator, CUS_ACCOUNT=:cus_account, CUS_FIRSTNAME=:cus_firstname, "
+                    "CUS_LASTNAME=:cus_lastname, CUS_TITLE=:cus_title, CUS_EMAIL=:cus_email, CUS_PHONE=:cus_phone, "
+                    "CUS_ONSITEPHONE=:cus_onsitephone, CUS_LANG=:cus_lang, SEVERITY=:severity, STATUS=:status, "
+                    "BDESC=:bdesc, DDESC=:ddesc, GEO=:geo, HOURS=:hours, CONTRACT=:contract, SERVICE_LEVEL=:service_level, "
+                    "CREATED=:created, LASTUPDATE=:lastupdate, HIGHVALUE=:highvalue, CRITSIT=:critsit WHERE ID = :id" );
 
     query.bindValue( ":id", sr->id() );    
     query.bindValue( ":cdate", sr->opened().toString( "yyyy-MM-dd hh:mm:ss" ) );
@@ -243,8 +256,10 @@ void Database::deleteSrFromDB( const QString& id )
 bool Database::srExistsInDB( const QString& id )
 {
     QSqlQuery query;
+    
     query.prepare( "SELECT ID FROM " + Settings::engineer() +" WHERE ( ID = :id )" );
     query.bindValue( ":id", id );
+    
     query.exec();
     
     if ( query.next() )
@@ -256,6 +271,27 @@ bool Database::srExistsInDB( const QString& id )
         return false;
     }
 }
+
+bool Database::srWasUpdated( QueueSR sr )
+{
+    QSqlQuery query;
+    
+    query.prepare( "SELECT LASTUPDATE FROM " + Settings::engineer() + " WHERE ( ID = :id )" );
+    query.bindValue( ":id", sr.id );
+    
+    query.exec();
+    
+    if ( query.next() )
+    {
+        if ( sr.lastupdate != query.value( 0 ).toString() )
+        {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 
 QString Database::getAdate( const QString& id )
 {
@@ -631,146 +667,6 @@ QList< SiebelItem* > Database::getSrsForQueue( const QString& queue, QString geo
     return list;
 }
 
-/*
-
-                C S A T
-
-
-*/
-
-void Database::updateCsatData( CsatItem* ci )
-{
-    QSqlQuery query;
- 
-    query.prepare( "INSERT INTO csat ( ENGINEER, SR, CUSTOMER, BDESC, SRSAT, ENGSAT, RTS )"
-                   "VALUES ( :engineer, :sr, :customer, :bdesc, :srsat, :engsat, :rts )" );
-    
-    query.bindValue( ":engineer", ci->engineer );
-    query.bindValue( ":sr", ci->sr );
-    query.bindValue( ":customer", ci->customer );
-    query.bindValue( ":bdesc", ci->bdesc );
-    query.bindValue( ":srsat", ci->srsat );
-    query.bindValue( ":engsat", ci->engsat );
-    
-    if ( ci->rts )
-    {
-        query.bindValue( ":rts", "1" );
-    }
-    else
-    {
-        query.bindValue( ":rts", "0" );
-    }
-    
-    query.exec();
-}
-
-void Database::deleteCsatItemFromDB( const QString& sr, const QString& engineer )
-{
-    QSqlQuery query;
-
-    query.prepare( "DELETE from csat WHERE ( ENGINEER = :engineer )"
-                   "AND ( SR = :sr )" );
-    query.bindValue( ":engineer", engineer );
-    query.bindValue( ":sr", sr );
-    
-    query.exec();
-}
-
-bool Database::csatExistsInDB( const QString& id, const QString& engineer )
-{
-    QSqlQuery query;
-    query.prepare( "SELECT * FROM csat WHERE ( SR = :id ) AND ( ENGINEER = :engineer )" );
-    query.bindValue( ":id", id );
-    query.bindValue( ":engineer", engineer );
-    query.exec();
-    
-    if ( query.next() ) 
-    {
-        return true;
-    }
-    else 
-    {    
-        return false;
-    }
-}
-
-QList< CsatItem* > Database::getCsatList( const QString& engineer )
-{
-    QSqlQuery query;
-    QList< CsatItem* > list;
-    
-    if ( engineer == "NONE" )
-    {
-        query.prepare( "SELECT * from csat" );
-    }
-    else
-    {
-        query.prepare( "SELECT * FROM csat WHERE ( ENGINEER = :engineer )" );
-        query.bindValue( ":engineer", engineer );
-    }
-    
-    query.exec();
-    
-    while( query.next() )
-    {
-        CsatItem* ci = new CsatItem;
-        
-        ci->engineer = query.value( 0 ).toString();
-        ci->wfid = getWfid( query.value( 0 ).toString() );
-        ci->sr = query.value( 1 ).toString();
-        ci->customer = query.value( 2 ).toString();
-        ci->bdesc = query.value( 3 ).toString();
-        ci->srsat = query.value( 4 ).toString();
-        ci->engsat = query.value( 5 ).toString();
-        
-        if ( query.value( 6 ).toString() == "1" )
-        {
-            ci->rts = true;
-        }
-        else
-        {
-            ci->rts = false;
-        }
-        
-        list.append( ci );
-    }
-    
-    return list;
-}
-
-QString Database::getQmonBdesc( const QString& id )
-{
-    QSqlQuery query;
-    query.prepare( "SELECT BDESC FROM qmon_siebel WHERE ( ID = :id )" );
-    query.bindValue( ":id", id );
-    query.exec();
-    
-    if ( query.next() )
-    {
-        return query.value( 0 ).toString();
-    }
-    else
-    {
-        return "ERROR";
-    }
-}
-
-QStringList Database::getCsatExistList()
-{
-    QSqlQuery query;
-    QStringList list;
-    
-    query.prepare( "SELECT ENGINEER, SR FROM csat" );
-    query.exec();
-    
-    while( query.next() )
-    {
-        list.append( query.value( 0 ).toString() + "|" + query.value( 1 ).toString() );
-    }
-    
-    return list;
-}
-
 bool Database::siebelQueueChanged( SiebelItem* si  )
 {
     QSqlQuery query;
@@ -819,337 +715,8 @@ bool Database::siebelSeverityChanged( SiebelItem* si  )
     }
 }
 
-int Database::csatEngAverage( const QString& engineer )
-{
-    QSqlQuery query;
-    long long avg = 0;
-    int cnt = 0;
-    
-    query.prepare( "SELECT ENGSAT FROM csat WHERE ( ENGINEER = :engineer )" );
-    
-    if ( engineer == "NONE" )
-    {
-        query.bindValue( ":engineer", Settings::engineer() );
-    }
-    else
-    {
-        query.bindValue( ":engineer", engineer );
-    }
-    
-    query.exec();
-    
-    while( query.next() )
-    {
-        cnt++;
-        avg = avg + query.value( 0 ).toLongLong();
-    }
-   
-    if ( cnt > 0 )
-    {
-        return ( avg / cnt );
-    }
-    else
-    {
-        return 0;
-    }
-}
 
-int Database::csatSrAverage( const QString& engineer )
-{
-    QSqlQuery query;
-    long long avg = 0;
-    int cnt = 0;
-    
-    query.prepare( "SELECT SRSAT FROM csat WHERE ( ENGINEER = :engineer )" );
-    
-    if ( engineer == "NONE" )
-    {
-        query.bindValue( ":engineer", Settings::engineer() );
-    }
-    else
-    {
-        query.bindValue( ":engineer", engineer );
-    }
-    
-    query.exec();
-    
-    while( query.next() )
-    {
-        cnt++;
-        avg = avg + query.value( 0 ).toLongLong();
-    }
-   
-    if ( cnt > 0 )
-    {
-        return ( avg / cnt );
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-int Database::csatRtsPercent( const QString& engineer )
-{
-    QSqlQuery query;
-    long long avg = 0;
-    int cnt = 0;
-    
-    query.prepare( "SELECT RTS FROM csat WHERE ( ENGINEER = :engineer )" );
-    
-    if ( engineer == "NONE" )
-    {
-        query.bindValue( ":engineer", Settings::engineer() );
-    }
-    else
-    {
-        query.bindValue( ":engineer", engineer );
-    }
-    
-    query.exec();
-    
-    while( query.next() )
-    {
-        cnt++;
-        avg = avg + query.value( 0 ).toLongLong();
-    }
-   
-    if ( cnt > 0 )
-    {
-        return ( avg * 100 / cnt );
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-/*
-
-
-                W F I D
-
-
-*/
-
-void Database::updateWFID( const QString& engineer, const QString& wfid )
-{
-    QSqlQuery query;
-    
-    if ( getWfid( engineer ) == "NOTFOUND" )
-    {
-        query.prepare( "INSERT INTO workforce_ids ( ENGINEER, WFID ) VALUES ( :engineer, :wfid )" );
-    }
-    else
-    {
-        query.prepare( "UPDATE workforce_ids SET WFID=:wfid WHERE ENGINEER=:engineer" );
-    }
- 
-    query.bindValue( ":engineer", engineer );
-    query.bindValue( ":wfid", wfid );
-        
-    if ( !query.exec() )
-    {
-        qDebug() << "[DATABASE] Query failed" << query.executedQuery() << query.lastError();
-    }            
-}
-
-QString Database::getWfid( const QString& engineer )
-{
-    QSqlQuery query;
-    
-    query.prepare( "SELECT WFID FROM workforce_ids WHERE ENGINEER = :engineer" );
-    query.bindValue( ":engineer", engineer );
-    query.exec();
-    
-    if ( !query.next() )
-    {
-        return QString( "NOTFOUND" );
-    }
-    else 
-    {    
-        return query.value( 0 ).toString();
-    }
-}
-
-QString Database::getEngineerForWfid( const QString& wfid )
-{
-    QSqlQuery query;
-    
-    query.prepare( "SELECT ENGINEER FROM workforce_ids where WFID = :wfid" );
-    query.bindValue( ":wfid", wfid );
-    query.exec();
-    
-    if ( !query.next() )
-    {
-        return QString( "NOTFOUND" );
-    }
-    else 
-    {    
-        return query.value( 0 ).toString();
-    }
-}
-
-/*
-
-
-                T I M E  T O  S O L U T I O N
-
-
-*/
-
-void Database::updateTtsData( TtsItem* ti )
-{
-    QSqlQuery query;
-
-    query.prepare( "INSERT INTO tts ( ENGINEER, SR, TTS, BDESC, CUSTOMER )"
-                   "VALUES ( :engineer, :sr, :tts, :bdesc, :customer )" );
-    
-    query.bindValue( ":engineer", ti->engineer );
-    query.bindValue( ":sr", ti->sr );
-    query.bindValue( ":tts", ti->tts );
-    query.bindValue( ":bdesc", ti->bdesc );
-    query.bindValue( ":customer", ti->customer );
-                
-    query.exec();
-}
-
-QList< TtsItem* > Database::getTtsList( const QString& engineer )
-{
-    QSqlQuery query;
-    QList< TtsItem* > list;
-    
-    query.prepare( "SELECT * FROM tts WHERE ( ENGINEER = :engineer )" );
-    
-    if ( engineer == "NONE" )
-    {
-        query.bindValue( ":engineer", Settings::engineer().toUpper() );
-    }
-    else
-    {
-        query.bindValue( ":engineer", engineer.toUpper() );
-    }
-    
-    query.exec();
-    
-    while( query.next() )
-    {
-        TtsItem* ti = new TtsItem;
-        
-        ti->engineer = query.value( 0 ).toString();
-        ti->sr = query.value( 1 ).toString();
-        ti->tts = query.value( 2 ).toInt();
-        ti->bdesc = query.value( 3 ).toString();
-        ti->customer = query.value( 4 ).toString();
-        
-        list.append( ti );
-    }
-    
-    return list;
-}
-
-void Database::deleteTtsItemFromDB( const QString& id )
-{
-    QSqlQuery query;
-
-    query.prepare( "DELETE from tts WHERE ( SR = :sr )" );
-    query.bindValue( ":sr", id );
-    
-    query.exec();
-}
-
-bool Database::ttsExistsInDB( const QString& id )
-{
-    QSqlQuery query;
-    query.prepare( "SELECT * FROM tts WHERE ( SR = :id )" );
-    query.bindValue( ":id", id );
-    query.exec();
-    
-    if ( query.next() ) 
-    {
-        return true;
-    }
-    else 
-    {    
-        return false;
-    }
-}
-
-QStringList Database::getTtsExistList( const QString& engineer )
-{
-    QSqlQuery query;
-    QStringList list;
-    
-    query.prepare( "SELECT SR FROM tts WHERE ENGINEER = :engineer" );
-  
-    if ( engineer == "NONE" )
-    {
-        query.bindValue( ":engineer", Settings::engineer() );
-    }
-    else
-    {
-        query.bindValue( ":engineer", engineer );
-    }
-    
-    query.exec();
-    
-    while( query.next() )
-    {
-        list.append( query.value( 0 ).toString() );
-    }
-    
-    return list;
-}
-
-int Database::ttsAverage( const QString& engineer )
-{
-    QSqlQuery query;
-    long long avg = 0;
-    int cnt = 0;
-    
-    query.prepare( "SELECT TTS FROM tts WHERE ( ENGINEER = :engineer )" );
-    
-    if ( engineer == "NONE" )
-    {
-        query.bindValue( ":engineer", Settings::engineer().toUpper() );
-    }
-    else
-    {
-        query.bindValue( ":engineer", engineer.toUpper() );
-    }
-    
-    query.exec();
-    
-    while( query.next() )
-    {
-        cnt++;
-        avg = avg + query.value( 0 ).toLongLong();
-    }
-   
-    if ( cnt > 0 )
-    {
-        return ( avg / cnt );
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-/*
-
-
-                O T H E R
-
-
-*/
-
-int Database::closedTotal( const QString& engineer )
-{
-    return getTtsList( engineer ).count();
-}
-
-void Database::newDB( bool ask )
+/*void Database::newDB( bool ask )
 {
     qDebug() << "[DATABASE] Rebuild";
     
@@ -1181,12 +748,10 @@ void Database::newDB( bool ask )
     
         emit dbDeleted();
     }
-}
+}*/
 
 QString Database::convertTime( const QString& dt )
 {
     QDateTime d = QDateTime::fromString( dt, "M/d/yyyy h:mm:ss AP" );
     return ( d.toString("yyyy-MM-dd hh:mm:ss") );
 }
-
-#include "database.moc"

@@ -121,7 +121,6 @@ void KueueApp::createApp()
         delete ud;
         
         Settings::setAppVersion( QApplication::applicationVersion() );
-        mDB->newDB( false );
     }   
 
     QShortcut* testNotification = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_N ), mWindow );
@@ -132,8 +131,6 @@ void KueueApp::createApp()
         
     connect( r, SIGNAL( finished() ),
              this, SLOT( updateJobDone() ) );    
-    connect( dbrebuild, SIGNAL( activated() ), 
-             mDB, SLOT( newDB() ) ); 
     connect( testNotification, SIGNAL( activated() ),
              this, SLOT( sendTestNotification() ) );
     connect( newUnityTab, SIGNAL( activated() ),
@@ -161,58 +158,22 @@ void KueueApp::createSystray()
 
 void KueueApp::createQmon()
 {
-    mQmon = new Qmon();
-
-    connect( mQmon, SIGNAL( qmonDataChanged() ), 
-             mTabWidget, SLOT( updateQmonBrowser() ) );
-    connect( mQmon, SIGNAL( initialUpdate( int,int ) ), 
-             this, SLOT( updateProgress( int,int ) ) );
-    connect( mQmon, SIGNAL( destroyed() ), 
-             this, SLOT( createQmon() ) );
 }
 
 void KueueApp::createQueue()
 {
-    mQueue = new Queue();
-
-    connect( mQueue, SIGNAL( queueDataChanged() ), 
-             mTabWidget, SLOT( updateQueueBrowser() ) );
-    connect( mQueue, SIGNAL( destroyed() ), 
-             this, SLOT( createQueue() ) );
-    connect( mQueue, SIGNAL( initialUpdate( int, int ) ),
-             this, SLOT( updateProgress( int, int ) ) );
 }
 
 void KueueApp::createDatabase()
 {
-    mDB = new Database();
-    
-    connect( mDB, SIGNAL( destroyed() ), 
-             this, SLOT( createDatabase() ) );
-    connect( mDB, SIGNAL( dbDeleted() ), 
-             this, SLOT( settingsChanged() ) );   
 }
 
 void KueueApp::createStats()
 {
-    mStats = new Stats();
-       
-    connect( mStats, SIGNAL( statsChanged() ), 
-             mTabWidget, SLOT( updateStatsBrowser() ) );
-    connect( mStats, SIGNAL( destroyed() ), 
-             this, SLOT( createStats() ) );
-    connect( mStats, SIGNAL( initialUpdate( int, int ) ), 
-             this, SLOT( updateProgress( int, int ) ) );
 }
 
 void KueueApp::createMainWindow()
 {
-    if ( !mDB )
-    {
-        qDebug() << "[KUEUE] No database, creating the DB first.";
-        createDatabase();
-    }
-    
     mWindow = &mWindow->win();
     
     mWindow->setWindowIcon( QIcon(":/icons/kueue.png").pixmap( QSize( 22, 22 ) ) );
@@ -264,11 +225,6 @@ void KueueApp::settingsChanged()
     #endif
     #endif
 
-    delete mDB;
-    delete mQmon;
-    delete mQueue;
-    delete mStats;
-    
     mTabWidget->refreshTabs();
     setTabPosition();
     updateUiData();
@@ -288,30 +244,30 @@ void KueueApp::updateProgress( int max, int type )
         pd->setWindowTitle( "Queue Monitor" );
         pd->setLabelText( "Downloading queue monitor data..." );
         
-        connect( mQmon, SIGNAL( initialUpdateProgress( int ) ), 
-                 pd, SLOT( setValue( int ) ) );
-        connect( mQmon, SIGNAL( initialUpdateDone() ), 
-                 pd, SLOT( close() ) );
+//        connect( mQmon, SIGNAL( initialUpdateProgress( int ) ), 
+//                 pd, SLOT( setValue( int ) ) );
+//        connect( mQmon, SIGNAL( initialUpdateDone() ), 
+//                 pd, SLOT( close() ) );
     }
     else if ( type == 2 )
     {
         pd->setWindowTitle( "Personal Queue" );
         pd->setLabelText( "Downloading personal queue data..." );
        
-        connect( mQueue, SIGNAL( initialUpdateProgress( int ) ), 
+/*        connect( mQueue, SIGNAL( initialUpdateProgress( int ) ), 
                  pd, SLOT( setValue( int ) ) );
         connect( mQueue, SIGNAL( initialUpdateDone() ), 
-                 pd, SLOT( close() ) );
+                 pd, SLOT( close() ) );*/
     }
     else if ( type == 3 )
     {
         pd->setWindowTitle( "Stats" );
         pd->setLabelText( "Downloading stats data..." );
         
-        connect( mStats, SIGNAL( initialUpdateProgress( int ) ), 
+/*        connect( mStats, SIGNAL( initialUpdateProgress( int ) ), 
                  pd, SLOT( setValue( int ) ) );
         connect( mStats, SIGNAL( initialUpdateDone() ), 
-                 pd, SLOT( close() ) );
+                 pd, SLOT( close() ) );*/
     }    
     
     pd->setCancelButton( 0 );

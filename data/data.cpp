@@ -1,7 +1,7 @@
 /*
                 kueue - keep track of your SR queue
           (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
-             
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -23,42 +23,35 @@
 
 */
 
-#ifndef STATS_H
-#define STATS_H
-
+#include "data.h"
+#include "data/database.h"
 #include "settings.h"
+#include "network.h"
+#include "kueue.h"
+#include "ui/html.h"
 
-#include <QWebView>
-#include <QContextMenuEvent>
+#include <QMessageBox>
+#include <QMenu>
+#include <QWebFrame>
+#include <QWidgetAction>
+#include <QWebInspector>
+#include <QShortcut>
+#include <QGridLayout>
+#include <QToolButton>
+#include <QWebElementCollection>
+#include <QtXml>
 
-class Stats : public QObject
+Data::Data()
 {
-    Q_OBJECT
+    qDebug() << "[DATA] Constructing";
+    
+}
 
-    public: 
-        Stats();
-        ~Stats();
-        
-    private:
-        QTimer* mTimer;
-        QString getWF( const QString& );
-        QNetworkReply* mTts;
-        QNetworkReply* mCsat;
+Data::~Data()
+{
+    qDebug() << "[DATA] Destroying";
+}
 
-    public slots:
-        void update();
-        void updatePersonal();
-        void updateTeam();
 
-    private slots:
-        void csatJobDone();
-        void ttsJobDone();
-        
-    signals:
-        void statsChanged();
-        void initialUpdate( int, int );
-        void initialUpdateProgress( int );
-        void initialUpdateDone();
-};     
+#include "data.moc"
 
-#endif

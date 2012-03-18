@@ -179,7 +179,7 @@ void QueueBrowser::update()
 
         if ( srnr.exactMatch( list.at( i ).split( "|" ).at( 0 ) ) )
         {
-            SR* sr = new SR( list.at( i ) );
+            /*SR* sr = new SR( list.at( i ) );
             Database::getSRData( sr );
             sr->makeTodoList();
 
@@ -214,7 +214,7 @@ void QueueBrowser::update()
                 html += HTML::SRTable( sr );
             }
             
-            delete sr;
+            delete sr;*/
         }
      }
 

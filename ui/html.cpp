@@ -424,7 +424,7 @@ QString HTML::qmonTableHeader( const QString& queue )
     return ph;
 }
 
-QString HTML::qmonSrInQueue( SiebelItem* si )
+/*QString HTML::qmonSrInQueue( SiebelItem* si )
 {
     QString srtab;
   
@@ -607,7 +607,7 @@ QString HTML::qmonSrInQueue( SiebelItem* si )
                 "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''></div></td></tr></table><div id='abstand'></div></a>" );  
   
     return srtab;
-}
+}*/
 
 QString HTML::qmonTableFooter()
 {
@@ -654,7 +654,7 @@ QString HTML::csatTableHeader( int rts, int eng, int sr )
 }
 
 
-QString HTML::csatTable( CsatItem* i )
+/*QString HTML::csatTable( CsatItem* i )
 {
     QString srtab;
     
@@ -748,7 +748,7 @@ QString HTML::csatTable( CsatItem* i )
     srtab += QString( "<div id='abstand'></div>" );
   
     return srtab;
-}
+}*/
 
 QString HTML::closedTableHeader( int c, int a )
 {
@@ -761,7 +761,7 @@ QString HTML::closedTableHeader( int c, int a )
     return ph;
 }
 
-QString HTML::closedTable( TtsItem* ci )
+/*QString HTML::closedTable( TtsItem* ci )
 {
     QString srtab;
     
@@ -791,7 +791,7 @@ QString HTML::closedTable( TtsItem* ci )
     srtab += QString( "<div id='abstand'></div>" );
                     
     return srtab;
-}
+}*/
 
 QString HTML::nsaPageHeader( NSASummaryItem summary )
 {

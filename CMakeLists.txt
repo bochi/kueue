@@ -99,10 +99,8 @@ SET( kueue_CPP  main.cpp
                 simplecrypt/simplecrypt.cpp
 
                 data/database.cpp
-                data/sr.cpp
-                data/stats.cpp
-                data/queue.cpp
-                data/qmon.cpp
+		data/data.cpp
+		data/datathread.cpp
 
                 unity/unitypage.cpp
                 unity/popupwindow.cpp

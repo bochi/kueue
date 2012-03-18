@@ -57,7 +57,7 @@ DetailWindow::DetailWindow( QString sr, bool nb )
     
     srLabel->setText( "<font size='+1'><b>Details for SR#" + mSr + "</b></font>" );
     
-    if ( Database::getQmonBdesc( mSr ) == "ERROR" && 
+    /*if ( Database::getQmonBdesc( mSr ) == "ERROR" && 
          Database::getBriefDescription( mSr ) == "ERROR" )
     {
         briefDescLabel->setVisible( false );
@@ -85,7 +85,7 @@ DetailWindow::DetailWindow( QString sr, bool nb )
         customerLabel->setText( Database::getCustomer( mSr ) );
         statusLabel->setText( Database::getSrStatus( mSr ) );
     }
-
+*/
     for ( int i = 0; i < Settings::engineerList().size(); ++i ) 
     {
         assignCombo->addItem( Settings::engineerList().at( i ) );

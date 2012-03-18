@@ -1,7 +1,7 @@
 /*
-                kueue - keep track of your SR queue
-          (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
-             
+              kueued - create xml data for kueue's qmon 
+              (C) 2012 Stefan Bogner <sbogner@suse.com>
+
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -23,42 +23,26 @@
 
 */
 
-#ifndef STATS_H
-#define STATS_H
+#ifndef DATATHREAD_H
+#define DATATHREAD_H
 
-#include "settings.h"
+#include <QThread>
 
-#include <QWebView>
-#include <QContextMenuEvent>
+#include "data.h"
 
-class Stats : public QObject
+class DataThread : public QThread
 {
     Q_OBJECT
 
-    public: 
-        Stats();
-        ~Stats();
+    public:
+        DataThread( QObject *parent = 0L );
+        ~DataThread();
+        
+        void run();
         
     private:
-        QTimer* mTimer;
-        QString getWF( const QString& );
-        QNetworkReply* mTts;
-        QNetworkReply* mCsat;
+        Data* mData;
+};
 
-    public slots:
-        void update();
-        void updatePersonal();
-        void updateTeam();
-
-    private slots:
-        void csatJobDone();
-        void ttsJobDone();
-        
-    signals:
-        void statsChanged();
-        void initialUpdate( int, int );
-        void initialUpdateProgress( int );
-        void initialUpdateDone();
-};     
 
 #endif

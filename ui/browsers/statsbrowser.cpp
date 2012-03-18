@@ -53,7 +53,7 @@ StatsBrowser::~StatsBrowser()
 }
 
 void StatsBrowser::update()
-{
+{/*
     QList< CsatItem* > cl = Database::getCsatList();
     QList< TtsItem* > tl = Database::getTtsList();
     QString html;    
@@ -83,10 +83,10 @@ void StatsBrowser::update()
     
     for ( int i = 0; i < tl.size(); ++i )
     {
-        html += HTML::closedTable( tl.at(i) );
+        1html += HTML::closedTable( tl.at(i) );
     }
     
-    setHtml( html );
+    setHtml( html );*/
 }
 
 void StatsBrowser::urlHovered( const QString& url, const QString& title, const QString& text )

@@ -43,12 +43,12 @@ class HTML
         static QString pageFooter();
         static QString qmonPageHeader();
         static QString qmonTableHeader( const QString& );
-        static QString qmonSrInQueue( SiebelItem* );
+    //    static QString qmonSrInQueue( SiebelItem* );
         static QString qmonTableFooter();
-        static QString csatTable( CsatItem* );
+//        static QString csatTable( CsatItem* );
         static QString csatTableHeader( int, int, int );
         static QString closedTableHeader( int, int );
-        static QString closedTable( TtsItem* );
+  //      static QString closedTable( TtsItem* );
         static QString statsPageHeader();
         
         static QString nsaPageHeader( NSASummaryItem );
