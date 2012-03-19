@@ -34,20 +34,50 @@ class DataThread : public QThread
 {
     Q_OBJECT
 
+    
     public:
-        DataThread( QObject *parent = 0L );
-        ~DataThread();
-        
+        static DataThread& thread();
+        static void destroy();
         void run();
         
+        static void updateQueueBrowser()
+        {
+            DataThread::thread().updateQueueBrowserSlot();
+        }
+
+        static void updateQmonBrowser()
+        {
+            DataThread::thread().updateQmonBrowserSlot();
+        }
+        
+        static void updateStatsBrowser()
+        {
+            DataThread::thread().updateStatsBrowserSlot();
+        }
+        
     private:
+        static DataThread* instance;
+        DataThread( QObject *parent = 0L );
+        ~DataThread();
         Data* mData;
+        
+    public slots:
+        void updateQueueBrowserSlot();
+        void updateQmonBrowserSlot();
+        void updateStatsBrowserSlot();
+    
         
     signals:
         void notify( const QString&, QString, QString, const QString& );
-        void queueUpdateDone( const QString& );
+        void updateQueueBrowserRequested();
+        void updateQmonBrowserRequested();
+        void updateStatsBrowserRequested();
+        void queueDataChanged( QString );
+        void qmonDataChanged( QString );
+        void statsDataChanged( QString );
         void qmonUpdateDone( const QString& );
         void statsUpdateDone( const QString& );
+        void killed();
 
 };
 

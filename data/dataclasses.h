@@ -26,6 +26,8 @@
 #ifndef DATACLASSES_H_
 #define DATACLASSES_H_
 
+#include <QStringList>
+
 /* An SR in the personal queue */
 
 class QueueSR
@@ -51,6 +53,10 @@ class QueueSR
         QString contract;
         QString created;
         QString lastupdate;
+        QString display;
+        QStringList todoList;
+        int age;
+        int lastUpdateDays;
         int service_level;
         bool highvalue;
         bool critsit;
@@ -94,6 +100,7 @@ class QmonSR
         QString lastupdate;
         QString queuedate;
         QString sla;
+        QString display;
         bool highvalue;
         bool critsit;
 };

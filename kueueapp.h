@@ -31,6 +31,7 @@
 #include "ui/kueuewindow.h"
 #include "ui/tabwidget.h"
 #include "ui/statusbar.h"
+#include "data/datathread.h"
 #include "config.h"
 
 class TabWidget;
@@ -50,6 +51,7 @@ class KueueApp : public QObject
         Systray* mSystray;
         StatusBar* mStatusBar;
         QShortcut* mDbRebuild;
+        DataThread* mDataThread;
         
     public slots:
         void updateUiData();
@@ -58,6 +60,7 @@ class KueueApp : public QObject
         void cleanupTemp();
         void createApp();
         void updateJobDone();
+        void createDataThread();
         void createSystray();
         void createQmon();
         void createQueue();

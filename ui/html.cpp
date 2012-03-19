@@ -27,6 +27,7 @@
 #include "settings.h"
 #include "kueue.h"
 #include "nsa/nsa.h"
+#include "data/dataclasses.h"
 
 QString HTML::styleSheet()
 {
@@ -210,13 +211,13 @@ QString HTML::pageHeader( const QString& engineer, int total )
     return ph;
 }
 
-QString HTML::SRTable( SR* sr )
+QString HTML::SRTable( QueueSR sr )
 {
     QString srtab;
     QString t;
-    QStringList list = sr->todoList();
+    //QStringList list = sr->todoList();
       
-    srtab += QString (  "<table id='" + sr->id() + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
+    srtab += QString (  "<table id='" + sr.id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
                             "<tr>"
                                 "<td colspan='3'>"
                                     "<div class='dotlinehoriz'>"
@@ -229,41 +230,41 @@ QString HTML::SRTable( SR* sr )
                                     "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''>"
                                 "</td>"
                                 "<td width='100%' bgcolor='#E8E8E8'>"
-                                    "<a href='sr://" + sr->id() + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
+                                    "<a href='sr://" + sr.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
                                         "<tr width='100%'>"
                                             "<td class='gadgetHead'>" );
 
-    if ( sr->isCR() ) 
+    if ( sr.srtype == "cr" ) 
     {    
-        srtab += QString("<b> CR# " + sr->id() + " - " + sr->briefDesc() + "</b>");
+        srtab += QString("<b> CR# " + sr.id + " - " + sr.bdesc + "</b>");
     }
     else 
     {    
-        srtab += QString ( "<b> SR# " + sr->id() + " - " + sr->briefDesc() + "</b>");
+        srtab += QString ( "<b> SR# " + sr.id + " - " + sr.bdesc + "</b>");
     }
     
-    if ( sr->display() == "none" )
+    if ( sr.display == "none" )
     {
-        srtab += QString( "<div id='" + sr->id() + "_hinfo' style='display:block'><i>" + sr->status() + 
-                          " - Age: " + QString::number( sr->age() ) + " days - Last update: " + 
-                          QString::number( sr->lastUpdateDays() ) + " days ago</div>" );
+        srtab += QString( "<div id='" + sr.id + "_hinfo' style='display:block'><i>" + sr.status + 
+                          " - Age: " + QString::number( sr.age ) + " days - Last update: " + 
+                          QString::number( sr.lastUpdateDays ) + " days ago</div>" );
     }
-    else if ( sr->display() == "block" )
+    else if ( sr.display == "block" )
     {
-        srtab += QString( "<div id='" + sr->id() + "_hinfo' style='display:none'><i>" + sr->status() + 
-                          " - Age: " + QString::number( sr->age() ) + " days - Last update: " + 
-                          QString::number( sr->lastUpdateDays() ) + " days ago</div>" );
+        srtab += QString( "<div id='" + sr.id + "_hinfo' style='display:none'><i>" + sr.status + 
+                          " - Age: " + QString::number( sr.age ) + " days - Last update: " + 
+                          QString::number( sr.lastUpdateDays ) + " days ago</div>" );
     }
     else
     {
-        srtab += QString( "<div id='" + sr->id() + "_hinfo' style='display:block'><i>" + sr->status() + 
-                          " - Age: " + QString::number( sr->age() ) + " days - Last update: " + 
-                          QString::number( sr->lastUpdateDays() ) + " days ago</div>" );
+        srtab += QString( "<div id='" + sr.id + "_hinfo' style='display:block'><i>" + sr.status + 
+                          " - Age: " + QString::number( sr.age ) + " days - Last update: " + 
+                          QString::number( sr.lastUpdateDays ) + " days ago</div>" );
     }
  
     srtab += QString (  "</td></a>"
                         "<td align='right'>"
-                            "<a href='arrow://" + sr->id() + "'><img src='qrc:/images/ni_gadget_arrow.gif'></img></a>"
+                            "<a href='arrow://" + sr.id + "'><img src='qrc:/images/ni_gadget_arrow.gif'></img></a>"
                         "</td>"
                     "</tr>"
                 "</table>"
@@ -280,15 +281,15 @@ QString HTML::SRTable( SR* sr )
             "</td>"
         "</tr>"
     "</table>"
-    "<a href='sr://" + sr->id() + "'><table id='" + sr->id() + "_body' width='100%' cellspacing='0' cellpadding='0' border='0' style='display:" );
+    "<a href='sr://" + sr.id + "'><table id='" + sr.id + "_body' width='100%' cellspacing='0' cellpadding='0' border='0' style='display:" );
   
-    if( sr->display().isEmpty() ) 
+    if( sr.display.isEmpty() ) 
     {   
         srtab+="none";
     }
-    else if ( !sr->display().isEmpty() )
+    else if ( !sr.display.isEmpty() )
     {    
-        srtab+=QString( sr->display() );
+        srtab+=QString( sr.display );
     }
     else
     {
@@ -305,22 +306,22 @@ QString HTML::SRTable( SR* sr )
                             "<td class='gadgetText'>"
                                 "<tr>"
                                     "<td class='gadgetText'>Customer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>"
-                                    "<td class='gadgetText'>" + sr->customer() + " (" +sr->contact()+")</td>"
+                                    "<td class='gadgetText'>" + sr.cus_account + " (" + sr.cus_firstname + " " + sr.cus_lastname +")</td>"
                                 "</tr>"
                                 "<tr>"
                                     "<td class='gadgetText'>Age</td>"
-                                    "<td class='gadgetText'>" + QString::number( sr->age() ) + " days</td>"
+                                    "<td class='gadgetText'>" + QString::number( sr.age ) + " days</td>"
                                 "</tr>"
                                 "<tr>"
                                     "<td class='gadgetText'>Status</td>"
-                                    "<td class='gadgetText'>" + sr->status() + "</td>"
+                                    "<td class='gadgetText'>" + sr.status + "</td>"
                                 "</tr>"
                                 "<tr>"
                                     "<td class='gadgetText'>Last Update</td>"
-                                    "<td class='gadgetText'>" + QString::number( sr->lastUpdateDays() ) + " days ago</td>"
+                                    "<td class='gadgetText'>" + QString::number( sr.lastUpdateDays ) + " days ago</td>"
                                 "</tr>" );
 
-    if ( Settings::showSS() )
+    /*if ( Settings::showSS() )
     {
         if ( sr->ss() ) 
         {
@@ -336,8 +337,10 @@ QString HTML::SRTable( SR* sr )
                         "<td class='gadgetText'>No</td>"
                      "</tr>" );
         }
-    }
+    }*/
 
+    QStringList list = sr.todoList;
+    
     if( !( !( Settings::todoShowEsc() ) && 
         !(Settings::todoShowStat() ) && 
         !( Settings::todoShowUp() ) ) )
@@ -379,12 +382,13 @@ QString HTML::SRTable( SR* sr )
                 }
             }
         }
+    }
   
     srtab +=( "</td></tr>" );
   
-    }
     
-    srtab+= (   "</table></a></a></td><td width='1' rowspan='4' class='dotlinevert'><img src='qrc:/images/spacer.gif'"
+    
+    srtab += (   "</table></a></a></td><td width='1' rowspan='4' class='dotlinevert'><img src='qrc:/images/spacer.gif'"
                 "width='1' height='1' border='0' alt=''></td></tr><tr><td colspan='3'><div class='dotlinehoriz'>"
                 "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''></div></td></tr></table></a><div id='abstand'></div>" );  
 

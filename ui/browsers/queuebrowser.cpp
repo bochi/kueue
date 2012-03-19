@@ -27,6 +27,7 @@
 #include "settings.h"
 #include "kueue.h"
 #include "data/database.h"
+#include "data/datathread.h"
 #include "ui/tabwidget.h"
 #include "ui/html.h"
 
@@ -90,8 +91,6 @@ QueueBrowser::QueueBrowser( QObject *parent )
    
     connect( sortorder, SIGNAL( activated() ),
              this, SLOT( toggleSortOrder() ) );
-    
-    update();
 }
 
 QueueBrowser::~QueueBrowser()
@@ -119,7 +118,7 @@ void QueueBrowser::showOnlyAwaitingSupport()
     Settings::setShowStatusOthers( false );
     Settings::setShowAwaitingSupport( true );
     emit setMenus();
-    update();
+    DataThread::updateQueueBrowser();
 }
 
 void QueueBrowser::showOnlyAwaitingCustomer()
@@ -128,7 +127,7 @@ void QueueBrowser::showOnlyAwaitingCustomer()
     Settings::setShowStatusOthers( false );
     Settings::setShowAwaitingSupport( false );
     emit setMenus();
-    update();
+    DataThread::updateQueueBrowser();
 }
 
 void QueueBrowser::showOnlyOthers()
@@ -137,7 +136,7 @@ void QueueBrowser::showOnlyOthers()
     Settings::setShowStatusOthers( true );
     Settings::setShowAwaitingSupport( false );
     emit setMenus();
-    update();
+    DataThread::updateQueueBrowser();
 }
 
 void QueueBrowser::showAll()
@@ -146,7 +145,7 @@ void QueueBrowser::showAll()
     Settings::setShowStatusOthers( true );
     Settings::setShowAwaitingSupport( true );
     emit setMenus();
-    update();
+    DataThread::updateQueueBrowser();
 }
 
 void QueueBrowser::urlHovered( const QString& url, const QString& title, const QString& text )
@@ -160,63 +159,9 @@ void QueueBrowser::urlHovered( const QString& url, const QString& title, const Q
     mUrl = url;
 }
 
-void QueueBrowser::update()
+void QueueBrowser::update( const QString& html )
 {
-    // This updates the data from the db and creates HTML to display in the webview
-    
-    QStringList list;
-    QString html;
-
-    html += HTML::styleSheet();
-
-    html += HTML::pageHeader( Settings::engineer(), Database::srsTotal() );
-
-    list = Database::getSrList( Settings::sortAge(), Settings::sortAsc() );
-
-    for ( int i = 0; i < list.size(); ++i )
-    {
-        QRegExp srnr( "^[0-9]{11}$" );
-
-        if ( srnr.exactMatch( list.at( i ).split( "|" ).at( 0 ) ) )
-        {
-            /*SR* sr = new SR( list.at( i ) );
-            Database::getSRData( sr );
-            sr->makeTodoList();
-
-            if ( !Settings::showAwaitingCustomer() && 
-                 sr->status() == "Awaiting Customer" )
-            {
-                //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
-            }
-            else if ( !Settings::showAwaitingSupport() && 
-                      sr->status() == "Awaiting Novell Support" )
-            {
-                //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
-            }
-            else if ( !Settings::showStatusOthers() && 
-                      sr->status() != "Awaiting Customer" && 
-                      sr->status() != "Awaiting Novell Support" )
-            {
-                //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
-            }
-            else if ( !Settings::showSR() && 
-                      !sr->isCR() )
-            {
-                //qDebug() << "[QUEUEBROWSER] Skipping SR" << sr->isCR() << sr->id();
-            }
-            else if ( !Settings::showCR() && 
-                      sr->isCR() )
-            {
-                //qDebug() << "[QUEUEBROWSER] Skipping CR" << sr->isCR() << sr->id();
-            }
-            else
-            {
-                html += HTML::SRTable( sr );
-            }
-            
-            delete sr;*/
-        }
-     }
+    qDebug() << "[QUEUEBROWSER] Updating";
 
     QPoint pos = page()->currentFrame()->scrollPosition();
     page()->currentFrame()->setHtml( html );
@@ -454,7 +399,7 @@ void QueueBrowser::toggleSortOrder()
         Settings::setSortAsc( true );
     }
     
-    update();
+    DataThread::updateQueueBrowser();
 }
 
 void QueueBrowser::toggleSortType()
@@ -468,7 +413,7 @@ void QueueBrowser::toggleSortType()
         Settings::setSortAge( true );
     }
     
-    update();
+    DataThread::updateQueueBrowser();
 }
 
 void QueueBrowser::toggleTables()

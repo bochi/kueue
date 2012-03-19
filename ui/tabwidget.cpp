@@ -30,6 +30,7 @@
 #include "nsa/nsa.h"
 #include "kueuethreads.h"
 #include "browsers/helpbrowser.h"
+#include "data/datathread.h"
 
 #include <QGridLayout> 
 #include <QMenu>
@@ -327,9 +328,9 @@ void TabWidget::updateQmonBrowser()
     mQmonBrowser->update();
 }
 
-void TabWidget::updateQueueBrowser()
+void TabWidget::updateQueueBrowser( const QString& html )
 {
-    mQueueBrowser->update();
+    mQueueBrowser->update( html );
 }
 
 void TabWidget::updateStatsBrowser()
@@ -633,13 +634,13 @@ void TabWidget::setMenus()
 void TabWidget::closeAllTables()
 {
     Database::closeAllTables();
-    mQueueBrowser->update();
+    DataThread::updateQueueBrowser();
 }
 
 void TabWidget::expandAllTables()
 {
     Database::expandAllTables();
-    mQueueBrowser->update();
+    DataThread::updateQueueBrowser();
 }
 
 void TabWidget::openClipboardInUnity( int browser )
@@ -760,7 +761,7 @@ void TabWidget::openWebsite()
 void TabWidget::updateUiData()
 {
     mQmonBrowser->update();
-    mQueueBrowser->update();
+    DataThread::updateQueueBrowser();
     mStatsBrowser->update();
 }
 

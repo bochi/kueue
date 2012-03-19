@@ -32,6 +32,7 @@
 #include "ui/configdialog.h"
 #include "ui/updatedialog.h"
 #include "nsa/nsa.h"
+#include "data/datathread.h"
 
 #include "ui/busywidget.h"
 
@@ -97,13 +98,13 @@ void KueueApp::cleanupTemp()
 
 void KueueApp::createApp()
 {
+   
     createSystray();
     createDatabase();
     createMainWindow();
-    createQueue();
-    createQmon();
-    createStats();
-   
+    createDataThread();
+
+    
     if ( Settings::appVersion() != QApplication::applicationVersion() )
     {
         UpdateDialog* ud = new UpdateDialog( this );
@@ -137,6 +138,20 @@ void KueueApp::createApp()
              mTabWidget, SLOT( addUnityBrowser() ) );
 }
 
+void KueueApp::createDataThread()
+{
+    qDebug() << "[KUEUEAPP] My thread ID is" << thread()->currentThreadId();
+    
+    mDataThread = &mDataThread->thread();
+    
+    connect( mDataThread, SIGNAL( queueDataChanged( QString ) ), 
+             mTabWidget, SLOT( updateQueueBrowser( const QString& ) ) );
+    
+    connect( mDataThread, SIGNAL( destroyed() ),
+             this, SLOT( createDataThread() ) );
+}
+
+
 void KueueApp::updateJobDone()
 {
     QNetworkReply* r = qobject_cast< QNetworkReply* >( sender() );
@@ -166,6 +181,8 @@ void KueueApp::createQueue()
 
 void KueueApp::createDatabase()
 {
+    qDebug() << "createDatabase";
+    Database::openDbConnection( "sqliteDB" );
 }
 
 void KueueApp::createStats()
@@ -225,6 +242,7 @@ void KueueApp::settingsChanged()
     #endif
     #endif
 
+    mDataThread->destroy();
     mTabWidget->refreshTabs();
     setTabPosition();
     updateUiData();

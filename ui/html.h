@@ -30,6 +30,7 @@
 #include "data/stats.h"
 #include "data/qmon.h"
 #include "nsa/nsajob.h"
+#include "data/dataclasses.h"
 
 class SR;
 class NSATableItem;
@@ -39,7 +40,7 @@ class HTML
     public:
         static QString styleSheet();
         static QString pageHeader( const QString&, int );
-        static QString SRTable( SR* );
+        static QString SRTable( QueueSR );
         static QString pageFooter();
         static QString qmonPageHeader();
         static QString qmonTableHeader( const QString& );

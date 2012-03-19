@@ -30,6 +30,7 @@
 
 #include <QtGui>
 #include <QDesktopServices>
+#include <QHttp>
 
 #ifdef QT_HAS_DBUS
     #include <QtDBus/QDBusConnection>
@@ -51,13 +52,17 @@ DetailWindow::DetailWindow( QString sr, bool nb )
     #endif
     
     QShortcut* closesc = new QShortcut( Qt::Key_Escape, this );
+    mTransSC = new QShortcut( Qt::Key_F1, this );
    
     connect( closesc, SIGNAL( activated() ),
              this, SLOT( close() ) );
     
+    connect( mTransSC, SIGNAL( activated() ),
+             this, SLOT( translate() ) );
+    
     srLabel->setText( "<font size='+1'><b>Details for SR#" + mSr + "</b></font>" );
     
-    /*if ( Database::getQmonBdesc( mSr ) == "ERROR" && 
+    if ( //( Database::getQmonBdesc( mSr ) == "ERROR" && 
          Database::getBriefDescription( mSr ) == "ERROR" )
     {
         briefDescLabel->setVisible( false );
@@ -65,7 +70,7 @@ DetailWindow::DetailWindow( QString sr, bool nb )
     }
     else if ( Database::getBriefDescription( mSr ) == "ERROR" )
     {
-        briefDescLabel->setText( Database::getQmonBdesc( mSr ) );
+        //briefDescLabel->setText( Database::getQmonBdesc( mSr ) );
     }
     else
     {
@@ -85,7 +90,7 @@ DetailWindow::DetailWindow( QString sr, bool nb )
         customerLabel->setText( Database::getCustomer( mSr ) );
         statusLabel->setText( Database::getSrStatus( mSr ) );
     }
-*/
+
     for ( int i = 0; i < Settings::engineerList().size(); ++i ) 
     {
         assignCombo->addItem( Settings::engineerList().at( i ) );
@@ -169,9 +174,7 @@ void DetailWindow::downloadDetails()
 
 void DetailWindow::detailFinished()
 {
-    QString details = mDet1->readAll();
-    
-    details.remove( 0, 11 );
+    QString details = QString::fromUtf8( mDet1->readAll() );
 
     if( mDet1->error() )
     {
@@ -212,7 +215,7 @@ void DetailWindow::detail2Finished()
         
             customerLabel->setText( details.split("|||").at( 4 ).trimmed() + " (" + details.split("|||").at( 5 ).trimmed() + ")" );
             statusLabel->setText( details.split("|||").at( 3 ).trimmed() );
-            detailBrowser->setText( details.split( "|||" ).at( 7 ).trimmed() );
+            //detailBrowser->setText( details.split( "|||" ).at( 7 ).trimmed() );
         }
         else
         {
@@ -227,7 +230,7 @@ void DetailWindow::detail2Finished()
     {
         qDebug() << "[DETAILWINDOW] No detailed description found, trying another URL...";
                 
-        mDet1 = Kueue::download( QUrl( Settings::dBServer() + "/detail.asp?sr=" + mSr ) );
+        mDet1 = Kueue::download( QUrl( "http://data.kueue.tk:8080/detailed/" + mSr ) );
         
         connect( mDet1, SIGNAL( finished() ),
                  this, SLOT( detailFinished() ) );
@@ -238,6 +241,61 @@ void DetailWindow::takePressed()
 {
     mEngineer = Settings::engineer();
     assignNow();
+}
+
+void DetailWindow::translate()
+{
+    disconnect( mTransSC, 0, 0, 0 );
+    
+    QHttp* http = new QHttp(this);
+    QString text = detailBrowser->toPlainText();
+    http->setHost("www.google.com");
+    
+    connect(http, SIGNAL( done( bool ) ), 
+            this, SLOT( transaction_done() ) );
+    
+    QString url = QString("/translate_a/t?client=j&sl=auto&tl=en" );
+    
+    QByteArray textByteArray("text=");
+    textByteArray.append( detailBrowser->toPlainText().toUtf8() ); 
+    
+    QHttpRequestHeader header = QHttpRequestHeader("POST", url, 1, 1);
+    
+    header.setValue("Host", "www.google.com");
+    header.setValue("User-Agent", "Mozilla/5.0");
+    header.setValue("Accept-Encoding", "deflate");
+    header.setContentLength(text.length());
+    header.setValue("Connection", "Close");
+    
+    http->request(header,textByteArray);
+}
+
+void DetailWindow::transaction_done()
+{
+    QHttp* http = qobject_cast< QHttp* >( sender() );
+    
+    QString   replyText = replyText.fromUtf8( http->readAll() ).split("[").at(1).split("]").at(0);
+   
+    replyText = replyText.replace(QString("\\\""),QString("\""));
+    replyText = replyText.replace(QString("\\n"),QString("\n"));
+    replyText = replyText.replace(QString("\n "),QString("\n"));
+    replyText = replyText.replace(QString("\\x3c"),QString("<"));
+    replyText = replyText.replace(QString("\\x3e"),QString(">"));
+
+    QStringList translatedList;
+ 
+    replyText = replyText.remove( "{" );
+    translatedList = replyText.split(QString("}"));
+    
+    replyText.clear();
+    
+    for( int i=0; i < translatedList.count(); i++) 
+    {
+        replyText.append( translatedList.at(i).split( "\",\"" ).at(0) );
+    }
+    
+    replyText = replyText.remove(",\"").remove( 0, 1 ).remove( "trans\":\"" );
+    detailBrowser->setText( replyText );
 }
 
 void DetailWindow::assignSR() 

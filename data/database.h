@@ -38,40 +38,41 @@ class Database
     public:
         static void openDbConnection( const QString = QString::Null() );
         
-        static bool srWasUpdated( QueueSR );
+        static bool srWasUpdated( QueueSR, const QString& = "sqliteDB" );
         
-        static void getSRData( SR*, const QString& = "default" );
-        static void updateSRData( SR* );
-        static void insertSRData( SR* );
-        static void deleteSrFromDB( const QString& );
-        static bool srExistsInDB( const QString& );
-        static QString getAdate( const QString& );
+        static void getSRData( SR*, const QString& = "sqliteDB" );
+        static void updateSRData( QueueSR, const QString& = "sqliteDB" );
+        static void insertSRData( QueueSR, const QString& = "sqliteDB" );
+        static void deleteSrFromDB( const QString&, const QString& = "sqliteDB" );
+        static bool srExistsInDB( const QString&, const QString& = "sqliteDB" );
+        static QString getAdate( const QString&, const QString& = "sqliteDB" );
         
-        static QString getStatus( const QString& );
-        static void setDisplay( const QString& );
-        static void closeAllTables();
-        static void expandAllTables();
-        static QStringList getSrList( bool = true, bool = true );
-        static int srsTotal();
-        static QString getBriefDescription( const QString& );
-        static QString getDetailedDescription( const QString& );
-        static QString getCustomer( const QString& );
-        static QString getSrStatus( const QString& );
+        static QString getStatus( const QString&, const QString& = "sqliteDB" );
+        static void setDisplay( const QString&, const QString& = "sqliteDB" );
+        static void closeAllTables( const QString& = "sqliteDB");
+        static void expandAllTables( const QString& = "sqliteDB");
+        static QList<QueueSR> getSrList( bool = true, bool = true, const QString& = "sqliteDB" );
+        static QStringList getSrNrList( const QString& = "sqliteDB" );
+        static int srsTotal( const QString& = "sqliteDB");
+        static QString getBriefDescription( const QString&, const QString& = "sqliteDB" );
+        static QString getDetailedDescription( const QString&, const QString& = "sqliteDB" );
+        static QString getCustomer( const QString&, const QString& = "sqliteDB" );
+        static QString getSrStatus( const QString&, const QString& = "sqliteDB" );
         
-        static void insertSiebelItemIntoDB( SiebelItem* );
-        static void updateSiebelItemInDB( SiebelItem* );
-        static void updateSiebelQueue( SiebelItem* );
-        static void updateSiebelSeverity( SiebelItem* );
-        static void updateSiebelDisplay( const QString& );
-        static void deleteSiebelItemFromDB( const QString& );
-        static QStringList getQmonSiebelList();
-        static bool siebelExistsInDB( const QString& );
-        static bool siebelQueueChanged( SiebelItem* );
-        static bool siebelSeverityChanged( SiebelItem* );
-        static bool isChat( const QString& );
-        static QString getQmonBdesc( const QString& );
+        static void insertSiebelItemIntoDB( SiebelItem*, const QString& = "sqliteDB" );
+        static void updateSiebelItemInDB( SiebelItem*, const QString& = "sqliteDB" );
+        static void updateSiebelQueue( SiebelItem*, const QString& = "sqliteDB" );
+        static void updateSiebelSeverity( SiebelItem*, const QString& = "sqliteDB" );
+        static void updateSiebelDisplay( const QString&, const QString& = "sqliteDB" );
+        static void deleteSiebelItemFromDB( const QString&, const QString& = "sqliteDB" );
+        static QStringList getQmonSiebelList( const QString& = "sqliteDB");
+        static bool siebelExistsInDB( const QString&, const QString& = "sqliteDB" );
+        static bool siebelQueueChanged( SiebelItem*, const QString& = "sqliteDB" );
+        static bool siebelSeverityChanged( SiebelItem*, const QString& = "sqliteDB" );
+        static bool isChat( const QString&, const QString& = "sqliteDB" );
+        static QString getQmonBdesc( const QString&, const QString& = "sqliteDB" );
         
-        static QList< SiebelItem* > getSrsForQueue( const QString&, QString = QString::Null() );
+        static QList< SiebelItem* > getSrsForQueue( const QString&, QString = QString::Null(), const QString& = "sqliteDB" );
                
         static QString convertTime( const QString& );
         

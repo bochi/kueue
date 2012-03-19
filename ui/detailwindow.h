@@ -30,6 +30,7 @@
 
 #include <QNetworkReply>
 #include <QProgressDialog>
+#include <QShortcut>
  
 class DetailWindow : public QMainWindow, private Ui::DetailWindowDLG
 {
@@ -50,11 +51,14 @@ class DetailWindow : public QMainWindow, private Ui::DetailWindowDLG
         QNetworkReply* mDet2;
         QNetworkReply* mAssign;
         QProgressDialog* mProgress;
+        QShortcut* mTransSC;
         
     private slots:
         void downloadDetails();
+        void translate();
         void detailFinished();
         void detail2Finished();
+        void transaction_done();
 	void takePressed();
         void assignSR();
         void showProgress( const QString& );

@@ -24,6 +24,7 @@
 */
 
 #include "database.h"
+#include "queue.h"
 #include "ui/html.h"
 
 #include <QFile>
@@ -43,7 +44,7 @@ void Database::openDbConnection( QString dbname )
     
     if ( dbname.isNull() )
     {
-        dbname = "default";
+        dbname = "sqliteDB";
     }
     
     QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE", dbname );
@@ -55,6 +56,8 @@ void Database::openDbConnection( QString dbname )
     }
     else
     {                         
+        qDebug() << "[DATABASE] Opened DB" << dir.path() << dbname;
+        
         QSqlQuery query( db );
         
         if ( !query.exec("PRAGMA temp_store = MEMORY") )
@@ -141,9 +144,11 @@ void Database::openDbConnection( QString dbname )
 
 void Database::getSRData( SR* sr, const QString& dbname )
 {
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    
+    QSqlQuery query( db );
     query.prepare( "SELECT ID, CDATE, ADATE, STATUS, CUSTOMER, CONTACT, BDESC, DDESC, SS, DISPLAY "
-                   "FROM " + Settings::engineer() + " WHERE ID = :id" );
+                   "FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     
     query.bindValue( ":id", sr->id() );
     query.exec();
@@ -187,77 +192,117 @@ void Database::getSRData( SR* sr, const QString& dbname )
 //    else qDebug() << "[DATABASE] Failed to get SR data for" << sr->id() << query.executedQuery() << query.lastError();
 }
 
-void Database::updateSRData( SR* sr )
-{    
-    QSqlQuery query;
+void Database::updateSRData( QueueSR sr, const QString& dbname )
+{   
+    QSqlDatabase db = QSqlDatabase::database( dbname );
     
-    qDebug() << "[DATABASE] Updating SR data for" << sr->id();
+    QSqlQuery query(db);
     
-    query.prepare(  "UPDATE " + Settings::engineer() + " SET "
+    qDebug() << "[DATABASE] Updating SR data for" << sr.id;
+    
+    query.prepare(  "UPDATE " + Settings::engineer().toUpper() + " SET "
                     "SRTYPE=:srtype, CREATOR=:creator, CUS_ACCOUNT=:cus_account, CUS_FIRSTNAME=:cus_firstname, "
                     "CUS_LASTNAME=:cus_lastname, CUS_TITLE=:cus_title, CUS_EMAIL=:cus_email, CUS_PHONE=:cus_phone, "
                     "CUS_ONSITEPHONE=:cus_onsitephone, CUS_LANG=:cus_lang, SEVERITY=:severity, STATUS=:status, "
                     "BDESC=:bdesc, DDESC=:ddesc, GEO=:geo, HOURS=:hours, CONTRACT=:contract, SERVICE_LEVEL=:service_level, "
                     "CREATED=:created, LASTUPDATE=:lastupdate, HIGHVALUE=:highvalue, CRITSIT=:critsit WHERE ID = :id" );
-
-    query.bindValue( ":id", sr->id() );    
-    query.bindValue( ":cdate", sr->opened().toString( "yyyy-MM-dd hh:mm:ss" ) );
-    query.bindValue( ":adate", sr->lastUpdate().toString( "yyyy-MM-dd hh:mm:ss" ) );
-    query.bindValue( ":status", sr->status() );
-    query.bindValue( ":customer", sr->customer() );
-    query.bindValue( ":contact", sr->contact() );
-    query.bindValue( ":bdesc", sr->briefDesc() );
-    query.bindValue( ":ddesc", sr->detailedDesc() );
-    query.bindValue( ":ss", sr->ss() );
     
+    query.bindValue( ":srtype", sr.srtype );
+    query.bindValue( ":creator", sr.creator );
+    query.bindValue( ":cus_account", sr.cus_account );
+    query.bindValue( ":cus_firstname", sr.cus_firstname );
+    query.bindValue( ":cus_lastname", sr.cus_lastname );
+    query.bindValue( ":cus_title", sr.cus_title );
+    query.bindValue( ":cus_email", sr.cus_email );
+    query.bindValue( ":cus_phone", sr.cus_phone );
+    query.bindValue( ":cus_onsitephone", sr.cus_onsitephone );
+    query.bindValue( ":cus_lang", sr.cus_lang );
+    query.bindValue( ":severity", sr.severity );
+    query.bindValue( ":status", sr.status );
+    query.bindValue( ":bdesc", sr.bdesc );
+    query.bindValue( ":ddesc", sr.ddesc );
+    query.bindValue( ":geo", sr.geo );
+    query.bindValue( ":hours", sr.hours );
+    query.bindValue( ":contract", sr.contract );
+    query.bindValue( ":service_level", sr.service_level );
+    query.bindValue( ":created", sr.created );
+    query.bindValue( ":lastupdate", sr.lastupdate );
+    query.bindValue( ":highvalue", sr.highvalue );
+    query.bindValue( ":critsit", sr.critsit );
+    query.bindValue( ":id", sr.id );
+
     if ( !query.exec() ) 
     {
-        qDebug() << "[DATABASE] Failed to update" << sr->id() << "in DB" << query.executedQuery() << query.lastError();
+        qDebug() << "[DATABASE] Failed to update" << sr.id << "in DB" << query.executedQuery() << query.lastError();
     }
 }
 
-void Database::insertSRData( SR* sr )
+void Database::insertSRData( QueueSR sr, const QString& dbname )
 {
-    qDebug() << "[DATABASE] Inserting SR data for" << sr->id();
+    qDebug() << "[DATABASE] Inserting SR data for" << sr.id;
     
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
     
-    query.prepare(  "INSERT into " + Settings::engineer() +
-                    "( ID, CDATE, ADATE, STATUS, CUSTOMER, CONTACT, BDESC, DDESC, SS, DISPLAY )"
+    QSqlQuery query( db );
+    
+    query.prepare(  "INSERT INTO " + Settings::engineer().toUpper() +
+                    "( ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
+                    "  CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
+                    "  CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY )"
                     "VALUES" 
-                    "( :id, :cdate, :adate, :status, :customer, :contact, :bdesc, :ddesc, :ss, 'none' );" );
+                    "( :id, :srtype, :creator, :cus_account, :cus_firstname, :cus_lastname, :cus_title, :cus_email, :cus_phone, "
+                    "  :cus_onsitephone, :cus_lang, :severity, :status, :bdesc, :ddesc, :geo, :hours, :contract, :service_level, "
+                    "  :created, :lastupdate, :highvalue, :critsit, 'none' )" );
         
-    query.bindValue( ":id", sr->id() );    
-    query.bindValue( ":cdate", sr->opened().toString( "yyyy-MM-dd hh:mm:ss" ) );
-    query.bindValue( ":adate", sr->lastUpdate().toString( "yyyy-MM-dd hh:mm:ss" ) );
-    query.bindValue( ":status", sr->status() );
-    query.bindValue( ":customer", sr->customer() );
-    query.bindValue( ":contact", sr->contact() );
-    query.bindValue( ":bdesc", sr->briefDesc() );
-    query.bindValue( ":ddesc", sr->detailedDesc() );
-    query.bindValue( ":ss", sr->ss() );
+    query.bindValue( ":id", sr.id );
+    query.bindValue( ":srtype", sr.srtype );
+    query.bindValue( ":creator", sr.creator );
+    query.bindValue( ":cus_account", sr.cus_account );
+    query.bindValue( ":cus_firstname", sr.cus_firstname );
+    query.bindValue( ":cus_lastname", sr.cus_lastname );
+    query.bindValue( ":cus_title", sr.cus_title );
+    query.bindValue( ":cus_email", sr.cus_email );
+    query.bindValue( ":cus_phone", sr.cus_phone );
+    query.bindValue( ":cus_onsitephone", sr.cus_onsitephone );
+    query.bindValue( ":cus_lang", sr.cus_lang );
+    query.bindValue( ":severity", sr.severity );
+    query.bindValue( ":status", sr.status );
+    query.bindValue( ":bdesc", sr.bdesc );
+    query.bindValue( ":ddesc", sr.ddesc );
+    query.bindValue( ":geo", sr.geo );
+    query.bindValue( ":hours", sr.hours );
+    query.bindValue( ":contract", sr.contract );
+    query.bindValue( ":service_level", sr.service_level );
+    query.bindValue( ":created", sr.created );
+    query.bindValue( ":lastupdate", sr.lastupdate );
+    query.bindValue( ":highvalue", sr.highvalue );
+    query.bindValue( ":critsit", sr.critsit );
     
     if ( !query.exec() ) 
     {
-        qDebug() << "[DATABASE] Failed to add" << sr->id() << "into DB" << query.executedQuery() << query.lastError();
+        qDebug() << "[DATABASE] Failed to add" << sr.id << "into DB" << query.executedQuery() << query.lastError();
     }
 }
 
-void Database::deleteSrFromDB( const QString& id )
+void Database::deleteSrFromDB( const QString& id, const QString& dbname )
 {
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+
     qDebug() << "[DATABASE] Deleting SR" << id;
     
-    QSqlQuery query;
-    query.prepare( "DELETE FROM " + Settings::engineer() +" WHERE ID = :id" );
+    QSqlQuery query(db);
+    query.prepare( "DELETE FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
     query.exec();
 }
 
-bool Database::srExistsInDB( const QString& id )
+bool Database::srExistsInDB( const QString& id, const QString& dbname )
 {
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
     
-    query.prepare( "SELECT ID FROM " + Settings::engineer() +" WHERE ( ID = :id )" );
+    QSqlQuery query(db);
+    
+    query.prepare( "SELECT ID FROM " + Settings::engineer().toUpper() +" WHERE ( ID = :id )" );
     query.bindValue( ":id", id );
     
     query.exec();
@@ -272,11 +317,12 @@ bool Database::srExistsInDB( const QString& id )
     }
 }
 
-bool Database::srWasUpdated( QueueSR sr )
+bool Database::srWasUpdated( QueueSR sr, const QString& dbname )
 {
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
     
-    query.prepare( "SELECT LASTUPDATE FROM " + Settings::engineer() + " WHERE ( ID = :id )" );
+    query.prepare( "SELECT LASTUPDATE FROM " + Settings::engineer().toUpper() + " WHERE ( ID = :id )" );
     query.bindValue( ":id", sr.id );
     
     query.exec();
@@ -293,10 +339,11 @@ bool Database::srWasUpdated( QueueSR sr )
 }
 
 
-QString Database::getAdate( const QString& id )
+QString Database::getAdate( const QString& id, const QString& dbname )
 {
-    QSqlQuery query;
-    query.prepare( "SELECT ADATE FROM " + Settings::engineer() + " WHERE ID = :id" );
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
+    query.prepare( "SELECT ADATE FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
     query.exec();
     
@@ -310,10 +357,11 @@ QString Database::getAdate( const QString& id )
     }
 }
 
-QString Database::getStatus( const QString& id )
+QString Database::getStatus( const QString& id, const QString& dbname )
 {
-    QSqlQuery query;
-    query.prepare( "SELECT STATUS FROM " + Settings::engineer() + " WHERE ID = :id" );
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
+    query.prepare( "SELECT STATUS FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
     query.exec();
     
@@ -327,11 +375,12 @@ QString Database::getStatus( const QString& id )
     }
 }
 
-void Database::setDisplay( const QString& d )
+void Database::setDisplay( const QString& d, const QString& dbname )
 {
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
     
-    query.prepare(  "UPDATE " + Settings::engineer() + " SET "
+    query.prepare(  "UPDATE " + Settings::engineer().toUpper() + " SET "
                     "DISPLAY=:display "
                     "WHERE id = :id" );
     
@@ -340,51 +389,71 @@ void Database::setDisplay( const QString& d )
     query.exec();
 }
 
-void Database::closeAllTables()
+void Database::closeAllTables( const QString& dbname)
 {
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
     
-    query.prepare(  "UPDATE " + Settings::engineer() + " SET "
+    query.prepare(  "UPDATE " + Settings::engineer().toUpper() + " SET "
                     "DISPLAY='none' " );
         
     query.exec();
 }
 
-void Database::expandAllTables()
+void Database::expandAllTables( const QString& dbname)
 {
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
     
-    query.prepare(  "UPDATE " + Settings::engineer() + " SET "
+    query.prepare(  "UPDATE " + Settings::engineer().toUpper() + " SET "
                     "DISPLAY='block' " );
     
     query.exec();
 }
 
-QStringList Database::getSrList( bool s, bool a )
+QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname )
 {
+    QSqlDatabase db = QSqlDatabase::database( dbname );
     QStringList l;
-    QSqlQuery query;
+    QDateTime now = QDateTime::currentDateTime();
+    QList<QueueSR> srlist;
+
+    QSqlQuery query( db );
     
+    db.transaction();
+
     if ( a )
     {
         if ( s ) 
         {    
-            query.prepare( "SELECT ID FROM " + Settings::engineer() +" ORDER BY CDATE ASC" );
+            qDebug() << "ORDER BY LASTUPDATE ASC";
+            query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
+                            "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY FROM " + Settings::engineer().toUpper() + " ORDER BY CREATED ASC" );
         }
         else 
-        {    
-            query.prepare( "SELECT ID FROM " + Settings::engineer() +" ORDER BY ADATE ASC" );
+        {   
+            qDebug() << "ORDER BY LASTUPDATE SC";
+            query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
+                            "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY FROM " + Settings::engineer().toUpper() + " ORDER BY LASTUPDATE ASC" );
         }
     }
     else
     {
         if ( s ) 
         {    
-            query.prepare( "SELECT ID FROM " + Settings::engineer() +" ORDER BY CDATE DESC" );
+            qDebug() << "ORDER BY CREATED ASC";
+            query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
+                            "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY FROM " + Settings::engineer().toUpper() + " ORDER BY CREATED DESC" );
         }
         else 
         {    
-            query.prepare( "SELECT ID FROM " + Settings::engineer() +" ORDER BY ADATE DESC" );
+            qDebug() << "ORDER BY CREATED DESC";
+            query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
+                            "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY FROM " + Settings::engineer().toUpper() + " ORDER BY LASTUPDATE DESC" );
         }
     }
         
@@ -392,21 +461,102 @@ QStringList Database::getSrList( bool s, bool a )
     
     while( query.next() )
     {
-        l.append( query.value( 0 ).toString() );
+        QueueSR sr;
+        
+        sr.id = query.value(0).toString();
+        sr.srtype = query.value(1).toString();
+        sr.creator = query.value(2).toString();
+        sr.cus_account = query.value(3).toString();
+        sr.cus_firstname = query.value(4).toString();
+        sr.cus_lastname = query.value(5).toString();
+        sr.cus_title = query.value(6).toString();
+        sr.cus_email = query.value(7).toString();
+        sr.cus_phone = query.value(8).toString();
+        sr.cus_onsitephone = query.value(9).toString();
+        sr.cus_lang = query.value(10).toString();
+        sr.severity = query.value(11).toString();
+        sr.status = query.value(12).toString();
+        sr.bdesc = query.value(13).toString();
+        sr.ddesc = query.value(14).toString();
+        sr.geo = query.value(15).toString();
+        sr.hours = query.value(16).toString();
+        sr.contract = query.value(17).toString();
+        sr.service_level = query.value(18).toInt();
+        sr.created = query.value(19).toString();
+        sr.lastupdate = query.value(20).toString();
+        sr.highvalue = query.value(21).toBool();
+        sr.critsit = query.value(22).toBool();
+        sr.display = query.value(23).toString();
+        
+        QDateTime a = QDateTime::fromString( sr.created, "yyyy-MM-dd hh:mm:ss" );
+        QDateTime u = QDateTime::fromString( sr.lastupdate, "yyyy-MM-dd hh:mm:ss" );
+        
+        sr.age = a.daysTo( now );
+        sr.lastUpdateDays = u.daysTo( now );
+     
+        QStringList todo;
+        
+        if ( Settings::todoShowStat() )
+        {
+            if ( sr.status == "Assigned" || sr.status == "Unassigned" ) 
+            {
+                todo.append( "[2]The SR is in status " + sr.status + ", that's probably incorrect. Please check and change status if needed." );
+            }
+        }
+      
+        if ( Settings::todoShowUp() )
+        {
+            if ( sr.status == "Awaiting Novell Support" && sr.lastUpdateDays >= 3 ) 
+            {
+                todo.append( "[1]There was no activity for " + QString::number( sr.lastUpdateDays ) + " days and the customer is waiting for Novell, please update SR asap!" );
+            }
+        }
+        else if ( sr.status != "Suspended" && sr.lastUpdateDays >= 5 ) 
+        {    
+            todo.append( "[1]There was no activity for " + QString::number( sr.lastUpdateDays ) + " days, please update SR asap!" );
+        }
+      
+        if ( todo.isEmpty() ) 
+        {
+            todo.append( "[3]Nothing." ); 
+        }
+        
+        sr.todoList = todo;
+        
+        srlist.append( sr );
     }
     
-    return l;
+    db.commit();
+    
+    return srlist;
 }
 
-int Database::srsTotal()
+QStringList Database::getSrNrList( const QString& dbname )
 {
-    return getSrList().count();
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query( db );
+    QStringList list;
+    
+    query.prepare( "SELECT ID FROM " + Settings::engineer().toUpper() );
+    
+    while ( query.next() )
+    {
+        list.append( query.value( 0 ).toString() );
+    }
+    
+    return list;
 }
 
-QString Database::getDetailedDescription( const QString& id )
+int Database::srsTotal( const QString& dbname)
 {
-    QSqlQuery query;
-    query.prepare( "SELECT DDESC FROM " + Settings::engineer() + " WHERE ID = :id" );
+    return getSrList( true, true, dbname ).count();
+}
+
+QString Database::getDetailedDescription( const QString& id, const QString& dbname )
+{
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
+    query.prepare( "SELECT DDESC FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
     query.exec();
     
@@ -420,10 +570,11 @@ QString Database::getDetailedDescription( const QString& id )
     }
 }
 
-QString Database::getSrStatus( const QString& id )
+QString Database::getSrStatus( const QString& id, const QString& dbname )
 {
-    QSqlQuery query;
-    query.prepare( "SELECT STATUS FROM " + Settings::engineer() + " WHERE ID = :id" );
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
+    query.prepare( "SELECT STATUS FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
     query.exec();
     
@@ -437,10 +588,11 @@ QString Database::getSrStatus( const QString& id )
     }
 }
 
-QString Database::getCustomer( const QString& id )
+QString Database::getCustomer( const QString& id, const QString& dbname )
 {
-    QSqlQuery query;
-    query.prepare( "SELECT CUSTOMER, CONTACT FROM " + Settings::engineer() + " WHERE ID = :id" );
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
+    query.prepare( "SELECT CUSTOMER, CONTACT FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
     query.exec();
     
@@ -454,10 +606,11 @@ QString Database::getCustomer( const QString& id )
     }
 }
 
-QString Database::getBriefDescription( const QString& id )
+QString Database::getBriefDescription( const QString& id, const QString& dbname )
 {
-    QSqlQuery query;
-    query.prepare( "SELECT BDESC FROM " + Settings::engineer() + " WHERE ID = :id" );
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
+    query.prepare( "SELECT BDESC FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
     query.exec();
     
@@ -479,15 +632,16 @@ QString Database::getBriefDescription( const QString& id )
 
 */
 
-void Database::insertSiebelItemIntoDB( SiebelItem* item )
+void Database::insertSiebelItemIntoDB( SiebelItem* item, const QString& dbname )
 {
     qDebug() << "[DATABASE] Inserting SiebelItem for " << item->id << item->queue;
     
+    QSqlDatabase db = QSqlDatabase::database( dbname );
     QSqlQuery query( "INSERT INTO qmon_siebel( ID, QUEUE, SEVERITY, STATUS,  BDESC, GEO, HOURS, CUSTOMER, CONTACTVIA, "
                      "CONTRACT, CREATOR, BOMGARQ, HIGHVALUE, CRITSIT, AGE, LASTACT, TIQ, SLA, DISPLAY )"
                      "VALUES"
                      "( :id, :queue, :severity, :status, :bdesc, :geo, :hours, :customer, :contactvia, :contract, :creator, "
-                     ":bomgarq, :highvalue, :critsit, :age, :lastact, :tiq, :sla, :display )" );
+                     ":bomgarq, :highvalue, :critsit, :age, :lastact, :tiq, :sla, :display )", db );
   
     query.bindValue( ":id", item->id );
     query.bindValue( ":queue", item->queue );
@@ -512,11 +666,12 @@ void Database::insertSiebelItemIntoDB( SiebelItem* item )
     query.exec();
 }
 
-void Database::updateSiebelItemInDB( SiebelItem* item )
+void Database::updateSiebelItemInDB( SiebelItem* item, const QString& dbname )
 {
+    QSqlDatabase db = QSqlDatabase::database( dbname );
     QSqlQuery query( "UPDATE qmon_siebel SET QUEUE=:queue, SEVERITY=:severity, STATUS=:status,  BDESC=:bdesc, GEO=:geo, "
                      "HOURS=:hours, CUSTOMER=:customer, CONTACTVIA=:contactvia, CONTRACT=:contract, CREATOR=:creator, BOMGARQ=:bomgarq, "
-                     "HIGHVALUE=:highvalue, CRITSIT=:critsit, AGE=:age, LASTACT=:lastact, TIQ=:tiq, SLA=:sla WHERE ID=:id" );
+                     "HIGHVALUE=:highvalue, CRITSIT=:critsit, AGE=:age, LASTACT=:lastact, TIQ=:tiq, SLA=:sla WHERE ID=:id", db );
 
     query.bindValue( ":queue", item->queue );
     query.bindValue( ":severity", item->severity );
@@ -541,8 +696,9 @@ void Database::updateSiebelItemInDB( SiebelItem* item )
 }
 
 
-void Database::updateSiebelDisplay( const QString& display )
+void Database::updateSiebelDisplay( const QString& display, const QString& dbname )
 {
+    QSqlDatabase db = QSqlDatabase::database( dbname );
     QSqlQuery query( "UPDATE qmon_siebel SET DISPLAY = :display WHERE id = :id" );
                 
     query.bindValue( ":display", display.split( "-" ).at( 1 ) );
@@ -551,19 +707,21 @@ void Database::updateSiebelDisplay( const QString& display )
     query.exec();   
 }
 
-void Database::deleteSiebelItemFromDB( const QString& id )
+void Database::deleteSiebelItemFromDB( const QString& id, const QString& dbname )
 {
+    QSqlDatabase db = QSqlDatabase::database( dbname );
     qDebug() << "[DATABASE] Deleting SiebelItem" << id;
     
-    QSqlQuery query;
+    QSqlQuery query(db);
     query.prepare( "DELETE FROM qmon_siebel WHERE ID = :id" );
     query.bindValue( ":id", id );
     query.exec();
 }
 
-QStringList Database::getQmonSiebelList()
+QStringList Database::getQmonSiebelList( const QString& dbname)
 {
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
     QStringList l;
     query.prepare( "SELECT ID FROM qmon_siebel" );
     query.exec();
@@ -576,9 +734,10 @@ QStringList Database::getQmonSiebelList()
     return l;    
 }
 
-bool Database::siebelExistsInDB( const QString& id )
+bool Database::siebelExistsInDB( const QString& id, const QString& dbname )
 {
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
     query.prepare( "SELECT ID FROM qmon_siebel WHERE ( ID = :id )" );
     query.bindValue( ":id", id );
     query.exec();
@@ -593,9 +752,10 @@ bool Database::siebelExistsInDB( const QString& id )
     }
 }
 
-QList< SiebelItem* > Database::getSrsForQueue( const QString& queue, QString geo )
+QList< SiebelItem* > Database::getSrsForQueue( const QString& queue, QString geo, const QString& dbname )
 {
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
     QList< SiebelItem* > list;
     
     if ( geo == QString::Null() )
@@ -667,9 +827,10 @@ QList< SiebelItem* > Database::getSrsForQueue( const QString& queue, QString geo
     return list;
 }
 
-bool Database::siebelQueueChanged( SiebelItem* si  )
+bool Database::siebelQueueChanged( SiebelItem* si, const QString& dbname  )
 {
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
     query.prepare( "SELECT QUEUE FROM qmon_siebel WHERE ( ID = :id )" );
     query.bindValue( ":id", si->id );
     query.exec();
@@ -691,9 +852,10 @@ bool Database::siebelQueueChanged( SiebelItem* si  )
     }
 }
 
-bool Database::siebelSeverityChanged( SiebelItem* si  )
+bool Database::siebelSeverityChanged( SiebelItem* si, const QString& dbname  )
 {
-    QSqlQuery query;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query(db);
     query.prepare( "SELECT SEVERITY FROM qmon_siebel WHERE ( ID = :id )" );
     query.bindValue( ":id", si->id );
     query.exec();

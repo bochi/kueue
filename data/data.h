@@ -31,6 +31,7 @@
 
 #include <QWebView>
 #include <QProgressDialog>
+#include <QtNetwork>
 
 class Data : public QObject
 {
@@ -39,7 +40,30 @@ class Data : public QObject
     public: 
         Data();
         ~Data();
+    
+    private:
+        QNetworkAccessManager* mNAM;
+        QNetworkReply* get( const QUrl& );
+        QString mDB;
+    
+    public slots:
+        void updateQueueBrowser();
+        void updateQmonBrowser();
+        void updateStatsBrowser();
         
+    private slots:
+        void getError( QNetworkReply::NetworkError );
+        void updateQueue();
+        void updateQmon();
+        void updateStats();
+        void queueUpdateFinished();
+        void qmonUpdateFinished();
+        void statsUpdateFinished();
+        
+    signals:
+        void queueDataChanged( QString );
+        void qmonDataChanged( QString );
+        void statsDataChanged( QString );
 };
 
 #endif

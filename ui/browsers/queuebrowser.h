@@ -41,7 +41,7 @@ class QueueBrowser : public QWebView
         bool mOpen;
         
     public slots:
-        void update();
+        void update( const QString& );
         
     private slots:
         void openWebInspector();

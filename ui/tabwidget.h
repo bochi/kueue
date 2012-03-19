@@ -118,7 +118,7 @@ class TabWidget : public QTabWidget
         void updateUiData();
         void openClipboardInUnity( int );
         void openInUnityImp( const QString& );
-        void updateQueueBrowser();
+        void updateQueueBrowser( const QString& = "bla" );
         void updateQmonBrowser();
         void updateStatsBrowser();
         void refreshTabs();

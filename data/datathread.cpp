@@ -25,19 +25,77 @@
 
 #include "datathread.h"
 
+DataThread* DataThread::instance = 0;
+
+DataThread& DataThread::thread()
+{
+    if ( !instance )
+    {
+        instance = new DataThread;
+    }
+ 
+    return *instance; 
+}
+
+void DataThread::destroy()
+{
+    if ( instance )
+    {
+        delete instance;
+    }
+      
+    instance = 0;
+}
+
 DataThread::DataThread( QObject *parent ) : QThread( parent )
 {
+    start();
 }
 
 DataThread::~DataThread()
 {
 }
 
-
 void DataThread::run()
 {
     mData = new Data();
+    
+    connect( mData, SIGNAL( queueDataChanged( QString ) ), 
+             this, SIGNAL( queueDataChanged( QString ) ) );
+    
+    connect( this, SIGNAL( updateQueueBrowserRequested() ), 
+             mData, SLOT( updateQueueBrowser() ) );
+
+    connect( mData, SIGNAL( statsDataChanged( QString ) ), 
+             this, SIGNAL( statsDataChanged( QString ) ) );
+    
+    connect( this, SIGNAL( updateStatsBrowserRequested() ), 
+             mData, SLOT( updateStatsBrowser() ) );
+    
+    connect( mData, SIGNAL( qmonDataChanged( QString ) ), 
+             this, SIGNAL( qmonDataChanged( QString ) ) );
+    
+    connect( this, SIGNAL( updateQmonBrowserRequested() ), 
+             mData, SLOT( updateQmonBrowser() ) );
+    
+    //mData->updateQueueBrowser();
+    
     exec();
+}
+
+void DataThread::updateQueueBrowserSlot()
+{
+    emit updateQueueBrowserRequested();
+}
+
+void DataThread::updateQmonBrowserSlot()
+{
+    emit updateQmonBrowserRequested();
+}
+
+void DataThread::updateStatsBrowserSlot()
+{
+    emit updateStatsBrowserRequested();
 }
 
 #include "datathread.moc"
