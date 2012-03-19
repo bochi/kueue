@@ -178,7 +178,7 @@ void Settings::setUseDefaultFileManager( const bool& b )
 QString Settings::otherFileManagerCommand()
 {
     QSettings settings;
-    return settings.value( "otherFileManagerCommand" ).toString();
+    return settings.value( "otherFileManagerCommand", "default" ).toString();
 }
 
 void Settings::setOtherFileManagerCommand( const QString& s )

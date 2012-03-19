@@ -42,6 +42,13 @@ class DataThread : public QThread
         
     private:
         Data* mData;
+        
+    signals:
+        void notify( const QString&, QString, QString, const QString& );
+        void queueUpdateDone( const QString& );
+        void qmonUpdateDone( const QString& );
+        void statsUpdateDone( const QString& );
+
 };
 
 

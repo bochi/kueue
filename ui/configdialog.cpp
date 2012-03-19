@@ -29,6 +29,7 @@
 #include "config.h"
 #include "kueue.h"
 #include "simplecrypt/simplecrypt.h"
+#include <../qt-examples/sql/masterdetail/mainwindow.h>
 
 #include <QDir>
 #include <QDebug>
@@ -48,10 +49,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              this, SLOT( toggleUnityEditor( bool ) ) );
     connect( cfg_useIdleTimeout, SIGNAL( toggled( bool ) ),
              this, SLOT( toggleUnityTimeout( bool ) ) );
-    connect( cfg_defaultFileManager, SIGNAL( toggled( bool ) ),
-             this, SLOT( toggleUnityDefaultFileManager(bool) ) );
-    connect( cfg_otherFileManager, SIGNAL( toggled( bool ) ),
-             this, SLOT( toggleUnityOtherFileManager( bool ) ) );
     connect( filemanagerButton, SIGNAL( pressed() ),
              this, SLOT( getFilemanagerCommand() ) );
              
@@ -135,8 +132,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              this, SLOT( toggleMonitor( bool ) ) );
     connect( cfg_qbossFeatures, SIGNAL( toggled( bool ) ),
              this, SLOT( toggleQboss( bool ) ) );
-    connect( cfg_statsEnabled, SIGNAL( toggled( bool ) ),
-             this, SLOT( toggleStats( bool ) ) );
     connect( cfg_notificationsEnabled, SIGNAL( toggled( bool ) ), 
              this, SLOT( toggleNotifications( bool ) ) );
     
@@ -231,9 +226,10 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_dBServer->setText( Settings::dBServer() );
     cfg_engineer->setText( Settings::engineer() );
     
+
+    
     cfg_showAppWindow->setChecked( Settings::showAppWindow() );
     cfg_showTabsAtTop->setChecked( Settings::showTabsAtTop() );
-    cfg_autoMinutes->setValue( Settings::autoMinutes() );
     cfg_showSystemTray->setChecked( Settings::showSystemTray() );
     cfg_animateQueue->setChecked( Settings::animateQueue() );
     cfg_animateQmon->setChecked( Settings::animateQmon() );
@@ -242,30 +238,21 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_rightMouseButton->setCurrentIndex( Settings::rightMouseButton() );
     
     cfg_monitorEnabled->setChecked( Settings::monitorEnabled() );
-    cfg_monitorMinutes->setValue( Settings::monitorMinutes() );
     cfg_queuesToMonitor->addItems( Settings::queuesToMonitor() );
     cfg_monitorPersonalBomgar->setChecked( Settings::monitorPersonalBomgar() );
     cfg_bomgarName->setText( Settings::bomgarName() );
     
     cfg_qbossFeatures->setChecked( Settings::qbossFeatures() );
-    cfg_wikiURL->setText( Settings::wikiURL() );
     cfg_checkKopete->setChecked( Settings::checkKopete() );
-    cfg_checkWiki->setChecked( Settings::checkWiki() );
     cfg_kopeteText->setText( Settings::kopeteText() );
     cfg_engineerList->addItems( Settings::engineerList() );
     
     cfg_statsEnabled->setChecked( Settings::statsEnabled() );
-    cfg_statsMinutes->setValue( Settings::statsMinutes() );
-    cfg_teamStatsEnabled->setChecked( Settings::teamStatsEnabled() );
-    cfg_teamMembers->addItems( Settings::teamMembers() );
     
     cfg_unityEnabled->setChecked( Settings::unityEnabled() );
-    cfg_otherFileManager->setChecked( !Settings::useDefaultFileManager() );
-    cfg_defaultFileManager->setChecked( Settings::useDefaultFileManager() );
     cfg_otherFileManagerCommand->setText( Settings::otherFileManagerCommand() );
     cfg_showDownloadManager->setChecked( Settings::showDownloadManager() );
     
-    cfg_toolbarEnabled->setChecked( Settings::unityToolbarEnabled() );
     cfg_unityPassword->setText( Settings::unityPassword() );
     cfg_unityURL->setText( Settings::unityURL() );
     cfg_useIdleTimeout->setChecked( Settings::useIdleTimeout() );
@@ -279,7 +266,7 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_useSrDirectory->setChecked( Settings::useSrDirectory() );
     cfg_autoExtract->setChecked( Settings::autoExtract() );
     
-    cfg_notificationsEnabled->setChecked( Settings::notificationsEnabled() );
+    cfg_notificationsEnabled->setChecked( !Settings::notificationsEnabled() );
 
     cfg_generalNotificationPopup->setChecked( Settings::generalNotificationPopup() );
     cfg_generalNotificationSound->setChecked( Settings::generalNotificationSound() );
@@ -380,8 +367,7 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     toggleSystemTray( Settings::showSystemTray() );
     toggleMonitor( Settings::monitorEnabled() );
     toggleQboss( Settings::qbossFeatures() );
-    toggleStats( Settings::statsEnabled() );
-    toggleNotifications( Settings::notificationsEnabled() );
+    toggleNotifications( !Settings::notificationsEnabled() );
     
     #ifndef QT_HAS_DBUS
     
@@ -450,9 +436,17 @@ void ConfigDialog::writeSettings()
     Settings::setShowAppWindow( cfg_showAppWindow->isChecked() );
     Settings::setShowTabsAtTop( cfg_showTabsAtTop->isChecked() );
     Settings::setUnityEnabled( cfg_unityEnabled->isChecked() );
-    Settings::setUseDefaultFileManager( cfg_defaultFileManager->isChecked() );
+    
+    if ( cfg_otherFileManagerCommand->text() == "default" )
+    {
+        Settings::setUseDefaultFileManager( true );
+    }
+    else
+    {
+        Settings::setUseDefaultFileManager( false );
+    }
+    
     Settings::setOtherFileManagerCommand( cfg_otherFileManagerCommand->text() );
-    Settings::setUnityToolbarEnabled( cfg_toolbarEnabled->isChecked() );
     Settings::setUnityURL( cfg_unityURL->text() );
     Settings::setUseIdleTimeout( cfg_useIdleTimeout->isChecked() );
     Settings::setIdleTimeoutMinutes( cfg_idleTimeoutMinutes->value() );
@@ -462,7 +456,6 @@ void ConfigDialog::writeSettings()
     Settings::setExternalEditorEnabled( cfg_externalEditorEnabled->isChecked() );
     Settings::setEditorCommand( cfg_editorCommand->text() );
     Settings::setEditorSaveLocation( cfg_editorSaveLocation->text() );
-    Settings::setAutoMinutes( cfg_autoMinutes->value() );
     Settings::setShowSystemTray( cfg_showSystemTray->isChecked() );
     Settings::setAnimateQueue( cfg_animateQueue->isChecked() );
     Settings::setAnimateQmon( cfg_animateQmon->isChecked() );
@@ -472,7 +465,6 @@ void ConfigDialog::writeSettings()
     Settings::setAutoExtract( cfg_autoExtract->isChecked() );
     Settings::setUseSrDirectory( cfg_useSrDirectory->isChecked() );
     Settings::setMonitorEnabled( cfg_monitorEnabled->isChecked() );
-    Settings::setMonitorMinutes( cfg_monitorMinutes->value() );
     
     QStringList ql;
     
@@ -487,9 +479,7 @@ void ConfigDialog::writeSettings()
     Settings::setBomgarName( cfg_bomgarName->text() );
     
     Settings::setQbossFeatures( cfg_qbossFeatures->isChecked() );
-    Settings::setWikiURL( cfg_wikiURL->text() );
     Settings::setCheckKopete( cfg_checkKopete->isChecked() );
-    Settings::setCheckWiki( cfg_checkWiki->isChecked() );
     Settings::setKopeteText( cfg_kopeteText->text() );
     
     QStringList el;
@@ -502,9 +492,7 @@ void ConfigDialog::writeSettings()
     Settings::setEngineerList( el );
     
     Settings::setStatsEnabled( cfg_statsEnabled->isChecked() );
-    Settings::setStatsMinutes( cfg_statsMinutes->value() );
-    Settings::setTeamStatsEnabled( cfg_teamStatsEnabled->isChecked() );
-    
+        
     Settings::setNotificationsEnabled( cfg_notificationsEnabled->isChecked() );
     
     Settings::setGeneralNotificationPopup( cfg_generalNotificationPopup->isChecked() );
@@ -659,35 +647,22 @@ void ConfigDialog::toggleSystemTray( const bool& b )
 
 void ConfigDialog::toggleMonitor( const bool& b )
 {
-    monitorGeneralGroupBox->setEnabled( b );
-    monitorQueuesGroupBox->setEnabled( b );
-    monitorBomgarGroupBox->setEnabled( b );
+    pageListWidget->item( 1 )->setHidden( !b );
 }
 
 void ConfigDialog::toggleQboss( const bool& b )
 {
-    qbossDetailsGroupBox->setEnabled( b );
-    qbossEngineersGroupBox->setEnabled( b );
-}
-
-void ConfigDialog::toggleStats( const bool& b )
-{
-    statsGeneralGroupBox->setEnabled( b );
-    statsPersonalGroupBox->setEnabled( b );
-    statsTeamGroupBox->setEnabled( b );
+    pageListWidget->item( 2 )->setHidden( !b );
 }
 
 void ConfigDialog::toggleNotifications( const bool& b )
 {
-    notificationSettingsGroupBox->setEnabled( b );
+    notificationSettingsGroupBox->setEnabled( !b );
 }
 
 void ConfigDialog::toggleUnity( const bool& b )
 {
-    unityGeneralGroupBox->setEnabled( b );
-    unityAppearanceGroupBox->setEnabled( b );
-    cfg_externalEditorEnabled->setEnabled( b );
-    downloadManagerBox->setEnabled( b );
+    pageListWidget->item( 3 )->setHidden( !b );
     
     if ( !Settings::externalEditorEnabled() )
     {
@@ -726,16 +701,6 @@ void ConfigDialog::toggleUnityTimeout( const bool& b )
 {
     cfg_idleTimeoutMinutes->setEnabled( b );
     idleTimeoutLabel->setEnabled( b );
-}
-
-void ConfigDialog::toggleUnityDefaultFileManager( const bool& b )
-{
-    cfg_otherFileManager->setChecked( !b );
-}
-
-void ConfigDialog::toggleUnityOtherFileManager( const bool& b )
-{
-    cfg_defaultFileManager->setChecked( !b );
 }
 
 void ConfigDialog::getGeneralNotificationSoundFile()
@@ -895,7 +860,15 @@ void ConfigDialog::getDownloadDirectory()
 void ConfigDialog::getFilemanagerCommand()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Select command"), QDir::homePath() );
-    cfg_otherFileManagerCommand->setText( fileName );
+    
+    if ( fileName.isEmpty() || !QFile::exists( fileName ) )
+    {
+        cfg_otherFileManagerCommand->setText( "default" );
+    }
+    else
+    {
+        cfg_otherFileManagerCommand->setText( fileName );
+    }
 }
 
 BasicConfig::BasicConfig()
