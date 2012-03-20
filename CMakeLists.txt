@@ -112,15 +112,11 @@ SET( kueue_CPP  main.cpp
                 ui/html.cpp
                 ui/configdialog.cpp
                 ui/detailwindow.cpp
-                ui/passwordprompt.cpp
                 ui/tabwidget.cpp
                 ui/systray.cpp
                 ui/statusbar.cpp
-                ui/ssdialog.cpp
+		ui/unitywidgets.cpp
 		ui/updatedialog.cpp
-		ui/calendardialog.cpp
-                ui/notedialog.cpp
-                ui/closedialog.cpp
 		ui/download/edittableview.cpp
 		ui/download/downloadmanager.cpp
 		ui/download/squeezelabel.cpp

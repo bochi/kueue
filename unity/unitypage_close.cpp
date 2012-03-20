@@ -31,7 +31,6 @@
 */
 
 #include "unitypage.h"
-#include "ui/closedialog.h"
 
 #include <QMessageBox>
 

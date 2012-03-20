@@ -32,7 +32,6 @@
 
 #include "kueue.h"
 #include "unitypage.h"
-#include "ui/passwordprompt.h"
 #include "ui/statusbar.h"
 
 #include <QWebElementCollection>

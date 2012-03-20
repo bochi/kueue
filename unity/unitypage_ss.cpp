@@ -31,7 +31,6 @@
 */
 
 #include "unitypage.h"
-#include "ui/ssdialog.h"
 
 void UnityPage::setSS( const QString& sr )
 {

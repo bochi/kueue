@@ -28,10 +28,7 @@
 
 #include "unity/unitynetwork.h"
 #include "ui/statusbar.h"
-#include "ui/notedialog.h"
-#include "ui/closedialog.h"
-#include "ui/calendardialog.h"
-#include "ui/ssdialog.h"
+#include "ui/unitywidgets.h"
 
 #include <QWebPage>
 #include <QWebElement>
