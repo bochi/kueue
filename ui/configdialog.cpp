@@ -29,7 +29,6 @@
 #include "config.h"
 #include "kueue.h"
 #include "simplecrypt/simplecrypt.h"
-#include <../qt-examples/sql/masterdetail/mainwindow.h>
 
 #include <QDir>
 #include <QDebug>
