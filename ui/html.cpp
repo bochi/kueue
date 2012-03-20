@@ -428,11 +428,11 @@ QString HTML::qmonTableHeader( const QString& queue )
     return ph;
 }
 
-/*QString HTML::qmonSrInQueue( SiebelItem* si )
+QString HTML::qmonSrInQueue( QmonSR sr )
 {
     QString srtab;
   
-    srtab += QString (  "<table id='" + si->id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
+    srtab += QString (  "<table id='" + sr.id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
                             "<tr>"
                                 "<td colspan='3'>"
                                     "<div class='dotlinehoriz'>"
@@ -445,12 +445,12 @@ QString HTML::qmonTableHeader( const QString& queue )
                                     "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''>"
                                 "</td>"
                                 "<td width='100%' bgcolor='#E8E8E8'>"
-                                    "<a href='sr://" + si->id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
+                                    "<a href='sr://" + sr.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
                                         "<tr width='100%'>"
                                             "<td class='gadgetHead'>" );
 
  
-    if (  si->isCr )
+    if (  sr.isCr )
     {
         srtab += QString ( "<b>CR# " );
     }
@@ -459,45 +459,46 @@ QString HTML::qmonTableHeader( const QString& queue )
         srtab += QString ( "<b>SR# " );
     }
     
-    srtab += QString( si->id );
+    srtab += QString( sr.id );
     
-    if ( si->isChat )
+    if ( sr.isChat )
     {
         srtab += QString( "<img src='qrc:/images/chat.png'></img>" );
     }    
     
-    if ( ( si->highValue ) || ( si->critSit ) )
+    if ( ( sr.highvalue ) || ( sr.critsit ) )
     {
         srtab += QString( "<img src='qrc:/images/obacht.png'></img>" );
     }   
     
-    srtab += QString( "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;" + si->geo + " (" + si->hours + ")&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;" );
+    srtab += QString( "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;" + sr.geo + " (" + sr.hours + ")&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;" );
     
-    if ( si->severity == "High" )
+    if ( sr.severity == "High" )
     {
         srtab += QString( "<font color='DarkRed'>High</font>" );
     }
-    else if ( si->severity == "Urgent" )
+    else if ( sr.severity == "Urgent" )
     {
         srtab += QString( "<font color='DarkBlue'>Urgent</font>" );
     }
     else
     {
-        srtab += QString( si->severity );
+        srtab += QString( sr.severity );
     }
-       
-    srtab += QString (  "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Age: " + timeString( si->age ) );
-    srtab += QString (  "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Time in queue: " + timeString( si->timeInQ ) );
+       qDebug() << timeString(sr.agesec) << timeString(sr.slasec);
+
+    srtab += QString (  "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Age: " + timeString( sr.agesec ) );
+    srtab += QString (  "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Time in queue: " + timeString( sr.timeinqsec ) );
    
-    if ( si->slaLeft > 0 )      
+    if ( sr.slasec > 0 )      
     {
-        srtab += QString ( "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;SLA left: " + timeString( si->slaLeft ) );
+        srtab += QString ( "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;SLA left: " + timeString( sr.slasec ) );
     }
     
-    srtab += QString (  "</b><br><i>" +  si->bdesc + "</i>"
+    srtab += QString (  "</b><br><i>" +  sr.bdesc + "</i>"
                         "</td></a>"
                         "<td align='right'>"
-                            "<a href='arrow://" + si->id + "'><img src='qrc:/images/ni_gadget_arrow.gif'></img></a><br>"
+                            "<a href='arrow://" + sr.id + "'><img src='qrc:/images/ni_gadget_arrow.gif'></img></a><br>"
                         "</td>"
                     "</tr>"
                 "</table>"
@@ -514,15 +515,15 @@ QString HTML::qmonTableHeader( const QString& queue )
             "</td>"
         "</tr>"
     "</table>"
-    "<a href='sr://" + si->id + "'><table id='" + si->id + "_body' width='100%' cellspacing='0' cellpadding='0' border='0' style='display:" );
+    "<a href='sr://" + sr.id + "'><table id='" + sr.id + "_body' width='100%' cellspacing='0' cellpadding='0' border='0' style='display:" );
   
-    if ( si->display.isEmpty() )
+    if ( sr.display.isEmpty() )
     {
         srtab += "none";
     }
     else
     {
-        srtab += si->display;
+        srtab += sr.display;
     }
   
     srtab+=(    "'><tr>"
@@ -534,47 +535,47 @@ QString HTML::qmonTableHeader( const QString& queue )
                         "<tr>"
                             "<td class='gadgetText'>" );
 
-    if ( si->isCr )
+    if ( sr.isCr )
     {
         srtab += QString( "<tr>"
                             "<td class='gadgetText'>Opened by&nbsp;&nbsp;&nbsp;</td>"
-                            "<td class='gadgetText'>" + si->creator + "</td>"
+                            "<td class='gadgetText'>" + sr.creator + "</td>"
                           "</tr>" );
     }
     else
     {
         srtab += QString( "<tr>"
                             "<td class='gadgetText'>Customer</td>"
-                            "<td class='gadgetText'>" + si->customer + "</td>"
+                            "<td class='gadgetText'>" + sr.cus_account + " (" + sr.cus_firstname + " " + sr.cus_lastname + ")</td>"
                          "</tr>" );
     }
     
-    if ( si->isChat )
+    if ( sr.isChat )
     {
         srtab += QString(       "<tr>"
                                    "<td class='gadgetText'>Bomgar Queue/Owner&nbsp;&nbsp;&nbsp;</td>"
-                                   "<td class='gadgetText'>" + si->bomgarQ + "</td>"
+                                   "<td class='gadgetText'>" + sr.bomgarQ + "</td>"
                                 "</tr>" );
     }
     
     srtab += QString(           "<tr>"
                                    "<td class='gadgetText'>Status</td>"
-                                   "<td class='gadgetText'>" + si->status + "</td>"
+                                   "<td class='gadgetText'>" + sr.status + "</td>"
                                 "</tr>" );
-    if ( !si->isCr )
+    if ( !sr.isCr )
     {
         srtab += QString(       "<tr>"
                                    "<td class='gadgetText'>Contract</td>"
-                                   "<td class='gadgetText'>" + si->contract + "</td>"
+                                   "<td class='gadgetText'>" + sr.support_program_long + "</td>"
                                 "</tr>" );
     }
                                 
      srtab += QString(          "<tr>"
                                    "<td class='gadgetText'>Last Update&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>"
-                                   "<td class='gadgetText'>" + QString::number( secDays( si->lastAct ) ) + " days ago</td>"
+                                   "<td class='gadgetText'>" + QString::number( secDays( sr.lastupdatesec ) ) + " days ago</td>"
                                 "</tr>" );
     
-    if ( si->highValue )
+    if ( sr.highvalue )
     {
         srtab += QString(       "<tr>"
                                    "<td class='gadgetText'>High Value&nbsp;&nbsp;&nbsp;</td>"
@@ -589,7 +590,7 @@ QString HTML::qmonTableHeader( const QString& queue )
                                 "</tr>" );
     }
 
-    if ( si->critSit )
+    if ( sr.critsit )
     {
         srtab += QString(       "<tr>"
                                     "<td class='gadgetText'>CritSit&nbsp;&nbsp;&nbsp;</td>"
@@ -611,7 +612,7 @@ QString HTML::qmonTableHeader( const QString& queue )
                 "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''></div></td></tr></table><div id='abstand'></div></a>" );  
   
     return srtab;
-}*/
+}
 
 QString HTML::qmonTableFooter()
 {
@@ -997,16 +998,3 @@ int HTML::secDays( int sec )
     return tmp.daysTo( QDateTime::currentDateTime() );
 }
 
-QString HTML::csatDate()
-{
-    QNetworkReply *reply = Kueue::download( QUrl( Settings::dBServer() + "/custsatdate.asp" ) );
-    QEventLoop loop;
- 
-    QObject::connect( reply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
-    loop.exec();                         
-    
-    QString data = reply->readAll();
-    data.remove( QRegExp( "<(?:div|span|tr|td|br|body|html|tt|a|strong|p)[^>]*>", Qt::CaseInsensitive ) );
-    QDateTime t = QDateTime::fromString( data.trimmed(), "M/d/yyyy h:mm:ss" );
-    return t.toString( "yyyy-MM-dd" );
-}

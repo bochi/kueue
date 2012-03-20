@@ -29,6 +29,7 @@
 #include "data/database.h"
 #include "ui/html.h"
 #include "ui/tabwidget.h"
+#include "data/datathread.h"
 
 #include <QMessageBox>
 #include <QMenu>
@@ -84,7 +85,7 @@ QMonBrowser::QMonBrowser( QObject *parent )
     connect( all, SIGNAL( activated() ), 
              this, SLOT( setFilter() ) );
     
-    update();
+    DataThread::updateQmonBrowser();
 }
 
 QMonBrowser::~QMonBrowser()
@@ -117,39 +118,8 @@ void QMonBrowser::urlHovered( const QString& url, const QString& title, const QS
     mUrl = url;
 }
 
-void QMonBrowser::update()
+void QMonBrowser::update( const QString& html )
 {
-    QStringList list = Settings::queuesToMonitor();
-    QString html;
-    
-    qDebug() << "[QMONBROWSER] Updating";
-    
-    html += HTML::styleSheet();
-    
-    html += HTML::qmonPageHeader();
-    
-    for ( int i = 0; i < list.size(); ++i )
-    {
-        if ( list.at( i ).split( "|" ).at( 0 ).isEmpty() )
-        {
-            html += HTML::qmonTableHeader( list.at( i ).split( "|" ).at( 1 ) );
-        }
-        else
-        {
-            html += HTML::qmonTableHeader( list.at( i ).split( "|" ).at( 0 ) );
-        }
-        
-        QList< SiebelItem* > l( Database::getSrsForQueue( list.at( i ).split( "|" ).at( 1 ), mFilter ) );
-    
-        for ( int i = 0; i < l.size(); ++i ) 
-        {
-//            html += HTML::qmonSrInQueue( l.at( i ) );
-            delete l.at( i );
-        }
-        
-        html += HTML::qmonTableFooter();
-    }
-    
     QPoint pos = page()->currentFrame()->scrollPosition();
     page()->currentFrame()->setHtml( html );
     page()->currentFrame()->setScrollPosition( pos );
@@ -346,12 +316,12 @@ void QMonBrowser::toggleSrTable( const QString& id )
             if ( list.at(i).attribute( "style" ) == "display:none" ) 
             {
                 list.at( i ).setAttribute( "style", "display:block" );
-                Database::updateSiebelDisplay( id + "-block" );
+                Database::setQmonDisplay( id + "-block" );
             }
             else if ( list.at(i).attribute( "style" ) == "display:block" ) 
             {
                 list.at( i ).setAttribute("style", "display:none" );
-                Database::updateSiebelDisplay( id + "-none" );
+                Database::setQmonDisplay( id + "-none" );
             }
         }
     }
@@ -373,7 +343,7 @@ void QMonBrowser::takeSR( const QString& sr )
     {
         showProgress();
         mSR = sr;
-        mAssign = Kueue::download( QUrl( Settings::dBServer() + "/assign.asp?sr=" + sr + "&owner=" + Settings::engineer().toUpper() ) );
+        mAssign = Network::getExt( QUrl( "http://proetus.provo.novell.com/assign.asp?sr=" + sr + "&owner=" + Settings::engineer().toUpper() ) );
         connect( mAssign, SIGNAL( finished() ), this, SLOT( assignFinished() ) );
     }
     
@@ -456,7 +426,7 @@ void QMonBrowser::setFilter()
         mFilter = QString::Null();
     }
     
-    update();
+    DataThread::updateQmonBrowser();
 }
 
 

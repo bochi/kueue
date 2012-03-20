@@ -38,14 +38,20 @@ class Network : public QObject
         ~Network();
         
         QNetworkAccessManager* mNAM;
-        QNetworkReply* getImpl( const QUrl& );
- 
+        QNetworkReply* getImpl( const QString& );
+        QNetworkReply* getExtImpl( const QUrl& );
+        QStringList mIPs;
+        
     public:
         static Network& net();
         static void destroy();
-        static QNetworkReply* get( const QUrl& url )
+        static QNetworkReply* get( const QString& u )
         {
-            return Network::net().getImpl( url );
+            return Network::net().getImpl( u );
+        }
+        static QNetworkReply* getExt( const QUrl& url )
+        {
+            return Network::net().getExtImpl( url );
         }
 
     private slots:

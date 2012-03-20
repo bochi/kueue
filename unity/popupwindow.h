@@ -28,6 +28,7 @@
 
 #include <QWebView>
 #include <QDialog>
+#include <QMouseEvent>
 
 class PopupWindowWebView : public QWebView
 {

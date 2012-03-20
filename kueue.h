@@ -110,11 +110,6 @@ namespace Kueue
             return false;
         }
     }
-    
-    static QNetworkReply* download( const QUrl& url )
-    {
-        return Network::net().get( url );
-    }
 }
 
 #endif 

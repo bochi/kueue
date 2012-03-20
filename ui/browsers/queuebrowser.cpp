@@ -355,12 +355,12 @@ void QueueBrowser::toggleSrTable( const QString& id )
             if ( list.at(i).attribute( "style" ) == "display:none" ) 
             {
                 list.at( i ).setAttribute( "style", "display:block" );
-                Database::setDisplay( id + "-block" );
+                Database::setQueueDisplay( id + "-block" );
             }
             else if ( list.at(i).attribute( "style" ) == "display:block" ) 
             {
                 list.at( i ).setAttribute("style", "display:none" );
-                Database::setDisplay( id + "-none" );
+                Database::setQueueDisplay( id + "-none" );
             }
         }
     }

@@ -43,8 +43,9 @@ class Data : public QObject
     
     private:
         QNetworkAccessManager* mNAM;
-        QNetworkReply* get( const QUrl& );
+        QNetworkReply* get( const QString& );
         QString mDB;
+        QStringList mIPs;
     
     public slots:
         void updateQueueBrowser();

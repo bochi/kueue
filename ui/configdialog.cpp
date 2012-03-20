@@ -548,7 +548,7 @@ void ConfigDialog::writeSettings()
 
 void ConfigDialog::getQueueList()
 {
-    mQueueReply = Network::get( QUrl( Settings::dBServer() + "/pseudoQ.asp" ) );
+    mQueueReply = Network::get( "pseudoQ" );
     connect( mQueueReply, SIGNAL( finished() ), this, SLOT( queueJobDone() ) );
 }
 
@@ -558,21 +558,10 @@ void ConfigDialog::queueJobDone()
     
     if ( !mQueueReply->error() )
     {
-        data.remove( QRegExp( "<(?:div|span|tr|td|body|html|tt|a|strong|p)[^>]*>", Qt::CaseInsensitive ) );
-
-        QStringList list = data.split( "<br>" );
-        QStringList list2;
-
-        for ( int i = 0; i < list.size() - 1; ++i )
-        {
-            if( !list2.contains( list.at( i ).split( "|" ).at( 1 ).trimmed() ) ) 
-            {
-                list2.append( list.at( i ).split( "|" ).at( 1 ).trimmed() );
-            }
-        }
-
-        list2.sort();
-        siebelCombo->addItems( list2 );
+        QStringList list = data.split( "\n" );
+        
+        list.sort();
+        siebelCombo->addItems( list );
     }
     else
     {

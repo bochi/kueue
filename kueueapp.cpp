@@ -128,7 +128,7 @@ void KueueApp::createApp()
     QShortcut* newUnityTab = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_U ), mWindow );
     QShortcut* dbrebuild = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ), mWindow );
    
-    QNetworkReply* r = Kueue::download( QUrl( "http://kueue.hwlab.suse.de:8080/latestkueue" ) );
+    QNetworkReply* r = Network::get( "latestkueue" );
         
     connect( r, SIGNAL( finished() ),
              this, SLOT( updateJobDone() ) );    
@@ -146,7 +146,10 @@ void KueueApp::createDataThread()
     
     connect( mDataThread, SIGNAL( queueDataChanged( QString ) ), 
              mTabWidget, SLOT( updateQueueBrowser( const QString& ) ) );
-    
+
+    connect( mDataThread, SIGNAL( qmonDataChanged( QString ) ), 
+             mTabWidget, SLOT( updateQmonBrowser( const QString& ) ) );
+        
     connect( mDataThread, SIGNAL( destroyed() ),
              this, SLOT( createDataThread() ) );
 }

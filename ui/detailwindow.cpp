@@ -88,7 +88,7 @@ DetailWindow::DetailWindow( QString sr, bool nb )
     {
         detailBrowser->setText( mDetails );
         customerLabel->setText( Database::getCustomer( mSr ) );
-        statusLabel->setText( Database::getSrStatus( mSr ) );
+        statusLabel->setText( Database::getStatus( mSr ) );
     }
 
     for ( int i = 0; i < Settings::engineerList().size(); ++i ) 
@@ -166,7 +166,7 @@ void DetailWindow::closeEvent( QCloseEvent* e )
 
 void DetailWindow::downloadDetails()
 {
-    mDet2 = Kueue::download( QUrl( Settings::dBServer() + "/stefan.asp?sr=" + mSr ) );
+    mDet2 = Network::get( "/stefan.asp?sr=" );
     
     connect( mDet2, SIGNAL( finished() ), 
              this, SLOT( detail2Finished() ) );
@@ -230,7 +230,7 @@ void DetailWindow::detail2Finished()
     {
         qDebug() << "[DETAILWINDOW] No detailed description found, trying another URL...";
                 
-        mDet1 = Kueue::download( QUrl( "http://data.kueue.tk:8080/detailed/" + mSr ) );
+        mDet1 = Network::get( "detailed/" + mSr );
         
         connect( mDet1, SIGNAL( finished() ),
                  this, SLOT( detailFinished() ) );
@@ -330,7 +330,7 @@ void DetailWindow::assignNow()
     if ( reply == QMessageBox::Yes )
     {
         showProgress( assignCombo->currentText().toUpper() );
-        mAssign = Kueue::download( QUrl( Settings::dBServer() + "/assign.asp?sr=" + mSr + "&owner=" + mEngineer ) );
+        mAssign = Network::getExt( QUrl( "http://proetus.provo.novell.com/assign.asp?sr=" + mSr + "&owner=" + mEngineer ) );
         connect( mAssign, SIGNAL( finished() ), this, SLOT( assignJobDone() ) );
     }
     

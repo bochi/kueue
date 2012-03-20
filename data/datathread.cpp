@@ -78,7 +78,7 @@ void DataThread::run()
     connect( this, SIGNAL( updateQmonBrowserRequested() ), 
              mData, SLOT( updateQmonBrowser() ) );
     
-    //mData->updateQueueBrowser();
+    mData->updateQueueBrowser();
     
     exec();
 }

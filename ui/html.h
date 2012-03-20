@@ -26,9 +26,6 @@
 #ifndef _HTML_H_
 #define _HTML_H_
 
-#include "data/sr.h"
-#include "data/stats.h"
-#include "data/qmon.h"
 #include "nsa/nsajob.h"
 #include "data/dataclasses.h"
 
@@ -44,7 +41,7 @@ class HTML
         static QString pageFooter();
         static QString qmonPageHeader();
         static QString qmonTableHeader( const QString& );
-    //    static QString qmonSrInQueue( SiebelItem* );
+        static QString qmonSrInQueue( QmonSR );
         static QString qmonTableFooter();
 //        static QString csatTable( CsatItem* );
         static QString csatTableHeader( int, int, int );
@@ -61,7 +58,6 @@ class HTML
     private:
         static QString timeString( int );
         static int secDays( int );
-        static QString csatDate();
     
 };
 

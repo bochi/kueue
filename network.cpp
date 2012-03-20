@@ -56,6 +56,14 @@ Network::Network()
 {
     qDebug() << "[NETWORK] Constructing";   
     
+    QHostInfo info = QHostInfo::fromName( Settings::dBServer() );
+    QList<QHostAddress> al = info.addresses();
+    
+    for ( int i = 0; i < al.size(); ++i ) 
+    { 
+        mIPs.append( al.at( i ).toString() );
+    }
+    
     mNAM = new QNetworkAccessManager( this );
 }
 
@@ -64,10 +72,25 @@ Network::~Network()
     qDebug() << "[NETWORK] Destroying";
 }
 
-QNetworkReply* Network::getImpl( const QUrl& url )
+QNetworkReply* Network::getImpl( const QString& u )
+{
+    int r = qrand() % mIPs.size();
+    QNetworkRequest request( QUrl( "http://" + mIPs.at(r) + ":8080/" + u ) );
+    qDebug() << mIPs.size() << r << request.url();
+    request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
+    
+    QNetworkReply* reply = mNAM->get( request );
+    
+    connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
+             this, SLOT( getError( QNetworkReply::NetworkError ) ) );
+
+    return reply;
+}
+
+QNetworkReply* Network::getExtImpl( const QUrl& url )
 {
     QNetworkRequest request( url );
-    request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() + " - " + Settings::engineer() ).toUtf8() );
+    request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
     
     QNetworkReply* reply = mNAM->get( request );
     

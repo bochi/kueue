@@ -323,9 +323,9 @@ void TabWidget::removeUnityBrowser( int tab )
     }
 }
 
-void TabWidget::updateQmonBrowser()
+void TabWidget::updateQmonBrowser( const QString& html )
 {
-    mQmonBrowser->update();
+    mQmonBrowser->update( html );
 }
 
 void TabWidget::updateQueueBrowser( const QString& html )
@@ -760,7 +760,7 @@ void TabWidget::openWebsite()
 
 void TabWidget::updateUiData()
 {
-    mQmonBrowser->update();
+    DataThread::updateQmonBrowser();
     DataThread::updateQueueBrowser();
     mStatsBrowser->update();
 }

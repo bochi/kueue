@@ -55,9 +55,9 @@ class QueueSR
         QString lastupdate;
         QString display;
         QStringList todoList;
-        int age;
-        int lastUpdateDays;
-        int service_level;
+        qint32 age;
+        qint32 lastUpdateDays;
+        qint32 service_level;
         bool highvalue;
         bool critsit;
 };
@@ -93,7 +93,6 @@ class QmonSR
         QString support_group_routing;
         QString int_type;
         QString subtype;
-        QString service_level;
         QString category;
         QString respond_via;
         QString created;
@@ -101,6 +100,13 @@ class QmonSR
         QString queuedate;
         QString sla;
         QString display;
+        qint32 agesec;
+        qint32 timeinqsec;
+        qint32 slasec;
+        qint32 service_level;
+        qint32 lastupdatesec;
+        bool isCr;
+        bool isChat;
         bool highvalue;
         bool critsit;
 };
@@ -152,6 +158,13 @@ class PersonalQueue
         int total;
         int avgAge;
         QList<QueueSR> srList;
+};
+
+class QmonData
+{
+    public:
+        int total;
+        QList<QmonSR> srList;
 };
 
 #endif

@@ -66,7 +66,7 @@ NSA::~NSA()
 
 void NSA::updateNsaData()
 {
-    QNetworkReply* r = Kueue::download( QUrl( "http://nsa.lab.novell.com/updateDir/updateManager.xml" ) );
+    QNetworkReply* r = Network::getExt( QUrl( "http://nsa.lab.novell.com/updateDir/updateManager.xml" ) );
     
     connect( r, SIGNAL( finished() ), 
              this, SLOT( updateDownloadDone() ) );
@@ -83,7 +83,7 @@ void NSA::updateDownloadDone()
 
     if ( Settings::nsaVersion() != date )
     {
-        QNetworkReply* r = Kueue::download( QUrl( "http://nsa.lab.novell.com/updateDir/resources/resources_" + date + ".tgz" ) );
+        QNetworkReply* r = Network::getExt( QUrl( "http://nsa.lab.novell.com/updateDir/resources/resources_" + date + ".tgz" ) );
         Settings::setNsaVersion( date );
         
         connect( r, SIGNAL( finished() ), 

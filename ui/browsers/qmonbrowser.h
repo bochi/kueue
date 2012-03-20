@@ -45,7 +45,7 @@ class QMonBrowser : public QWebView
         QString mSR;
         
     public slots:
-        void update();
+        void update( const QString& );
         
     private slots:
         void openWebInspector();
