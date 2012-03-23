@@ -485,7 +485,6 @@ QString HTML::qmonSrInQueue( QmonSR sr )
     {
         srtab += QString( sr.severity );
     }
-       qDebug() << timeString(sr.agesec) << timeString(sr.slasec);
 
     srtab += QString (  "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Age: " + timeString( sr.agesec ) );
     srtab += QString (  "&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;Time in queue: " + timeString( sr.timeinqsec ) );

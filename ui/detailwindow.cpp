@@ -330,8 +330,11 @@ void DetailWindow::assignNow()
     if ( reply == QMessageBox::Yes )
     {
         showProgress( assignCombo->currentText().toUpper() );
-        mAssign = Network::getExt( QUrl( "http://proetus.provo.novell.com/assign.asp?sr=" + mSr + "&owner=" + mEngineer ) );
-        connect( mAssign, SIGNAL( finished() ), this, SLOT( assignJobDone() ) );
+        
+        mAssign = Network::get( "assign/" + mSr + "|" + mEngineer );
+        
+        connect( mAssign, SIGNAL( finished() ), 
+                 this, SLOT( assignJobDone() ) );
     }
     
     delete box;

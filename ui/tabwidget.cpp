@@ -330,6 +330,7 @@ void TabWidget::updateQmonBrowser( const QString& html )
 
 void TabWidget::updateQueueBrowser( const QString& html )
 {
+    qDebug() << "tw uqb";
     mQueueBrowser->update( html );
 }
 

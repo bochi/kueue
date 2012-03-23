@@ -118,6 +118,8 @@ void QMonBrowser::urlHovered( const QString& url, const QString& title, const QS
 
 void QMonBrowser::update( const QString& html )
 {
+    qDebug() << "[QMONBROWSER] Updating";
+    
     QPoint pos = page()->currentFrame()->scrollPosition();
     page()->currentFrame()->setHtml( html );
     page()->currentFrame()->setScrollPosition( pos );
