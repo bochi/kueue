@@ -33,7 +33,6 @@
 class DataThread : public QThread
 {
     Q_OBJECT
-
     
     public:
         static DataThread& thread();
@@ -65,8 +64,7 @@ class DataThread : public QThread
         void updateQueueBrowserSlot();
         void updateQmonBrowserSlot();
         void updateStatsBrowserSlot();
-    
-        
+
     signals:
         void notify( const QString&, QString, QString, const QString& );
         void updateQueueBrowserRequested();
@@ -78,8 +76,6 @@ class DataThread : public QThread
         void qmonUpdateDone( const QString& );
         void statsUpdateDone( const QString& );
         void killed();
-
 };
-
 
 #endif

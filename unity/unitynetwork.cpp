@@ -31,7 +31,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-
 UnityNetwork::UnityNetwork( QObject* parent )
         : QNetworkAccessManager( parent )
 {
@@ -49,14 +48,5 @@ void UnityNetwork::clearCookieJar()
     QNetworkCookieJar* jar = new QNetworkCookieJar( this );
     setCookieJar( jar );
 }
-/*QNetworkReply* UnityNetwork::createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest& req, QIODevice* outgoingData )
-{
-    // set the browser identification header
-    
-    QNetworkReply* r = createRequest( op, req, outgoingData );
-    
-    r->request().setRawHeader( "User-Agent", QString( "kueue" + QApplication::applicationVersion() ).toUtf8() );
-    return r;
-}*/
 
 #include "unitynetwork.moc"

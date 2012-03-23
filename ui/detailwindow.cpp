@@ -25,6 +25,7 @@
 
 #include "detailwindow.h"
 #include "data/database.h"
+#include <data/data.h>
 #include "config.h"
 #include "kueue.h"
 
@@ -60,17 +61,19 @@ DetailWindow::DetailWindow( QString sr, bool nb )
     connect( mTransSC, SIGNAL( activated() ),
              this, SLOT( translate() ) );
     
-    srLabel->setText( "<font size='+1'><b>Details for SR#" + mSr + "</b></font>" );
+    if ( Database::isCr( mSr ) )
+    {
+        srLabel->setText( "<font size='+1'><b>Details for CR#" + mSr + "</b></font>" );
+    }
+    else
+    {
+        srLabel->setText( "<font size='+1'><b>Details for SR#" + mSr + "</b></font>" );
+    }
     
-    if ( //( Database::getQmonBdesc( mSr ) == "ERROR" && 
-         Database::getBriefDescription( mSr ) == "ERROR" )
+    if ( Database::getBriefDescription( mSr ) == "ERROR" )
     {
         briefDescLabel->setVisible( false );
         briefDescLabel1->setVisible( false );
-    }
-    else if ( Database::getBriefDescription( mSr ) == "ERROR" )
-    {
-        //briefDescLabel->setText( Database::getQmonBdesc( mSr ) );
     }
     else
     {
@@ -87,7 +90,17 @@ DetailWindow::DetailWindow( QString sr, bool nb )
     else
     {
         detailBrowser->setText( mDetails );
-        customerLabel->setText( Database::getCustomer( mSr ) );
+        
+        if ( Database::isCr( mSr ) )
+        {
+            customerLabel1->setText( "Created by:" );
+            customerLabel->setText( Database::getCreator( mSr ) );
+        }
+        else
+        {
+            customerLabel->setText( Database::getCustomer( mSr ) );
+        }
+        
         statusLabel->setText( Database::getStatus( mSr ) );
     }
 
@@ -215,7 +228,6 @@ void DetailWindow::detail2Finished()
         
             customerLabel->setText( details.split("|||").at( 4 ).trimmed() + " (" + details.split("|||").at( 5 ).trimmed() + ")" );
             statusLabel->setText( details.split("|||").at( 3 ).trimmed() );
-            //detailBrowser->setText( details.split( "|||" ).at( 7 ).trimmed() );
         }
         else
         {
@@ -281,6 +293,8 @@ void DetailWindow::transaction_done()
     replyText = replyText.replace(QString("\n "),QString("\n"));
     replyText = replyText.replace(QString("\\x3c"),QString("<"));
     replyText = replyText.replace(QString("\\x3e"),QString(">"));
+    replyText = replyText.replace(QString("\\u003c"),QString("<"));
+    replyText = replyText.replace(QString("\\u003e"),QString(">"));
 
     QStringList translatedList;
  

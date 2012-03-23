@@ -156,8 +156,18 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="cfg_showAppWindow">
+            <property name="text">
+             <string>Show application window on startup</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="cfg_dBServer"/>
+            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label_2">
               <property name="text">
@@ -165,8 +175,8 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="cfg_dBServer"/>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="cfg_engineer"/>
             </item>
             <item row="1" column="0">
              <widget class="QLabel" name="label">
@@ -175,17 +185,7 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="cfg_engineer"/>
-            </item>
            </layout>
-          </item>
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="cfg_showAppWindow">
-            <property name="text">
-             <string>Show application window on startup</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>
@@ -300,13 +300,6 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="cfg_unityEnabled">
-            <property name="text">
-             <string>Enable Unity integration (requires restart!)</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QCheckBox" name="cfg_qbossFeatures">
             <property name="text">
@@ -318,6 +311,13 @@
            <widget class="QCheckBox" name="cfg_statsEnabled">
             <property name="text">
              <string>Enable stats</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="cfg_unityEnabled">
+            <property name="text">
+             <string>Enable Unity integration (requires restart!)</string>
             </property>
            </widget>
           </item>

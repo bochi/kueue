@@ -37,25 +37,18 @@ class Database
         static void openDbConnection( const QString = QString::Null() );
         
         static bool srWasUpdated( QueueSR, const QString& = "sqliteDB" );
-        
-
-        
-        
+   
         static QString getBriefDescription( const QString&, const QString& = "sqliteDB" );
         static QString getDetailedDescription( const QString&, const QString& = "sqliteDB" );
         static QString getCustomer( const QString&, const QString& = "sqliteDB" );
+        static QString getCreator( const QString&, const QString& = "sqliteDB" );
         static QString getStatus( const QString&, const QString& = "sqliteDB" );
-        
-      
-        
-        
-        
+        static bool isCr( const QString&, const QString& = "sqliteDB" );
+             
         static void setQueueDisplay( const QString&, const QString& = "sqliteDB" );
         static void setQmonDisplay( const QString&, const QString& = "sqliteDB" );
         static void closeAllTables( const QString& = "sqliteDB");
         static void expandAllTables( const QString& = "sqliteDB");
-        
-        
         
         static void updateQueue( PersonalQueue, const QString& = "sqliteDB" );
         static void insertQueueSR( QueueSR, const QString& = "sqliteDB" );
@@ -68,8 +61,10 @@ class Database
         static void updateStats( Statz, const QString& = "sqliteDB" );
         static void insertSurvey( Survey, const QString& = "sqliteDB" );
         static void insertClosed( ClosedItem, const QString& = "sqliteDB" );
+        static Statz getStatz( const QString& = "sqliteDB" );
         
         static void updateQmon( QmonData, const QString& = "sqliteDB" );
+        static void dropQmon( const QString& = "sqliteDB" );
         static void insertQmonSR( QmonSR, const QString& = "sqliteDB" );
         static void updateQmonSR( QmonSR, const QString& = "sqliteDB" );
         static bool qmonExists( const QString&, const QString& = "sqliteDB" );

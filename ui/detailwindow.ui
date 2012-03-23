@@ -103,7 +103,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Brief desc:</string>
+              <string>Brief desc:             </string>
              </property>
             </widget>
            </item>

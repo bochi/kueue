@@ -26,7 +26,6 @@
 #include "html.h"
 #include "settings.h"
 #include "kueue.h"
-#include "nsa/nsa.h"
 #include "data/dataclasses.h"
 
 QString HTML::styleSheet()
@@ -215,8 +214,12 @@ QString HTML::SRTable( QueueSR sr )
 {
     QString srtab;
     QString t;
-    //QStringList list = sr->todoList();
-      
+    
+    if ( sr.id == "00000000000" )
+    {
+        return "Updating...";
+    }
+    
     srtab += QString (  "<table id='" + sr.id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
                             "<tr>"
                                 "<td colspan='3'>"
@@ -321,24 +324,6 @@ QString HTML::SRTable( QueueSR sr )
                                     "<td class='gadgetText'>" + QString::number( sr.lastUpdateDays ) + " days ago</td>"
                                 "</tr>" );
 
-    /*if ( Settings::showSS() )
-    {
-        if ( sr->ss() ) 
-        {
-            srtab+=( "<tr>"
-                     "<td class='gadgetText'>Solution Suggested&nbsp;&nbsp;</td>"
-                 "<td class='gadgetText'>Yes</td>"
-             "</tr>" );
-        }
-        else
-        {
-            srtab+=( "<tr>"
-                        "<td class='gadgetText'>Solution Suggested&nbsp;&nbsp;</td>"
-                        "<td class='gadgetText'>No</td>"
-                     "</tr>" );
-        }
-    }*/
-
     QStringList list = sr.todoList;
     
     if( !( !( Settings::todoShowEsc() ) && 
@@ -432,6 +417,11 @@ QString HTML::qmonSrInQueue( QmonSR sr )
 {
     QString srtab;
   
+    if ( sr.id == "00000000000" )
+    {
+        return "Updating...";
+    }
+        
     srtab += QString (  "<table id='" + sr.id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
                             "<tr>"
                                 "<td colspan='3'>"
@@ -534,6 +524,12 @@ QString HTML::qmonSrInQueue( QmonSR sr )
                         "<tr>"
                             "<td class='gadgetText'>" );
 
+    
+    srtab += QString(           "<tr>"
+                                   "<td class='gadgetText'>Status</td>"
+                                   "<td class='gadgetText'>" + sr.status + "</td>"
+                                "</tr>" );
+
     if ( sr.isCr )
     {
         srtab += QString( "<tr>"
@@ -545,8 +541,55 @@ QString HTML::qmonSrInQueue( QmonSR sr )
     {
         srtab += QString( "<tr>"
                             "<td class='gadgetText'>Customer</td>"
-                            "<td class='gadgetText'>" + sr.cus_account + " (" + sr.cus_firstname + " " + sr.cus_lastname + ")</td>"
+                            "<td class='gadgetText'>" + sr.cus_account + " (" + sr.cus_firstname + " " + sr.cus_lastname );
+        
+        if ( !sr.cus_title.isEmpty() )
+        {
+            srtab += QString( + " - <i>" + sr.cus_title + "</i>" );
+        }
+        
+        srtab += QString( ")</td></tr>" 
+                         "<tr>"
+                            "<td class='gadgetText'>Contact via</td>"
+                            "<td class='gadgetText'>" + sr.respond_via + "</td>"
                          "</tr>" );
+        
+        if ( !sr.cus_lang.isEmpty() )
+        {
+            srtab += QString( "<tr>"
+                                "<td class='gadgetText'>Preferred Language&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>"
+                                "<td class='gadgetText'>" + sr.cus_lang + "</td>"
+                              "</tr>" );
+        }
+        
+        if ( !sr.cus_phone.isEmpty() )
+        {
+            srtab += QString( "<tr>"
+                                "<td class='gadgetText'>Email</td>"
+                                "<td class='gadgetText'>" + sr.cus_email + "</td>"
+                              "</tr>" );
+        }
+        
+        if ( !sr.cus_phone.isEmpty() )
+        {
+            srtab += QString( "<tr>"
+                                "<td class='gadgetText'>Phone</td>"
+                                "<td class='gadgetText'>" + sr.cus_phone + "</td>"
+                              "</tr>" );
+        }
+        
+        if ( !sr.cus_onsitephone.isEmpty() )
+        {
+            srtab += QString( "<tr>"
+                                "<td class='gadgetText'>Onsite Phone</td>"
+                                "<td class='gadgetText'>" + sr.cus_onsitephone + "</td>"
+                              "</tr>" );
+        }
+     
+        srtab += QString(       "<tr>"
+                                   "<td class='gadgetText'>Contract</td>"
+                                   "<td class='gadgetText'>" + sr.support_program_long + "</td>"
+                                "</tr>" );
     }
     
     if ( sr.isChat )
@@ -556,19 +599,7 @@ QString HTML::qmonSrInQueue( QmonSR sr )
                                    "<td class='gadgetText'>" + sr.bomgarQ + "</td>"
                                 "</tr>" );
     }
-    
-    srtab += QString(           "<tr>"
-                                   "<td class='gadgetText'>Status</td>"
-                                   "<td class='gadgetText'>" + sr.status + "</td>"
-                                "</tr>" );
-    if ( !sr.isCr )
-    {
-        srtab += QString(       "<tr>"
-                                   "<td class='gadgetText'>Contract</td>"
-                                   "<td class='gadgetText'>" + sr.support_program_long + "</td>"
-                                "</tr>" );
-    }
-                                
+                    
      srtab += QString(          "<tr>"
                                    "<td class='gadgetText'>Last Update&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>"
                                    "<td class='gadgetText'>" + QString::number( secDays( sr.lastupdatesec ) ) + " days ago</td>"
@@ -618,9 +649,11 @@ QString HTML::qmonTableFooter()
     return ( "</div></table>" );  
 }
 
-QString HTML::statsPageHeader()
+QString HTML::statsPageHeader( Statz s )
 {
     QString ph;
+    
+    ph += styleSheet();
     
     ph += QString( "<div id='Head1'><img src='qrc:/images/gfx_top_in.gif' width='32' height='80' border='0'/></div>"
                    "<div id='Apptitle' style='left:30px; right:12px; top:0px; height: 80px'>"
@@ -631,7 +664,25 @@ QString HTML::statsPageHeader()
                    "<div id='logo1' style='z-index:3'>"
                    "<img src='qrc:/images/logo_im_end.gif' width='12' height='80' border='0'></div></div>"
                    "<div id='content'>" );
-
+    
+    ph += csatTableHeader( s.csatRtsPercent, s.csatEngAvg, s.csatSrAvg );
+   
+    QList<Survey> sl = s.surveyList;
+    
+    for ( int i = 0; i < sl.size(); ++i ) 
+    {   
+        ph += csatTable( sl.at( i ) );
+    }
+    
+    ph += closedTableHeader( s.closedSr, s.srTtsAvg );
+    
+    QList<ClosedItem> cl = s.closedList;
+    
+    for ( int i = 0; i < cl.size(); ++i ) 
+    {   
+        ph += closedTable( cl.at( i ) );
+    }
+    
     return ph;
 }
 
@@ -657,12 +708,11 @@ QString HTML::csatTableHeader( int rts, int eng, int sr )
     return ph;
 }
 
-
-/*QString HTML::csatTable( CsatItem* i )
+QString HTML::csatTable( Survey i )
 {
     QString srtab;
     
-    srtab += QString (  "<table id='" + i->sr + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
+    srtab += QString (  "<table id='" + i.id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
                             "<tr>"
                                 "<td colspan='3'>"
                                     "<div class='dotlinehoriz'>"
@@ -675,10 +725,10 @@ QString HTML::csatTableHeader( int rts, int eng, int sr )
                                     "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''>"
                                 "</td>"
                                 "<td width='100%' bgcolor='#EDEEEC'>"
-                                    "<a href='sr://" + i->sr + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
+                                    "<a href='sr://" + i.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
                                         "<tr width='100%'><td class='gadgetHead'>" );
     
-    if ( i->rts ) 
+    if ( i.rts ) 
     {
         srtab += QString( "<img src='qrc:/images/yay.gif'></img> " );
     }
@@ -687,11 +737,11 @@ QString HTML::csatTableHeader( int rts, int eng, int sr )
         srtab += QString( "<img src='qrc:/images/sad.gif'></img> " );
     }
     
-    srtab += QString( "<b>SR#" + i->sr + "</b> - " + i->bdesc );
+    srtab += QString( "<b>SR#" + i.id + "</b> - " + i.bdesc );
                                             
     srtab += QString( "</td></a>"
                       "<td align='right'>"
-                                    "<a href='arrow://" + i->sr + "'><img src='qrc:/images/ni_gadget_arrow.gif'></img></a><br>"
+                                    "<a href='arrow://" + i.id + "'><img src='qrc:/images/ni_gadget_arrow.gif'></img></a><br>"
                                 "</td>"
                             "</tr>"
                         "</table>"
@@ -708,7 +758,7 @@ QString HTML::csatTableHeader( int rts, int eng, int sr )
                     "</td>"
                 "</tr>"
             "</table>"
-            "<a href='sr://" + i->sr + "'><table id='" + i->sr + "_body' width='100%' cellspacing='0' cellpadding='0' "
+            "<a href='sr://" + i.id + "'><table id='" + i.id + "_body' width='100%' cellspacing='0' cellpadding='0' "
             "border='0' style='display:none'><tr>"
                   "<td width='1' rowspan='4' class='dotlinevert'>"
                        "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''></img>"
@@ -719,12 +769,12 @@ QString HTML::csatTableHeader( int rts, int eng, int sr )
                                 "<td class='gadgetText'>"
                                 "<tr>"
                                     "<td class='gadgetText'>Customer</td>"
-                                    "<td class='gadgetText'>" + i->customer + "</td>"
+                                    "<td class='gadgetText'>" + i.customer + "</td>"
                                 "</tr>"
                                 "<tr>"
                                     "<td class='gadgetText'>Resolved to Satisfaction&nbsp;&nbsp;&nbsp;&nbsp;</td>" );
                                     
-    if ( i->rts )
+    if ( i.rts )
     {
         srtab += QString( "<td class='gadgetText'>Yes</td>" );
     }
@@ -736,11 +786,11 @@ QString HTML::csatTableHeader( int rts, int eng, int sr )
     srtab += QString (          "</tr>"
                                 "<tr>"
                                     "<td class='gadgetText'>SR Satisfaction</td>"
-                                    "<td class='gadgetText'>" + i->srsat + "</td>"
+                                    "<td class='gadgetText'>" + QString::number( i.srsat ) + "</td>"
                                 "</tr>"
                                 "<tr>"
                                     "<td class='gadgetText'>Engineer Satisfaction</td>"
-                                    "<td class='gadgetText'>" + i->engsat + "</td>"
+                                    "<td class='gadgetText'>" + QString::number( i.engsat ) + "</td>"
                                 "</tr>" );
 
     srtab +=( "</td></tr>" );
@@ -752,7 +802,7 @@ QString HTML::csatTableHeader( int rts, int eng, int sr )
     srtab += QString( "<div id='abstand'></div>" );
   
     return srtab;
-}*/
+}
 
 QString HTML::closedTableHeader( int c, int a )
 {
@@ -765,11 +815,11 @@ QString HTML::closedTableHeader( int c, int a )
     return ph;
 }
 
-/*QString HTML::closedTable( TtsItem* ci )
+QString HTML::closedTable( ClosedItem ci )
 {
     QString srtab;
     
-    srtab += QString (  "<table id='" + ci->sr + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
+    srtab += QString (  "<table id='" + ci.id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
                             "<tr>"
                                 "<td colspan='3'>"
                                     "<div class='dotlinehoriz'>"
@@ -782,9 +832,9 @@ QString HTML::closedTableHeader( int c, int a )
                                     "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''>"
                                 "</td>"
                                 "<td width='100%' bgcolor='#EDEEEC'>"
-                                    "<a href='sr://" + ci->sr + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
-                                        "<tr width='100%'><td class='gadgetHead'><b>SR#" + ci->sr + "</b> - " + 
-                                        QString::number( ci->tts ) + " days - " + ci->bdesc );
+                                    "<a href='sr://" + ci.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
+                                        "<tr width='100%'><td class='gadgetHead'><b>SR#" + ci.id + "</b> - " + 
+                                        QString::number( ci.tts ) + " days - " + ci.bdesc );
     
 
       
@@ -795,7 +845,7 @@ QString HTML::closedTableHeader( int c, int a )
     srtab += QString( "<div id='abstand'></div>" );
                     
     return srtab;
-}*/
+}
 
 QString HTML::nsaPageHeader( NSASummaryItem summary )
 {
@@ -996,4 +1046,3 @@ int HTML::secDays( int sec )
     QDateTime tmp = QDateTime::fromTime_t( notNow );
     return tmp.daysTo( QDateTime::currentDateTime() );
 }
-

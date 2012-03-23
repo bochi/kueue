@@ -27,6 +27,7 @@
 #define QUEUEBROWSER_H
 
 #include <QWebView>
+#include "ui/busywidget.h"
 
 class QueueBrowser : public QWebView
 {
@@ -39,6 +40,7 @@ class QueueBrowser : public QWebView
     private:
         QUrl mUrl;
         bool mOpen;
+        BusyWidget* mBusyWidget;
         
     public slots:
         void update( const QString& );

@@ -32,7 +32,6 @@
 #include <QWidget>
 #include <QMessageBox>
 #include <QDesktopServices>
-#include <fcntl.h>
 
 void Database::openDbConnection( QString dbname )
 {
@@ -91,13 +90,6 @@ void Database::openDbConnection( QString dbname )
             qDebug() << "[DATABASE] Error:" << query.lastError();
         }
 
-        if ( !query.exec( "CREATE TABLE IF NOT EXISTS qmon_siebel( ID INTEGER PRIMARY KEY UNIQUE, QUEUE TEXT, SEVERITY TEXT,  STATUS TEXT, "
-                        "BDESC TEXT, GEO TEXT, HOURS TEXT, CUSTOMER TEXT, CONTACTVIA TEXT, CONTRACT TEXT, CREATOR TEXT, BOMGARQ TEXT, "
-                        "HIGHVALUE BOOLEAN, CRITSIT BOOLEAN, AGE INTEGER, LASTACT INTEGER, TIQ INTEGER, SLA INTEGER, DISPLAY TEXT )" ) )
-        {
-            qDebug() << "[DATABASE] Error:" << query.lastError();
-        }
-
         if ( !query.exec(   "CREATE TABLE IF NOT EXISTS STATS "
                             "( CLOSED_SR INTEGER, CLOSED_CR INTEGER, SR_TTS_AVG INTEGER, CSAT_ENG_AVG INTEGER, "
                             "  CSAT_SR_AVG INTEGER, CSAT_RTS_PERCENT INTEGER )" ) )
@@ -152,7 +144,7 @@ void Database::updateQueue( PersonalQueue pq, const QString& dbname )
     QStringList existList = getSrNrList();
     QList< QueueSR > srList = pq.srList;
     
-    //db.transaction();
+    db.transaction();
         
     for ( int i = 0; i < srList.size(); ++i ) 
     {
@@ -179,16 +171,13 @@ void Database::updateQueue( PersonalQueue pq, const QString& dbname )
         }
     }
     
-    //db.commit();
+    db.commit();
 }
 
 void Database::updateQueueSR( QueueSR sr, const QString& dbname )
 {   
     QSqlDatabase db = QSqlDatabase::database( dbname );
-    
     QSqlQuery query(db);
-    
-    //qDebug() << "[DATABASE] Updating SR data for" << sr.id;
     
     query.prepare(  "UPDATE " + Settings::engineer().toUpper() + " SET "
                     "SRTYPE=:srtype, CREATOR=:creator, CUS_ACCOUNT=:cus_account, CUS_FIRSTNAME=:cus_firstname, "
@@ -229,10 +218,7 @@ void Database::updateQueueSR( QueueSR sr, const QString& dbname )
 
 void Database::insertQueueSR( QueueSR sr, const QString& dbname )
 {
-    //qDebug() << "[DATABASE] Inserting SR data for" << sr.id;
-    
     QSqlDatabase db = QSqlDatabase::database( dbname );
-    
     QSqlQuery query( db );
     
     query.prepare(  "INSERT INTO " + Settings::engineer().toUpper() +
@@ -277,13 +263,15 @@ void Database::insertQueueSR( QueueSR sr, const QString& dbname )
 void Database::deleteQueueSR( const QString& id, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
-
-    //qDebug() << "[DATABASE] Deleting SR" << id;
-    
     QSqlQuery query(db);
+    
     query.prepare( "DELETE FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
 }
 
 bool Database::queueSrExists( const QString& id, const QString& dbname )
@@ -295,7 +283,10 @@ bool Database::queueSrExists( const QString& id, const QString& dbname )
     query.prepare( "SELECT ID FROM " + Settings::engineer().toUpper() +" WHERE ( ID = :id )" );
     query.bindValue( ":id", id );
     
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
     
     if ( query.next() )
     {
@@ -315,7 +306,10 @@ bool Database::srWasUpdated( QueueSR sr, const QString& dbname )
     query.prepare( "SELECT LASTUPDATE FROM " + Settings::engineer().toUpper() + " WHERE ( ID = :id )" );
     query.bindValue( ":id", sr.id );
     
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
     
     if ( query.next() )
     {
@@ -332,10 +326,15 @@ bool Database::srWasUpdated( QueueSR sr, const QString& dbname )
 QString Database::getStatus( const QString& id, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
-    QSqlQuery query(db);
+    QSqlQuery query( db );
+    
     query.prepare( "SELECT STATUS FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
     
     if ( query.next() )
     {
@@ -343,7 +342,22 @@ QString Database::getStatus( const QString& id, const QString& dbname )
     }
     else
     {
-        return "ERROR";
+        query.prepare( "SELECT STATUS FROM QMON WHERE ID = :id" );
+        query.bindValue( ":id", id );
+    
+        if ( !query.exec() ) 
+        {
+            qDebug() << query.lastError().text();
+        }
+        
+        if ( query.next() ) 
+        {
+            return query.value( 0 ).toString();
+        }
+        else
+        {
+            return "ERROR";
+        }
     }
 }
 
@@ -358,34 +372,43 @@ void Database::setQueueDisplay( const QString& d, const QString& dbname )
     
     query.bindValue( ":display", d.split( "-" ).at( 1 ) );
     query.bindValue( ":id", d.split( "-" ).at( 0 ) );
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    
+    if ( !query.exec() ) 
+    { 
+        qDebug() << query.lastError().text();
+    }
 }
 
 void Database::closeAllTables( const QString& dbname)
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
-    QSqlQuery query(db);
+    QSqlQuery query( db );
     
     query.prepare(  "UPDATE " + Settings::engineer().toUpper() + " SET "
                     "DISPLAY='none' " );
         
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
 }
 
 void Database::expandAllTables( const QString& dbname)
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
-    QSqlQuery query(db);
+    QSqlQuery query( db );
     
     query.prepare(  "UPDATE " + Settings::engineer().toUpper() + " SET "
                     "DISPLAY='block' " );
     
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
 }
 
 QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname )
 {
-    qDebug() << "getsrlist";
     QSqlDatabase db = QSqlDatabase::database( dbname );
     QStringList l;
     QDateTime now = QDateTime::currentDateTime();
@@ -393,7 +416,7 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname )
 
     QSqlQuery query( db );
     
-    ////db.transaction();
+    db.transaction();
 
     if ( a )
     {
@@ -426,7 +449,10 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname )
         }
     }
         
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
     
     while( query.next() )
     {
@@ -495,8 +521,15 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname )
         srlist.append( sr );
     }
     
-    ////db.commit();
+    db.commit();
     
+    if ( srlist.isEmpty() )
+    {
+        QueueSR sr;
+        sr.id = "00000000000";
+        srlist.append( sr );
+    }
+     
     return srlist;
 }
 
@@ -519,10 +552,15 @@ QStringList Database::getSrNrList( const QString& dbname )
 QString Database::getDetailedDescription( const QString& id, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
-    QSqlQuery query(db);
+    QSqlQuery query( db );
+    
     query.prepare( "SELECT DDESC FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
     
     if ( query.next() )
     {
@@ -530,17 +568,88 @@ QString Database::getDetailedDescription( const QString& id, const QString& dbna
     }
     else
     {
-        return "ERROR";
+        query.prepare( "SELECT DDESC FROM QMON WHERE ID = :id" );
+        query.bindValue( ":id", id );
+        
+        if ( !query.exec() ) 
+        {
+            qDebug() << query.lastError().text();
+        }
+        
+        if ( query.next() )
+        {
+            return query.value( 0 ).toString();
+        }
+        else
+        {
+            return "ERROR";
+        }
     }
+}
+
+bool Database::isCr( const QString& id, const QString& dbname )
+{
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    
+    QSqlQuery query( db );
+    
+    query.prepare( "SELECT SRTYPE FROM " + Settings::engineer().toUpper() + " WHERE ( ID = :id )" );
+    query.bindValue( ":id", id );
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
+    
+    if ( query.next() )
+    {
+        if ( query.value( 0 ).toString() == "cr" )
+        {
+            return true; 
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else 
+    {    
+        query.prepare( "SELECT SRTYPE FROM QMON WHERE ( ID = :id )" );
+        query.bindValue( ":id", id );
+        
+        if ( !query.exec() ) 
+        {
+            qDebug() << query.lastError().text();
+        }
+    
+        if ( query.next() )
+        {
+            if ( query.value( 0 ).toString() == "cr" )
+            {
+                return true; 
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+    
+    return false;
 }
 
 QString Database::getCustomer( const QString& id, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
-    QSqlQuery query(db);
+    QSqlQuery query( db );
+    
     query.prepare( "SELECT CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    
+    if ( !query.exec() )
+    {
+        qDebug() << query.lastError().text();
+    }
     
     if ( query.next() )
     {
@@ -548,17 +657,37 @@ QString Database::getCustomer( const QString& id, const QString& dbname )
     }
     else
     {
-        return "ERROR";
+        query.prepare( "SELECT CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME FROM QMON WHERE ID = :id" );
+        query.bindValue( ":id", id );
+        
+        if ( !query.exec() )
+        {
+            qDebug() << query.lastError().text();
+        }
+       
+        if ( query.next() )
+        {
+            return query.value( 0 ).toString() + " (" + query.value( 1 ).toString() + " " + query.value( 2 ).toString() + ")";
+        }
+        else
+        {
+            return "ERROR";
+        }
     }
 }
 
-QString Database::getBriefDescription( const QString& id, const QString& dbname )
+QString Database::getCreator( const QString& id, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
-    QSqlQuery query(db);
-    query.prepare( "SELECT BDESC FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
+    QSqlQuery query( db );
+    
+    query.prepare( "SELECT CREATOR FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    
+    if ( !query.exec() )
+    {
+        qDebug() << query.lastError().text();
+    }
     
     if ( query.next() )
     {
@@ -566,7 +695,60 @@ QString Database::getBriefDescription( const QString& id, const QString& dbname 
     }
     else
     {
-        return "ERROR";
+        query.prepare( "SELECT CREATOR FROM QMON WHERE ID = :id" );
+        query.bindValue( ":id", id );
+        
+        if ( !query.exec() )
+        {
+            qDebug() << query.lastError().text();
+        }
+       
+        if ( query.next() )
+        {
+            return query.value( 0 ).toString();
+        }
+        else
+        {
+            return "ERROR";
+        }
+    }
+}
+
+QString Database::getBriefDescription( const QString& id, const QString& dbname )
+{
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query( db );
+    
+    query.prepare( "SELECT BDESC FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
+    query.bindValue( ":id", id );
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
+    
+    if ( query.next() )
+    {
+        return query.value( 0 ).toString();
+    }
+    else
+    {
+        query.prepare( "SELECT BDESC FROM QMON WHERE ID = :id" );
+        query.bindValue( ":id", id );
+        
+        if ( !query.exec() ) 
+        {
+            qDebug() << query.lastError().text();
+        }
+        
+        if ( query.next() )
+        {
+            return query.value( 0 ).toString();
+        }
+        else
+        {
+            return "ERROR";
+        }
     }
 }
 
@@ -580,10 +762,7 @@ QString Database::getBriefDescription( const QString& id, const QString& dbname 
 
 void Database::insertQmonSR( QmonSR sr, const QString& dbname )
 {
-    //qDebug() << "[DATABASE] Inserting QmonItem for " << sr.id << sr.queue;
-    
     QSqlDatabase db = QSqlDatabase::database( dbname );
-
     QSqlQuery query( db );
             
     query.prepare( "INSERT INTO QMON "
@@ -633,13 +812,26 @@ void Database::insertQmonSR( QmonSR sr, const QString& dbname )
     query.bindValue( ":highvalue", sr.highvalue );
     query.bindValue( ":critsit", sr.critsit );
     
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
 }
+
+void Database::dropQmon( const QString& dbname )
+{
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query( db );
+    
+    if ( !query.exec( "DELETE FROM QMON" ) ) 
+    {
+        qDebug() << query.lastError().text();
+    }
+}
+
 
 void Database::updateQmonSR( QmonSR sr, const QString& dbname )
 {
-    //qDebug() << "[DATABASE] Updating QmonItem for " << sr.id << sr.queue;
-    
     QSqlDatabase db = QSqlDatabase::database( dbname );
     
     QSqlQuery query( db );
@@ -689,7 +881,10 @@ void Database::updateQmonSR( QmonSR sr, const QString& dbname )
     query.bindValue( ":critsit", sr.critsit );
     query.bindValue( ":id", sr.id );    
     
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() )
+    {
+        qDebug() << query.lastError().text();
+    }
 }
 
 void Database::setQmonDisplay( const QString& display, const QString& dbname )
@@ -700,7 +895,10 @@ void Database::setQmonDisplay( const QString& display, const QString& dbname )
     query.bindValue( ":display", display.split( "-" ).at( 1 ) );
     query.bindValue( ":id", display.split( "-" ).at( 0 ) );
                 
-    if ( !query.exec() ) qDebug() << query.lastError().text();   
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();   
+    }
 }
 
 void Database::updateQmon( QmonData qd, const QString& dbname )
@@ -710,7 +908,7 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
     QStringList existList = getQmonSrNrs();
     QStringList newList;
     
-    //db.transaction();
+    db.transaction();
     
     for ( int i = 0; i < srList.size(); ++i ) 
     {
@@ -736,32 +934,38 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
         }
     }
     
-    //db.commit();
+    db.commit();
 }
 
 
 void Database::deleteQmonSR( const QString& id, const QString& dbname )
 {
-    //qDebug() << "[DATABASE] Deleting QmonItem for " << id;
     QSqlDatabase db = QSqlDatabase::database( dbname );
-        
     QSqlQuery query(db);
     
     query.prepare( "DELETE FROM QMON WHERE ID = :id" );
     
     query.bindValue( ":id", id );
     
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() )
+    {
+        qDebug() << query.lastError().text();
+    }
 }
 
 QStringList Database::getQmonSrNrs( const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
-    QSqlQuery query(db);
+    
+    QSqlQuery query( db );
     QStringList l;
     
     query.prepare( "SELECT ID FROM QMON" );
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
     
     while( query.next() )
     {
@@ -775,9 +979,14 @@ bool Database::qmonExists( const QString& id, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
     QSqlQuery query(db);
+    
     query.prepare( "SELECT ID FROM QMON WHERE ( ID = :id )" );
     query.bindValue( ":id", id );
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
     
     if ( query.next() )
     {
@@ -797,7 +1006,7 @@ QList< QmonSR > Database::getQmonQueue( const QString& queue, QString geo, const
     QSqlDatabase db = QSqlDatabase::database( dbname );
     QSqlQuery query(db);
     
-    ////db.transaction();
+    db.transaction();
     
     /*if ( !geo.isNull() )
     {
@@ -819,7 +1028,10 @@ QList< QmonSR > Database::getQmonQueue( const QString& queue, QString geo, const
         query.bindValue( ":queue", queue );
     //}
     
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
 
     while ( query.next() )
     {
@@ -883,7 +1095,7 @@ QList< QmonSR > Database::getQmonQueue( const QString& queue, QString geo, const
         list.append( sr );
     }
         
-    ////db.commit();
+    db.commit();
     
     return list;
 }
@@ -892,9 +1104,14 @@ bool Database::qmonQueueChanged( QmonSR sr, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
     QSqlQuery query( db );
+    
     query.prepare( "SELECT QUEUE FROM QMON WHERE ( ID = :id )" );
     query.bindValue( ":id", sr.id );
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
 
     if ( query.next() )
     {
@@ -917,9 +1134,14 @@ bool Database::qmonSeverityChanged( QmonSR sr, const QString& dbname  )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
     QSqlQuery query(db);
+    
     query.prepare( "SELECT SEVERITY FROM QMON WHERE ( ID = :id )" );
     query.bindValue( ":id", sr.id );
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    
+    if ( !query.exec() )
+    {
+        qDebug() << query.lastError().text();
+    }
 
     if ( query.next() )
     {
@@ -944,7 +1166,7 @@ void Database::updateStats( Statz s, const QString& dbname )
     
     QSqlQuery query( db );
     
-    //db.transaction();
+    db.transaction();
     
     query.exec( "DELETE FROM STATS" );
     query.exec( "DELETE FROM STATS_SURVEYS" );
@@ -961,7 +1183,10 @@ void Database::updateStats( Statz s, const QString& dbname )
     query.bindValue( ":csat_sr_avg", s.csatSrAvg );
     query.bindValue( ":csat_rts_percent", s.csatRtsPercent );
     
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
     
     QList<ClosedItem> cl = s.closedList;
     QList<Survey> sl = s.surveyList;
@@ -976,7 +1201,7 @@ void Database::updateStats( Statz s, const QString& dbname )
         Database::insertClosed( cl.at( i ), dbname );
     }
     
-    //db.commit();
+    db.commit();
 }
 
 
@@ -995,7 +1220,10 @@ void Database::insertSurvey( Survey s, const QString& dbname )
     query.bindValue( ":customer", s.customer );
     query.bindValue( ":bdesc", s.bdesc );
     
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() )
+    {
+        qDebug() << query.lastError().text();
+    }
 }
 
 void Database::insertClosed( ClosedItem c, const QString& dbname )
@@ -1011,7 +1239,82 @@ void Database::insertClosed( ClosedItem c, const QString& dbname )
     query.bindValue( ":customer", c.customer );
     query.bindValue( ":bdesc", c.bdesc );
     
-    if ( !query.exec() ) qDebug() << query.lastError().text();
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
+}
+
+Statz Database::getStatz( const QString& dbname )
+{
+    Statz statz;
+    
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    
+    QSqlQuery query( db );
+ 
+    db.transaction();
+    
+    query.prepare( "SELECT CLOSED_SR, CLOSED_CR, SR_TTS_AVG, CSAT_ENG_AVG, CSAT_SR_AVG, CSAT_RTS_PERCENT FROM STATS" );
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
+    
+    if ( query.next() )
+    {
+        statz.closedSr = query.value( 0 ).toInt();
+        statz.closedCr = query.value( 1 ).toInt();
+        statz.srTtsAvg = query.value( 2 ).toInt();
+        statz.csatEngAvg = query.value( 3 ).toInt();
+        statz.csatSrAvg = query.value( 4 ).toInt();
+        statz.csatRtsPercent = query.value( 5 ).toInt();
+    }
+    
+    query.prepare( "SELECT ID, RTS, ENGSAT, SRSAT, CUSTOMER, BDESC FROM STATS_SURVEYS" );
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
+    
+    while ( query.next() )
+    {
+        Survey s;
+        
+        s.id = query.value( 0 ).toString();
+        s.rts = query.value( 1 ).toBool();
+        s.engsat = query.value( 2 ).toInt();
+        s.srsat = query.value( 3 ).toInt();
+        s.customer = query.value( 4 ).toString();
+        s.bdesc = query.value( 5 ).toString();
+        
+        statz.surveyList.append( s );
+    }
+    
+    query.prepare( "SELECT ID, TTS, CUSTOMER, BDESC FROM STATS_CLOSED" );
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
+    
+    while ( query.next() )
+    {
+        ClosedItem c;
+        
+        c.id = query.value( 0 ).toString();
+        c.tts = query.value( 1 ).toInt();
+        c.customer = query.value( 2 ).toString();
+        c.bdesc = query.value( 3 ).toString();
+        
+        statz.closedList.append( c );
+    }
+    
+    db.commit();
+    
+    return statz;
 }
 
 QString Database::convertTime( const QString& dt )

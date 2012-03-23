@@ -105,6 +105,7 @@ TabWidget::TabWidget( QWidget* parent )
     // create the main browser tabs...
     
     mQueueBrowser = new QueueBrowser( this );
+    
     mPersonalTab = new WebViewWithSearch( mQueueBrowser, this );
     
     connect( mQueueBrowser, SIGNAL( setMenus() ), 
@@ -330,13 +331,12 @@ void TabWidget::updateQmonBrowser( const QString& html )
 
 void TabWidget::updateQueueBrowser( const QString& html )
 {
-    qDebug() << "tw uqb";
     mQueueBrowser->update( html );
 }
 
-void TabWidget::updateStatsBrowser()
+void TabWidget::updateStatsBrowser( const QString& html )
 {
-    mStatsBrowser->update();
+    mStatsBrowser->update( html );
 }
 
 void TabWidget::showSrInUnityBrowser(int browser, const QString& sr )
@@ -763,7 +763,7 @@ void TabWidget::updateUiData()
 {
     DataThread::updateQmonBrowser();
     DataThread::updateQueueBrowser();
-    mStatsBrowser->update();
+    DataThread::updateStatsBrowser();
 }
 
 void TabWidget::showSearch()

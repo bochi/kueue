@@ -367,6 +367,7 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     toggleMonitor( Settings::monitorEnabled() );
     toggleQboss( Settings::qbossFeatures() );
     toggleNotifications( !Settings::notificationsEnabled() );
+    toggleUnity( Settings::unityEnabled() );
     
     #ifndef QT_HAS_DBUS
     

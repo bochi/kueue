@@ -75,14 +75,15 @@ Network::~Network()
 QNetworkReply* Network::getImpl( const QString& u )
 {
     int r = qrand() % mIPs.size();
+
     QNetworkRequest request( QUrl( "http://" + mIPs.at(r) + ":8080/" + u ) );
-    qDebug() << mIPs.size() << r << request.url();
+
     request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
     
     QNetworkReply* reply = mNAM->get( request );
     
     connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
-             this, SLOT( getError( QNetworkReply::NetworkError ) ) );
+             this, SLOT( error( QNetworkReply::NetworkError ) ) );
 
     return reply;
 }

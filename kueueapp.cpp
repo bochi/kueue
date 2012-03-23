@@ -149,6 +149,9 @@ void KueueApp::createDataThread()
 
     connect( mDataThread, SIGNAL( qmonDataChanged( QString ) ), 
              mTabWidget, SLOT( updateQmonBrowser( const QString& ) ) );
+    
+    connect( mDataThread, SIGNAL( statsDataChanged( QString ) ),
+             mTabWidget, SLOT( updateStatsBrowser(QString) ) );
         
     connect( mDataThread, SIGNAL( destroyed() ),
              this, SLOT( createDataThread() ) );

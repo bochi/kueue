@@ -76,6 +76,12 @@ void CalendarDialog::closeEvent( QCloseEvent* event )
     QDialog::closeEvent( event );
 }
 
+/*
+ * 
+ * SsDialog
+ * 
+ */
+
 SsDialog::SsDialog( QObject* parent, QString sr )
 {
     qDebug() << "[SSDIALOG] Constructing";
@@ -96,6 +102,12 @@ void SsDialog::closeEvent( QCloseEvent* event )
     emit rejected();
     QDialog::closeEvent( event );
 }
+
+/*
+ * 
+ * CloseDialog
+ * 
+ */
 
 CloseDialog::CloseDialog( QObject* parent, const QString& sr )
 {
@@ -118,6 +130,12 @@ void CloseDialog::closeEvent( QCloseEvent* event )
     emit rejected();
     QDialog::closeEvent( event );
 }
+
+/*
+ * 
+ * NoteDialog
+ * 
+ */
 
 NoteDialog::NoteDialog( QObject* parent, QString sr )
 {
@@ -173,6 +191,12 @@ void NoteDialog::closeEvent( QCloseEvent* event )
     QDialog::closeEvent( event );
 }
 
+/*
+ * 
+ * PasswordPrompt
+ * 
+ */
+
 PasswordPrompt::PasswordPrompt( QObject* parent )
 {
     qDebug() << "[PASSWORDPROMPT] Constructing";
@@ -193,7 +217,5 @@ void PasswordPrompt::passwordEntered()
     Settings::setUnityPassword( passwordLine->text() );
     emit passwordReceived();
 }
-
-
 
 #include "unitywidgets.moc"

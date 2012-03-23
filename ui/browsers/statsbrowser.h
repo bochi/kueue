@@ -40,7 +40,7 @@ class StatsBrowser : public QWebView
         QUrl mUrl;
         
     public slots:
-        void update();
+        void update( const QString& );
          
     private slots:
         void mousePressEvent( QMouseEvent* event );

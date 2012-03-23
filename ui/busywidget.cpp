@@ -99,5 +99,4 @@ void BusyWidget::deactivate()
     hide();
 }
 
-
 #include "busywidget.moc"

@@ -34,6 +34,7 @@
 #include "ui/download/downloadmanager.h"
 #include "ui/statusbar.h"
 #include "ui/browsers/search/webviewsearch.h"
+#include "ui/busywidget.h"
 
 #include <QTabWidget>
 #include <QToolButton>
@@ -103,6 +104,7 @@ class TabWidget : public QTabWidget
         QAction* mActionWebsite;
         QAction* mActionAddUnityTab;
         QAction* mActionNSA;
+        BusyWidget* mBusyWidget;
         
     public slots:
         void setTabsPosition();
@@ -120,7 +122,7 @@ class TabWidget : public QTabWidget
         void openInUnityImp( const QString& );
         void updateQueueBrowser( const QString& = "bla" );
         void updateQmonBrowser( const QString& = "bla" );
-        void updateStatsBrowser();
+        void updateStatsBrowser( const QString& = "bla" );
         void refreshTabs();
         
     private slots:

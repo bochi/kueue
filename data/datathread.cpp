@@ -78,11 +78,16 @@ void DataThread::run()
     connect( this, SIGNAL( updateQmonBrowserRequested() ), 
              mData, SLOT( updateQmonBrowser() ) );
     
-    mData->updateQueueBrowser();
+    emit updateQueueBrowserRequested();
     
     if ( Settings::monitorEnabled() )
     {
-        mData->updateQmonBrowser();
+        emit updateQmonBrowserRequested();
+    }
+    
+    if ( Settings::statsEnabled() )
+    {
+        emit updateStatsBrowserRequested();
     }
     
     exec();

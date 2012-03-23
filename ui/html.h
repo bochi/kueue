@@ -43,11 +43,11 @@ class HTML
         static QString qmonTableHeader( const QString& );
         static QString qmonSrInQueue( QmonSR );
         static QString qmonTableFooter();
-//        static QString csatTable( CsatItem* );
+        static QString csatTable( Survey );
         static QString csatTableHeader( int, int, int );
         static QString closedTableHeader( int, int );
-  //      static QString closedTable( TtsItem* );
-        static QString statsPageHeader();
+        static QString closedTable( ClosedItem );
+        static QString statsPageHeader( Statz );
         
         static QString nsaPageHeader( NSASummaryItem );
         static QString nsaTableStart( const QString& );

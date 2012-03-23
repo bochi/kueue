@@ -41,10 +41,7 @@ StatsBrowser::StatsBrowser(QObject* parent)
     qDebug() << "[STATSBROWSER] Constructing";
     
     connect( page(), SIGNAL( linkHovered( const QString&, const QString&, const QString& ) ),
-             this, SLOT( urlHovered( const QString&, const QString&, const QString& ) ) );
-    
-    update();
-    
+             this, SLOT( urlHovered( const QString&, const QString&, const QString& ) ) );    
 }
 
 StatsBrowser::~StatsBrowser()
@@ -52,41 +49,11 @@ StatsBrowser::~StatsBrowser()
     qDebug() << "[STATSBROWSER] Destroying";
 }
 
-void StatsBrowser::update()
-{/*
-    QList< CsatItem* > cl = Database::getCsatList();
-    QList< TtsItem* > tl = Database::getTtsList();
-    QString html;    
-    
-    qDebug() << "[STATSBROWSER] Updating";
-    
-    html += HTML::styleSheet();
-    
-    html += HTML::statsPageHeader();
-           
-    if ( cl.count() > 0 )
-    {
-        html += HTML::csatTableHeader( Database::csatRtsPercent(), Database::csatEngAverage(), Database::csatSrAverage() );
-        
-        for ( int i = 0; i < cl.size(); ++i )
-        {
-            html += HTML::csatTable( cl.at( i ) );
-            delete cl.at( i );
-        }
-    }
-    else
-    {
-        html += HTML::csatTableHeader( Database::csatRtsPercent(), Database::csatEngAverage(), Database::csatSrAverage() );
-    }
-
-    html += HTML::closedTableHeader( Database::closedTotal(), Database::ttsAverage() );
-    
-    for ( int i = 0; i < tl.size(); ++i )
-    {
-        1html += HTML::closedTable( tl.at(i) );
-    }
-    
-    setHtml( html );*/
+void StatsBrowser::update( const QString& html )
+{
+    QPoint pos = page()->currentFrame()->scrollPosition();
+    page()->currentFrame()->setHtml( html );
+    page()->currentFrame()->setScrollPosition( pos );
 }
 
 void StatsBrowser::urlHovered( const QString& url, const QString& title, const QString& text )

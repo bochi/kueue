@@ -36,11 +36,9 @@ class UnityNetwork : public QNetworkAccessManager
         explicit UnityNetwork( QObject* parent = 0L );
         ~UnityNetwork();
         
-public slots:
-    void clearCookieJar();
-    
-    private:
-        //QNetworkReply* createRequest( Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0 );
+    public slots:
+        void clearCookieJar();
+
 };
 
 #endif

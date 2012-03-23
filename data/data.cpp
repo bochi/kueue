@@ -49,7 +49,7 @@ Data::Data()
     
     mNAM = new QNetworkAccessManager( this );
  
-    QHostInfo info = QHostInfo::fromName(Settings::dBServer());
+    QHostInfo info = QHostInfo::fromName( Settings::dBServer() );
     QList<QHostAddress> al = info.addresses();
     
     for ( int i = 0; i < al.size(); ++i ) 
@@ -71,9 +71,10 @@ Data::Data()
     
     updateQueue();
 
-    
     if ( Settings::monitorEnabled() )
     {
+        Database::dropQmon();
+        
         QTimer* qmonTimer = new QTimer( this );
         qmonTimer->start( 51219 );
     
@@ -93,8 +94,6 @@ Data::Data()
         
         updateStats();
     }
-    
-    updateQueueBrowser();
 }
 
 Data::~Data()
@@ -114,8 +113,6 @@ QNetworkReply* Data::get( const QString& u )
     connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
              this, SLOT( getError( QNetworkReply::NetworkError ) ) );
     
-    qDebug() << request.url();
-
     return reply;
 }
 
@@ -192,9 +189,8 @@ void Data::queueUpdateFinished()
         q.srList.append( sr );
     }
     
-    Database::updateQueue( q, mDB );    
-    
-    updateQmonBrowser();
+    Database::updateQueue( q, mDB );   
+    updateQueueBrowser();
 }
 
 void Data::updateQueueBrowser()
@@ -231,7 +227,11 @@ void Data::updateQueueBrowser()
     }
 
     int avgAge = age / srlist.size();
-    emit queueDataChanged( html );
+    
+    if ( !html.isEmpty() )
+    {
+        emit queueDataChanged( html );
+    }
 }
 
 void Data::updateQmonBrowser()
@@ -265,14 +265,21 @@ void Data::updateQmonBrowser()
         html += HTML::qmonTableFooter();
     }
 
-    emit qmonDataChanged( html );
+    if ( !html.isEmpty() )
+    {
+        emit qmonDataChanged( html );
+    }
 }
 
 void Data::updateStatsBrowser()
 {
-
+    QString html = HTML::statsPageHeader( Database::getStatz( mDB ) );
+    
+    if ( !html.isEmpty() )
+    {
+        emit statsDataChanged( html );
+    }
 }
-
 
 void Data::qmonUpdateFinished()
 {
@@ -450,6 +457,7 @@ void Data::statsUpdateFinished()
     }
     
     Database::updateStats( statz, mDB );
+    updateStatsBrowser();
 }
 
 
