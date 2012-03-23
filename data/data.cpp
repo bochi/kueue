@@ -61,17 +61,7 @@ Data::Data()
     
     QDir dir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) );
     
-    QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE", mDB );
-    db.setDatabaseName( dir.path() + "/database.sqlite" );
-    
-    if ( !db.open() )
-    {
-        qDebug() << "[DATA] Failed to open the database " + mDB;
-    }
-    else
-    {
-        qDebug() << "[DATA] Opened DB" << dir.path() << mDB;
-    }
+    Database::openDbConnection( mDB );
     
     QTimer* queueTimer = new QTimer( this );
     queueTimer->start( 84726 );
@@ -84,7 +74,6 @@ Data::Data()
     
     if ( Settings::monitorEnabled() )
     {
-        qDebug() << "MONITORENABLED";
         QTimer* qmonTimer = new QTimer( this );
         qmonTimer->start( 51219 );
     
@@ -104,6 +93,8 @@ Data::Data()
         
         updateStats();
     }
+    
+    updateQueueBrowser();
 }
 
 Data::~Data()
@@ -115,13 +106,15 @@ QNetworkReply* Data::get( const QString& u )
 {
     int r = qrand() % mIPs.size();
     QNetworkRequest request( QUrl( "http://" + mIPs.at(r) + ":8080/" + u ) );
-    qDebug() << mIPs.size() << r << request.url();
+    
     request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
     
     QNetworkReply* reply = mNAM->get( request );
     
     connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
              this, SLOT( getError( QNetworkReply::NetworkError ) ) );
+    
+    qDebug() << request.url();
 
     return reply;
 }
@@ -144,8 +137,7 @@ void Data::updateQueue()
 
 void Data::updateQmon()
 {
-    qDebug() << "UPDATE QMON";
-    QNetworkReply* r = get( "qmon_date" );
+    QNetworkReply* r = get( "qmon" );
     
     connect( r, SIGNAL( finished() ), 
              this, SLOT( qmonUpdateFinished() ) );
@@ -238,10 +230,8 @@ void Data::updateQueueBrowser()
         }
     }
 
-    emit queueDataChanged( html );
     int avgAge = age / srlist.size();
-        
-    qDebug() << "queuefinished" << avgAge;
+    emit queueDataChanged( html );
 }
 
 void Data::updateQmonBrowser()
@@ -269,7 +259,6 @@ void Data::updateQmonBrowser()
     
         for ( int i = 0; i < l.size(); ++i ) 
         {
-            qDebug() << "Qmonsrinqueue" << l.at(i).id;
             html += HTML::qmonSrInQueue( l.at( i ) );
         }
         
@@ -277,8 +266,6 @@ void Data::updateQmonBrowser()
     }
 
     emit qmonDataChanged( html );
-        
-    //qDebug() << "queuefinished" << avgAge;
 }
 
 void Data::updateStatsBrowser()
@@ -289,7 +276,6 @@ void Data::updateStatsBrowser()
 
 void Data::qmonUpdateFinished()
 {
-    qDebug() << "UPDATE QMON FINISHED";
     QNetworkReply* r = qobject_cast<QNetworkReply*>( sender() );
     
     QmonData q;
@@ -331,10 +317,10 @@ void Data::qmonUpdateFinished()
         sr.service_level = list.at( i ).namedItem( "service_level" ).toElement().text().toInt(); 
         sr.category = list.at( i ).namedItem( "category" ).toElement().text(); 
         sr.respond_via = list.at( i ).namedItem( "respond_via" ).toElement().text(); 
-        sr.created = list.at( i ).namedItem( "created" ).toElement().text(); 
-        sr.lastupdate = list.at( i ).namedItem( "lastupdate" ).toElement().text(); 
-        sr.queuedate = list.at( i ).namedItem( "queuedate" ).toElement().text(); 
-        sr.sla = list.at( i ).namedItem( "sla" ).toElement().text(); 
+        sr.agesec = list.at( i ).namedItem( "age" ).toElement().text().toInt(); 
+        sr.lastupdatesec = list.at( i ).namedItem( "lastupdate" ).toElement().text().toInt(); 
+        sr.timeinqsec = list.at( i ).namedItem( "timeinQ" ).toElement().text().toInt(); 
+        sr.slasec = list.at( i ).namedItem( "sla" ).toElement().text().toInt(); 
         sr.highvalue = list.at( i ).namedItem( "highvalue" ).toElement().text().toInt();
         sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
         

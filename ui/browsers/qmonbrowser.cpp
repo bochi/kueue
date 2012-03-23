@@ -84,8 +84,6 @@ QMonBrowser::QMonBrowser( QObject *parent )
     
     connect( all, SIGNAL( activated() ), 
              this, SLOT( setFilter() ) );
-    
-    DataThread::updateQmonBrowser();
 }
 
 QMonBrowser::~QMonBrowser()
@@ -343,8 +341,10 @@ void QMonBrowser::takeSR( const QString& sr )
     {
         showProgress();
         mSR = sr;
-        mAssign = Network::getExt( QUrl( "http://proetus.provo.novell.com/assign.asp?sr=" + sr + "&owner=" + Settings::engineer().toUpper() ) );
-        connect( mAssign, SIGNAL( finished() ), this, SLOT( assignFinished() ) );
+        mAssign = Network::get( "assign/" + sr + "|" + Settings::engineer().toUpper() );
+        
+        connect( mAssign, SIGNAL( finished() ), 
+                 this, SLOT( assignFinished() ) );
     }
     
     delete box;

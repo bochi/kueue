@@ -60,8 +60,8 @@ void DataThread::run()
 {
     mData = new Data();
     
-    connect( mData, SIGNAL( queueDataChanged( QString ) ), 
-             this, SIGNAL( queueDataChanged( QString ) ) );
+    connect( mData, SIGNAL( queueDataChanged( const QString& ) ), 
+             this, SIGNAL( queueDataChanged( const QString& ) ) );
     
     connect( this, SIGNAL( updateQueueBrowserRequested() ), 
              mData, SLOT( updateQueueBrowser() ) );
@@ -79,6 +79,11 @@ void DataThread::run()
              mData, SLOT( updateQmonBrowser() ) );
     
     mData->updateQueueBrowser();
+    
+    if ( Settings::monitorEnabled() )
+    {
+        mData->updateQmonBrowser();
+    }
     
     exec();
 }
