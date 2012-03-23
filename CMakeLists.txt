@@ -23,7 +23,7 @@
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
-PROJECT( kueue-5 )
+PROJECT( kueue )
 SET( KUEUE_VERSION git )
 
 set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
@@ -198,12 +198,12 @@ ENDIF( WIN32 )
 #
 
 IF( UNIX AND NOT APPLE )
-    ADD_EXECUTABLE( kueue-5 ${kueue_CPP} ${kueue_QRC_SRCS} ${kueue_UI_H} )
+    ADD_EXECUTABLE( kueue ${kueue_CPP} ${kueue_QRC_SRCS} ${kueue_UI_H} )
     SET( APP_ICON ${CMAKE_SOURCE_DIR}/ui/icons/app/kueue.png )
     SET( DESKTOP_FILE ${CMAKE_SOURCE_DIR}/kueue.desktop )
     SET( ICON_DIR /usr/share/icons/hicolor )
     SET( DESKTOP_DIR /usr/share/applications )  
-    INSTALL( TARGETS kueue-5 DESTINATION bin )
+    INSTALL( TARGETS kueue DESTINATION bin )
     INSTALL( FILES ${APP_ICON} DESTINATION ${ICON_DIR}/32x32/apps )
     INSTALL( PROGRAMS ${DESKTOP_FILE} DESTINATION ${DESKTOP_DIR} ) 
     CONFIGURE_FILE( "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
@@ -235,7 +235,7 @@ ENDIF( APPLE )
 # And finally, link kueue against a few Qt libraries
 #
 
-TARGET_LINK_LIBRARIES( kueue-5 ${QT_LIBRARIES} 
+TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
                              ${QT_PHONON_LIBRARY} 
                              ${QT_QTCORE_LIBRARY} 
                              ${QT_QTWEBKIT_LIBRARY} 
