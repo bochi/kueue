@@ -47,7 +47,7 @@ class KueueThreads : public QObject
         {
             getInstance().enqueueThread( thread );
         }
-        
+
     private:
         static KueueThreads* instance;
         KueueThreads( QObject* parent = 0 );
@@ -61,10 +61,9 @@ class KueueThreads : public QObject
         
     private slots:
         void next();
-        void cancelCurrentThread();
         void startThread( const QString&, int );
         void updateThreadProgress( int );
-        void endThread( KueueThread* );
+        void endThread();
 };
 
 class KueueThread : public QThread

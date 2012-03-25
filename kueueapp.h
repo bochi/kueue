@@ -60,11 +60,8 @@ class KueueApp : public QObject
         void cleanupTemp();
         void createApp();
         void updateJobDone();
-        void createDataThread();
+        void connectDataThread();
         void createSystray();
-        void createQmon();
-        void createQueue();
-        void createStats();
         void createMainWindow();
         void createDatabase();
         void settingsChanged();

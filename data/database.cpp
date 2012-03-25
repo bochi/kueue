@@ -136,8 +136,6 @@ void Database::openDbConnection( QString dbname )
 
 */
 
-
-
 void Database::updateQueue( PersonalQueue pq, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
@@ -145,7 +143,7 @@ void Database::updateQueue( PersonalQueue pq, const QString& dbname )
     QStringList newList;
     QStringList existList = getSrNrList();
     QList< QueueSR > srList = pq.srList;
-    
+    bool initial = existList.isEmpty();
     db.transaction();
         
     for ( int i = 0; i < srList.size(); ++i ) 
@@ -154,12 +152,21 @@ void Database::updateQueue( PersonalQueue pq, const QString& dbname )
         
         if ( queueSrExists( sr.id, dbname ) )
         {
+            if ( srWasUpdated( sr, dbname ) )
+            {
+                Kueue::notify( "kueue-sr-update", "SR Updated", "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+            }
+            
             updateQueueSR( sr, dbname );
         }
         else
         {
             insertQueueSR( sr, dbname );
-            Kueue::notify( "kueue-sr-update", "SR Updated", "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+            
+            if ( !initial )
+            {
+                Kueue::notify( "kueue-sr-new", "New SR in your queue", "<b>" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+            }
         }
         
         newList.append( sr.id );
@@ -323,7 +330,6 @@ bool Database::srWasUpdated( QueueSR sr, const QString& dbname )
     
     return false;
 }
-
 
 QString Database::getStatus( const QString& id, const QString& dbname )
 {
@@ -831,7 +837,6 @@ void Database::dropQmon( const QString& dbname )
     }
 }
 
-
 void Database::updateQmonSR( QmonSR sr, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
@@ -909,6 +914,7 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
     QList< QmonSR > srList = qd.srList;
     QStringList existList = getQmonSrNrs();
     QStringList newList;
+    bool initial = existList.isEmpty();
     
     db.transaction();
     
@@ -918,11 +924,51 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
         
         if ( qmonExists( sr.id ) )
         {
+            if ( qmonQueueChanged( sr, dbname ) && Settings::queuesToMonitor().contains( sr.queue ) )
+            {
+                if ( sr.severity == "Low" )
+                {
+                    Kueue::notify( "kueue-monitor-low", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                }
+                else if ( sr.severity == "Medium" )
+                {
+                    Kueue::notify( "kueue-monitor-medium", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                }
+                else if ( sr.severity == "Urgent" )
+                {
+                    Kueue::notify( "kueue-monitor-urgent", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                }
+                else if ( sr.severity == "High" )
+                {
+                    Kueue::notify( "kueue-monitor-high", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                }
+            }
+            
             updateQmonSR( sr, dbname );
         }
         else
         {
             insertQmonSR( sr, dbname );
+            
+            if ( !initial )
+            {
+                if ( sr.severity == "Low" )
+                {
+                    Kueue::notify( "kueue-monitor-low", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                }
+                else if ( sr.severity == "Medium" )
+                {
+                    Kueue::notify( "kueue-monitor-medium", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                }
+                else if ( sr.severity == "Urgent" )
+                {
+                    Kueue::notify( "kueue-monitor-urgent", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                }
+                else if ( sr.severity == "High" )
+                {
+                    Kueue::notify( "kueue-monitor-high", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                }
+            }
         }
          
         newList.append( sr.id );
@@ -938,7 +984,6 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
     
     db.commit();
 }
-
 
 void Database::deleteQmonSR( const QString& id, const QString& dbname )
 {
@@ -1205,7 +1250,6 @@ void Database::updateStats( Statz s, const QString& dbname )
     
     db.commit();
 }
-
 
 void Database::insertSurvey( Survey s, const QString& dbname )
 {

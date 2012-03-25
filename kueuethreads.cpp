@@ -54,8 +54,7 @@ KueueThreads::KueueThreads( QObject* parent )
     qDebug() << "[KUEUETHREADS] Constructing" << mThreadList.size();
     
     mStatusBar = &mStatusBar->getInstance();
-    mCurrentThread = 0;
-    
+    mCurrentThread = 0;    
 }
 
 KueueThreads::~KueueThreads()
@@ -66,7 +65,6 @@ KueueThreads::~KueueThreads()
 void KueueThreads::enqueueThread( KueueThread* thread )
 {   
     mThreadList.insert( mThreadList.size(), thread );
-    qDebug() << "enqueue" << mThreadList.size();
 
     connect( thread, SIGNAL( threadStarted( QString, int ) ),
             this, SLOT( startThread( const QString&, int ) ) );
@@ -74,12 +72,11 @@ void KueueThreads::enqueueThread( KueueThread* thread )
     connect( thread, SIGNAL( threadProgress( int ) ),
             this, SLOT( updateThreadProgress( int ) ) );
             
-    connect( thread, SIGNAL( threadFinished( KueueThread* ) ),
-            this, SLOT( endThread( KueueThread* ) ) );
+    connect( thread, SIGNAL( finished() ),
+             this, SLOT( endThread() ) );
 
     if ( mThreadList.size() == 1 )
     {
-        qDebug() << "TL SIZE" << mThreadList.size() << "starting..";
         mCurrentThread = thread;
         mCurrentThread->start();
     }
@@ -89,16 +86,9 @@ void KueueThreads::next()
 {
     if ( !mThreadList.isEmpty() )
     {
-        qDebug() << "take 1s";
         mCurrentThread = mThreadList.first();
         mCurrentThread->start();
     }
-}
-
-void KueueThreads::cancelCurrentThread()
-{
-    mCurrentThread->exit();
-    next();
 }
 
 void KueueThreads::startThread( const QString& text, int total )
@@ -111,12 +101,13 @@ void KueueThreads::updateThreadProgress( int p )
     mStatusBar->updateProgress( p );
 }
 
-void KueueThreads::endThread( KueueThread* thread )
+void KueueThreads::endThread()
 {
-    qDebug() << "thread finished";
+    KueueThread* t = mCurrentThread;
+    
     mStatusBar->resetStatusBar();
-    mThreadList.removeAt( mThreadList.indexOf( thread ) );
-    delete thread;
+    mThreadList.removeAt( mThreadList.indexOf( t ) );
+    delete t;
     next();
 }
 

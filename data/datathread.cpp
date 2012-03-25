@@ -31,6 +31,7 @@ DataThread& DataThread::thread()
 {
     if ( !instance )
     {
+        qDebug() << "new inst";
         instance = new DataThread;
     }
  
@@ -47,6 +48,13 @@ void DataThread::destroy()
     instance = 0;
 }
 
+DataThread& DataThread::restart()
+{
+    instance = new DataThread;
+    return *instance;
+}
+
+
 DataThread::DataThread( QObject *parent ) : QThread( parent )
 {
     start();
@@ -54,9 +62,30 @@ DataThread::DataThread( QObject *parent ) : QThread( parent )
 
 DataThread::~DataThread()
 {
+    delete mData;
+    qDebug() << "[DATATHREAD] Destroying";
 }
 
 void DataThread::run()
+{
+    createData();
+    
+    emit updateQueueBrowserRequested();
+    
+    if ( Settings::monitorEnabled() )
+    {
+        emit updateQmonBrowserRequested();
+    }
+    
+    if ( Settings::statsEnabled() )
+    {
+        emit updateStatsBrowserRequested();
+    }
+    
+    exec();
+}
+
+void DataThread::createData()
 {
     mData = new Data();
     
@@ -77,20 +106,12 @@ void DataThread::run()
     
     connect( this, SIGNAL( updateQmonBrowserRequested() ), 
              mData, SLOT( updateQmonBrowser() ) );
-    
-    emit updateQueueBrowserRequested();
-    
-    if ( Settings::monitorEnabled() )
-    {
-        emit updateQmonBrowserRequested();
-    }
-    
-    if ( Settings::statsEnabled() )
-    {
-        emit updateStatsBrowserRequested();
-    }
-    
-    exec();
+}
+
+void DataThread::newDataSlot()
+{
+    delete mData;
+    delete this;
 }
 
 void DataThread::updateQueueBrowserSlot()

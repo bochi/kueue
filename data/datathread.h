@@ -36,6 +36,7 @@ class DataThread : public QThread
     
     public:
         static DataThread& thread();
+        static DataThread& restart();
         static void destroy();
         void run();
         
@@ -54,17 +55,26 @@ class DataThread : public QThread
             DataThread::thread().updateStatsBrowserSlot();
         }
         
+        static void newData()
+        {
+            DataThread::thread().newDataSlot();
+        }
+        
     private:
         static DataThread* instance;
         DataThread( QObject *parent = 0L );
         ~DataThread();
         Data* mData;
         
+    private slots:
+        void createData();
+        
     public slots:
         void updateQueueBrowserSlot();
         void updateQmonBrowserSlot();
         void updateStatsBrowserSlot();
-
+        void newDataSlot();
+        
     signals:
         void notify( const QString&, QString, QString, const QString& );
         void updateQueueBrowserRequested();

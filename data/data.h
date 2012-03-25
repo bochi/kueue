@@ -51,6 +51,7 @@ class Data : public QObject
         void updateQueueBrowser();
         void updateQmonBrowser();
         void updateStatsBrowser();
+        void newData();
         
     private slots:
         void getError( QNetworkReply::NetworkError );

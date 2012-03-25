@@ -265,7 +265,7 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_useSrDirectory->setChecked( Settings::useSrDirectory() );
     cfg_autoExtract->setChecked( Settings::autoExtract() );
     
-    cfg_notificationsEnabled->setChecked( !Settings::notificationsEnabled() );
+    cfg_notificationsEnabled->setChecked( Settings::notificationsEnabled() );
 
     cfg_generalNotificationPopup->setChecked( Settings::generalNotificationPopup() );
     cfg_generalNotificationSound->setChecked( Settings::generalNotificationSound() );
@@ -913,6 +913,5 @@ void BasicConfig::saveConfig()
         accept();
     }
 }
-
 
 #include "configdialog.moc"

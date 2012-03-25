@@ -53,6 +53,7 @@ StatusBar::StatusBar()
     mDownloadButton = new QToolButton( this );
     mDownloadButton->setGeometry( 0, 0, 20, 20 );
     mDownloadButton->setIcon( QIcon(":/icons/menus/download.png"));
+    
     mDownloadManager = new DownloadManager( mDownloadButton );
     //mDownloadManager->setModal(true);
     mDownloadManager->setWindowFlags( Qt::Popup );
@@ -82,7 +83,7 @@ StatusBar::StatusBar()
     addPermanentWidget( mProgress );
     addPermanentWidget( mDownloadButton );
     
-    mProgress->hide();    
+    mProgress->hide();   
 }
 
 StatusBar::~StatusBar()

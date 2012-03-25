@@ -98,13 +98,13 @@ void KueueApp::cleanupTemp()
 
 void KueueApp::createApp()
 {
-   
     createSystray();
     createDatabase();
     createMainWindow();
-    createDataThread();
+        
+    mDataThread = &mDataThread->thread();
+    connectDataThread();
 
-    
     if ( Settings::appVersion() != QApplication::applicationVersion() )
     {
         UpdateDialog* ud = new UpdateDialog( this );
@@ -138,11 +138,9 @@ void KueueApp::createApp()
              mTabWidget, SLOT( addUnityBrowser() ) );
 }
 
-void KueueApp::createDataThread()
+void KueueApp::connectDataThread()
 {
     qDebug() << "[KUEUEAPP] My thread ID is" << thread()->currentThreadId();
-    
-    mDataThread = &mDataThread->thread();
     
     connect( mDataThread, SIGNAL( queueDataChanged( QString ) ), 
              mTabWidget, SLOT( updateQueueBrowser( const QString& ) ) );
@@ -152,11 +150,7 @@ void KueueApp::createDataThread()
     
     connect( mDataThread, SIGNAL( statsDataChanged( QString ) ),
              mTabWidget, SLOT( updateStatsBrowser(QString) ) );
-        
-    connect( mDataThread, SIGNAL( destroyed() ),
-             this, SLOT( createDataThread() ) );
 }
-
 
 void KueueApp::updateJobDone()
 {
@@ -177,22 +171,10 @@ void KueueApp::createSystray()
              this, SLOT( createSystray() ) );
 }
 
-void KueueApp::createQmon()
-{
-}
-
-void KueueApp::createQueue()
-{
-}
-
 void KueueApp::createDatabase()
 {
     qDebug() << "createDatabase";
     Database::openDbConnection( "sqliteDB" );
-}
-
-void KueueApp::createStats()
-{
 }
 
 void KueueApp::createMainWindow()
@@ -249,6 +231,9 @@ void KueueApp::settingsChanged()
     #endif
 
     mDataThread->destroy();
+    mDataThread = &mDataThread->restart();
+    connectDataThread();
+    
     mTabWidget->refreshTabs();
     setTabPosition();
     updateUiData();
@@ -266,32 +251,17 @@ void KueueApp::updateProgress( int max, int type )
     if ( type == 1 ) 
     {
         pd->setWindowTitle( "Queue Monitor" );
-        pd->setLabelText( "Downloading queue monitor data..." );
-        
-//        connect( mQmon, SIGNAL( initialUpdateProgress( int ) ), 
-//                 pd, SLOT( setValue( int ) ) );
-//        connect( mQmon, SIGNAL( initialUpdateDone() ), 
-//                 pd, SLOT( close() ) );
+        pd->setLabelText( "Downloading queue monitor data..." );       
     }
     else if ( type == 2 )
     {
         pd->setWindowTitle( "Personal Queue" );
         pd->setLabelText( "Downloading personal queue data..." );
-       
-/*        connect( mQueue, SIGNAL( initialUpdateProgress( int ) ), 
-                 pd, SLOT( setValue( int ) ) );
-        connect( mQueue, SIGNAL( initialUpdateDone() ), 
-                 pd, SLOT( close() ) );*/
     }
     else if ( type == 3 )
     {
         pd->setWindowTitle( "Stats" );
         pd->setLabelText( "Downloading stats data..." );
-        
-/*        connect( mStats, SIGNAL( initialUpdateProgress( int ) ), 
-                 pd, SLOT( setValue( int ) ) );
-        connect( mStats, SIGNAL( initialUpdateDone() ), 
-                 pd, SLOT( close() ) );*/
     }    
     
     pd->setCancelButton( 0 );

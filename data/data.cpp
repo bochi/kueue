@@ -99,6 +99,7 @@ Data::Data()
 Data::~Data()
 {
     qDebug() << "[DATA] Destroying";
+    QSqlDatabase::removeDatabase( mDB );
 }
 
 QNetworkReply* Data::get( const QString& u )
@@ -115,6 +116,11 @@ QNetworkReply* Data::get( const QString& u )
     
     qDebug() << "[DATA] Downloading" << request.url();
     return reply;
+}
+
+void Data::newData()
+{
+    delete this;
 }
 
 
