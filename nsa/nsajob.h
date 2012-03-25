@@ -31,7 +31,7 @@
 
 class NSATableItem;
 
-class NSAJob : public ThreadWeaver::Job
+class NSAJob : public KueueThread
 {
     Q_OBJECT
 

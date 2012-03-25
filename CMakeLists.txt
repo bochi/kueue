@@ -79,12 +79,7 @@ ADD_SUBDIRECTORY( qtsingleapplication )
 SET( QtSingleApp_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qtsingleapplication )
 SET( QT_SINGLEAPP_LIBRARY qtsingleapplication )
 
-ADD_SUBDIRECTORY( threadweaver )
-
-SET( ThreadWeaver_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/threadweaver )
-SET( THREADWEAVER_LIBRARY threadweaver )
-
-INCLUDE_DIRECTORIES( ${QtSingleApp_INCLUDE_DIR} ${ThreadWeaver_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES( ${QtSingleApp_INCLUDE_DIR} )
 
 #
 # Define the source files
@@ -246,6 +241,5 @@ TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES}
 			     ${QT_QTXML_LIBRARY}
                              ${QT_QTGUI_LIBRARY} 
                              ${QT_SINGLEAPP_LIBRARY}
-			     ${THREADWEAVER_LIBRARY} 
 			     ${LibArchive_LIBRARY} )
 

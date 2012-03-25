@@ -57,7 +57,7 @@ struct ArchiveExtract::ArchiveWriteCustomDeleter
     }
 };
 
-ArchiveExtract::ArchiveExtract( const QString& file, const QString& dest ) : ThreadWeaver::Job()
+ArchiveExtract::ArchiveExtract( const QString& file, const QString& dest ) : KueueThread()
     , mFileName( file )
     , mDestination( dest )
     , m_cachedArchiveEntryCount( 0 )
@@ -65,7 +65,6 @@ ArchiveExtract::ArchiveExtract( const QString& file, const QString& dest ) : Thr
     , m_archiveReadDisk( archive_read_disk_new() )
     
 {
-    qDebug() << "[ARCHIVEEXTRACT] Constructing";
 }
 
 ArchiveExtract::~ArchiveExtract()
@@ -75,6 +74,7 @@ ArchiveExtract::~ArchiveExtract()
 
 void ArchiveExtract::run()
 {
+    qDebug() << "AX" << currentThreadId();
     archive_read_disk_set_standard_lookup( m_archiveReadDisk.data() );
     copyFiles();
 }
@@ -113,7 +113,7 @@ bool ArchiveExtract::list()
     while ( ( result = archive_read_next_header( arch_reader.data(), &aentry ) ) == ARCHIVE_OK ) 
     {
         m_extractedFilesSize += ( qlonglong )archive_entry_size( aentry );
-        emit jobStarted( "Extracting...", m_extractedFilesSize );
+        emit threadStarted( "Extracting...", m_extractedFilesSize );
         m_cachedArchiveEntryCount++;
         archive_read_data_skip( arch_reader.data() );
     }
@@ -234,7 +234,7 @@ void ArchiveExtract::copyData( struct archive *source, struct archive *dest, boo
         if ( partialprogress ) 
         {
             m_currentExtractedFilesSize += readBytes;
-            emit jobProgress( m_currentExtractedFilesSize );
+            emit threadProgress( m_currentExtractedFilesSize );
         }
 
         readBytes = archive_read_data( source, buff, sizeof( buff ) );
@@ -242,8 +242,8 @@ void ArchiveExtract::copyData( struct archive *source, struct archive *dest, boo
     
     if ( m_currentExtractedFilesSize == m_extractedFilesSize ) 
     {
-        emit done( this );
-        emit jobFinished( this );
+        //emit done( this );
+        emit threadFinished( this );
     }
 }
 

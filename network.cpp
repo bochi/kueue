@@ -85,6 +85,7 @@ QNetworkReply* Network::getImpl( const QString& u )
     connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
              this, SLOT( error( QNetworkReply::NetworkError ) ) );
 
+    qDebug() << "[NETWORK] Downloading" << request.url();
     return reply;
 }
 
@@ -98,6 +99,7 @@ QNetworkReply* Network::getExtImpl( const QUrl& url )
     connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
              this, SLOT( error( QNetworkReply::NetworkError ) ) );
 
+    qDebug() << "[NETWORK] Downloading" << request.url();
     return reply;
 }
 

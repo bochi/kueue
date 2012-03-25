@@ -32,9 +32,10 @@
 #include <QProcess>
 #include <QtXml>
 
-NSAJob::NSAJob( const QString& scfile, const QString& sc )
+NSAJob::NSAJob( const QString& scfile, const QString& sc ) : KueueThread()
 {
     qDebug() << "[NSAJOB] Constructing";
+    qDebug() << currentThreadId() << "nsajob";
     mSupportConfig = sc;
     mSupportConfigFile = scfile;
 }
@@ -139,7 +140,7 @@ void NSAJob::run()
         }
     }
     
-    emit jobStarted( "Generating NSA Report...", files.count() );
+    emit threadStarted( "Generating NSA Report...", files.count() );
     
     for ( int i = 0; i < files.size(); ++i ) 
     {
@@ -158,7 +159,7 @@ void NSAJob::run()
             return;
         }
         
-        emit jobProgress( i );
+        emit threadProgress( i );
     
         QString meta = p.readAllStandardOutput(); 
         QString pat;
@@ -268,7 +269,7 @@ void NSAJob::run()
     output += HTML::nsaTableEnd();
     
     emit finishedReport( output );
-    emit jobFinished( this ); 
+    emit threadFinished( this ); 
 }
 
 #include "nsajob.moc"

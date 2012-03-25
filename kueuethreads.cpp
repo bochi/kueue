@@ -27,8 +27,6 @@
 #include "nsa/nsajob.h"
 #include "unity/archiveextract.h"
 
-using namespace ThreadWeaver;
-
 KueueThreads* KueueThreads::instance = 0;
 
 KueueThreads& KueueThreads::getInstance()
@@ -53,10 +51,11 @@ void KueueThreads::destroy()
 
 KueueThreads::KueueThreads( QObject* parent ) 
 {
-    qDebug() << "[KUEUETHREADS] Constructing";
+    qDebug() << "[KUEUETHREADS] Constructing" << mThreadList.size();
     
-    mWeaver = mWeaver->instance();
     mStatusBar = &mStatusBar->getInstance();
+    mCurrentThread = 0;
+    
 }
 
 KueueThreads::~KueueThreads()
@@ -64,39 +63,71 @@ KueueThreads::~KueueThreads()
     qDebug() << "[KUEUETHREADS] Destroying";
 }
 
-void KueueThreads::enqueueJob( ThreadWeaver::Job* job )
+void KueueThreads::enqueueThread( KueueThread* thread )
 {   
-    connect( job, SIGNAL( jobStarted( QString,int ) ),
-             this, SLOT( startJobStatus( QString,int ) ) );
+    mThreadList.insert( mThreadList.size(), thread );
+    qDebug() << "enqueue" << mThreadList.size();
+
+    connect( thread, SIGNAL( threadStarted( QString, int ) ),
+            this, SLOT( startThread( const QString&, int ) ) );
     
-    connect( job, SIGNAL( jobProgress( int ) ),
-             this, SLOT( updateJobStatus( int ) ) );
-    
-    connect( job, SIGNAL( jobFinished( ThreadWeaver::Job* ) ), 
-             this, SLOT( jobDone( ThreadWeaver::Job* ) ) );
-             
-    mWeaver->enqueue( job );
+    connect( thread, SIGNAL( threadProgress( int ) ),
+            this, SLOT( updateThreadProgress( int ) ) );
+            
+    connect( thread, SIGNAL( threadFinished( KueueThread* ) ),
+            this, SLOT( endThread( KueueThread* ) ) );
+
+    if ( mThreadList.size() == 1 )
+    {
+        qDebug() << "TL SIZE" << mThreadList.size() << "starting..";
+        mCurrentThread = thread;
+        mCurrentThread->start();
+    }
 }
 
-void KueueThreads::startJobStatus( const QString& text, int total )
+void KueueThreads::next()
 {
-    StatusBar::startJobStatus( text, total );
+    if ( !mThreadList.isEmpty() )
+    {
+        qDebug() << "take 1s";
+        mCurrentThread = mThreadList.first();
+        mCurrentThread->start();
+    }
 }
 
-void KueueThreads::updateJobStatus( int p )
+void KueueThreads::cancelCurrentThread()
 {
-    StatusBar::updateProgress( p );
+    mCurrentThread->exit();
+    next();
 }
 
-void KueueThreads::endJobStatus()
+void KueueThreads::startThread( const QString& text, int total )
 {
-    StatusBar::resetStatusBar();
+    mStatusBar->startJobStatus( text, total );
 }
 
-void KueueThreads::jobDone( ThreadWeaver::Job* job )
+void KueueThreads::updateThreadProgress( int p )
 {
-    endJobStatus();
-    delete job;
+    mStatusBar->updateProgress( p );
+}
+
+void KueueThreads::endThread( KueueThread* thread )
+{
+    qDebug() << "thread finished";
+    mStatusBar->resetStatusBar();
+    mThreadList.removeAt( mThreadList.indexOf( thread ) );
+    delete thread;
+    next();
+}
+
+KueueThread::KueueThread( QObject* parent ): QThread( parent )
+{
+    qDebug() << "[KUEUETHREAD] Construcing" << currentThreadId();
+}
+
+KueueThread::~KueueThread()
+{
+    qDebug() << "[KUEUETHREAD] Destroying";
 }
 
 #include "kueuethreads.moc"

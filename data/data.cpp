@@ -113,6 +113,7 @@ QNetworkReply* Data::get( const QString& u )
     connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
              this, SLOT( getError( QNetworkReply::NetworkError ) ) );
     
+    qDebug() << "[DATA] Downloading" << request.url();
     return reply;
 }
 

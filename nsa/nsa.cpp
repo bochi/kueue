@@ -110,10 +110,11 @@ void NSA::fileDownloadDone()
     
     #ifndef IS_WIN32  
     ArchiveExtract* x = new ArchiveExtract( file.fileName(), mNsaDir.absolutePath() );
-    KueueThreads::enqueue( x );  
     
     connect( x, SIGNAL( extracted( QString, QString ) ),
              this, SLOT( startReport() ) );
+    
+    KueueThreads::enqueue( x );
     #endif
 }
 
@@ -125,7 +126,8 @@ void NSA::startReport()
     connect( x, SIGNAL( extracted( QString, QString ) ),
              this, SLOT( runPS( QString, QString ) ) );
     
-    KueueThreads::enqueue( x ); 
+    KueueThreads::enqueue( x );
+    
     #endif
 }
 
@@ -136,7 +138,7 @@ void NSA::runPS( const QString& scfile, const QString& scdir )
     connect( j, SIGNAL( finishedReport( const QString& ) ),
              this, SLOT( ranPS( const QString& ) ) );
     
-    KueueThreads::enqueue( j );   
+    KueueThreads::enqueue( j );
 }
 
 void NSA::ranPS( const QString& html )

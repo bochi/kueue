@@ -32,7 +32,7 @@
 #include "kueuethreads.h"
 #include "config.h" 
 
-class ArchiveExtract: public ThreadWeaver::Job 
+class ArchiveExtract: public KueueThread
 {
     Q_OBJECT
 #ifndef IS_WIN32

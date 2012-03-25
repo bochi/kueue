@@ -28,12 +28,13 @@
 
 #include <QObject>
 #include <QList>
+#include <QThread>
 
-#include <threadweaver/ThreadWeaver>
-#include <threadweaver/Job.h>
 #include "config.h"
 #include "ui/statusbar.h"
 #include "nsa/nsa.h"
+
+class KueueThread;
 
 class KueueThreads : public QObject
 {
@@ -42,27 +43,44 @@ class KueueThreads : public QObject
     public:
         static KueueThreads& getInstance();
         static void destroy();
-        static void enqueue( ThreadWeaver::Job* job )
+        static void enqueue( KueueThread* thread )
         {
-            getInstance().enqueueJob( job );
+            getInstance().enqueueThread( thread );
         }
         
     private:
         static KueueThreads* instance;
         KueueThreads( QObject* parent = 0 );
         ~KueueThreads();
+        KueueThread* mCurrentThread;
         
     protected:
-        ThreadWeaver::Weaver* mWeaver;
-        QList<ThreadWeaver::Job> mJobs;
+        QList<KueueThread*> mThreadList;
         StatusBar* mStatusBar;
-        void enqueueJob( ThreadWeaver::Job *job );
+        void enqueueThread( KueueThread* );
         
     private slots:
-        void startJobStatus( const QString&, int );
-        void updateJobStatus( int );
-        void endJobStatus();
-        void jobDone( ThreadWeaver::Job* );
+        void next();
+        void cancelCurrentThread();
+        void startThread( const QString&, int );
+        void updateThreadProgress( int );
+        void endThread( KueueThread* );
 };
+
+class KueueThread : public QThread
+{
+    Q_OBJECT
+    
+    public:
+        KueueThread( QObject* parent = 0 );
+        ~KueueThread();
+
+        
+    signals:
+        void threadStarted( const QString&, int );
+        void threadProgress( int );
+        void threadFinished( KueueThread* );
+};
+
 
 #endif

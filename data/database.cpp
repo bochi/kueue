@@ -35,6 +35,8 @@
 
 void Database::openDbConnection( QString dbname )
 {
+    qDebug() << "[DATABASE] Opening DB connection" << dbname;
+    
     QDir dir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) );
 
     if ( !dir.exists() )

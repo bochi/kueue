@@ -521,7 +521,7 @@ void DownloadItem::finished()
     {
 	#ifndef IS_WIN32
         ArchiveExtract* x = new ArchiveExtract( mOutput.fileName(), QFileInfo( mOutput.fileName() ).dir().absolutePath() );
-        KueueThreads::enqueue( x );
+	KueueThreads::enqueue( x );
 	#endif
     }
     
