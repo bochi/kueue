@@ -35,7 +35,7 @@ void RarArchiverStrategy::configure()
 
     if (which("rar") != QString::null)
     {
-        setExtractArguments("rar x @F");
+        setExtractArguments("rar -o+ x @F");
         setListArguments("rar lb @F");
         setSupported();
     }
@@ -58,12 +58,12 @@ void RarArchiverStrategy::configure()
             pclose(f);
             if (nonfree_unrar)
             {
-                setExtractArguments("unrar x @F");
+                setExtractArguments("unrar -o+ x @F");
                 setListArguments("unrar lb @F");
             }
             else
             {
-                setExtractArguments("unrar -x @F");
+                setExtractArguments("unrar -o+ -x @F");
                 setListArguments("unrar -t @F");
             }
             setSupported();
@@ -71,7 +71,7 @@ void RarArchiverStrategy::configure()
     }
     else if (which("unrar-free") != QString::null) //some distros rename free unrar like this
     {
-        setExtractArguments("unrar-free -x @F");
+        setExtractArguments("unrar-free -o+ -x @F");
         setListArguments("unrar-free -t @F");
         setSupported();
     }

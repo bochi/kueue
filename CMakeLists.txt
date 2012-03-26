@@ -29,15 +29,14 @@ SET( KUEUE_VERSION git )
 set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
 FIND_PACKAGE( Qt4 REQUIRED )
-FIND_PACKAGE( LibArchive REQUIRED )
 FIND_PACKAGE( Perl REQUIRED )
 
 INCLUDE( ${QT_USE_FILE} )
 
 INCLUDE_DIRECTORIES(  ${QT_INCLUDES} 
                       ${CMAKE_CURRENT_BINARY_DIR} 
-                      ${CMAKE_CURRENT_SOURCE_DIR} 
-		      ${LibArchive_INCLUDE_DIR} )
+                      ${CMAKE_CURRENT_SOURCE_DIR} )
+
 
 ADD_DEFINITIONS( ${QT_DEFINITIONS} )
 
@@ -240,6 +239,5 @@ TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES}
                              ${QT_QTNETWORK_LIBRARY} 
 			     ${QT_QTXML_LIBRARY}
                              ${QT_QTGUI_LIBRARY} 
-                             ${QT_SINGLEAPP_LIBRARY}
-			     ${LibArchive_LIBRARY} )
+                             ${QT_SINGLEAPP_LIBRARY} )
 

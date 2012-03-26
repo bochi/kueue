@@ -2,7 +2,7 @@
                 kueue - keep track of your SR queue
           (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
              
-            Thanks to the ark Team for the inspiration :-)
+            Thanks to QComicBook for the inspiration :-)
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,40 +35,22 @@
 class ArchiveExtract: public KueueThread
 {
     Q_OBJECT
-#ifndef IS_WIN32
-
+    
     public:
-        ArchiveExtract( const QString&, const QString& );
+        ArchiveExtract( const QString& file, const QString& dest );
         ~ArchiveExtract();
 
-        bool list();
-        bool copyFiles();
-        QString finalDir() { return mFinalDir; }
-
-    private:
-        void copyData(struct archive *source, struct archive *dest, bool partialprogress = true);
-
-	struct ArchiveReadCustomDeleter;
-        struct ArchiveWriteCustomDeleter;
-        typedef QScopedPointer<struct archive, ArchiveReadCustomDeleter> ArchiveRead;
-        typedef QScopedPointer<struct archive, ArchiveWriteCustomDeleter> ArchiveWrite;
-
-        int m_cachedArchiveEntryCount;
-        qlonglong m_currentExtractedFilesSize;
-        
-        qlonglong m_extractedFilesSize;
-        QStringList m_writtenFiles;
-        QString mFileName;
+    protected:
+        QString mArchivePath;
         QString mDestination;
-        QString mFinalDir;
-        ArchiveRead m_archiveReadDisk;
-    
-    protected: 
+  
+        int mFilesCnt;
+        int mExtFilesCnt;
+  
         void run();        
     
     signals:
         void extracted( const QString&, const QString& );
-#endif
 };
 
 #endif

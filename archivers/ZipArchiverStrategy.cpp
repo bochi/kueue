@@ -33,7 +33,7 @@ void ZipArchiverStrategy::configure()
 
     if (which("unzip") != QString::null)
     {
-        setExtractArguments("unzip @F");
+        setExtractArguments("unzip -o @F");
         setListArguments("unzip -l @F");
         setSupported();
     }

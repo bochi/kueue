@@ -26,13 +26,14 @@ Tarbz2ArchiverStrategy::~Tarbz2ArchiverStrategy()
 
 void Tarbz2ArchiverStrategy::configure()
 {
+    addExtension(".tbz");
     addExtension(".tar.bz2");
     addExtension(".cbb");
     setExecutables("tar");
 
     if (which("tar") != QString::null)
     {
-        setExtractArguments("tar -xvjf @F");
+        setExtractArguments("tar --overwrite -xvjf @F");
         setListArguments("tar -tjf @F");
         setSupported();
     }

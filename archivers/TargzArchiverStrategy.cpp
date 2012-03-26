@@ -33,7 +33,7 @@ void TargzArchiverStrategy::configure()
 
     if (which("tar") != QString::null)
     {
-        setExtractArguments("tar -xvzf @F");
+        setExtractArguments("tar --overwrite -xvzf @F");
         setListArguments("tar -tzf @F");
         setSupported();
     }
