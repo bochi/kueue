@@ -24,6 +24,7 @@
 */
 
 #include "helpbrowser.h"
+#include "settings.h"
 
 #include <QDebug>
 #include <QtWebKit>
@@ -48,7 +49,7 @@ HelpBrowser::HelpBrowser( QObject* parent )
     
     mWebView = new QWebView( this );
     mWebView->page()->networkAccessManager()->setCache( diskCache );
-    mWebView->setUrl( QUrl( "http://kueue.hwlab.suse.de/doc" ) );
+    mWebView->setUrl( QUrl( "http://" + Settings::dBServer() + "/doc" ) );
     
     int nw = ( mWebView->page()->settings()->fontSize(QWebSettings::DefaultFontSize) * 50 + 100 );
     resize( ( nw + ( nw / 12 ) ), res );

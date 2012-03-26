@@ -87,6 +87,23 @@ UnityPage::UnityPage( QObject *parent, QString sr )
     connect( this, SIGNAL( selectionChanged() ), 
              this, SLOT( selectionToClipboard() ) );
    
+    if ( Settings::unityURL().isEmpty() )
+    {
+        QEventLoop loop;
+        QNetworkReply* r;
+
+        r = Network::get( "unityURL" );
+        
+        QObject::connect( r, SIGNAL( finished() ), 
+                            &loop, SLOT( quit() ) );
+                                    
+        loop.exec();
+                    
+        QString url = r->readAll().trimmed();
+        Settings::setUnityURL( url );
+        sleep( 1 );
+    }
+    
     mainFrame()->load( QUrl( Settings::unityURL() ) );
    
     mTimer = new QTimer( this );

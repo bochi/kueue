@@ -76,6 +76,8 @@ class Database
                        
         static QString convertTime( const QString& );
         
+        static void newDB( bool = false );
+        
     private:
         QSqlDatabase mDb;
         QString mDBfile;

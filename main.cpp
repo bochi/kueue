@@ -31,10 +31,11 @@
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE( kueue );
-    
+
     QtSingleApplication app( argc, argv );
+
     
-    if ( app.isRunning() )
+    if ( app.isRunning() && !app.arguments().contains( "restart" ) )
     {
         qDebug() << "Kueue is already running.";
         return 0;

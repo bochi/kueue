@@ -26,19 +26,8 @@
 #include "data.h"
 #include "data/database.h"
 #include "settings.h"
-#include "network.h"
-#include "kueue.h"
 #include "ui/html.h"
 
-#include <QMessageBox>
-#include <QMenu>
-#include <QWebFrame>
-#include <QWidgetAction>
-#include <QWebInspector>
-#include <QShortcut>
-#include <QGridLayout>
-#include <QToolButton>
-#include <QWebElementCollection>
 #include <QtXml>
 #include <QDesktopServices>
 #include <QHostInfo>
@@ -99,7 +88,6 @@ Data::Data()
 Data::~Data()
 {
     qDebug() << "[DATA] Destroying";
-    QSqlDatabase::removeDatabase( mDB );
 }
 
 QNetworkReply* Data::get( const QString& u )
@@ -114,13 +102,7 @@ QNetworkReply* Data::get( const QString& u )
     connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
              this, SLOT( getError( QNetworkReply::NetworkError ) ) );
     
-    qDebug() << "[DATA] Downloading" << request.url();
     return reply;
-}
-
-void Data::newData()
-{
-    delete this;
 }
 
 
@@ -280,6 +262,8 @@ void Data::updateQmonBrowser()
 
 void Data::updateStatsBrowser()
 {
+    Statz s = Database::getStatz( mDB );
+    
     QString html = HTML::statsPageHeader( Database::getStatz( mDB ) );
     
     if ( !html.isEmpty() )
@@ -466,7 +450,6 @@ void Data::statsUpdateFinished()
     Database::updateStats( statz, mDB );
     updateStatsBrowser();
 }
-
 
 #include "data.moc"
 

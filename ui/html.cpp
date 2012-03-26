@@ -238,28 +238,28 @@ QString HTML::SRTable( QueueSR sr )
                                 "<td width='100%' bgcolor='#E8E8E8'>"
                                     "<a href='sr://" + sr.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
                                         "<tr width='100%'>"
-                                            "<td class='gadgetHead' width='15%'>" );
+                                            "<td class='gadgetHead' valign='center' width='15%'>" );
 
     if ( sr.srtype == "cr" ) 
     {    
-        srtab += QString("<p style='line-height:0.8em;'><b> CR# " + sr.id + "&nbsp;</b></p><p style='line-height:0.8em;'><i>" + sr.status + "</i></p>" );
+        srtab += QString("<p style='line-height:0.8em;'><b>&nbsp;CR# " + sr.id + "&nbsp;</b></p><p style='line-height:0.7em;'><font size='-1'><i>&nbsp;" + sr.status + "</i></p>" );
     }
     else 
     {    
-        srtab += QString("<p style='line-height:0.8em;'><b> SR# " + sr.id + "&nbsp;</b>" );
+        srtab += QString("<p style='line-height:0.8em;'><b>&nbsp;SR# " + sr.id + "&nbsp;</b>" );
         
         if ( ( sr.highvalue ) || ( sr.critsit ) )
         {
             srtab += QString( "<img src='qrc:/images/obacht.png'></img>" );
         }   
         
-        srtab += QString( "</p><p style='line-height:0.8em;'><i>" + sr.status + "</i></p>" );
+        srtab += QString( "</p><p style='line-height:0.7em;'><font size='-1'><i>&nbsp;" + sr.status + "</i></p>" );
     }
     
-    srtab += QString( "</td><td class='gadgetText' width='55%'><p style='line-height:0.8em;'><i>" + sr.bdesc + "</i></p>"
-                      + "<p style='line-height:0.6em;'><b><font size='-2'>" + sr.cus_account + "</font></p></b></td>" );
+    srtab += QString( "</font></td><td class='gadgetText' width='60%'><p style='line-height:0.7em;'>" + sr.bdesc + "</p>"
+                      + "<p style='line-height:0.5em;'><b><i><font size='-2'>" + sr.cus_account + "</font></p></i></b></td>" );
     
-    srtab += QString( "<td width='30%' align='right'><p style='line-height:0.6em;'><font size='-1'>"
+    srtab += QString( "<td width='25%' align='right'><p style='line-height:0.6em;'><font size='-1'>"
                       "Age: " + QString::number( sr.age ) + " days&nbsp;</p><p style='line-height:0.6em;'>"
                       "Last update: " + QString::number( sr.lastUpdateDays ) + " days ago&nbsp;</p></td>" );
     
@@ -433,20 +433,20 @@ QString HTML::qmonSrInQueue( QmonSR sr )
                                 "</td>"
                                 "<td width='100%' bgcolor='#E8E8E8'>"
                                     "<a href='sr://" + sr.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
-                                        "<tr width='100%'>"
-                                            "<td class='gadgetHead'>" );
+                                        "<tr width='100%'  height='50px'>"
+                                            "<td class='gadgetHead' valign='center' width='15%'>" );
 
  
     if (  sr.isCr )
     {
-        srtab += QString ( "<p style='line-height:1.0em;'><b>CR# " );
+        srtab += QString ( "<p style='line-height:0.9em;'><b>&nbsp;CR# " );
     }
     else
     {
-        srtab += QString ( "<p style='line-height:1.0em;'><b>SR# " );
+        srtab += QString ( "<p style='line-height:0.9em;'><b>&nbsp;SR# " );
     }
     
-    srtab += QString( sr.id );
+    srtab += QString( sr.id + "</b>" );
     
     if ( sr.isChat )
     {
@@ -458,7 +458,7 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         srtab += QString( "&nbsp;<img src='qrc:/images/obacht.png'></img>" );
     }   
     
-    srtab += QString( "</p><p style='line-height:1.0em;'>" + sr.geo + " (" + sr.hours + ") - " );
+    srtab += QString( "</p><b><font size='-1'><p style='line-height:0.6em;'>&nbsp;" + sr.geo + " (" + sr.hours + ") - " );
     
     if ( sr.severity == "High" )
     {
@@ -473,26 +473,32 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         srtab += QString( sr.severity );
     }
 
-    srtab += QString( "</p></td><td width='60%' align='left' class='gadgetText'>" );
+    srtab += QString( "</font></b></p></td><td width='60%' valign='center' align='left' class='gadgetText'>" );
    
     if ( sr.cus_account.isEmpty() )
     {
         sr.cus_account = sr.creator;
     }
     
-    srtab += QString (  "<p style='line-height:1.0em;'><i>" +  sr.bdesc.trimmed() + "</i></p>"
-                            "<p style='line-height:0.7em;'><font size='-2'><b>" + sr.cus_account.trimmed() + "</b></font></p>"
+    srtab += QString (  "<p style='line-height:0.7em;'>" +  sr.bdesc.trimmed() + "</p>"
+                            "<p style='line-height:0.5em;'><font size='-2'><b><i>" + sr.cus_account.trimmed() + "</b></i></font></p>"
                         "</td></a>"
-                        "<td width='25%' align='right' class='gadgetText'><font size='-1'>" 
-                        "<p style='line-height:0.8em;'>Age: " + timeString( sr.agesec ) + "</p><p style='line-height:0.8em;'>In Q: </font><font size='-1'>" + timeString( sr.timeinqsec ) +"</p>" );
+                        "<td width='25%' align='right' valign='center' class='gadgetText'><font size='-1'>" 
+                        "<p style='line-height:0.7em;'>Age: " + timeString( sr.agesec ) + "</p>" );
+    
+   
+        //srtab += QString( "<p style='line-height:0.7em;'>&nbsp;</p>" );
+   
+    
+    srtab += QString( "<p style='line-height:0.7em;'>In Q: " + timeString( sr.timeinqsec ) +"</p>" );
                         
-                        if ( sr.slasec > 0 )
-                        {
-                            srtab += QString( "<p style='line-height:0.8em;'>SLA: " + timeString( sr.slasec ) + "</p></b>" );
-                        }
+    if ( sr.slasec > 0 )
+    {
+        srtab += QString( "<p style='line-height:0.7em;'>SLA: " + timeString( sr.slasec ) + "</p></b>" );
+    }
                         
                       
-        srtab += ( "</td><td align='right'>"
+        srtab += ( "</font></td><td align='right'>"
                             "<a href='arrow://" + sr.id + "'><img src='qrc:/images/ni_gadget_arrow.gif'></img></a><br>"
                         "</td>"
                     "</tr>"
@@ -623,6 +629,8 @@ QString HTML::qmonTableFooter()
 QString HTML::statsPageHeader( Statz s )
 {
     QString ph;
+    QList<Survey> sl = s.surveyList;
+    QList<ClosedItem> cl = s.closedList;
     
     ph += styleSheet();
     
@@ -636,9 +644,12 @@ QString HTML::statsPageHeader( Statz s )
                    "<img src='qrc:/images/logo_im_end.gif' width='12' height='80' border='0'></div></div>"
                    "<div id='content'>" );
     
+    if ( sl.isEmpty() || cl.isEmpty() )
+    {
+        return ph + "Updating...";
+    }
+
     ph += csatTableHeader( s.csatRtsPercent, s.csatEngAvg, s.csatSrAvg );
-   
-    QList<Survey> sl = s.surveyList;
     
     for ( int i = 0; i < sl.size(); ++i ) 
     {   
@@ -647,7 +658,6 @@ QString HTML::statsPageHeader( Statz s )
     
     ph += closedTableHeader( s.closedSr, s.srTtsAvg );
     
-    QList<ClosedItem> cl = s.closedList;
     
     for ( int i = 0; i < cl.size(); ++i ) 
     {   

@@ -221,7 +221,7 @@ void Systray::trayIconActivated( QSystemTrayIcon::ActivationReason reason )
 
 void Systray::notify( const QString& type, QString title, QString body, const QString& sr )
 {
-    if ( Settings::notificationsEnabled() )
+    if ( !Settings::notificationsDisabled() )
     {
         #ifdef QT_HAS_DBUS    
 

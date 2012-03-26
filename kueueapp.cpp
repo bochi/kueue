@@ -98,6 +98,16 @@ void KueueApp::cleanupTemp()
 
 void KueueApp::createApp()
 {
+    bool update = false;
+    
+    if ( Settings::appVersion() != QApplication::applicationVersion() )
+    {
+        update = true;
+        QDir dir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) );
+        qDebug() << "Removing" << dir.path() + "/database.sqlite";
+        QFile::remove( dir.path() + "/database.sqlite" );
+    }
+       
     createSystray();
     createDatabase();
     createMainWindow();
@@ -105,7 +115,7 @@ void KueueApp::createApp()
     mDataThread = &mDataThread->thread();
     connectDataThread();
 
-    if ( Settings::appVersion() != QApplication::applicationVersion() )
+    if ( update )
     {
         UpdateDialog* ud = new UpdateDialog( this );
         
@@ -122,8 +132,8 @@ void KueueApp::createApp()
         delete ud;
         
         Settings::setAppVersion( QApplication::applicationVersion() );
-    }   
-
+    }
+    
     QShortcut* testNotification = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_N ), mWindow );
     QShortcut* newUnityTab = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_U ), mWindow );
     QShortcut* dbrebuild = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ), mWindow );
@@ -136,6 +146,13 @@ void KueueApp::createApp()
              this, SLOT( sendTestNotification() ) );
     connect( newUnityTab, SIGNAL( activated() ),
              mTabWidget, SLOT( addUnityBrowser() ) );
+    connect( dbrebuild, SIGNAL( activated() ),
+             this, SLOT( newDB() ) );
+}
+
+void KueueApp::newDB()
+{
+    Database::newDB( true );
 }
 
 void KueueApp::connectDataThread()

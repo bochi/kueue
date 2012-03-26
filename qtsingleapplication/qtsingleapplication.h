@@ -84,6 +84,7 @@ public:
 #endif
 
     bool isRunning();
+    
     QString id() const;
 
     void setActivationWindow(QWidget* aw, bool activateOnMessage = true);
@@ -108,6 +109,7 @@ Q_SIGNALS:
 
 private:
     void sysInit(const QString &appId = QString());
+    bool mRestarted;
     QtLocalPeer *peer;
     QWidget *actWin;
 };

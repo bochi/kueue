@@ -141,7 +141,7 @@ void Database::updateQueue( PersonalQueue pq, const QString& dbname )
     QSqlDatabase db = QSqlDatabase::database( dbname );
 
     QStringList newList;
-    QStringList existList = getSrNrList();
+    QStringList existList = getSrNrList( dbname );
     QList< QueueSR > srList = pq.srList;
     bool initial = existList.isEmpty();
     db.transaction();
@@ -272,7 +272,7 @@ void Database::insertQueueSR( QueueSR sr, const QString& dbname )
 void Database::deleteQueueSR( const QString& id, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
-    QSqlQuery query(db);
+    QSqlQuery query( db );
     
     query.prepare( "DELETE FROM " + Settings::engineer().toUpper() + " WHERE ID = :id" );
     query.bindValue( ":id", id );
@@ -548,6 +548,7 @@ QStringList Database::getSrNrList( const QString& dbname )
     QStringList list;
     
     query.prepare( "SELECT ID FROM " + Settings::engineer().toUpper() );
+    query.exec();
     
     while ( query.next() )
     {
@@ -883,7 +884,7 @@ void Database::updateQmonSR( QmonSR sr, const QString& dbname )
     query.bindValue( ":age", sr.agesec );
     query.bindValue( ":lastupdate", sr.lastupdate );
     query.bindValue( ":timeinq", sr.timeinqsec );
-    query.bindValue( ":sla", sr.sla );
+    query.bindValue( ":sla", sr.slasec );
     query.bindValue( ":highvalue", sr.highvalue );
     query.bindValue( ":critsit", sr.critsit );
     query.bindValue( ":id", sr.id );    
@@ -950,7 +951,7 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
         {
             insertQmonSR( sr, dbname );
             
-            if ( !initial )
+            if ( !initial && Settings::queuesToMonitor().contains( sr.queue ) )
             {
                 if ( sr.severity == "Low" )
                 {
@@ -1361,6 +1362,50 @@ Statz Database::getStatz( const QString& dbname )
     db.commit();
     
     return statz;
+}
+
+void Database::newDB( bool ask )
+{
+    int reply;
+
+    if ( ask )
+    {
+        QMessageBox box;
+
+        box.setWindowTitle( "Rebuild Database" );
+        box.setText( "This will delete and rebuild your Database, and restart kueue when finished. Continue?" );
+        box.setStandardButtons( QMessageBox::Yes | QMessageBox::No );
+        box.setDefaultButton( QMessageBox::No );
+        box.setIcon( QMessageBox::Question );
+
+        reply = box.exec();
+    }
+    else
+    {
+        reply = QMessageBox::Yes;
+    }
+
+    if ( reply == QMessageBox::Yes )
+    {
+        QStringList con = QSqlDatabase::connectionNames();
+        
+        for ( int i = 0; i < con.size(); ++i ) 
+        {
+            QSqlDatabase::database( con.at( i ) ).close();
+            QSqlDatabase::removeDatabase( con.at( i ) );
+            qDebug() << "[DATABASE] Removed DB connection" << con.at( i );
+        }
+
+        QDir dir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) );
+    
+        QFile::remove( dir.path() + "/database.sqlite" );
+        
+        QStringList arg;
+        arg << "restart";
+
+        qApp->quit();
+        QProcess::startDetached( qApp->arguments()[0], arg );
+    }
 }
 
 QString Database::convertTime( const QString& dt )

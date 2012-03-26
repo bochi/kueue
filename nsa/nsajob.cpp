@@ -146,15 +146,18 @@ void NSAJob::run()
     {
         QProcess p;
         QStringList args;
-        p.setObjectName( files.at(i) );
-        args.append( files.at(i) );
+        
+        p.setObjectName( files.at( i ) );
+        
+        args.append( files.at( i ) );
         args.append( "-p");
         args.append( mSupportConfig );
+        
         p.setWorkingDirectory( perldir );
         
         p.start( PERL_EXEC, args );
         
-        if (  ! p.waitForFinished ( -1 ) )
+        if (  !p.waitForFinished ( -1 ) )
         {
             return;
         }

@@ -152,7 +152,7 @@ void Settings::setShowDownloadManager( const bool& b )
 QString Settings::unityURL()
 {
     QSettings settings;
-    return settings.value( "unityURL", "http://" ).toString();
+    return settings.value( "unityURL" ).toString();
 }
 
 void Settings::setUnityURL( const QString& s )
@@ -344,19 +344,6 @@ void Settings::setAutoExtract( const bool& b )
     settings.sync();
 }
 
-int Settings::autoMinutes()
-{
-    QSettings settings;
-    return settings.value( "autoMinutes", 5 ).toInt();
-}
-
-void Settings::setAutoMinutes( const int& i )
-{
-    QSettings settings;
-    settings.setValue( "autoMinutes", i );
-    settings.sync();
-}
-
 bool Settings::showSystemTray()
 {
     QSettings settings;
@@ -432,32 +419,6 @@ void Settings::setRightMouseButton( const int& i )
 {
     QSettings settings;
     settings.setValue( "rightMouseButton", i );
-    settings.sync();
-}
-        
-int Settings::acDays()
-{
-    QSettings settings;
-    return settings.value( "acDays", 5 ).toInt();
-}
-
-void Settings::setAcDays( const int& i )
-{
-    QSettings settings;
-    settings.setValue( "acDays", i );
-    settings.sync();
-}
-        
-int Settings::asDays()
-{
-    QSettings settings;
-    return settings.value( "asDays", 3 ).toInt();
-}
-
-void Settings::setAsDays( const int& i )
-{
-    QSettings settings;
-    settings.setValue( "asDays", i );
     settings.sync();
 }
         
@@ -643,19 +604,6 @@ void Settings::setMonitorEnabled( const bool& b )
     settings.sync();
 }
         
-int Settings::monitorMinutes()
-{
-    QSettings settings;
-    return settings.value( "monitorMinutes", 2 ).toInt();
-}
-
-void Settings::setMonitorMinutes( const int& i )
-{
-    QSettings settings;
-    settings.setValue( "monitorMinutes", i );
-    settings.sync();
-}
-        
 QStringList Settings::queuesToMonitor()
 {
     QSettings settings;
@@ -708,19 +656,6 @@ void Settings::setQbossFeatures( const bool& b )
     settings.sync();
 }
         
-QString Settings::wikiURL()
-{
-    QSettings settings;
-    return settings.value( "wikiURL", "http://" ).toString();
-}
-
-void Settings::setWikiURL( const QString& s )
-{
-    QSettings settings;
-    settings.setValue( "wikiURL", s );
-    settings.sync();
-}
-        
 bool Settings::checkKopete()
 {
     QSettings settings;
@@ -731,19 +666,6 @@ void Settings::setCheckKopete( const bool& b )
 {
     QSettings settings;
     settings.setValue( "checkKopete", b );
-    settings.sync();
-}
-        
-bool Settings::checkWiki()
-{
-    QSettings settings;
-    return settings.value( "checkWiki", false ).toBool();
-}
-
-void Settings::setCheckWiki( const bool& b )
-{
-    QSettings settings;
-    settings.setValue( "checkWiki", b );
     settings.sync();
 }
 
@@ -786,55 +708,16 @@ void Settings::setStatsEnabled( const bool& b )
     settings.sync();
 }
         
-int Settings::statsMinutes()
+bool Settings::notificationsDisabled()
 {
     QSettings settings;
-    return settings.value( "statsMinutes", 10 ).toInt();
+    return settings.value( "notificationsDisabled", false ).toBool();
 }
 
-void Settings::setStatsMinutes( const int& i )
+void Settings::setNotificationsDisabled( const bool& b )
 {
     QSettings settings;
-    settings.setValue( "statsMinutes", i );
-    settings.sync();
-}
-        
-bool Settings::teamStatsEnabled()
-{
-    QSettings settings;
-    return settings.value( "teamStatsEnabled", false ).toBool();
-}
-
-void Settings::setTeamStatsEnabled( const bool& b )
-{
-    QSettings settings;
-    settings.setValue( "teamStatsEnabled", b );
-    settings.sync();
-}
-        
-QStringList Settings::teamMembers()
-{
-    QSettings settings;
-    return settings.value( "teamMembers" ).toStringList();
-}
-
-void Settings::teamMembers( const QStringList& l )
-{
-    QSettings settings;
-    settings.setValue( "teamMembers", l );
-    settings.sync();   
-}
-
-bool Settings::notificationsEnabled()
-{
-    QSettings settings;
-    return settings.value( "notificationsEnabled", true ).toBool();
-}
-
-void Settings::setNotificationsEnabled( const bool& b )
-{
-    QSettings settings;
-    settings.setValue( "notificationsEnabled", b );
+    settings.setValue( "notificationsDisabled", b );
     settings.sync();   
 }
 
@@ -1376,19 +1259,6 @@ QString Settings::appVersion()
 {
     QSettings settings;
     return settings.value( "appVersion", "NEW" ).toString();
-}
-
-bool Settings::dontShow40()
-{
-    QSettings settings;
-    return settings.value( "dontShow40", false ).toBool();
-}
-
-void Settings::setDontShow40( const bool& b )
-{
-    QSettings settings;
-    settings.setValue( "dontShow40", b );
-    settings.sync();   
 }
 
 void Settings::setAppVersion( const QString& s )

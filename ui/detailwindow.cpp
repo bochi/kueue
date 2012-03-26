@@ -112,7 +112,6 @@ DetailWindow::DetailWindow( QString sr, bool nb )
     if ( ( nb ) || 
          ( !Settings::qbossFeatures() ) )
     {
-        wikiCheckBox->setVisible( false );
         kopeteCheckBox->setVisible( false );
         assignButton->setVisible( false );
         assignCombo->setVisible( false );
@@ -120,7 +119,6 @@ DetailWindow::DetailWindow( QString sr, bool nb )
     }
     else
     {
-        wikiCheckBox->setVisible( true );
         kopeteCheckBox->setVisible( true );
         assignButton->setVisible( true );
         assignCombo->setVisible( true );
@@ -147,7 +145,6 @@ DetailWindow::DetailWindow( QString sr, bool nb )
     }
     
     kopeteCheckBox->setChecked( Settings::checkKopete() );
-    wikiCheckBox->setChecked( Settings::checkWiki() );
 
     resize( Settings::detWinSize() );
     move( Settings::detWinPos() );
@@ -345,7 +342,7 @@ void DetailWindow::assignNow()
     {
         showProgress( assignCombo->currentText().toUpper() );
         
-        mAssign = Network::get( "assign/" + mSr + "|" + mEngineer );
+        mAssign = Network::get( QString( "assign/" + mSr + "|" + mEngineer ) );
         
         connect( mAssign, SIGNAL( finished() ), 
                  this, SLOT( assignJobDone() ) );
@@ -389,11 +386,6 @@ void DetailWindow::assignJobDone()
         {
             sendWithKopete();
         }
-        
-        if ( wikiCheckBox->isChecked() )
-        {
-            QDesktopServices::openUrl( QUrl( Settings::wikiURL() ) );
-        }   
     }
     
     else QMessageBox::critical( this, "Error", "Unknown reply: " + data );

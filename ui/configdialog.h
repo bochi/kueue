@@ -70,35 +70,27 @@ class ConfigDialog : public QDialog, private Ui_ConfigDialog
         void getDownloadDirectory();
         
         void getGeneralNotificationSoundFile();
-        void getGeneralNotificationWriteFile();
         void playGeneralNotificationSound();
         
         void getNewPersonalNotificationSoundFile();
-        void getNewPersonalNotificationWriteFile();
         void playNewPersonalNotificationSound();
         
         void getUpdatePersonalNotificationSoundFile();
-        void getUpdatePersonalNotificationWriteFile();
         void playUpdatePersonalNotificationSound();
         
         void getBomgarNotificationSoundFile();
-        void getBomgarNotificationWriteFile();
         void playBomgarNotificationSound();
         
         void getLowNotificationSoundFile();
-        void getLowNotificationWriteFile();
         void playLowNotificationSound();
         
         void getMediumNotificationSoundFile();
-        void getMediumNotificationWriteFile();
         void playMediumNotificationSound();
         
         void getUrgentNotificationSoundFile();
-        void getUrgentNotificationWriteFile();
         void playUrgentNotificationSound();
         
         void getHighNotificationSoundFile();
-        void getHighNotificationWriteFile();
         void playHighNotificationSound();
         
         void getExternalEditorFile();

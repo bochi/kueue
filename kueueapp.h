@@ -57,6 +57,7 @@ class KueueApp : public QObject
         void updateUiData();
         
     private slots:
+        void newDB();
         void cleanupTemp();
         void createApp();
         void updateJobDone();

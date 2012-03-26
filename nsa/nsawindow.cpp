@@ -99,7 +99,7 @@ void NSAWindow::goBack()
 
 void NSAWindow::saveReport()
 {
-    QString filename = QFileDialog::getSaveFileName( this, tr("Select filename..."), Settings::downloadDirectory() + "/" + "NSAReport.html", "HTML Files (*.html)"  );
+    QString filename = QFileDialog::getSaveFileName( this, "Select filename...", Settings::downloadDirectory() + "/" + "NSAReport.html", "HTML Files (*.html)"  );
     QFile file( filename );
     
     if ( !file.open(QIODevice::WriteOnly | QIODevice::Text ) )

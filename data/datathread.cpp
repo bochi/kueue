@@ -31,7 +31,6 @@ DataThread& DataThread::thread()
 {
     if ( !instance )
     {
-        qDebug() << "new inst";
         instance = new DataThread;
     }
  
@@ -53,7 +52,6 @@ DataThread& DataThread::restart()
     instance = new DataThread;
     return *instance;
 }
-
 
 DataThread::DataThread( QObject *parent ) : QThread( parent )
 {

@@ -265,6 +265,7 @@ bool QtSingleApplication::isRunning()
 
     \sa isRunning(), messageReceived()
 */
+
 bool QtSingleApplication::sendMessage(const QString &message, int timeout)
 {
     return peer->sendMessage(message, timeout);

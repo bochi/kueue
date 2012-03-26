@@ -106,9 +106,6 @@ class Settings
         static bool autoExtract();
         static void setAutoExtract( const bool& );        
         
-        static int autoMinutes();
-        static void setAutoMinutes( const int& );
-        
         static bool showSystemTray();
         static void setShowSystemTray( const bool& );
         
@@ -126,14 +123,6 @@ class Settings
         
         static int rightMouseButton();
         static void setRightMouseButton( const int& );
-        
-        /* Targets Group */
-        
-        static int acDays();
-        static void setAcDays( const int& );
-        
-        static int asDays();
-        static void setAsDays( const int& );
         
         /* View Group */
         
@@ -181,9 +170,6 @@ class Settings
         static bool monitorEnabled();
         static void setMonitorEnabled( const bool& );
         
-        static int monitorMinutes();
-        static void setMonitorMinutes( const int& );
-        
         static QStringList queuesToMonitor();
         static void setQueuesToMonitor( const QStringList& );
         
@@ -198,14 +184,8 @@ class Settings
         static bool qbossFeatures();
         static void setQbossFeatures( const bool& );
         
-        static QString wikiURL();
-        static void setWikiURL( const QString& );
-        
         static bool checkKopete();
         static void setCheckKopete( const bool& );
-        
-        static bool checkWiki();
-        static void setCheckWiki( const bool& );
         
         static QString kopeteText();
         static void setKopeteText( const QString& );
@@ -217,20 +197,11 @@ class Settings
         
         static bool statsEnabled();
         static void setStatsEnabled( const bool& );
-        
-        static int statsMinutes();
-        static void setStatsMinutes( const int& );
-        
-        static bool teamStatsEnabled();
-        static void setTeamStatsEnabled( const bool& );
-        
-        static QStringList teamMembers();
-        static void teamMembers( const QStringList& );
-        
+       
         /* Notifications Group */
         
-        static bool notificationsEnabled();
-        static void setNotificationsEnabled( const bool& );
+        static bool notificationsDisabled();
+        static void setNotificationsDisabled( const bool& );
 
         static bool generalNotificationPopup();
         static void setGeneralNotificationPopup( const bool& );
@@ -355,9 +326,6 @@ class Settings
         /* Misc */
         
         static bool settingsOK();
-   
-        static bool dontShow40();
-        static void setDontShow40( const bool& );
 
         static QString appVersion();
         static void setAppVersion( const QString& );

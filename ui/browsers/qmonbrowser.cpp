@@ -133,15 +133,15 @@ void QMonBrowser::mousePressEvent( QMouseEvent* event )
     if ( ( event->button() == 1 ) && 
          ( mUrl.toString().startsWith(  "sr://" ) ) )
     {
-        if ( Settings::leftMouseButton() == 0 )
+        if ( Settings::leftMouseButton() == 1 )
         {
             contextMenu( event, mUrl.toString().remove( "sr://" ) );
         }
-        else if ( Settings::leftMouseButton() == 1 )
+        else if ( Settings::leftMouseButton() == 2 )
         {
             Kueue::setClipboard( mUrl.toString().remove( "sr://" ) );
         }
-        else if ( Settings::leftMouseButton() == 2 )
+        else if ( Settings::leftMouseButton() == 0 )
         {
             toggleSrTable( mUrl.toString().remove( "sr://" ) );
         }
@@ -157,15 +157,15 @@ void QMonBrowser::mousePressEvent( QMouseEvent* event )
     
     if ( ( event->button() == 2 ) && ( mUrl.toString().startsWith(  "sr://" ) ) )
     {
-        if ( Settings::rightMouseButton() == 0 )
+        if ( Settings::rightMouseButton() == 1 )
         {
             contextMenu( event, mUrl.toString().remove( "sr://" ) );
         }
-        else if ( Settings::rightMouseButton() == 1 )
+        else if ( Settings::rightMouseButton() == 2 )
         {
             Kueue::setClipboard( mUrl.toString().remove( "sr://" ) );
         }
-        else if ( Settings::rightMouseButton() == 2 )
+        else if ( Settings::rightMouseButton() == 0 )
         {
             toggleSrTable( mUrl.toString().remove( "sr://" ) );
         }
@@ -176,15 +176,15 @@ void QMonBrowser::mousePressEvent( QMouseEvent* event )
     if ( ( event->button() == 4 ) && 
          ( mUrl.toString().startsWith(  "sr://" ) ) )
     {
-        if ( Settings::middleMouseButton() == 0 )
+        if ( Settings::middleMouseButton() == 1 )
         {
             contextMenu( event, mUrl.toString().remove( "sr://" ) );
         }
-        else if ( Settings::middleMouseButton() == 1 )
+        else if ( Settings::middleMouseButton() == 2 )
         {
             Kueue::setClipboard( mUrl.toString().remove( "sr://" ) );
         }
-        else if ( Settings::middleMouseButton() == 2 )
+        else if ( Settings::middleMouseButton() == 0 )
         {
             toggleSrTable( mUrl.toString().remove( "sr://" ) );
         }

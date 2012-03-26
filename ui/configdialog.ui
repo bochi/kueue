@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>789</width>
-    <height>560</height>
+    <width>754</width>
+    <height>531</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -165,6 +165,13 @@
           </item>
           <item row="0" column="0">
            <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="2">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Login</string>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="1">
              <widget class="QLineEdit" name="cfg_dBServer"/>
             </item>
@@ -175,15 +182,8 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="0" column="3">
              <widget class="QLineEdit" name="cfg_engineer"/>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Login</string>
-              </property>
-             </widget>
             </item>
            </layout>
           </item>
@@ -290,7 +290,7 @@
        <item row="3" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBox_4">
          <property name="title">
-          <string>Modules</string>
+          <string>Features</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_36">
           <item row="0" column="0">
@@ -688,16 +688,6 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Unity URL:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1" colspan="2">
-             <widget class="QLineEdit" name="cfg_unityURL"/>
-            </item>
            </layout>
           </item>
           <item row="4" column="0">
@@ -976,13 +966,13 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QCheckBox" name="cfg_notificationsEnabled">
+        <widget class="QCheckBox" name="cfg_notificationsDisabled">
          <property name="text">
           <string>Disable all Notifications</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="0" colspan="2">
+       <item row="2" column="0">
         <widget class="QGroupBox" name="notificationSettingsGroupBox">
          <property name="title">
           <string>Notification settings</string>
@@ -1038,86 +1028,11 @@
              <enum>QFrame::NoFrame</enum>
             </property>
             <property name="currentIndex">
-             <number>7</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="gereralNotificationPage">
              <layout class="QGridLayout" name="gridLayout_40">
-              <item row="0" column="0" colspan="3">
-               <widget class="QCheckBox" name="cfg_generalNotificationPopup">
-                <property name="text">
-                 <string>Show popup notification</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QCheckBox" name="cfg_generalNotificationWrite">
-                <property name="text">
-                 <string>Write to file</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <spacer name="horizontalSpacer_18">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Minimum</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
               <item row="1" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_19">
-                <item>
-                 <widget class="QLineEdit" name="cfg_generalNotificationWriteFile">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="generalNotificationFileButton">
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../kueue.qrc">
-                    <normaloff>:/icons/menus/folder.png</normaloff>:/icons/menus/folder.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="cfg_generalNotificationSound">
-                <property name="text">
-                 <string>Play sound</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <spacer name="horizontalSpacer_19">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Minimum</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="2" column="2">
                <layout class="QHBoxLayout" name="horizontalLayout_18">
                 <item>
                  <widget class="QLineEdit" name="cfg_generalNotificationSoundFile">
@@ -1150,26 +1065,22 @@
                 </item>
                </layout>
               </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="newPersonalNotificationPage">
-             <layout class="QGridLayout" name="gridLayout_9">
               <item row="0" column="0" colspan="3">
-               <widget class="QCheckBox" name="cfg_newPersonalNotificationPopup">
+               <widget class="QCheckBox" name="cfg_generalNotificationPopup">
                 <property name="text">
                  <string>Show popup notification</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QCheckBox" name="cfg_newPersonalNotificationWrite">
+               <widget class="QCheckBox" name="cfg_generalNotificationSound">
                 <property name="text">
-                 <string>Write to file</string>
+                 <string>Play sound</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="1">
-               <spacer name="horizontalSpacer_20">
+               <spacer name="horizontalSpacer_19">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -1184,36 +1095,25 @@
                 </property>
                </spacer>
               </item>
-              <item row="1" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_21">
-                <item>
-                 <widget class="QLineEdit" name="cfg_newPersonalNotificationWriteFile">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="newPersonalNotificationFileButton">
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../kueue.qrc">
-                    <normaloff>:/icons/menus/folder.png</normaloff>:/icons/menus/folder.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="2" column="0">
+             </layout>
+            </widget>
+            <widget class="QWidget" name="newPersonalNotificationPage">
+             <layout class="QGridLayout" name="gridLayout_9">
+              <item row="1" column="0">
                <widget class="QCheckBox" name="cfg_newPersonalNotificationSound">
                 <property name="text">
                  <string>Play sound</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="0" column="0" colspan="3">
+               <widget class="QCheckBox" name="cfg_newPersonalNotificationPopup">
+                <property name="text">
+                 <string>Show popup notification</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
                <spacer name="horizontalSpacer_21">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1229,7 +1129,7 @@
                 </property>
                </spacer>
               </item>
-              <item row="2" column="2">
+              <item row="1" column="2">
                <layout class="QHBoxLayout" name="horizontalLayout_20">
                 <item>
                  <widget class="QLineEdit" name="cfg_newPersonalNotificationSoundFile">
@@ -1266,82 +1166,7 @@
             </widget>
             <widget class="QWidget" name="updatePersonalNotificationPage">
              <layout class="QGridLayout" name="gridLayout_10">
-              <item row="0" column="0" colspan="3">
-               <widget class="QCheckBox" name="cfg_updatePersonalNotificationPopup">
-                <property name="text">
-                 <string>Show popup notification</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QCheckBox" name="cfg_updatePersonalNotificationWrite">
-                <property name="text">
-                 <string>Write to file</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <spacer name="horizontalSpacer_22">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Minimum</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
               <item row="1" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_23">
-                <item>
-                 <widget class="QLineEdit" name="cfg_updatePersonalNotificationWriteFile">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="updatePersonalNotificationFileButton">
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../kueue.qrc">
-                    <normaloff>:/icons/menus/folder.png</normaloff>:/icons/menus/folder.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="cfg_updatePersonalNotificationSound">
-                <property name="text">
-                 <string>Play sound</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <spacer name="horizontalSpacer_23">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Minimum</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="2" column="2">
                <layout class="QHBoxLayout" name="horizontalLayout_22">
                 <item>
                  <widget class="QLineEdit" name="cfg_updatePersonalNotificationSoundFile">
@@ -1374,26 +1199,22 @@
                 </item>
                </layout>
               </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="bomgarNotificationPage">
-             <layout class="QGridLayout" name="gridLayout_19">
               <item row="0" column="0" colspan="3">
-               <widget class="QCheckBox" name="cfg_bomgarNotificationPopup">
+               <widget class="QCheckBox" name="cfg_updatePersonalNotificationPopup">
                 <property name="text">
                  <string>Show popup notification</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QCheckBox" name="cfg_bomgarNotificationWrite">
+               <widget class="QCheckBox" name="cfg_updatePersonalNotificationSound">
                 <property name="text">
-                 <string>Write to file</string>
+                 <string>Play sound</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="1">
-               <spacer name="horizontalSpacer_24">
+               <spacer name="horizontalSpacer_23">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -1408,36 +1229,25 @@
                 </property>
                </spacer>
               </item>
-              <item row="1" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_25">
-                <item>
-                 <widget class="QLineEdit" name="cfg_bomgarNotificationWriteFile">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="bomgarNotificationFileButton">
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../kueue.qrc">
-                    <normaloff>:/icons/menus/folder.png</normaloff>:/icons/menus/folder.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="bomgarNotificationPage">
+             <layout class="QGridLayout" name="gridLayout_19">
+              <item row="0" column="0" colspan="3">
+               <widget class="QCheckBox" name="cfg_bomgarNotificationPopup">
+                <property name="text">
+                 <string>Show popup notification</string>
+                </property>
+               </widget>
               </item>
-              <item row="2" column="0">
+              <item row="1" column="0">
                <widget class="QCheckBox" name="cfg_bomgarNotificationSound">
                 <property name="text">
                  <string>Play sound</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="1" column="1">
                <spacer name="horizontalSpacer_25">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1453,7 +1263,7 @@
                 </property>
                </spacer>
               </item>
-              <item row="2" column="2">
+              <item row="1" column="2">
                <layout class="QHBoxLayout" name="horizontalLayout_24">
                 <item>
                  <widget class="QLineEdit" name="cfg_bomgarNotificationSoundFile">
@@ -1496,82 +1306,7 @@
             </widget>
             <widget class="QWidget" name="newLowNotificationPage">
              <layout class="QGridLayout" name="gridLayout_20">
-              <item row="0" column="0" colspan="3">
-               <widget class="QCheckBox" name="cfg_lowNotificationPopup">
-                <property name="text">
-                 <string>Show popup notification</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QCheckBox" name="cfg_lowNotificationWrite">
-                <property name="text">
-                 <string>Write to file</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <spacer name="horizontalSpacer_26">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Minimum</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
               <item row="1" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_27">
-                <item>
-                 <widget class="QLineEdit" name="cfg_lowNotificationWriteFile">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="lowNotificationFileButton">
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../kueue.qrc">
-                    <normaloff>:/icons/menus/folder.png</normaloff>:/icons/menus/folder.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="cfg_lowNotificationSound">
-                <property name="text">
-                 <string>Play sound</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <spacer name="horizontalSpacer_27">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Minimum</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="2" column="2">
                <layout class="QHBoxLayout" name="horizontalLayout_26">
                 <item>
                  <widget class="QLineEdit" name="cfg_lowNotificationSoundFile">
@@ -1604,26 +1339,22 @@
                 </item>
                </layout>
               </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="newMediumNotificationPage">
-             <layout class="QGridLayout" name="gridLayout_38">
               <item row="0" column="0" colspan="3">
-               <widget class="QCheckBox" name="cfg_mediumNotificationPopup">
+               <widget class="QCheckBox" name="cfg_lowNotificationPopup">
                 <property name="text">
                  <string>Show popup notification</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QCheckBox" name="cfg_mediumNotificationWrite">
+               <widget class="QCheckBox" name="cfg_lowNotificationSound">
                 <property name="text">
-                 <string>Write to file</string>
+                 <string>Play sound</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="1">
-               <spacer name="horizontalSpacer_28">
+               <spacer name="horizontalSpacer_27">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -1638,36 +1369,25 @@
                 </property>
                </spacer>
               </item>
-              <item row="1" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_29">
-                <item>
-                 <widget class="QLineEdit" name="cfg_mediumNotificationWriteFile">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="mediumNotificationFileButton">
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../kueue.qrc">
-                    <normaloff>:/icons/menus/folder.png</normaloff>:/icons/menus/folder.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="newMediumNotificationPage">
+             <layout class="QGridLayout" name="gridLayout_38">
+              <item row="0" column="0" colspan="3">
+               <widget class="QCheckBox" name="cfg_mediumNotificationPopup">
+                <property name="text">
+                 <string>Show popup notification</string>
+                </property>
+               </widget>
               </item>
-              <item row="2" column="0">
+              <item row="1" column="0">
                <widget class="QCheckBox" name="cfg_mediumNotificationSound">
                 <property name="text">
                  <string>Play sound</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="1" column="1">
                <spacer name="horizontalSpacer_29">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1683,7 +1403,7 @@
                 </property>
                </spacer>
               </item>
-              <item row="2" column="2">
+              <item row="1" column="2">
                <layout class="QHBoxLayout" name="horizontalLayout_28">
                 <item>
                  <widget class="QLineEdit" name="cfg_mediumNotificationSoundFile">
@@ -1727,59 +1447,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QCheckBox" name="cfg_urgentNotificationWrite">
-                <property name="text">
-                 <string>Write to file</string>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="1">
-               <spacer name="horizontalSpacer_30">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Minimum</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>74</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_31">
-                <item>
-                 <widget class="QLineEdit" name="cfg_urgentNotificationWriteFile">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="urgentNotificationFileButton">
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../kueue.qrc">
-                    <normaloff>:/icons/menus/folder.png</normaloff>:/icons/menus/folder.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="cfg_urgentNotificationSound">
-                <property name="text">
-                 <string>Play sound</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
                <spacer name="horizontalSpacer_31">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1795,7 +1463,14 @@
                 </property>
                </spacer>
               </item>
-              <item row="2" column="2">
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="cfg_urgentNotificationSound">
+                <property name="text">
+                 <string>Play sound</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
                <layout class="QHBoxLayout" name="horizontalLayout_30">
                 <item>
                  <widget class="QLineEdit" name="cfg_urgentNotificationSoundFile">
@@ -1839,59 +1514,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QCheckBox" name="cfg_highNotificationWrite">
-                <property name="text">
-                 <string>Write to file</string>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="1">
-               <spacer name="horizontalSpacer_32">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Minimum</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_33">
-                <item>
-                 <widget class="QLineEdit" name="cfg_highNotificationWriteFile">
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="highNotificationFileButton">
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../kueue.qrc">
-                    <normaloff>:/icons/menus/folder.png</normaloff>:/icons/menus/folder.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="cfg_highNotificationSound">
-                <property name="text">
-                 <string>Play sound</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
                <spacer name="horizontalSpacer_33">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1907,7 +1530,14 @@
                 </property>
                </spacer>
               </item>
-              <item row="2" column="2">
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="cfg_highNotificationSound">
+                <property name="text">
+                 <string>Play sound</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
                <layout class="QHBoxLayout" name="horizontalLayout_32">
                 <item>
                  <widget class="QLineEdit" name="cfg_highNotificationSoundFile">
@@ -1947,7 +1577,7 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0" colspan="2">
+       <item row="3" column="0">
         <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
           <string>System Tray</string>

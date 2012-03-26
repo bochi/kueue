@@ -34,7 +34,6 @@
 #include <QDebug>
 #include <QFileDialog>
 
-
 ConfigDialog::ConfigDialog( QWidget *parent )
             : Ui_ConfigDialog()
 {
@@ -81,57 +80,41 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              this, SLOT( getGeneralNotificationSoundFile() ) );
     connect( generalNotificationPlayButton, SIGNAL( pressed() ), 
              this, SLOT( playGeneralNotificationSound() ) );
-    connect( generalNotificationFileButton, SIGNAL( pressed() ), 
-             this, SLOT( getGeneralNotificationWriteFile() ) );
     connect( newPersonalNotificationSoundButton, SIGNAL( pressed() ),
              this, SLOT( getNewPersonalNotificationSoundFile() ) );
     connect( newPersonalNotificationPlayButton, SIGNAL( pressed() ), 
              this, SLOT( playNewPersonalNotificationSound() ) );
-    connect( newPersonalNotificationFileButton, SIGNAL( pressed() ), 
-             this, SLOT( getNewPersonalNotificationWriteFile() ) );
     connect( updatePersonalNotificationSoundButton, SIGNAL( pressed() ), 
              this, SLOT( getUpdatePersonalNotificationSoundFile() ) );
     connect( updatePersonalNotificationPlayButton, SIGNAL( pressed() ), 
              this, SLOT( playUpdatePersonalNotificationSound() ) );
-    connect( updatePersonalNotificationFileButton, SIGNAL( pressed() ), 
-             this, SLOT( getUpdatePersonalNotificationWriteFile() ) );
     connect( bomgarNotificationSoundButton, SIGNAL( pressed() ), 
              this, SLOT( getBomgarNotificationSoundFile() ) );
     connect( bomgarNotificationPlayButton, SIGNAL( pressed() ), 
              this, SLOT( playBomgarNotificationSound() ) );
-    connect( bomgarNotificationFileButton, SIGNAL( pressed() ),
-             this, SLOT( getBomgarNotificationWriteFile() ) );
     connect( lowNotificationSoundButton, SIGNAL( pressed() ), 
              this, SLOT( getLowNotificationSoundFile() ) );
     connect( lowNotificationPlayButton, SIGNAL( pressed() ), 
              this, SLOT( playLowNotificationSound() ) );
-    connect( lowNotificationFileButton, SIGNAL( pressed() ),
-             this, SLOT( getLowNotificationWriteFile() ) );
     connect( mediumNotificationSoundButton, SIGNAL( pressed() ),
              this, SLOT( getMediumNotificationSoundFile() ) );
     connect( mediumNotificationPlayButton, SIGNAL( pressed() ), 
              this, SLOT( playMediumNotificationSound() ) );
-    connect( mediumNotificationFileButton, SIGNAL( pressed() ),
-             this, SLOT( getMediumNotificationWriteFile() ) );
     connect( urgentNotificationSoundButton, SIGNAL( pressed() ),
              this, SLOT( getUrgentNotificationSoundFile() ) );
     connect( urgentNotificationPlayButton, SIGNAL( pressed() ),
              this, SLOT( playUrgentNotificationSound() ) );
-    connect( urgentNotificationFileButton, SIGNAL( pressed() ),
-             this, SLOT( getUrgentNotificationWriteFile() ) );
     connect( highNotificationSoundButton, SIGNAL( pressed() ),
              this, SLOT( getHighNotificationSoundFile() ) );
     connect( highNotificationPlayButton, SIGNAL( pressed() ),
              this, SLOT( playHighNotificationSound() ) );
-    connect( highNotificationFileButton, SIGNAL( pressed() ),
-             this, SLOT( getHighNotificationWriteFile() ) );
     connect( cfg_showSystemTray, SIGNAL( toggled( bool ) ), 
              this, SLOT( toggleSystemTray( bool ) ) );
     connect( cfg_monitorEnabled, SIGNAL( toggled( bool ) ),
              this, SLOT( toggleMonitor( bool ) ) );
     connect( cfg_qbossFeatures, SIGNAL( toggled( bool ) ),
              this, SLOT( toggleQboss( bool ) ) );
-    connect( cfg_notificationsEnabled, SIGNAL( toggled( bool ) ), 
+    connect( cfg_notificationsDisabled, SIGNAL( toggled( bool ) ), 
              this, SLOT( toggleNotifications( bool ) ) );
     
     connect( cfg_generalNotificationSound, SIGNAL( toggled( bool ) ), 
@@ -140,10 +123,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              generalNotificationSoundButton, SLOT( setEnabled( bool ) ) );
     connect( cfg_generalNotificationSound, SIGNAL( toggled( bool ) ),
              generalNotificationPlayButton, SLOT( setEnabled( bool ) ) );
-    connect( cfg_generalNotificationWrite, SIGNAL( toggled( bool ) ), 
-             cfg_generalNotificationWriteFile, SLOT( setEnabled( bool ) ) );
-    connect( cfg_generalNotificationWrite, SIGNAL( toggled( bool ) ),
-             generalNotificationFileButton, SLOT( setEnabled( bool ) ) );
     
     connect( cfg_newPersonalNotificationSound, SIGNAL( toggled( bool ) ),
              cfg_newPersonalNotificationSoundFile, SLOT( setEnabled( bool ) ) );
@@ -151,10 +130,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              newPersonalNotificationSoundButton, SLOT( setEnabled( bool ) ) );
     connect( cfg_newPersonalNotificationSound, SIGNAL( toggled( bool ) ),
              newPersonalNotificationPlayButton, SLOT( setEnabled( bool ) ) );
-    connect( cfg_newPersonalNotificationWrite, SIGNAL( toggled( bool ) ),
-             cfg_newPersonalNotificationWriteFile, SLOT( setEnabled( bool ) ) );
-    connect( cfg_newPersonalNotificationWrite, SIGNAL( toggled( bool ) ),
-             newPersonalNotificationFileButton, SLOT( setEnabled( bool ) ) );
 
     connect( cfg_updatePersonalNotificationSound, SIGNAL( toggled( bool ) ),
              cfg_updatePersonalNotificationSoundFile, SLOT( setEnabled( bool ) ) );
@@ -162,10 +137,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              updatePersonalNotificationSoundButton, SLOT( setEnabled( bool ) ) );
     connect( cfg_updatePersonalNotificationSound, SIGNAL( toggled( bool ) ), 
              updatePersonalNotificationPlayButton, SLOT( setEnabled( bool ) ) );
-    connect( cfg_updatePersonalNotificationWrite, SIGNAL( toggled( bool ) ),
-             cfg_updatePersonalNotificationWriteFile, SLOT( setEnabled( bool ) ) );
-    connect( cfg_updatePersonalNotificationWrite, SIGNAL( toggled( bool ) ),
-             updatePersonalNotificationFileButton, SLOT( setEnabled( bool ) ) );
     
     connect( cfg_bomgarNotificationSound, SIGNAL( toggled( bool ) ),
              cfg_bomgarNotificationSoundFile, SLOT( setEnabled( bool ) ) );
@@ -173,10 +144,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              bomgarNotificationSoundButton, SLOT( setEnabled( bool ) ) );
     connect( cfg_bomgarNotificationSound, SIGNAL( toggled( bool ) ), 
              bomgarNotificationPlayButton, SLOT( setEnabled( bool ) ) );
-    connect( cfg_bomgarNotificationWrite, SIGNAL( toggled( bool ) ),
-             cfg_bomgarNotificationWriteFile, SLOT( setEnabled( bool ) ) );
-    connect( cfg_bomgarNotificationWrite, SIGNAL( toggled( bool ) ), 
-             bomgarNotificationFileButton, SLOT( setEnabled( bool ) ) );
     
     connect( cfg_lowNotificationSound, SIGNAL( toggled( bool ) ),
              cfg_lowNotificationSoundFile, SLOT( setEnabled( bool ) ) );
@@ -184,10 +151,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              lowNotificationSoundButton, SLOT( setEnabled( bool ) ) );
     connect( cfg_lowNotificationSound, SIGNAL( toggled( bool ) ), 
              lowNotificationPlayButton, SLOT( setEnabled( bool ) ) );
-    connect( cfg_lowNotificationWrite, SIGNAL( toggled( bool ) ),
-             cfg_lowNotificationWriteFile, SLOT( setEnabled( bool ) ) );
-    connect( cfg_lowNotificationWrite, SIGNAL( toggled( bool ) ), 
-             lowNotificationFileButton, SLOT( setEnabled( bool ) ) );
     
     connect( cfg_mediumNotificationSound, SIGNAL( toggled( bool ) ),
              cfg_mediumNotificationSoundFile, SLOT( setEnabled( bool ) ) );
@@ -195,10 +158,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              mediumNotificationSoundButton, SLOT( setEnabled( bool ) ) );
     connect( cfg_mediumNotificationSound, SIGNAL( toggled( bool ) ),
              mediumNotificationPlayButton, SLOT( setEnabled( bool ) ) );
-    connect( cfg_mediumNotificationWrite, SIGNAL( toggled( bool ) ),
-             cfg_mediumNotificationWriteFile, SLOT( setEnabled( bool ) ) );
-    connect( cfg_mediumNotificationWrite, SIGNAL( toggled( bool ) ), 
-             mediumNotificationFileButton, SLOT( setEnabled( bool ) ) );
     
     connect( cfg_urgentNotificationSound, SIGNAL( toggled( bool ) ),
              cfg_urgentNotificationSoundFile, SLOT( setEnabled( bool ) ) );
@@ -206,10 +165,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              urgentNotificationSoundButton, SLOT( setEnabled( bool ) ) );
     connect( cfg_urgentNotificationSound, SIGNAL( toggled( bool ) ),
              urgentNotificationPlayButton, SLOT( setEnabled( bool ) ) );
-    connect( cfg_urgentNotificationWrite, SIGNAL( toggled( bool ) ),
-             cfg_urgentNotificationWriteFile, SLOT( setEnabled( bool ) ) );
-    connect( cfg_urgentNotificationWrite, SIGNAL( toggled( bool ) ),
-             urgentNotificationFileButton, SLOT( setEnabled( bool ) ) );
     
     connect( cfg_highNotificationSound, SIGNAL( toggled( bool ) ),
              cfg_highNotificationSoundFile, SLOT( setEnabled( bool ) ) );
@@ -217,10 +172,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              highNotificationSoundButton, SLOT( setEnabled( bool ) ) );
     connect( cfg_highNotificationSound, SIGNAL( toggled( bool ) ), 
              highNotificationPlayButton, SLOT( setEnabled( bool ) ) );
-    connect( cfg_highNotificationWrite, SIGNAL( toggled( bool ) ),
-             cfg_highNotificationWriteFile, SLOT( setEnabled( bool ) ) );
-    connect( cfg_highNotificationWrite, SIGNAL( toggled( bool ) ),
-             highNotificationFileButton, SLOT( setEnabled( bool ) ) );
     
     cfg_dBServer->setText( Settings::dBServer() );
     cfg_engineer->setText( Settings::engineer() );
@@ -253,7 +204,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_showDownloadManager->setChecked( Settings::showDownloadManager() );
     
     cfg_unityPassword->setText( Settings::unityPassword() );
-    cfg_unityURL->setText( Settings::unityURL() );
     cfg_useIdleTimeout->setChecked( Settings::useIdleTimeout() );
     cfg_idleTimeoutMinutes->setValue( Settings::idleTimeoutMinutes() );
     cfg_minimumFontSize->setValue( Settings::minimumFontSize() );
@@ -265,108 +215,76 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_useSrDirectory->setChecked( Settings::useSrDirectory() );
     cfg_autoExtract->setChecked( Settings::autoExtract() );
     
-    cfg_notificationsEnabled->setChecked( Settings::notificationsEnabled() );
+    cfg_notificationsDisabled->setChecked( Settings::notificationsDisabled() );
 
     cfg_generalNotificationPopup->setChecked( Settings::generalNotificationPopup() );
     cfg_generalNotificationSound->setChecked( Settings::generalNotificationSound() );
     cfg_generalNotificationSoundFile->setText( Settings::generalNotificationSoundFile() );
-    cfg_generalNotificationWrite->setChecked( Settings::generalNotificationWrite() );
-    cfg_generalNotificationWriteFile->setText( Settings::generalNotificationWriteFile() );
-
+    
     cfg_newPersonalNotificationPopup->setChecked( Settings::newPersonalNotificationPopup() );
     cfg_newPersonalNotificationSound->setChecked( Settings::newPersonalNotificationSound() );
     cfg_newPersonalNotificationSoundFile->setText( Settings::newPersonalNotificationSoundFile() );
-    cfg_newPersonalNotificationWrite->setChecked( Settings::newPersonalNotificationWrite() );
-    cfg_newPersonalNotificationWriteFile->setText( Settings::newPersonalNotificationWriteFile() );
-
+    
     cfg_updatePersonalNotificationPopup->setChecked( Settings::updatePersonalNotificationPopup() );
     cfg_updatePersonalNotificationSound->setChecked( Settings::updatePersonalNotificationSound() );
     cfg_updatePersonalNotificationSoundFile->setText( Settings::updatePersonalNotificationSoundFile() );
-    cfg_updatePersonalNotificationWrite->setChecked( Settings::updatePersonalNotificationWrite() );
-    cfg_updatePersonalNotificationWriteFile->setText( Settings::updatePersonalNotificationWriteFile() );
-
+    
     cfg_bomgarNotificationPopup->setChecked( Settings::bomgarNotificationPopup() );
     cfg_bomgarNotificationSound->setChecked( Settings::bomgarNotificationSound() );
     cfg_bomgarNotificationSoundFile->setText( Settings::bomgarNotificationSoundFile() );
-    cfg_bomgarNotificationWrite->setChecked( Settings::bomgarNotificationWrite() );
-    cfg_bomgarNotificationWriteFile->setText( Settings::bomgarNotificationWriteFile() );
-
+    
     cfg_lowNotificationPopup->setChecked( Settings::lowNotificationPopup() );
     cfg_lowNotificationSound->setChecked( Settings::lowNotificationSound() );
     cfg_lowNotificationSoundFile->setText( Settings::lowNotificationSoundFile() );
-    cfg_lowNotificationWrite->setChecked( Settings::lowNotificationWrite() );
-    cfg_lowNotificationWriteFile->setText( Settings::lowNotificationWriteFile() );
-
+    
     cfg_mediumNotificationPopup->setChecked( Settings::mediumNotificationPopup() );
     cfg_mediumNotificationSound->setChecked( Settings::mediumNotificationSound() );
     cfg_mediumNotificationSoundFile->setText( Settings::mediumNotificationSoundFile() );
-    cfg_mediumNotificationWrite->setChecked( Settings::mediumNotificationWrite() );
-    cfg_mediumNotificationWriteFile->setText( Settings::mediumNotificationWriteFile() );
-
+    
     cfg_urgentNotificationPopup->setChecked( Settings::urgentNotificationPopup() );
     cfg_urgentNotificationSound->setChecked( Settings::urgentNotificationSound() );
     cfg_urgentNotificationSoundFile->setText( Settings::urgentNotificationSoundFile() );
-    cfg_urgentNotificationWrite->setChecked( Settings::urgentNotificationWrite() );
-    cfg_urgentNotificationWriteFile->setText( Settings::urgentNotificationWriteFile() );
-
+    
     cfg_highNotificationPopup->setChecked( Settings::highNotificationPopup() );
     cfg_highNotificationSound->setChecked( Settings::highNotificationSound() );
     cfg_highNotificationSoundFile->setText( Settings::highNotificationSoundFile() );
-    cfg_highNotificationWrite->setChecked( Settings::highNotificationWrite() );
-    cfg_highNotificationWriteFile->setText( Settings::highNotificationWriteFile() );
     
     cfg_generalNotificationSoundFile->setEnabled( Settings::generalNotificationSound() );
     generalNotificationSoundButton->setEnabled( Settings::generalNotificationSound() );
     generalNotificationPlayButton->setEnabled( Settings::generalNotificationSound() );
-    cfg_generalNotificationWriteFile->setEnabled( Settings::generalNotificationWrite() );
-    generalNotificationFileButton->setEnabled( Settings::generalNotificationWrite() );
     
     cfg_newPersonalNotificationSoundFile->setEnabled( Settings::newPersonalNotificationSound() );
     newPersonalNotificationSoundButton->setEnabled( Settings::newPersonalNotificationSound() );
     newPersonalNotificationPlayButton->setEnabled( Settings::newPersonalNotificationSound() );
-    cfg_newPersonalNotificationWriteFile->setEnabled( Settings::newPersonalNotificationWrite() );
-    newPersonalNotificationFileButton->setEnabled( Settings::newPersonalNotificationWrite() );
     
     cfg_updatePersonalNotificationSoundFile->setEnabled( Settings::updatePersonalNotificationSound() );
     updatePersonalNotificationSoundButton->setEnabled( Settings::updatePersonalNotificationSound() );
     updatePersonalNotificationPlayButton->setEnabled( Settings::updatePersonalNotificationSound() );
-    cfg_updatePersonalNotificationWriteFile->setEnabled( Settings::updatePersonalNotificationWrite() );
-    updatePersonalNotificationFileButton->setEnabled( Settings::updatePersonalNotificationWrite() );
     
     cfg_bomgarNotificationSoundFile->setEnabled( Settings::bomgarNotificationSound() );
     bomgarNotificationSoundButton->setEnabled( Settings::bomgarNotificationSound() );
     bomgarNotificationPlayButton->setEnabled( Settings::bomgarNotificationSound() );
-    cfg_bomgarNotificationWriteFile->setEnabled( Settings::bomgarNotificationWrite() );
-    bomgarNotificationFileButton->setEnabled( Settings::bomgarNotificationWrite() );
     
     cfg_lowNotificationSoundFile->setEnabled( Settings::lowNotificationSound() );
     lowNotificationSoundButton->setEnabled( Settings::lowNotificationSound() );
     lowNotificationPlayButton->setEnabled( Settings::lowNotificationSound() );
-    cfg_lowNotificationWriteFile->setEnabled( Settings::lowNotificationWrite() );
-    lowNotificationFileButton->setEnabled( Settings::lowNotificationWrite() );
     
     cfg_mediumNotificationSoundFile->setEnabled( Settings::mediumNotificationSound() );
     mediumNotificationSoundButton->setEnabled( Settings::mediumNotificationSound() );
     mediumNotificationPlayButton->setEnabled( Settings::mediumNotificationSound() );
-    cfg_mediumNotificationWriteFile->setEnabled( Settings::mediumNotificationWrite() );
-    mediumNotificationFileButton->setEnabled( Settings::mediumNotificationWrite() );
     
     cfg_urgentNotificationSoundFile->setEnabled( Settings::urgentNotificationSound() );
     urgentNotificationSoundButton->setEnabled( Settings::urgentNotificationSound() );
     urgentNotificationPlayButton->setEnabled( Settings::urgentNotificationSound() );
-    cfg_urgentNotificationWriteFile->setEnabled( Settings::urgentNotificationWrite() );
-    urgentNotificationFileButton->setEnabled( Settings::urgentNotificationWrite() );
     
     cfg_highNotificationSoundFile->setEnabled( Settings::highNotificationSound() );
     highNotificationSoundButton->setEnabled( Settings::highNotificationSound() );
     highNotificationPlayButton->setEnabled( Settings::highNotificationSound() );
-    cfg_highNotificationWriteFile->setEnabled( Settings::highNotificationWrite() );
-    highNotificationFileButton->setEnabled( Settings::highNotificationWrite() );
-
+    
     toggleSystemTray( Settings::showSystemTray() );
     toggleMonitor( Settings::monitorEnabled() );
     toggleQboss( Settings::qbossFeatures() );
-    toggleNotifications( !Settings::notificationsEnabled() );
+    toggleNotifications( Settings::notificationsDisabled() );
     toggleUnity( Settings::unityEnabled() );
     
     #ifndef QT_HAS_DBUS
@@ -447,7 +365,6 @@ void ConfigDialog::writeSettings()
     }
     
     Settings::setOtherFileManagerCommand( cfg_otherFileManagerCommand->text() );
-    Settings::setUnityURL( cfg_unityURL->text() );
     Settings::setUseIdleTimeout( cfg_useIdleTimeout->isChecked() );
     Settings::setIdleTimeoutMinutes( cfg_idleTimeoutMinutes->value() );
     Settings::setDownloadDirectory( cfg_downloadDirectory->text() );
@@ -493,55 +410,39 @@ void ConfigDialog::writeSettings()
     
     Settings::setStatsEnabled( cfg_statsEnabled->isChecked() );
         
-    Settings::setNotificationsEnabled( cfg_notificationsEnabled->isChecked() );
+    Settings::setNotificationsDisabled( cfg_notificationsDisabled->isChecked() );
     
     Settings::setGeneralNotificationPopup( cfg_generalNotificationPopup->isChecked() );
     Settings::setGeneralNotificationSound( cfg_generalNotificationSound->isChecked() );
     Settings::setGeneralNotificationSoundFile( cfg_generalNotificationSoundFile->text() );
-    Settings::setGeneralNotificationWrite( cfg_generalNotificationWrite->isChecked() );
-    Settings::setGeneralNotificationWriteFile( cfg_generalNotificationWriteFile->text() );
     
     Settings::setNewPersonalNotificationPopup( cfg_newPersonalNotificationPopup->isChecked() );
     Settings::setNewPersonalNotificationSound( cfg_newPersonalNotificationSound->isChecked() );
     Settings::setNewPersonalNotificationSoundFile( cfg_newPersonalNotificationSoundFile->text() );
-    Settings::setNewPersonalNotificationWrite( cfg_newPersonalNotificationWrite->isChecked() );
-    Settings::setNewPersonalNotificationWriteFile( cfg_newPersonalNotificationWriteFile->text() );
     
     Settings::setUpdatePersonalNotificationPopup( cfg_updatePersonalNotificationPopup->isChecked() );
     Settings::setUpdatePersonalNotificationSound( cfg_updatePersonalNotificationSound->isChecked() );
     Settings::setUpdatePersonalNotificationSoundFile( cfg_updatePersonalNotificationSoundFile->text() );
-    Settings::setUpdatePersonalNotificationWrite( cfg_updatePersonalNotificationWrite->isChecked() );
-    Settings::setUpdatePersonalNotificationWriteFile( cfg_updatePersonalNotificationWriteFile->text() );
     
     Settings::setBomgarNotificationPopup( cfg_bomgarNotificationPopup->isChecked() );
     Settings::setBomgarNotificationSound( cfg_bomgarNotificationSound->isChecked() );
     Settings::setBomgarNotificationSoundFile( cfg_bomgarNotificationSoundFile->text() );
-    Settings::setBomgarNotificationWrite( cfg_bomgarNotificationWrite->isChecked() );
-    Settings::setBomgarNotificationWriteFile( cfg_bomgarNotificationWriteFile->text() );
     
     Settings::setLowNotificationPopup( cfg_lowNotificationPopup->isChecked() );
     Settings::setLowNotificationSound( cfg_lowNotificationSound->isChecked() );
     Settings::setLowNotificationSoundFile( cfg_lowNotificationSoundFile->text() );
-    Settings::setLowNotificationWrite( cfg_lowNotificationWrite->isChecked() );
-    Settings::setLowNotificationWriteFile( cfg_lowNotificationWriteFile->text() );
     
     Settings::setMediumNotificationPopup( cfg_mediumNotificationPopup->isChecked() );
     Settings::setMediumNotificationSound( cfg_mediumNotificationSound->isChecked() );
     Settings::setMediumNotificationSoundFile( cfg_mediumNotificationSoundFile->text() );
-    Settings::setMediumNotificationWrite( cfg_mediumNotificationWrite->isChecked() );
-    Settings::setMediumNotificationWriteFile( cfg_mediumNotificationWriteFile->text() );
     
     Settings::setUrgentNotificationPopup( cfg_urgentNotificationPopup->isChecked() );
     Settings::setUrgentNotificationSound( cfg_urgentNotificationSound->isChecked() );
     Settings::setUrgentNotificationSoundFile( cfg_urgentNotificationSoundFile->text() );
-    Settings::setUrgentNotificationWrite( cfg_urgentNotificationWrite->isChecked() );
-    Settings::setUrgentNotificationWriteFile( cfg_urgentNotificationWriteFile->text() );
     
     Settings::setHighNotificationPopup( cfg_highNotificationPopup->isChecked() );
     Settings::setHighNotificationSound( cfg_highNotificationSound->isChecked() );
     Settings::setHighNotificationSoundFile( cfg_highNotificationSoundFile->text() );
-    Settings::setHighNotificationWrite( cfg_highNotificationWrite->isChecked() );
-    Settings::setHighNotificationWriteFile( cfg_highNotificationWriteFile->text() );
     
     emit settingsChanged();
 }
@@ -698,12 +599,6 @@ void ConfigDialog::getGeneralNotificationSoundFile()
     cfg_generalNotificationSoundFile->setText( fileName );
 }
 
-void ConfigDialog::getGeneralNotificationWriteFile()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Log File"), QDir::homePath(), "Text Files (*.txt *.log)" );
-    cfg_generalNotificationWriteFile->setText( fileName );
-}
-
 void ConfigDialog::playGeneralNotificationSound()
 {
     Kueue::playSound( cfg_generalNotificationSoundFile->text() );
@@ -713,12 +608,6 @@ void ConfigDialog::getNewPersonalNotificationSoundFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Sound File"), QDir::homePath(), "Sound Files (*.wav *.mp3 *.ogg)" );
     cfg_newPersonalNotificationSoundFile->setText( fileName );
-}
-
-void ConfigDialog::getNewPersonalNotificationWriteFile()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Log File"), QDir::homePath(), "Text Files (*.txt *.log)" );
-    cfg_newPersonalNotificationWriteFile->setText( fileName );
 }
 
 void ConfigDialog::playNewPersonalNotificationSound()
@@ -732,12 +621,6 @@ void ConfigDialog::getUpdatePersonalNotificationSoundFile()
     cfg_updatePersonalNotificationSoundFile->setText( fileName );
 }
 
-void ConfigDialog::getUpdatePersonalNotificationWriteFile()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Log File"), QDir::homePath(), "Text Files (*.txt *.log)" );
-    cfg_updatePersonalNotificationWriteFile->setText( fileName );
-}
-
 void ConfigDialog::playUpdatePersonalNotificationSound()
 {
     Kueue::playSound( cfg_updatePersonalNotificationSoundFile->text() );
@@ -747,12 +630,6 @@ void ConfigDialog::getBomgarNotificationSoundFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Sound File"), QDir::homePath(), "Sound Files (*.wav *.mp3 *.ogg)" );
     cfg_bomgarNotificationSoundFile->setText( fileName );
-}
-
-void ConfigDialog::getBomgarNotificationWriteFile()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Log File"), QDir::homePath(), "Text Files (*.txt *.log)" );
-    cfg_bomgarNotificationWriteFile->setText( fileName );
 }
 
 void ConfigDialog::playBomgarNotificationSound()
@@ -766,12 +643,6 @@ void ConfigDialog::getLowNotificationSoundFile()
     cfg_lowNotificationSoundFile->setText( fileName );
 }
 
-void ConfigDialog::getLowNotificationWriteFile()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Log File"), QDir::homePath(), "Text Files (*.txt *.log)" );
-    cfg_lowNotificationWriteFile->setText( fileName );
-}
-
 void ConfigDialog::playLowNotificationSound()
 {
     Kueue::playSound( cfg_lowNotificationSoundFile->text() );
@@ -780,12 +651,6 @@ void ConfigDialog::playLowNotificationSound()
 void ConfigDialog::getMediumNotificationSoundFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Sound File"), QDir::homePath(), "Sound Files (*.wav *.mp3 *.ogg)" );
-    cfg_mediumNotificationSoundFile->setText( fileName );
-}
-
-void ConfigDialog::getMediumNotificationWriteFile()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Log File"), QDir::homePath(), "Text Files (*.txt *.log)" );
     cfg_mediumNotificationSoundFile->setText( fileName );
 }
 
@@ -800,12 +665,6 @@ void ConfigDialog::getUrgentNotificationSoundFile()
     cfg_urgentNotificationSoundFile->setText( fileName );
 }
 
-void ConfigDialog::getUrgentNotificationWriteFile()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Log File"), QDir::homePath(), "Text Files (*.txt *.log)" );
-    cfg_urgentNotificationWriteFile->setText( fileName );
-}
-
 void ConfigDialog::playUrgentNotificationSound()
 {
     Kueue::playSound( cfg_urgentNotificationSoundFile->text() );
@@ -815,12 +674,6 @@ void ConfigDialog::getHighNotificationSoundFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Sound File"), QDir::homePath(), "Sound Files (*.wav *.mp3 *.ogg)" );
     cfg_highNotificationSoundFile->setText( fileName );
-}
-
-void ConfigDialog::getHighNotificationWriteFile()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Log File"), QDir::homePath(), "Text Files (*.txt *.log)" );
-    cfg_highNotificationWriteFile->setText( fileName );
 }
 
 void ConfigDialog::playHighNotificationSound()
@@ -897,7 +750,7 @@ void BasicConfig::saveConfig()
     {
         QMessageBox* box = new QMessageBox( this );
         
-        box->setText( "For kueue to function, at least a <b>DB Server</b> and an <b>Engineer</b> (ie. your login) are required." );
+        box->setText( "For kueue to function, at least a <b>Server</b> and an <b>Engineer</b> (ie. your login) are required." );
         box->setWindowTitle( "Error" );
         box->setStandardButtons( QMessageBox::Yes );
         box->setDefaultButton( QMessageBox::Yes );

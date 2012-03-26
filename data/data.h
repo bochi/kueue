@@ -29,8 +29,6 @@
 #include "settings.h"
 #include "dataclasses.h"
 
-#include <QWebView>
-#include <QProgressDialog>
 #include <QtNetwork>
 
 class Data : public QObject
@@ -51,8 +49,7 @@ class Data : public QObject
         void updateQueueBrowser();
         void updateQmonBrowser();
         void updateStatsBrowser();
-        void newData();
-        
+
     private slots:
         void getError( QNetworkReply::NetworkError );
         void updateQueue();
