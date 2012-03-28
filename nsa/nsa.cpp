@@ -27,7 +27,7 @@
 #include "nsajob.h"
 #include "kueue.h"
 #include "kueuethreads.h"
-#include "unity/archiveextract.h"
+#include "archivers/archiveextract.h"
 #include "ui/html.h"
 
 #include <QFileDialog>

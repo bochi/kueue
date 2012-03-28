@@ -139,6 +139,54 @@ ArchiverStrategy::operator ArchiverStatus() const
     return ArchiverStatus(supported, name, extensions, executables);
 }
 
+FileSignature::FileSignature(unsigned int offset, const char *pattern, unsigned int len)
+    : offset(offset)
+{
+    this->pattern = QByteArray(pattern, len);
+}
+
+FileSignature::FileSignature()
+    : offset(0)
+{
+}
+
+FileSignature::FileSignature(const FileSignature &sig)
+{
+    pattern = sig.pattern;
+    offset = sig.offset;
+}
+
+FileSignature::~FileSignature()
+{
+}
+
+bool FileSignature::matches(QFile *file) const
+{
+    if (pattern.size() > 0 && file->seek(offset))
+    {
+        for (int i=0; i<pattern.size(); i++)
+        {
+            char c;
+            if (!file->getChar(&c))
+                return false;
+            if (c != pattern.at(i))
+                return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+FileSignature& FileSignature::operator =(const FileSignature &sig)
+{
+    if (this != &sig)
+    {
+        pattern = sig.pattern;
+        offset = sig.offset;
+    }
+    return *this;
+}
+
 using Utility::which;
 
 AceArchiverStrategy::AceArchiverStrategy()

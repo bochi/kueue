@@ -31,7 +31,7 @@
 
 #include "downloadmanager.h"
 #include "autosaver.h"
-#include "unity/archiveextract.h"
+#include "archivers/archiveextract.h"
 #include "settings.h"
 #include "kueue.h"
 #include "kueuethreads.h"

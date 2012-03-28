@@ -17,17 +17,33 @@
 
 #include <QString>
 #include <QStringList>
-#include "FileSignature.h"
-#include "ArchiverHint.h"
-#include "ArchiverStatus.h"
+#include <QByteArray>
+
 #include "ArchiversConfiguration.h"
 
 class QFile;
+class FileSignature;
 
 	/**
 	 * @brief Base class that provides configuration information and commandline parameters for external archivers.
 	 */
-   class ArchiverStrategy
+    class FileSignature
+    {
+    public:
+        FileSignature(unsigned int offset, const char *pattern, unsigned int len);
+        FileSignature();
+        FileSignature(const FileSignature &sig);
+        ~FileSignature();
+
+        bool matches(QFile *file) const;
+        FileSignature& operator =(const FileSignature &sig);
+
+    private:
+        unsigned int offset;
+        QByteArray pattern;
+    };
+
+    class ArchiverStrategy
     {
     public:
         ArchiverStrategy(const QString &name, const FileSignature &sig);
@@ -105,7 +121,7 @@ class QFile;
         QStringList extractArgs;
         QStringList listArgs;
     };
-
+    
     class AceArchiverStrategy: public ArchiverStrategy
     {
     public:

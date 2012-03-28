@@ -100,7 +100,6 @@ SET( kueue_CPP  main.cpp
                 unity/popupwindow.cpp
                 unity/webeditor.cpp
                 unity/unitynetwork.cpp
-		unity/archiveextract.cpp
 
                 ui/kueuewindow.cpp
                 ui/html.cpp
@@ -130,13 +129,11 @@ SET( kueue_CPP  main.cpp
 		ui/browsers/search/lineedit.cpp 
 		ui/browsers/search/clearbutton.cpp 
 		ui/browsers/search/searchbutton.cpp
-                
+               
+	        archivers/archiveextract.cpp	
                 archivers/ArchiverStrategy.cpp
-                archivers/ArchiverHint.cpp
                 archivers/Utility.cpp
-                archivers/ArchiverStatus.cpp
                 archivers/ArchiversConfiguration.cpp
-                archivers/FileSignature.cpp
                 
                 nsa/nsa.cpp
 		nsa/nsawindow.cpp
