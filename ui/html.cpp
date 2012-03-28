@@ -238,15 +238,24 @@ QString HTML::SRTable( QueueSR sr )
                                 "<td width='100%' bgcolor='#E8E8E8'>"
                                     "<a href='sr://" + sr.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
                                         "<tr width='100%'>"
-                                            "<td class='gadgetHead' valign='center' width='15%'>" );
+                                            "<td class='gadgetHead' valign='center' width='15%'><font" );
 
+    if ( sr.severity ==  "High" )
+    {
+        srtab += ( " color='DarkRed'" );
+    }
+    else if ( sr.severity == "Urgent" )
+    {
+        srtab += ( " color='DarkBlue'" );
+    }
+    
     if ( sr.srtype == "cr" ) 
     {    
-        srtab += QString("<p style='line-height:0.8em;'><b>&nbsp;CR# " + sr.id + "&nbsp;</b></p><p style='line-height:0.7em;'><font size='-1'><i>&nbsp;" + sr.status + "</i></p>" );
+        srtab += QString("><p style='line-height:0.8em;'><b>&nbsp;CR# " + sr.id + "&nbsp;</b></font></p><p style='line-height:0.7em;'><font size='-1'><i>&nbsp;" + sr.status + "</i></p>" );
     }
     else 
     {    
-        srtab += QString("<p style='line-height:0.8em;'><b>&nbsp;SR# " + sr.id + "&nbsp;</b>" );
+        srtab += QString("><p style='line-height:0.8em;'><b>&nbsp;SR# " + sr.id + "&nbsp;</b></font>" );
         
         if ( ( sr.highvalue ) || ( sr.critsit ) )
         {
@@ -303,25 +312,73 @@ QString HTML::SRTable( QueueSR sr )
                     "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''></img>"
                 "</td>"
                 "<td width='100%'>"
-                    "<table cellpadding='0' cellspacing='0' border='0'>"
-                        "<tr>"
-                            "<td class='gadgetText'>"
+                    "<table cellpadding='0' cellspacing='0' border='0' width='100%'>"
                                 "<tr>"
-                                    "<td class='gadgetText'>Customer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>"
-                                    "<td class='gadgetText'>" + sr.cus_account + " (" + sr.cus_firstname + " " + sr.cus_lastname +")</td>"
+                                    "<td class='gadgetText' width='15%'>&nbsp;Severity</td>"
+                                    "<td class='gadgetText' width='85%'>" + sr.severity + "</td>"
                                 "</tr>"
                                 "<tr>"
-                                    "<td class='gadgetText'>Age</td>"
-                                    "<td class='gadgetText'>" + QString::number( sr.age ) + " days</td>"
+                                    "<td class='gadgetText'>&nbsp;Customer</td>"
+                                    "<td class='gadgetText'>" + sr.cus_account + "</td>"
                                 "</tr>"
                                 "<tr>"
-                                    "<td class='gadgetText'>Status</td>"
-                                    "<td class='gadgetText'>" + sr.status + "</td>"
-                                "</tr>"
-                                "<tr>"
-                                    "<td class='gadgetText'>Last Update</td>"
-                                    "<td class='gadgetText'>" + QString::number( sr.lastUpdateDays ) + " days ago</td>"
-                                "</tr>" );
+                                    "<td class='gadgetText'>&nbsp;Contact</td>"
+                                    "<td class='gadgetText'>" + sr.cus_firstname + " " + 
+                                     sr.cus_lastname );
+    
+    if ( !sr.cus_title.isEmpty() )
+    {
+        srtab+=( " (" + sr.cus_title + ")" );
+    }
+    
+    if ( !sr.cus_lang.isEmpty() )
+    {
+        srtab+=( " (" + sr.cus_lang + ")" );
+    }
+    
+    srtab+=( "</td></tr>" );
+    
+    if (  !sr.cus_email.isEmpty() )
+    {
+        srtab+=( "<tr>"
+                   "<td class='gadgetText'>&nbsp;Email</td>"
+                   "<td class='gadgetText'><a href=mailto:" +  sr.cus_email + "?cc=techsup@novell.com"
+                   "?subject='SR#" + sr.id + " - " + sr.bdesc + "'>" +
+                                     sr.cus_email + "</a></td>"
+                 "</tr>" );
+    }
+    
+    if (  !sr.cus_phone.isEmpty() )
+    {
+        srtab+=( "<tr>"
+                   "<td class='gadgetText'>&nbsp;Phone</td>"
+                   "<td class='gadgetText'>" + sr.cus_phone + "</td>"
+                 "</tr>" );
+    }
+    
+    if (  !sr.cus_onsitephone.isEmpty() )
+    {
+        srtab+=( "<tr>"
+                   "<td class='gadgetText'>&nbsp;Onsite Phone</td>"
+                   "<td class='gadgetText'>" + sr.cus_onsitephone + "</td>"
+                 "</tr>" );
+    }
+    
+    if ( sr.highvalue )
+    {
+        srtab += QString(  "<tr>"
+                             "<td class='gadgetText'>&nbsp;High Value</td>"
+                             "<td class='gadgetText'>Yes <img src='qrc:/images/obacht.png'></img></td>"
+                           "</tr>" );
+    }
+
+    if ( sr.critsit )
+    {
+        srtab += QString( "<tr>"
+                            "<td class='gadgetText'>&nbsp;CritSit</td>"
+                            "<td class='gadgetText'>Yes <img src='qrc:/images/obacht.png'></img></td>"
+                          "</tr>" );
+    }
 
     QStringList list = sr.todoList;
     
@@ -329,7 +386,7 @@ QString HTML::SRTable( QueueSR sr )
         !(Settings::todoShowStat() ) && 
         !( Settings::todoShowUp() ) ) )
     {                
-        srtab+= ( "<tr><td class='gadgetText' valign='top'>TODO</td><td class='gadgetText'>" );
+        srtab+= ( "<tr><td class='gadgetText' valign='top'>&nbsp;TODO</td><td class='gadgetText'>" );
   
         for (int i = 0; i < list.size(); ++i) 
         {
@@ -366,11 +423,11 @@ QString HTML::SRTable( QueueSR sr )
                 }
             }
         }
+        
+        srtab += "</td>";
     }
-  
-    srtab +=( "</td></tr>" );
     
-    srtab += (   "</table></a></a></td><td width='1' rowspan='4' class='dotlinevert'><img src='qrc:/images/spacer.gif'"
+    srtab += (   "</tr></table></a></a></td><td width='1' rowspan='4' class='dotlinevert'><img src='qrc:/images/spacer.gif'"
                 "width='1' height='1' border='0' alt=''></td></tr><tr><td colspan='3'><div class='dotlinehoriz'>"
                 "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''></div></td></tr></table></a><div id='abstand'></div>" );  
 

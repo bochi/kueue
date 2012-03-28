@@ -40,6 +40,7 @@
 #include <QWidgetAction>
 #include <QWebElementCollection>
 #include <QToolButton>
+#include <QDesktopServices>
 
 QueueBrowser::QueueBrowser( QObject *parent )
         : QWebView( ( QWidget* ) 0 )
@@ -196,6 +197,12 @@ void QueueBrowser::mousePressEvent( QMouseEvent* event )
     {
         toggleSrTable( mUrl.toString().remove( "arrow://" ) );
         toggleInfoHeader( mUrl.toString().remove( "arrow://" ) );
+    }
+    
+    if ( ( event->button() == 1 ) && 
+         ( mUrl.toString().startsWith(  "mailto" ) ) )
+    {
+        QDesktopServices::openUrl( mUrl );
     }
     
     // Right mouse button     
