@@ -12,12 +12,6 @@
 
 #include "ArchiversConfiguration.h"
 #include "ArchiverStrategy.h"
-#include "ZipArchiverStrategy.h"
-#include "RarArchiverStrategy.h"
-#include "AceArchiverStrategy.h"
-#include "TargzArchiverStrategy.h"
-#include "Tarbz2ArchiverStrategy.h"
-#include "P7zipArchiverStrategy.h"
 
 ArchiversConfiguration& ArchiversConfiguration::instance()
 {
@@ -31,6 +25,7 @@ ArchiversConfiguration::ArchiversConfiguration()
     archivers.append(new RarArchiverStrategy());
     archivers.append(new AceArchiverStrategy());
     archivers.append(new TargzArchiverStrategy());
+    archivers.append(new TarArchiverStrategy());
     archivers.append(new Tarbz2ArchiverStrategy());
     archivers.append(new P7zipArchiverStrategy());
 

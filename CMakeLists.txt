@@ -131,16 +131,10 @@ SET( kueue_CPP  main.cpp
 		ui/browsers/search/clearbutton.cpp 
 		ui/browsers/search/searchbutton.cpp
                 
-                archivers/AceArchiverStrategy.cpp
                 archivers/ArchiverStrategy.cpp
                 archivers/ArchiverHint.cpp
                 archivers/Utility.cpp
-                archivers/TargzArchiverStrategy.cpp
                 archivers/ArchiverStatus.cpp
-                archivers/Tarbz2ArchiverStrategy.cpp
-                archivers/ZipArchiverStrategy.cpp
-                archivers/P7zipArchiverStrategy.cpp
-                archivers/RarArchiverStrategy.cpp
                 archivers/ArchiversConfiguration.cpp
                 archivers/FileSignature.cpp
                 

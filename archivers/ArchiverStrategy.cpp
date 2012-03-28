@@ -11,6 +11,10 @@
  */
 
 #include "ArchiverStrategy.h"
+#include "Utility.h"
+
+#include <QTextStream>
+#include <QString>
 #include <QFile>
 
 ArchiverStrategy::ArchiverStrategy(const QString &name, const FileSignature &sig)
@@ -133,4 +137,226 @@ ArchiverStrategy::operator ArchiverStatus() const
 {
     Q_ASSERT(executables.size() > 0);
     return ArchiverStatus(supported, name, extensions, executables);
+}
+
+using Utility::which;
+
+AceArchiverStrategy::AceArchiverStrategy()
+    : ArchiverStrategy("ace", FileSignature(8, "\x2a\x41\x43\x45", 4))
+{
+}
+
+AceArchiverStrategy::~AceArchiverStrategy()
+{
+}
+
+void AceArchiverStrategy::configure()
+{
+    addExtension(".ace");
+    addExtension(".cba");
+    setExecutables("unace");
+
+    if (which("unace") != QString::null)
+    {
+        setExtractArguments("unace x -y -c- @F");
+        setListArguments("unace l -y -c- @F");
+        setSupported();
+    }
+}
+
+P7zipArchiverStrategy::P7zipArchiverStrategy()
+    : ArchiverStrategy("p7zip", FileSignature())
+{
+}
+
+P7zipArchiverStrategy::~P7zipArchiverStrategy()
+{
+}
+
+void P7zipArchiverStrategy::configure()
+{
+    addExtension(".7z");
+    addExtension(".cb7");
+
+    setExecutables("7z", "7zr");
+
+    if (which("7z") != QString::null)
+    {
+        setExtractArguments("7z x @F");
+        setListArguments("7z l @F");
+        setSupported();
+    }
+    else if (which("7zr") != QString::null)
+    {
+        setExtractArguments("7zr x @F");
+        setListArguments("7zr l @F");
+        setSupported();
+    }
+}
+
+RarArchiverStrategy::RarArchiverStrategy()
+    : ArchiverStrategy("rar", FileSignature(0, "\x52\x61\x72\x21", 4)), nonfree_unrar(false)
+{
+}
+
+RarArchiverStrategy::~RarArchiverStrategy()
+{
+}
+
+void RarArchiverStrategy::configure()
+{
+    addExtension(".rar");
+    addExtension(".cbr");
+    setExecutables("rar", "unrar");
+
+    if (which("rar") != QString::null)
+    {
+        setExtractArguments("rar -o+ x @F");
+        setListArguments("rar lb @F");
+        setSupported();
+    }
+    else if (which("unrar") != QString::null)
+    {
+        FILE *f;
+        //
+        // now determine which unrar it is - free or non-free
+        if ((f = popen("unrar", "r")) != NULL)
+        {
+            QRegExp regexp("^UNRAR.+freeware");
+            for (QTextStream s(f); !s.atEnd(); )
+            {
+                if (regexp.indexIn(s.readLine()) >= 0)
+                {
+                    nonfree_unrar = true;
+                    break;
+                }
+            }
+            pclose(f);
+            if (nonfree_unrar)
+            {
+                setExtractArguments("unrar -o+ x @F");
+                setListArguments("unrar lb @F");
+            }
+            else
+            {
+                setExtractArguments("unrar -o+ -x @F");
+                setListArguments("unrar -t @F");
+            }
+            setSupported();
+        }
+    }
+    else if (which("unrar-free") != QString::null) //some distros rename free unrar like this
+    {
+        setExtractArguments("unrar-free -o+ -x @F");
+        setListArguments("unrar-free -t @F");
+        setSupported();
+    }
+}
+
+QList<ArchiverHint> RarArchiverStrategy::getHints() const
+{
+    QList<ArchiverHint> hints;
+    if (isSupported() && !nonfree_unrar)
+    {
+        hints.append(ArchiverHint(
+                         ArchiversConfiguration::tr("Free (opensource) version of unrar was detected. "
+                                                    "This version has problems with many rar archives. "
+                                                    "It is recommended to install the non-free unrar and restart QComicBook."),
+                         ArchiverHint::Warning));
+    }
+    return hints;
+}
+
+TarArchiverStrategy::TarArchiverStrategy()
+    : ArchiverStrategy("tar", FileSignature())
+{
+}
+
+TarArchiverStrategy::~TarArchiverStrategy()
+{
+}
+
+void TarArchiverStrategy::configure()
+{
+    addExtension(".tar");
+    setExecutables("tar");
+
+    if (which("tar") != QString::null)
+    {
+        setExtractArguments("tar --overwrite -xvf @F");
+        setListArguments("tar -tf @F");
+        setSupported();
+    }
+}
+
+Tarbz2ArchiverStrategy::Tarbz2ArchiverStrategy()
+    : ArchiverStrategy("tar.bz2", FileSignature())
+{
+}
+
+Tarbz2ArchiverStrategy::~Tarbz2ArchiverStrategy()
+{
+}
+
+void Tarbz2ArchiverStrategy::configure()
+{
+    addExtension(".tbz");
+    addExtension(".tar.bz2");
+    addExtension(".cbb");
+    setExecutables("tar");
+
+    if (which("tar") != QString::null)
+    {
+        setExtractArguments("tar --overwrite -xvjf @F");
+        setListArguments("tar -tjf @F");
+        setSupported();
+    }
+}
+
+TargzArchiverStrategy::TargzArchiverStrategy()
+    : ArchiverStrategy("tar.gz", FileSignature())
+{
+}
+
+TargzArchiverStrategy::~TargzArchiverStrategy()
+{
+}
+
+void TargzArchiverStrategy::configure()
+{
+    addExtension(".tar.gz");
+    addExtension(".tgz");
+    addExtension(".cbg");
+    setExecutables("tar");
+
+    if (which("tar") != QString::null)
+    {
+        setExtractArguments("tar --overwrite -xvzf @F");
+        setListArguments("tar -tzf @F");
+        setSupported();
+    }
+}
+
+ZipArchiverStrategy::ZipArchiverStrategy()
+    : ArchiverStrategy("zip", FileSignature(0, "\x50\x4b\x03\x04", 4))
+{
+}
+
+ZipArchiverStrategy::~ZipArchiverStrategy()
+{
+}
+
+void ZipArchiverStrategy::configure()
+{
+    addExtension(".zip");
+    addExtension(".cbz");
+    addExtension(".cbr");
+    setExecutables("unzip");
+
+    if (which("unzip") != QString::null)
+    {
+        setExtractArguments("unzip -o @F");
+        setListArguments("unzip -l @F");
+        setSupported();
+    }
 }

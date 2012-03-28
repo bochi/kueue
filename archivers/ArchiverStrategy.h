@@ -20,6 +20,7 @@
 #include "FileSignature.h"
 #include "ArchiverHint.h"
 #include "ArchiverStatus.h"
+#include "ArchiversConfiguration.h"
 
 class QFile;
 
@@ -105,5 +106,71 @@ class QFile;
         QStringList listArgs;
     };
 
+    class AceArchiverStrategy: public ArchiverStrategy
+    {
+    public:
+        AceArchiverStrategy();
+        virtual ~AceArchiverStrategy();
 
-#endif
+        virtual void configure();
+    };
+    
+    class P7zipArchiverStrategy: public ArchiverStrategy
+    {
+    public:
+        P7zipArchiverStrategy();
+        virtual ~P7zipArchiverStrategy();
+
+        virtual void configure();
+    };
+
+    class RarArchiverStrategy: public ArchiverStrategy
+    {
+    public:
+        RarArchiverStrategy();
+        virtual ~RarArchiverStrategy();
+
+        virtual void configure();
+        virtual QList<ArchiverHint> getHints() const;
+
+    private:
+        bool nonfree_unrar;
+    };
+    
+    class TarArchiverStrategy: public ArchiverStrategy
+    {
+    public:
+        TarArchiverStrategy();
+        virtual ~TarArchiverStrategy();
+
+        virtual void configure();
+    };
+    
+    class Tarbz2ArchiverStrategy: public ArchiverStrategy
+    {
+    public:
+        Tarbz2ArchiverStrategy();
+        virtual ~Tarbz2ArchiverStrategy();
+
+        virtual void configure();
+    };
+
+    class TargzArchiverStrategy: public ArchiverStrategy
+    {
+    public:
+        TargzArchiverStrategy();
+        virtual ~TargzArchiverStrategy();
+
+        virtual void configure();
+    };
+    
+    class ZipArchiverStrategy: public ArchiverStrategy
+    {
+    public:
+        ZipArchiverStrategy();
+        virtual ~ZipArchiverStrategy();
+
+        virtual void configure();
+    };
+
+    #endif

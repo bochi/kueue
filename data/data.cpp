@@ -282,54 +282,59 @@ void Data::qmonUpdateFinished()
     doc.setContent( r->readAll() );
     QDomNodeList list = doc.elementsByTagName( "sr" );
     
-    for ( int i = 0; i < list.size(); ++i ) 
-    {   
-        QmonSR sr;
-        
-        sr.id = list.at( i ).namedItem( "id" ).toElement().text(); 
-        sr.queue = list.at( i ).namedItem( "queue" ).toElement().text(); 
-        sr.bomgarQ = list.at( i ).namedItem( "bomgarQ" ).toElement().text(); 
-        sr.srtype = list.at( i ).namedItem( "srtype" ).toElement().text(); 
-        sr.creator = list.at( i ).namedItem( "creator" ).toElement().text(); 
-        sr.cus_account = list.at( i ).namedItem( "cus_account" ).toElement().text(); 
-        sr.cus_firstname = list.at( i ).namedItem( "cus_firstname" ).toElement().text(); 
-        sr.cus_lastname = list.at( i ).namedItem( "cus_lastname" ).toElement().text(); 
-        sr.cus_title = list.at( i ).namedItem( "cus_title" ).toElement().text(); 
-        sr.cus_email = list.at( i ).namedItem( "cus_email" ).toElement().text(); 
-        sr.cus_phone = list.at( i ).namedItem( "cus_phone" ).toElement().text(); 
-        sr.cus_onsitephone = list.at( i ).namedItem( "cus_onsitephone" ).toElement().text(); 
-        sr.cus_lang = list.at( i ).namedItem( "cus_lang" ).toElement().text(); 
-        sr.severity = list.at( i ).namedItem( "severity" ).toElement().text(); 
-        sr.status = list.at( i ).namedItem( "status" ).toElement().text(); 
-        sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text(); 
-        sr.ddesc = list.at( i ).namedItem( "ddesc" ).toElement().text(); 
-        sr.geo = list.at( i ).namedItem( "geo" ).toElement().text(); 
-        sr.hours = list.at( i ).namedItem( "hours" ).toElement().text(); 
-        sr.source = list.at( i ).namedItem( "source" ).toElement().text(); 
-        sr.support_program = list.at( i ).namedItem( "support_program" ).toElement().text(); 
-        sr.support_program_long = list.at( i ).namedItem( "support_program_long" ).toElement().text(); 
-        sr.routing_product = list.at( i ).namedItem( "routing_product" ).toElement().text(); 
-        sr.support_group_routing = list.at( i ).namedItem( "support_group_routing" ).toElement().text(); 
-        sr.int_type = list.at( i ).namedItem( "int_type" ).toElement().text(); 
-        sr.subtype = list.at( i ).namedItem( "subtype" ).toElement().text(); 
-        sr.service_level = list.at( i ).namedItem( "service_level" ).toElement().text().toInt(); 
-        sr.category = list.at( i ).namedItem( "category" ).toElement().text(); 
-        sr.respond_via = list.at( i ).namedItem( "respond_via" ).toElement().text(); 
-        sr.agesec = list.at( i ).namedItem( "age" ).toElement().text().toInt(); 
-        sr.lastupdatesec = list.at( i ).namedItem( "lastupdate" ).toElement().text().toInt(); 
-        sr.timeinqsec = list.at( i ).namedItem( "timeinQ" ).toElement().text().toInt(); 
-        sr.slasec = list.at( i ).namedItem( "sla" ).toElement().text().toInt(); 
-        sr.highvalue = list.at( i ).namedItem( "highvalue" ).toElement().text().toInt();
-        sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
-        
-        q.srList.append( sr );
+    if ( list.isEmpty() )
+    {
+        qDebug() << "Qmon Update failed from" << r->url();
     }
-    
-    q.total = q.srList.size();
-    
-    Database::updateQmon( q, mDB );
-    
-    updateQmonBrowser();
+    else
+    {
+        for ( int i = 0; i < list.size(); ++i ) 
+        {   
+            QmonSR sr;
+            
+            sr.id = list.at( i ).namedItem( "id" ).toElement().text(); 
+            sr.queue = list.at( i ).namedItem( "queue" ).toElement().text(); 
+            sr.bomgarQ = list.at( i ).namedItem( "bomgarQ" ).toElement().text(); 
+            sr.srtype = list.at( i ).namedItem( "srtype" ).toElement().text(); 
+            sr.creator = list.at( i ).namedItem( "creator" ).toElement().text(); 
+            sr.cus_account = list.at( i ).namedItem( "cus_account" ).toElement().text(); 
+            sr.cus_firstname = list.at( i ).namedItem( "cus_firstname" ).toElement().text(); 
+            sr.cus_lastname = list.at( i ).namedItem( "cus_lastname" ).toElement().text(); 
+            sr.cus_title = list.at( i ).namedItem( "cus_title" ).toElement().text(); 
+            sr.cus_email = list.at( i ).namedItem( "cus_email" ).toElement().text(); 
+            sr.cus_phone = list.at( i ).namedItem( "cus_phone" ).toElement().text(); 
+            sr.cus_onsitephone = list.at( i ).namedItem( "cus_onsitephone" ).toElement().text(); 
+            sr.cus_lang = list.at( i ).namedItem( "cus_lang" ).toElement().text(); 
+            sr.severity = list.at( i ).namedItem( "severity" ).toElement().text(); 
+            sr.status = list.at( i ).namedItem( "status" ).toElement().text(); 
+            sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text(); 
+            sr.ddesc = list.at( i ).namedItem( "ddesc" ).toElement().text(); 
+            sr.geo = list.at( i ).namedItem( "geo" ).toElement().text(); 
+            sr.hours = list.at( i ).namedItem( "hours" ).toElement().text(); 
+            sr.source = list.at( i ).namedItem( "source" ).toElement().text(); 
+            sr.support_program = list.at( i ).namedItem( "support_program" ).toElement().text(); 
+            sr.support_program_long = list.at( i ).namedItem( "support_program_long" ).toElement().text(); 
+            sr.routing_product = list.at( i ).namedItem( "routing_product" ).toElement().text(); 
+            sr.support_group_routing = list.at( i ).namedItem( "support_group_routing" ).toElement().text(); 
+            sr.int_type = list.at( i ).namedItem( "int_type" ).toElement().text(); 
+            sr.subtype = list.at( i ).namedItem( "subtype" ).toElement().text(); 
+            sr.service_level = list.at( i ).namedItem( "service_level" ).toElement().text().toInt(); 
+            sr.category = list.at( i ).namedItem( "category" ).toElement().text(); 
+            sr.respond_via = list.at( i ).namedItem( "respond_via" ).toElement().text(); 
+            sr.agesec = list.at( i ).namedItem( "age" ).toElement().text().toInt(); 
+            sr.lastupdatesec = list.at( i ).namedItem( "lastupdate" ).toElement().text().toInt(); 
+            sr.timeinqsec = list.at( i ).namedItem( "timeinQ" ).toElement().text().toInt(); 
+            sr.slasec = list.at( i ).namedItem( "sla" ).toElement().text().toInt(); 
+            sr.highvalue = list.at( i ).namedItem( "highvalue" ).toElement().text().toInt();
+            sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
+            
+            q.srList.append( sr );
+        }
+            
+        q.total = q.srList.size();
+        Database::updateQmon( q, mDB );
+        updateQmonBrowser();
+    }
 }
 
 void Data::statsUpdateFinished()

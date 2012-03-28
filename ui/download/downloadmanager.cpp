@@ -504,9 +504,7 @@ void DownloadItem::finished()
     
     if ( QFileInfo( mOutput.fileName() ).suffix() == "tbz" )
     {  
-        #ifndef IS_WIN32
         nsaButton->setVisible( true );
-        #endif
     }
 
     mOutput.close();
@@ -519,10 +517,8 @@ void DownloadItem::finished()
          ( QFileInfo( mOutput.fileName() ).suffix() == "zip" ) ||
          ( QFileInfo( mOutput.fileName() ).suffix() == "tbz" ) ) )
     {
-	#ifndef IS_WIN32
         ArchiveExtract* x = new ArchiveExtract( mOutput.fileName(), QFileInfo( mOutput.fileName() ).dir().absolutePath() );
-	KueueThreads::enqueue( x );
-	#endif
+        KueueThreads::enqueue( x );
     }
     
     Kueue::notify( "kueue-general", "Download finished", "<b>" + QFileInfo( mOutput.fileName() ).fileName() +
@@ -545,9 +541,7 @@ void DownloadItem::generateNsaReport()
 
 void DownloadItem::nsaFinished()
 {
-    #ifndef IS_WIN32
     nsaButton->setEnabled( true );
-    #endif
 }
 
 /*!
@@ -821,9 +815,7 @@ void DownloadManager::load()
             item->progressBar->setVisible(false);
             if ( QFileInfo( fileName ).suffix() == "tbz" )
             {
-                #ifndef IS_WIN32
                 item->nsaButton->setVisible( true );
-                #endif  
             }
             addItem(item);
         }
