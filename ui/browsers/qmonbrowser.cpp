@@ -40,6 +40,7 @@
 #include <QGridLayout>
 #include <QToolButton>
 #include <QWebElementCollection>
+#include <QDesktopServices>
 #include <QNetworkReply>
 #include <QDebug>
 
@@ -151,6 +152,12 @@ void QMonBrowser::mousePressEvent( QMouseEvent* event )
          ( mUrl.toString().startsWith(  "arrow://" ) ) )
     {
         toggleSrTable( mUrl.toString().remove( "arrow://" ) );
+    }
+        
+    if ( ( event->button() == 1 ) && 
+         ( mUrl.toString().startsWith(  "mailto" ) ) )
+    {
+        QDesktopServices::openUrl( mUrl );
     }
     
     // Right mouse button     
