@@ -101,7 +101,10 @@ UnityPage::UnityPage( QObject *parent, QString sr )
                     
         QString url = r->readAll().trimmed();
         Settings::setUnityURL( url );
+        
+        #ifndef IS_WIN32
         sleep( 1 );
+        #endif
     }
     
     mainFrame()->load( QUrl( Settings::unityURL() ) );
