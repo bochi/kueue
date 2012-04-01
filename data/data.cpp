@@ -46,16 +46,8 @@ Data::Data()
         mIPs.append( al.at( i ).toString() );
     }
     
-    #ifdef IS_WIN32
-    
-    mDB = "db-" + QString::fromAscii( thread()->currentThreadId() );
-    
-    #else
-    
-    mDB = "db-" + QString::number( thread()->currentThreadId() );
-    
-    #endif
-    
+    mDB = "db-thread";
+
     QDir dir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) );
     
     Database::openDbConnection( mDB );
@@ -96,6 +88,8 @@ Data::Data()
 Data::~Data()
 {
     qDebug() << "[DATA] Destroying";
+    QSqlDatabase::database( mDB ).close();
+    QSqlDatabase::removeDatabase( mDB );
 }
 
 QNetworkReply* Data::get( const QString& u )
