@@ -46,7 +46,15 @@ Data::Data()
         mIPs.append( al.at( i ).toString() );
     }
     
+    #ifdef IS_WIN32
+    
+    mDB = "db-" + QString::fromAscii( thread()->currentThreadId() );
+    
+    #else
+    
     mDB = "db-" + QString::number( thread()->currentThreadId() );
+    
+    #endif
     
     QDir dir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) );
     
