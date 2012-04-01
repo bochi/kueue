@@ -129,6 +129,7 @@ void NSAJob::run()
     
     mNsaDir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "\\nsa" );
     QString perldir = mNsaDir.absolutePath() + "\\perl\\";
+    qDebug() << "NSA" << mNsaDir << "PERL" << perldir << "PEX" << PERL_EXEC;
     
     #else
     
