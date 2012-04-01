@@ -549,26 +549,24 @@ QString HTML::qmonSrInQueue( QmonSR sr )
     {
         srtab += QString( " - SLA: " + timeString( sr.slasec ) );
     }
-                        
-                      
-        srtab += ( "</p></font></td><td align='right'>"
-                            "<a href='arrow://" + sr.id + "'><img src='qrc:/images/ni_gadget_arrow.gif'></img></a><br>"
-                        "</td>"
-                    "</tr>"
+                                   
+    srtab += ( "</p></font></td><td align='right'>"
+                 "<a href='arrow://" + sr.id + "'><img src='qrc:/images/ni_gadget_arrow.gif'></img></a><br>"
+                "</td>"
+                "</tr>"
                 "</table>"
-            "</td>"
-            "<td width='1' rowspan='4' class='dotlinevert'>"
-                "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''></img>"
-            "</td>"
-        "</tr>"
-        "<tr>"
-            "<td colspan='3'>"
-                "<div class='dotlinehoriz'>"
-                "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''></img>"
-                "</div>"
-            "</td>"
-        "</tr>"
-    "</table>" );
+                "</td>"
+                  "<td width='1' rowspan='4' class='dotlinevert'>"
+                   "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''></img>"
+                "</td>"
+              "</tr>"
+               "<tr>"
+                 "<td colspan='3'><div class='dotlinehoriz'>"
+                   "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''></img>"
+                   "</div>"
+                 "</td>"
+              "</tr>"
+           "</table>" );
       
    srtab += (
     "<a href='sr://" + sr.id + "'><table id='" + sr.id + "_body' width='100%' cellspacing='0' cellpadding='0' border='0' style='display:" );
@@ -592,7 +590,8 @@ QString HTML::qmonSrInQueue( QmonSR sr )
 
     if ( !sr.isCr )
     {
-        srtab += QString( "<tr><td class='gadgetText' width='18%'>&nbsp;Contact</td><td class='gadgetText' width='82%'>" + sr.cus_firstname.trimmed() + " " + sr.cus_lastname.trimmed() );
+        srtab += QString( "<tr><td class='gadgetText' width='18%'>&nbsp;Contact</td>"
+                          "<td class='gadgetText' width='82%'>" + sr.cus_firstname.trimmed() + " " + sr.cus_lastname.trimmed() );
                
         
         if ( !sr.cus_title.isEmpty() )
@@ -611,31 +610,34 @@ QString HTML::qmonSrInQueue( QmonSR sr )
                                     + "&body=" + QUrl::toPercentEncoding( sr.cus_firstname + " " + sr.cus_lastname );
             
             srtab+=( "<tr>"
-                    "<td class='gadgetText'>&nbsp;Email</td>"
-                    "<td class='gadgetText'><a href=" + mailto + ">" + sr.cus_email + "</a></td>"
+                      "<td class='gadgetText'>&nbsp;Email</td>"
+                      "<td class='gadgetText'><a href=" + mailto + ">" + sr.cus_email + "</a></td>"
                     "</tr>" );
         }
         
         if (  !sr.cus_phone.isEmpty() )
         {
             srtab+=( "<tr>"
-                    "<td class='gadgetText'>&nbsp;Phone</td>"
-                    "<td class='gadgetText'>" + sr.cus_phone + "</td>"
+                      "<td class='gadgetText'>&nbsp;Phone</td>"
+                      "<td class='gadgetText'>" + sr.cus_phone + "</td>"
                     "</tr>" );
         }
         
         if (  !sr.cus_onsitephone.isEmpty() )
         {
             srtab+=( "<tr>"
-                    "<td class='gadgetText'>&nbsp;Onsite Phone</td>"
-                    "<td class='gadgetText'>" + sr.cus_onsitephone + "</td>"
+                      "<td class='gadgetText'>&nbsp;Onsite Phone</td>"
+                      "<td class='gadgetText'>" + sr.cus_onsitephone + "</td>"
                     "</tr>" );
         }
         
-      srtab += QString( "<tr>"
-                           "<td class='gadgetText'>&nbsp;Contact via</td>"
-                           "<td class='gadgetText'>" + sr.respond_via + "</td>"
-                        "</tr>" );
+        if ( !sr.respond_via.isEmpty() )
+        {
+            srtab += QString( "<tr>"
+                                "<td class='gadgetText'>&nbsp;Contact via</td>"
+                                "<td class='gadgetText'>" + sr.respond_via + "</td>"
+                              "</tr>" );
+        }
     }
     else
     {
@@ -655,14 +657,18 @@ QString HTML::qmonSrInQueue( QmonSR sr )
                           "</tr>" );
     }
   
-     srtab += QString(  "<tr>"
-                          "<td class='gadgetText'>&nbsp;Contract</td>"
-                          "<td class='gadgetText'>" + sr.support_program_long + "</td>"
-                        "</tr>"
-                        "<tr>"
-                          "<td class='gadgetText'>&nbsp;Last Update</td>"
-                          "<td class='gadgetText'>" + QString::number( secDays( sr.lastupdatesec ) ) + " days ago</td>"
-                        "</tr>" );
+    if ( !sr.isCr )
+    {
+        srtab += QString( "<tr>"
+                            "<td class='gadgetText'>&nbsp;Contract</td>"
+                            "<td class='gadgetText'>" + sr.support_program_long + "</td>"
+                          "</tr>" );
+    }
+    
+    srtab += QString(  "<tr>"
+                         "<td class='gadgetText'>&nbsp;Last Update</td>"
+                         "<td class='gadgetText'>" + QString::number( secDays( sr.lastupdatesec ) ) + " days ago</td>"
+                       "</tr>" );
     
     if ( sr.highvalue )
     {
@@ -712,10 +718,10 @@ QString HTML::statsPageHeader( Statz s )
                    "<img src='qrc:/images/logo_im_end.gif' width='12' height='80' border='0'></div></div>"
                    "<div id='content'>" );
     
-    if ( sl.isEmpty() || cl.isEmpty() )
+    /*if ( sl.isEmpty() || cl.isEmpty() )
     {
         return ph + "Updating...";
-    }
+    }*/
 
     ph += csatTableHeader( s.csatRtsPercent, s.csatEngAvg, s.csatSrAvg );
     
@@ -832,15 +838,15 @@ QString HTML::csatTable( Survey i )
         srtab += QString( "<td class='gadgetText'>No</td>" );
     }
     
-    srtab += QString (          "</tr>"
-                                "<tr>"
-                                    "<td class='gadgetText'>SR Satisfaction</td>"
-                                    "<td class='gadgetText'>" + QString::number( i.srsat ) + "</td>"
-                                "</tr>"
-                                "<tr>"
-                                    "<td class='gadgetText'>Engineer Satisfaction</td>"
-                                    "<td class='gadgetText'>" + QString::number( i.engsat ) + "</td>"
-                                "</tr>" );
+    srtab += QString ( "</tr>"
+                       "<tr>"
+                         "<td class='gadgetText'>SR Satisfaction</td>"
+                         "<td class='gadgetText'>" + QString::number( i.srsat ) + "</td>"
+                       "</tr>"
+                       "<tr>"
+                         "<td class='gadgetText'>Engineer Satisfaction</td>"
+                         "<td class='gadgetText'>" + QString::number( i.engsat ) + "</td>"
+                       "</tr>" );
 
     srtab +=( "</td></tr>" );
   

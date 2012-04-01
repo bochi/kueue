@@ -65,7 +65,7 @@ void NSAJob::run()
 
         QDomNode n = docElem.firstChild();
         
-         while(!n.isNull()) 
+         while( !n.isNull() ) 
          {
             QDomElement e = n.toElement(); // try to convert the node to an element.
             
@@ -124,9 +124,19 @@ void NSAJob::run()
     }
 
     output += HTML::nsaPageHeader( si );
-    mNsaDir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "/nsa" );
+
+    #ifdef IS_WIN32
     
+    mNsaDir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "\\nsa" );
+    QString perldir = mNsaDir.absolutePath() + "\\perl\\";
+    
+    #else
+    
+    mNsaDir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "/nsa" );
     QString perldir = mNsaDir.absolutePath() + "/perl/";
+    
+    #endif
+    
     QStringList files;
     QDirIterator dirWalker( perldir, QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
  
