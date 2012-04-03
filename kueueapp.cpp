@@ -51,7 +51,7 @@ KueueApp::KueueApp()
     char const *const path_env = getenv( "PATH" );
     QString new_path = "PATH=" + QCoreApplication::applicationDirPath() + "/perl/bin/;" + QCoreApplication::applicationDirPath() + "/archive/;" + path_env;
 
-    putenv( new_path );
+    putenv( new_path.toascii() );
 #endif
     
     if ( !Settings::settingsOK() )
