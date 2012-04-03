@@ -48,14 +48,10 @@ KueueApp::KueueApp()
     qDebug() << "[KUEUE] Constructing";
 
 #ifdef IS_WIN32
-    char const *const path_env = getenv("PATH");
-    QString new_path = QCoreApplication::applicationDirPath() + "/perl/bin/;" + QCoreApplication::applicationDirPath() + "/archive/;";
+    char const *const path_env = getenv( "PATH" );
+    QString new_path = "PATH=" + QCoreApplication::applicationDirPath() + "/perl/bin/;" + QCoreApplication::applicationDirPath() + "/archive/;" + path_env;
 
-    if(path_env) {
-          new_path += path_env;
-    }
-
-    setenv("PATH", new_path.toAscii(), 1);
+    setenv( new_path );
 #endif
     
     if ( !Settings::settingsOK() )
