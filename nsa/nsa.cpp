@@ -101,12 +101,13 @@ void NSA::fileDownloadDone()
 
     QFile file( mNsaDir.absolutePath() + "/current.tgz" );
     
-    if ( !file.open(QIODevice::WriteOnly | QIODevice::Text ) )
+    if ( !file.open( QIODevice::WriteOnly ) )
     {
         return;
     }
     
     file.write( reply->readAll() );
+    file.close();
     
     ArchiveExtract* x = new ArchiveExtract( file.fileName(), mNsaDir.absolutePath() );
     

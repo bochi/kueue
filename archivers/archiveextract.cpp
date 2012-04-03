@@ -3,6 +3,7 @@
           (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
              
             Thanks to QComicBook for the inspiration :-)
+     Copyright (C) 2005-2006 Pawel Stolowski <pawel.stolowski@wp.pl>
     
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
