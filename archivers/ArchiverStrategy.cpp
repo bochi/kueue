@@ -355,7 +355,11 @@ void Tarbz2ArchiverStrategy::configure()
 
     if (which("tar") != QString::null)
     {
+#ifdef IS_WIN32
+        setExtractArguments("tar -xvjf @F");
+#else
         setExtractArguments("tar --overwrite -xvjf @F");
+#endif
         setListArguments("tar -tjf @F");
         setSupported();
     }
@@ -379,7 +383,11 @@ void TargzArchiverStrategy::configure()
 
     if (which("tar") != QString::null)
     {
+#ifdef IS_WIN32
+        setExtractArguments("tar -xvzf @F");
+#else
         setExtractArguments("tar --overwrite -xvzf @F");
+#endif
         setListArguments("tar -tzf @F");
         setSupported();
     }
