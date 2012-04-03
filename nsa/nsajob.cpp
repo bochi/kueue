@@ -166,6 +166,7 @@ void NSAJob::run()
         emit threadProgress( i );
     
         QString meta = p.readAllStandardOutput(); 
+        qDebug() << meta;
         QString pat;
 
         QStringList metaList = meta.split("|");
