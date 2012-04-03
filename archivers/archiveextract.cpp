@@ -113,6 +113,7 @@ void ArchiveExtract::run()
         emit extracted( mArchivePath, mDestination + "/" + final );
     }
     
+    emit threadProgress( mFilesCnt );
     emit threadFinished( this );
 }
 
