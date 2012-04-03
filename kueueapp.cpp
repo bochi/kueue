@@ -40,11 +40,24 @@
 #include <QShortcut>
 #include <QKeySequence>
 #include <QDesktopServices>
+#include <QCoreApplication>
+#include <stdlib.h>
 
 KueueApp::KueueApp()
 {
     qDebug() << "[KUEUE] Constructing";
 
+#ifdef IS_WIN32
+    char const *const path_env = getenv("PATH");
+    QString new_path = QCoreApplication::applicationDirPath() + "/perl/bin/;" + QCoreApplication::applicationDirPath() + "/archive/;";
+
+    if(path_env) {
+          new_path += path_env;
+    }
+
+    setenv("PATH", new_path.toAscii(), 1);
+#endif
+    
     if ( !Settings::settingsOK() )
     {
         BasicConfig* bc = new BasicConfig();

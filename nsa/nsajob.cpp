@@ -156,7 +156,7 @@ void NSAJob::run()
         
         p.setWorkingDirectory( perldir );
         
-        p.start( PERL_EXEC, args );
+        p.start( "perl", args );
         
         if (  !p.waitForFinished ( -1 ) )
         {

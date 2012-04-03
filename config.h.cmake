@@ -5,6 +5,5 @@
 #cmakedefine USE_PHONON
 #cmakedefine IS_WIN32
 #cmakedefine IS_OSX
-#cmakedefine PERL_EXEC "@PERL_EXEC@"
 
 #endif // CONFIG_H
