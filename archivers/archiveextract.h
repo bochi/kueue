@@ -47,7 +47,7 @@ class ArchiveExtract: public KueueThread
         int mFilesCnt;
         int mExtFilesCnt;
   
-        void run();        
+        void run();    
     
     signals:
         void extracted( const QString&, const QString& );

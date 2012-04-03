@@ -125,18 +125,8 @@ void NSAJob::run()
 
     output += HTML::nsaPageHeader( si );
 
-    #ifdef IS_WIN32
-    
-    mNsaDir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "\\nsa" );
-    QString perldir = mNsaDir.absolutePath() + "\\perl\\";
-    qDebug() << "NSA" << mNsaDir << "PERL" << perldir << "PEX" << PERL_EXEC;
-    
-    #else
-    
     mNsaDir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "/nsa" );
     QString perldir = mNsaDir.absolutePath() + "/perl/";
-    
-    #endif
     
     QStringList files;
     QDirIterator dirWalker( perldir, QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);

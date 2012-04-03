@@ -46,6 +46,9 @@ void ArchiveExtract::run()
         
     QProcess info;
     QProcess extract;
+    
+    info.setProcessChannelMode( QProcess::MergedChannels );
+    extract.setProcessChannelMode( QProcess::MergedChannels );
 
     QStringList extArgs;
     QStringList listArgs;
@@ -101,6 +104,11 @@ void ArchiveExtract::run()
     
     if ( !final.isEmpty() )
     {
+        if ( final.contains( "x " ) )
+        {
+            final = final.remove( "x " );
+        }
+        
         emit extracted( mArchivePath, mDestination + "/" + final );
     }
     
