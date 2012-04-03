@@ -12,6 +12,7 @@
 
 #include "ArchiverStrategy.h"
 #include "Utility.h"
+#include "config.h"
 
 #include <QTextStream>
 #include <QString>
@@ -357,8 +358,7 @@ void Tarbz2ArchiverStrategy::configure()
     {
 #ifndef IS_WIN32
         setExtractArguments("tar --overwrite -xvjf @F");
-#endif
-#ifdef IS_WIN32
+#else
         setExtractArguments("tar -xvjf @F");
 #endif
         setListArguments("tar -tjf @F");
@@ -386,8 +386,7 @@ void TargzArchiverStrategy::configure()
     {
 #ifndef IS_WIN32
         setExtractArguments("tar --overwrite -xvzf @F");
-#endif
-#ifdef IS_WIN32
+#else
         setExtractArguments("tar -xvzf @F");
 #endif
         setListArguments("tar -tzf @F");
