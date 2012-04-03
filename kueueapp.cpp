@@ -49,9 +49,9 @@ KueueApp::KueueApp()
 
 #ifdef IS_WIN32
     char const *const path_env = getenv( "PATH" );
-    QString new = "PATH=" + QCoreApplication::applicationDirPath() + "/perl/bin/;" + QCoreApplication::applicationDirPath() + "/archive/;" + path_env;
+    QString path = "PATH=" + QCoreApplication::applicationDirPath() + "/perl/bin/;" + QCoreApplication::applicationDirPath() + "/archive/;" + path_env;
 
-    putenv( new.toAscii() );
+    putenv( path.toAscii() );
 #endif
     
     if ( !Settings::settingsOK() )
