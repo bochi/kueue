@@ -145,7 +145,6 @@ class UnityPage : public QWebPage
         QString mNewStatus;
         QString mFileName;
         QString mProduct;
-        QString mProbType;
         QString mComponent;
         QString mSaveJS;
 

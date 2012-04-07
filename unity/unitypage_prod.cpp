@@ -42,7 +42,7 @@ void UnityPage::fillOutProduct( const QString& pf, const QString& p, QString pt,
     mProduct = p;
     mComponent = comp;
 
-    QWebElementCollection c = mViewFrame->findAllElements( "input" );
+    QWebElementCollection c = mViewFrame->findAllElements( "input,select" );
     
     for ( int i = 0; i < c.count(); ++i ) 
     {  
@@ -61,6 +61,7 @@ void UnityPage::fillOutProduct( const QString& pf, const QString& p, QString pt,
         if ( pt.isNull() )
         {
             pt = "Configuration";
+            qDebug() << pt;
         }
         
         if ( ( c.at(i).attribute( "tabindex" ) == "1034" ) && 
