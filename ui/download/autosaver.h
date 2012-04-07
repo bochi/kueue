@@ -5,7 +5,7 @@
          This file has been copied and modified from arora
                  http://code.google.com/p/arora/
                   
-          (C) 2008-2009 Benjamin C. Meyer <ben@meyerhome.net>
+       (C) 2008-2009 Benjamin C. Meyer <ben@meyerhome.net>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

@@ -31,11 +31,12 @@
 #include <QFileInfo>
 #include <stdlib.h>
 #include <utime.h>
+#include "config.h"
 
 QString Utility::which(const QString &command)
 {
 	const QString paths = QString(getenv("PATH"));
-#ifdef Q_WS_WIN
+#ifdef IS_WIN32
 	QStringList plist = paths.split(";");
 	plist.prepend(QCoreApplication::applicationDirPath());
 #else
@@ -43,7 +44,7 @@ QString Utility::which(const QString &command)
 #endif
 	for (QStringList::const_iterator it = plist.begin(); it != plist.end(); it++)
 	{
-#ifdef Q_WS_WIN
+#ifdef IS_WIN32
 		QFileInfo finfo(*it + "/" + command + ".exe");
 #else
 		QFileInfo finfo(*it + "/" + command);

@@ -93,6 +93,7 @@ class UnityBrowser : public QWebView
         bool isTextArea( QWebElement );     
         bool isProductField( QWebElement );
         bool isBugzillaField( QWebElement );
+        bool isEngineerField( QWebElement );
         
         QShortcut* mSendEmailSC;
         QShortcut* mSaveSrSC;

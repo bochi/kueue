@@ -57,7 +57,7 @@ class UnityPage : public QWebPage
         void logout();
         void saveNsaReport();
         void handleUnsupportedContent(QNetworkReply*);
-        void fillOutProduct( const QString&, const QString& );
+        void fillOutProduct( const QString&, const QString&, QString = QString::Null(), const QString& = QString::Null() );
         void saveCurrentSR();
         void addNote();
         void closeSr();
@@ -145,6 +145,8 @@ class UnityPage : public QWebPage
         QString mNewStatus;
         QString mFileName;
         QString mProduct;
+        QString mProbType;
+        QString mComponent;
         QString mSaveJS;
 
         QTimer* mTimer;

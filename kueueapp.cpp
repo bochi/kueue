@@ -62,8 +62,7 @@ KueueApp::KueueApp()
         
         if ( reply == 0 )
         {
-            // this will segfault, but we are quitting anyway :P
-            delete this;
+            qApp->quit();
         }
         else
         {
@@ -183,7 +182,8 @@ void KueueApp::updateJobDone()
     QNetworkReply* r = qobject_cast< QNetworkReply* >( sender() );
     QString u = r->readAll();
     
-    if ( ( u != QApplication::applicationVersion() ) && ( QApplication::applicationVersion() != "git" ) )
+    if ( ( u != QApplication::applicationVersion() ) && 
+         ( QApplication::applicationVersion() != "git" ) )
     {
         Kueue::notify( "kueue-general", "Update available", "<b>New kueue version available!</b><br>Please update kueue.", "" );
     }
@@ -199,7 +199,6 @@ void KueueApp::createSystray()
 
 void KueueApp::createDatabase()
 {
-    qDebug() << "createDatabase";
     Database::openDbConnection( "sqliteDB" );
 }
 
@@ -268,32 +267,6 @@ void KueueApp::settingsChanged()
 void KueueApp::setTabPosition()
 {
     mTabWidget->setTabsPosition();
-}
-
-void KueueApp::updateProgress( int max, int type )
-{
-    QProgressDialog* pd = new QProgressDialog( mWindow );
-    
-    if ( type == 1 ) 
-    {
-        pd->setWindowTitle( "Queue Monitor" );
-        pd->setLabelText( "Downloading queue monitor data..." );       
-    }
-    else if ( type == 2 )
-    {
-        pd->setWindowTitle( "Personal Queue" );
-        pd->setLabelText( "Downloading personal queue data..." );
-    }
-    else if ( type == 3 )
-    {
-        pd->setWindowTitle( "Stats" );
-        pd->setLabelText( "Downloading stats data..." );
-    }    
-    
-    pd->setCancelButton( 0 );
-    pd->setMaximum( max );
-    pd->setWindowModality( Qt::WindowModal );
-    pd->show();
 }
 
 void KueueApp::sendTestNotification()

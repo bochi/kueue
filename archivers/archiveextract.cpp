@@ -95,7 +95,8 @@ void ArchiveExtract::run()
             ++mExtFilesCnt;
         }
         
-        if ( final.isEmpty() && line.contains( "/" ) )
+        if ( ( final.isEmpty() ) && 
+             ( line.contains( "/" ) ) )
         {
             final = line.trimmed().split( "/" ).at( 0 );
         }

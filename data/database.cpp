@@ -136,6 +136,7 @@ void Database::openDbConnection( QString dbname )
 
 */
 
+
 void Database::updateQueue( PersonalQueue pq, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
@@ -1387,6 +1388,7 @@ void Database::newDB( bool ask )
 
     if ( reply == QMessageBox::Yes )
     {
+        
         QStringList con = QSqlDatabase::connectionNames();
         
         for ( int i = 0; i < con.size(); ++i ) 
@@ -1395,11 +1397,35 @@ void Database::newDB( bool ask )
             QSqlDatabase::removeDatabase( con.at( i ) );
             qDebug() << "[DATABASE] Removed DB connection" << con.at( i );
         }
-
-        QDir dir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) );
-    
-        QFile::remove( dir.path() + "/database.sqlite" );
         
+        QDir dir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) );
+        QSqlDatabase db = QSqlDatabase::addDatabase( "QSQLITE", "killDB" );
+        db.setDatabaseName( dir.path() + "/database.sqlite" );
+        
+        if ( !db.open() )
+        {
+            qDebug() << "[DATABASE] Failed to open the database killDB";
+        }
+        
+        QSqlQuery query( db );
+        query.prepare( "DROP TABLE QMON" );
+        if ( !query.exec() ) qDebug() << "no exec" << query.lastError();
+        
+        query.prepare( "DROP TABLE " + Settings::engineer().toUpper() );
+        if ( !query.exec() ) qDebug() << "no exec" << query.lastError();
+        
+        query.prepare( "DROP TABLE STATS" );
+        if ( !query.exec() ) qDebug() << "no exec" << query.lastError();
+        
+        query.prepare( "DROP TABLE STATS_CLOSED" );
+        if ( !query.exec() ) qDebug() << "no exec" << query.lastError();
+        
+        query.prepare( "DROP TABLE STATS_SURVEYS" );
+        if ( !query.exec() ) qDebug() << "no exec" << query.lastError();
+        
+        db.close();
+        QSqlDatabase::removeDatabase( "killDB" );
+
         QStringList arg;
         arg << "restart";
 

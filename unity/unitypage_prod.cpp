@@ -32,7 +32,7 @@
 
 #include "unitypage.h"
 
-void UnityPage::fillOutProduct( const QString& pf, const QString& p )
+void UnityPage::fillOutProduct( const QString& pf, const QString& p, QString pt, const QString& comp )
 {
     disconnect( mViewFrame, 0, 0, 0 );
     
@@ -40,6 +40,7 @@ void UnityPage::fillOutProduct( const QString& pf, const QString& p )
              this, SLOT( fillOutProductNext() ) );   
     
     mProduct = p;
+    mComponent = comp;
 
     QWebElementCollection c = mViewFrame->findAllElements( "input" );
     
@@ -52,6 +53,38 @@ void UnityPage::fillOutProduct( const QString& pf, const QString& p )
         }
     
         if ( ( c.at(i).attribute( "tabindex" ) == "1025" ) && 
+             ( c.at(i).attribute( "onchange" ).startsWith( "trackChange" ) ) )
+        {
+            c.at(i).setAttribute( "value", "" );
+        }
+        
+        if ( pt.isNull() )
+        {
+            pt = "Configuration";
+        }
+        
+        if ( ( c.at(i).attribute( "tabindex" ) == "1034" ) && 
+             ( c.at(i).attribute( "onchange" ).startsWith( "trackChange" ) ) )
+        {
+            QWebElement e;
+            QWebElementCollection d = c.at(i).findAll( "*" );
+            QString changeJS = c.at(i).attribute( "onchange" );
+            
+            for ( int i = 0; i < d.count(); ++i )
+            {
+                d.at( i ).removeAttribute( "selected");
+                
+                if ( d.at( i ).attribute( "value" ) == pt )
+                {
+                    e = d.at( i );
+                }
+            }
+            
+            e.setAttribute( "selected", "Yes" );
+            mViewFrame->evaluateJavaScript( changeJS );
+        }
+        
+        if ( ( c.at(i).attribute( "tabindex" ) == "1035" ) && 
              ( c.at(i).attribute( "onchange" ).startsWith( "trackChange" ) ) )
         {
             c.at(i).setAttribute( "value", "" );
@@ -74,6 +107,12 @@ void UnityPage::fillOutProductNext()
              ( c.at(i).attribute( "onchange" ).startsWith( "trackChange" ) ) )
         {
             c.at(i).setAttribute( "value", mProduct );
+        }
+        
+        if ( ( c.at(i).attribute( "tabindex" ) == "1035" ) && 
+             ( c.at(i).attribute( "onchange" ).startsWith( "trackChange" ) ) )
+        {
+            c.at(i).setAttribute( "value", mComponent );
         }
     }
    

@@ -66,7 +66,6 @@ class KueueApp : public QObject
         void createMainWindow();
         void createDatabase();
         void settingsChanged();
-        void updateProgress( int, int );
         void sendTestNotification();
         void setTabPosition();
         void openConfig();
