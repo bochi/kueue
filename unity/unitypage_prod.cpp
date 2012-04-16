@@ -61,7 +61,6 @@ void UnityPage::fillOutProduct( const QString& pf, const QString& p, QString pt,
         if ( pt.isNull() )
         {
             pt = "Configuration";
-            qDebug() << pt;
         }
         
         if ( ( c.at(i).attribute( "tabindex" ) == "1034" ) && 

@@ -61,7 +61,6 @@ class Systray : public QSystemTrayIcon
         void notificationActionInvoked( uint, QString );
         void closeNotification( uint );
         void changeIcon();
-        void writeToFile( const QString& );
         void winMessageClicked();
 };
 

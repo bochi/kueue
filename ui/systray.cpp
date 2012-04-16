@@ -278,11 +278,6 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
             {
                 Kueue::playSound( Settings::generalNotificationSoundFile() );
             }
-            
-            if ( Settings::generalNotificationWrite() )
-            {
-                writeToFile( Settings::generalNotificationWriteFile() );
-            }
         }
         else if ( type == "kueue-sr-new" )
         {
@@ -304,9 +299,9 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
                 Kueue::playSound( Settings::newPersonalNotificationSoundFile() );
             }
             
-            if ( Settings::newPersonalNotificationWrite() )
+            if ( Settings::animateQueue() )
             {
-                writeToFile( Settings::newPersonalNotificationWriteFile() );
+                requiresAttention( true );
             }
         }
         else if ( type == "kueue-sr-update" ) 
@@ -329,9 +324,9 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
                 Kueue::playSound( Settings::updatePersonalNotificationSoundFile() );
             }
             
-            if ( Settings::updatePersonalNotificationWrite() )
+            if ( Settings::animateQueue() )
             {
-                writeToFile( Settings::updatePersonalNotificationWriteFile() );
+                requiresAttention( true );
             }
         }    
         else if ( type == "kueue-monitor-low" )
@@ -354,9 +349,9 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
                 Kueue::playSound( Settings::lowNotificationSoundFile() );
             }
             
-            if ( Settings::lowNotificationWrite() )
+            if ( Settings::animateQmon() )
             {
-                writeToFile( Settings::lowNotificationWriteFile() );
+                requiresAttention( true );
             }
         }
         else if ( type == "kueue-monitor-medium" )
@@ -379,9 +374,9 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
                 Kueue::playSound( Settings::mediumNotificationSoundFile() );
             }
             
-            if ( Settings::mediumNotificationWrite() )
+            if ( Settings::animateQmon() )
             {
-                writeToFile( Settings::mediumNotificationWriteFile() );
+                requiresAttention( true );
             }
         }
         else if ( type == "kueue-monitor-urgent" )
@@ -404,9 +399,9 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
                 Kueue::playSound( Settings::urgentNotificationSoundFile() );
             }
             
-            if ( Settings::urgentNotificationWrite() )
+            if ( Settings::animateQmon() )
             {
-                writeToFile( Settings::urgentNotificationWriteFile() );
+                requiresAttention( true );
             }
         }
         else if ( type == "kueue-monitor-high" )
@@ -429,9 +424,9 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
                 Kueue::playSound( Settings::highNotificationSoundFile() );
             }
             
-            if ( Settings::highNotificationWrite() )
+            if ( Settings::animateQmon() )
             {
-                writeToFile( Settings::highNotificationWriteFile() );
+                requiresAttention( true );
             }
         }
         else if ( type == "kueue-personal-bomgar" )
@@ -454,9 +449,9 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
                 Kueue::playSound( Settings::bomgarNotificationSoundFile() );
             }
             
-            if ( Settings::bomgarNotificationWrite() )
+            if ( Settings::animateQmon() )
             {
-                writeToFile( Settings::bomgarNotificationWriteFile() );
+                requiresAttention( true );
             }
         }
     }
@@ -498,7 +493,6 @@ void Systray::closeNotification( uint id )
     #endif
 }
 
-
 void Systray::requiresAttention( const bool& b )
 {
     if ( b )
@@ -529,34 +523,6 @@ void Systray::changeIcon()
     {
         setIcon( QIcon( ":/icons/kueue.png" ) );
     }
-}
-
-void Systray::writeToFile( const QString& type )
-{
-    if ( type == "kueue-general" && Settings::generalNotificationWrite() )
-    {
-    }
-    else if ( type == "kueue-sr-new" && Settings::newPersonalNotificationWrite() )
-    {
-    }
-    else if ( type == "kueue-sr-update"  && Settings::updatePersonalNotificationWrite() ) 
-    {
-    }
-    else if ( type == "kueue-monitor-low" && Settings::lowNotificationWrite() )
-    {
-    }
-    else if ( type == "kueue-monitor-medium" && Settings::mediumNotificationWrite() )
-    {
-    }
-    else if ( type == "kueue-monitor-urgent" && Settings::urgentNotificationWrite() )
-    {
-    }
-    else if ( type == "kueue-monitor-high" && Settings::highNotificationWrite() )
-    {
-    }
-    else if ( type == "kueue-personal-bomgar" && Settings::bomgarNotificationWrite() )
-    {
-    }    
 }
 
 void Systray::winMessageClicked()

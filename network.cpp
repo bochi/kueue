@@ -107,6 +107,8 @@ void Network::error( QNetworkReply::NetworkError error )
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>( QObject::sender() );
     
+    Kueue::notify( "kueue-general", "Update failed", "Failed to update your data. Networking issues or no VPN connection?", "NONE" );
+    
     qDebug() << "[NETWORK] Error getting" << reply->url();
 }
 

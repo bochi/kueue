@@ -27,6 +27,7 @@
 #include "data/database.h"
 #include "settings.h"
 #include "ui/html.h"
+#include "kueue.h"
 
 #include <QtXml>
 #include <QDesktopServices>
@@ -107,12 +108,13 @@ QNetworkReply* Data::get( const QString& u )
     return reply;
 }
 
-
 void Data::getError( QNetworkReply::NetworkError error )
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>( QObject::sender() );
     
-    qDebug() << "[NETWORK] Error getting" << reply->url();
+    Kueue::notify( "kueue-general", "Update failed", "Failed to update your data. Networking issues or no VPN connection?", "NONE" );
+    
+    qDebug() << "[DATA] Error getting" << reply->url();
 }
 
 void Data::updateQueue()
@@ -142,46 +144,239 @@ void Data::updateStats()
 void Data::queueUpdateFinished()
 {
     QNetworkReply* r = qobject_cast<QNetworkReply*>( sender() );
-    
-    QDomDocument doc;
-    doc.setContent( r->readAll() );
-    QDomNodeList list = doc.elementsByTagName( "sr" );
-    
-    PersonalQueue q;
-    
-    for ( int i = 0; i < list.size(); ++i ) 
-    {   
-        QueueSR sr;
         
-        sr.id = list.at( i ).namedItem( "id" ).toElement().text(); 
-        sr.srtype = list.at( i ).namedItem( "srtype" ).toElement().text(); 
-        sr.creator = list.at( i ).namedItem( "creator" ).toElement().text(); 
-        sr.cus_account = list.at( i ).namedItem( "cus_account" ).toElement().text(); 
-        sr.cus_firstname = list.at( i ).namedItem( "cus_firstname" ).toElement().text(); 
-        sr.cus_lastname = list.at( i ).namedItem( "cus_lastname" ).toElement().text(); 
-        sr.cus_title = list.at( i ).namedItem( "cus_title" ).toElement().text(); 
-        sr.cus_email = list.at( i ).namedItem( "cus_email" ).toElement().text(); 
-        sr.cus_phone = list.at( i ).namedItem( "cus_phone" ).toElement().text(); 
-        sr.cus_onsitephone = list.at( i ).namedItem( "cus_onsitephone" ).toElement().text(); 
-        sr.cus_lang = list.at( i ).namedItem( "cus_lang" ).toElement().text(); 
-        sr.severity = list.at( i ).namedItem( "severity" ).toElement().text(); 
-        sr.status = list.at( i ).namedItem( "status" ).toElement().text(); 
-        sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text(); 
-        sr.ddesc = list.at( i ).namedItem( "ddesc" ).toElement().text(); 
-        sr.geo = list.at( i ).namedItem( "geo" ).toElement().text(); 
-        sr.hours = list.at( i ).namedItem( "hours" ).toElement().text(); 
-        sr.contract = list.at( i ).namedItem( "contract" ).toElement().text(); 
-        sr.created = list.at( i ).namedItem( "created" ).toElement().text(); 
-        sr.lastupdate = list.at( i ).namedItem( "lastupdate" ).toElement().text(); 
-        sr.service_level = list.at( i ).namedItem( "service_level" ).toElement().text().toInt();
-        sr.highvalue = list.at( i ).namedItem( "highvalue" ).toElement().text().toInt(); 
-        sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
+    if ( !r->error() )
+    {
+        QDomDocument doc;
+        doc.setContent( r->readAll() );
+        QDomNodeList list = doc.elementsByTagName( "sr" );
         
-        q.srList.append( sr );
+        PersonalQueue q;
+        
+        for ( int i = 0; i < list.size(); ++i ) 
+        {   
+            QueueSR sr;
+            
+            sr.id = list.at( i ).namedItem( "id" ).toElement().text(); 
+            sr.srtype = list.at( i ).namedItem( "srtype" ).toElement().text(); 
+            sr.creator = list.at( i ).namedItem( "creator" ).toElement().text(); 
+            sr.cus_account = list.at( i ).namedItem( "cus_account" ).toElement().text(); 
+            sr.cus_firstname = list.at( i ).namedItem( "cus_firstname" ).toElement().text(); 
+            sr.cus_lastname = list.at( i ).namedItem( "cus_lastname" ).toElement().text(); 
+            sr.cus_title = list.at( i ).namedItem( "cus_title" ).toElement().text(); 
+            sr.cus_email = list.at( i ).namedItem( "cus_email" ).toElement().text(); 
+            sr.cus_phone = list.at( i ).namedItem( "cus_phone" ).toElement().text(); 
+            sr.cus_onsitephone = list.at( i ).namedItem( "cus_onsitephone" ).toElement().text(); 
+            sr.cus_lang = list.at( i ).namedItem( "cus_lang" ).toElement().text(); 
+            sr.severity = list.at( i ).namedItem( "severity" ).toElement().text(); 
+            sr.status = list.at( i ).namedItem( "status" ).toElement().text(); 
+            sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text(); 
+            sr.ddesc = list.at( i ).namedItem( "ddesc" ).toElement().text(); 
+            sr.geo = list.at( i ).namedItem( "geo" ).toElement().text(); 
+            sr.hours = list.at( i ).namedItem( "hours" ).toElement().text(); 
+            sr.contract = list.at( i ).namedItem( "contract" ).toElement().text(); 
+            sr.created = list.at( i ).namedItem( "created" ).toElement().text(); 
+            sr.lastupdate = list.at( i ).namedItem( "lastupdate" ).toElement().text(); 
+            sr.service_level = list.at( i ).namedItem( "service_level" ).toElement().text().toInt();
+            sr.highvalue = list.at( i ).namedItem( "highvalue" ).toElement().text().toInt(); 
+            sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
+            
+            q.srList.append( sr );
+        }
+        
+        Database::updateQueue( q, mDB );   
+        updateQueueBrowser();
     }
+}
+
+void Data::qmonUpdateFinished()
+{
+    QNetworkReply* r = qobject_cast<QNetworkReply*>( sender() );
     
-    Database::updateQueue( q, mDB );   
-    updateQueueBrowser();
+    if ( !r->error() )
+    {
+        QmonData q;
+        
+        QDomDocument doc;
+        doc.setContent( r->readAll() );
+        QDomNodeList list = doc.elementsByTagName( "sr" );
+        
+        if ( list.isEmpty() )
+        {
+            qDebug() << "Qmon Update failed from" << r->url();
+        }
+        else
+        {
+            for ( int i = 0; i < list.size(); ++i ) 
+            {   
+                QmonSR sr;
+                
+                sr.id = list.at( i ).namedItem( "id" ).toElement().text(); 
+                sr.queue = list.at( i ).namedItem( "queue" ).toElement().text(); 
+                sr.bomgarQ = list.at( i ).namedItem( "bomgarQ" ).toElement().text(); 
+                sr.srtype = list.at( i ).namedItem( "srtype" ).toElement().text(); 
+                sr.creator = list.at( i ).namedItem( "creator" ).toElement().text(); 
+                sr.cus_account = list.at( i ).namedItem( "cus_account" ).toElement().text(); 
+                sr.cus_firstname = list.at( i ).namedItem( "cus_firstname" ).toElement().text(); 
+                sr.cus_lastname = list.at( i ).namedItem( "cus_lastname" ).toElement().text(); 
+                sr.cus_title = list.at( i ).namedItem( "cus_title" ).toElement().text(); 
+                sr.cus_email = list.at( i ).namedItem( "cus_email" ).toElement().text(); 
+                sr.cus_phone = list.at( i ).namedItem( "cus_phone" ).toElement().text(); 
+                sr.cus_onsitephone = list.at( i ).namedItem( "cus_onsitephone" ).toElement().text(); 
+                sr.cus_lang = list.at( i ).namedItem( "cus_lang" ).toElement().text(); 
+                sr.severity = list.at( i ).namedItem( "severity" ).toElement().text(); 
+                sr.status = list.at( i ).namedItem( "status" ).toElement().text(); 
+                sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text(); 
+                sr.ddesc = list.at( i ).namedItem( "ddesc" ).toElement().text(); 
+                sr.geo = list.at( i ).namedItem( "geo" ).toElement().text(); 
+                sr.hours = list.at( i ).namedItem( "hours" ).toElement().text(); 
+                sr.source = list.at( i ).namedItem( "source" ).toElement().text(); 
+                sr.support_program = list.at( i ).namedItem( "support_program" ).toElement().text(); 
+                sr.support_program_long = list.at( i ).namedItem( "support_program_long" ).toElement().text(); 
+                sr.routing_product = list.at( i ).namedItem( "routing_product" ).toElement().text(); 
+                sr.support_group_routing = list.at( i ).namedItem( "support_group_routing" ).toElement().text(); 
+                sr.int_type = list.at( i ).namedItem( "int_type" ).toElement().text(); 
+                sr.subtype = list.at( i ).namedItem( "subtype" ).toElement().text(); 
+                sr.service_level = list.at( i ).namedItem( "service_level" ).toElement().text().toInt(); 
+                sr.category = list.at( i ).namedItem( "category" ).toElement().text(); 
+                sr.respond_via = list.at( i ).namedItem( "respond_via" ).toElement().text(); 
+                sr.agesec = list.at( i ).namedItem( "age" ).toElement().text().toInt(); 
+                sr.lastupdatesec = list.at( i ).namedItem( "lastupdate" ).toElement().text().toInt(); 
+                sr.timeinqsec = list.at( i ).namedItem( "timeinQ" ).toElement().text().toInt(); 
+                sr.slasec = list.at( i ).namedItem( "sla" ).toElement().text().toInt(); 
+                sr.highvalue = list.at( i ).namedItem( "highvalue" ).toElement().text().toInt();
+                sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
+                
+                q.srList.append( sr );
+            }
+                
+            q.total = q.srList.size();
+            Database::updateQmon( q, mDB );
+            updateQmonBrowser();
+        }
+    }
+}
+
+void Data::statsUpdateFinished()
+{
+    QNetworkReply* r = qobject_cast<QNetworkReply*>( sender() );
+ 
+    if ( !r->error() )
+    {
+        Statz statz;
+        
+        QDomDocument doc;
+        doc.setContent( r->readAll() );
+        
+        QDomElement root = doc.documentElement();
+        
+        QList<Survey> surveyItemList;
+        QList<ClosedItem> closedItemList;
+        
+        QDomNode n = root.firstChild();
+        
+        while( !n.isNull() )
+        {
+            QDomElement e = n.toElement();
+    
+            if( !e.isNull() )
+            {     
+                if( e.tagName() == "closed" )
+                {
+                    QDomNodeList cList = e.childNodes();
+
+                    for ( int i = 0; i < cList.size(); ++i ) 
+                    {   
+                        ClosedItem ci;
+                        
+                        ci.id = cList.at( i ).namedItem( "sr" ).toElement().text();
+                        ci.customer =  cList.at( i ).namedItem( "customer" ).toElement().text();
+                        ci.bdesc = cList.at( i ).namedItem( "bdesc" ).toElement().text();
+                        ci.tts = cList.at( i ).namedItem( "tts" ).toElement().text().toInt();
+                        
+                        statz.closedList.append( ci );
+                    }
+                }
+                else if ( e.tagName() == "csat" )
+                {
+                    QDomNodeList csatList = e.childNodes();
+
+                    for ( int i = 0; i < csatList.size(); ++i ) 
+                    {   
+                        Survey s;
+                
+                        s.id = csatList.at( i ).namedItem( "sr" ).toElement().text();
+                        s.customer = csatList.at( i ).namedItem( "customer" ).toElement().text();
+                        s.bdesc = csatList.at( i ).namedItem( "bdesc" ).toElement().text();
+                        s.rts = csatList.at( i ).namedItem( "rts" ).toElement().text().toInt();
+                        s.engsat = csatList.at( i ).namedItem( "engsat" ).toElement().text().toInt();
+                        s.srsat = csatList.at( i ).namedItem( "srsat" ).toElement().text().toInt();
+                                    
+                        statz.surveyList.append( s );
+                    }
+                }
+                else if ( e.tagName() == "closeddata" )
+                {
+                    QDomNode closednode = e.firstChild();
+                    
+                    while ( !closednode.isNull() )
+                    {
+                        QDomElement closedelement = closednode.toElement();
+                        
+                        if ( !closedelement.isNull() )
+                        {
+                            if ( closedelement.tagName() == "srs" )
+                            {
+                                statz.closedSr = closedelement.text().toInt();
+                            }
+                            else if ( closedelement.tagName() == "crs" )
+                            {
+                                statz.closedCr = closedelement.text().toInt();
+                            }
+                            else if ( closedelement.tagName() == "srttsavg" )
+                            {
+                                statz.srTtsAvg = closedelement.text().toInt();
+                            }
+                        }
+                        
+                        closednode = closednode.nextSibling();
+                    }
+                }
+                else if ( e.tagName() == "csatdata" )
+                {
+                    QDomNode csatnode = e.firstChild();
+                    
+                    while ( !csatnode.isNull() )
+                    {
+                        QDomElement csatelement = csatnode.toElement();
+                        
+                        if ( !csatelement.isNull() )
+                        {
+                            if ( csatelement.tagName() == "engavg" )
+                            {
+                                statz.csatEngAvg = csatelement.text().toInt();
+                            }
+                            else if ( csatelement.tagName() == "sravg" )
+                            {
+                                statz.csatSrAvg = csatelement.text().toInt();
+                            }
+                            else if ( csatelement.tagName() == "rtsavg" )
+                            {
+                                statz.csatRtsPercent = csatelement.text().toInt();
+                            }
+                        }
+                        
+                        csatnode = csatnode.nextSibling();
+                    }
+                }
+            }
+            
+            n = n.nextSibling();
+        }
+        
+        Database::updateStats( statz, mDB );
+        updateStatsBrowser();
+    }
 }
 
 void Data::updateQueueBrowser()
@@ -259,6 +454,11 @@ void Data::updateQmonBrowser()
     if ( !html.isEmpty() )
     {
         emit qmonDataChanged( html );
+        QFile file("/tmp/qmon.html");
+        file.open(QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream out(&file);
+        out << html;
+        file.close(); 
     }
 }
 
@@ -272,190 +472,6 @@ void Data::updateStatsBrowser()
     {
         emit statsDataChanged( html );
     }
-}
-
-void Data::qmonUpdateFinished()
-{
-    QNetworkReply* r = qobject_cast<QNetworkReply*>( sender() );
-    
-    QmonData q;
-    
-    QDomDocument doc;
-    doc.setContent( r->readAll() );
-    QDomNodeList list = doc.elementsByTagName( "sr" );
-    
-    if ( list.isEmpty() )
-    {
-        qDebug() << "Qmon Update failed from" << r->url();
-    }
-    else
-    {
-        for ( int i = 0; i < list.size(); ++i ) 
-        {   
-            QmonSR sr;
-            
-            sr.id = list.at( i ).namedItem( "id" ).toElement().text(); 
-            sr.queue = list.at( i ).namedItem( "queue" ).toElement().text(); 
-            sr.bomgarQ = list.at( i ).namedItem( "bomgarQ" ).toElement().text(); 
-            sr.srtype = list.at( i ).namedItem( "srtype" ).toElement().text(); 
-            sr.creator = list.at( i ).namedItem( "creator" ).toElement().text(); 
-            sr.cus_account = list.at( i ).namedItem( "cus_account" ).toElement().text(); 
-            sr.cus_firstname = list.at( i ).namedItem( "cus_firstname" ).toElement().text(); 
-            sr.cus_lastname = list.at( i ).namedItem( "cus_lastname" ).toElement().text(); 
-            sr.cus_title = list.at( i ).namedItem( "cus_title" ).toElement().text(); 
-            sr.cus_email = list.at( i ).namedItem( "cus_email" ).toElement().text(); 
-            sr.cus_phone = list.at( i ).namedItem( "cus_phone" ).toElement().text(); 
-            sr.cus_onsitephone = list.at( i ).namedItem( "cus_onsitephone" ).toElement().text(); 
-            sr.cus_lang = list.at( i ).namedItem( "cus_lang" ).toElement().text(); 
-            sr.severity = list.at( i ).namedItem( "severity" ).toElement().text(); 
-            sr.status = list.at( i ).namedItem( "status" ).toElement().text(); 
-            sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text(); 
-            sr.ddesc = list.at( i ).namedItem( "ddesc" ).toElement().text(); 
-            sr.geo = list.at( i ).namedItem( "geo" ).toElement().text(); 
-            sr.hours = list.at( i ).namedItem( "hours" ).toElement().text(); 
-            sr.source = list.at( i ).namedItem( "source" ).toElement().text(); 
-            sr.support_program = list.at( i ).namedItem( "support_program" ).toElement().text(); 
-            sr.support_program_long = list.at( i ).namedItem( "support_program_long" ).toElement().text(); 
-            sr.routing_product = list.at( i ).namedItem( "routing_product" ).toElement().text(); 
-            sr.support_group_routing = list.at( i ).namedItem( "support_group_routing" ).toElement().text(); 
-            sr.int_type = list.at( i ).namedItem( "int_type" ).toElement().text(); 
-            sr.subtype = list.at( i ).namedItem( "subtype" ).toElement().text(); 
-            sr.service_level = list.at( i ).namedItem( "service_level" ).toElement().text().toInt(); 
-            sr.category = list.at( i ).namedItem( "category" ).toElement().text(); 
-            sr.respond_via = list.at( i ).namedItem( "respond_via" ).toElement().text(); 
-            sr.agesec = list.at( i ).namedItem( "age" ).toElement().text().toInt(); 
-            sr.lastupdatesec = list.at( i ).namedItem( "lastupdate" ).toElement().text().toInt(); 
-            sr.timeinqsec = list.at( i ).namedItem( "timeinQ" ).toElement().text().toInt(); 
-            sr.slasec = list.at( i ).namedItem( "sla" ).toElement().text().toInt(); 
-            sr.highvalue = list.at( i ).namedItem( "highvalue" ).toElement().text().toInt();
-            sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
-            
-            q.srList.append( sr );
-        }
-            
-        q.total = q.srList.size();
-        Database::updateQmon( q, mDB );
-        updateQmonBrowser();
-    }
-}
-
-void Data::statsUpdateFinished()
-{
-    QNetworkReply* r = qobject_cast<QNetworkReply*>( sender() );
- 
-    Statz statz;
-    
-    QDomDocument doc;
-    doc.setContent( r->readAll() );
-    
-    QDomElement root = doc.documentElement();
-    
-    QList<Survey> surveyItemList;
-    QList<ClosedItem> closedItemList;
-    
-    QDomNode n = root.firstChild();
-    
-    while( !n.isNull() )
-    {
-        QDomElement e = n.toElement();
-  
-        if( !e.isNull() )
-        {     
-            if( e.tagName() == "closed" )
-            {
-                QDomNodeList cList = e.childNodes();
-
-                for ( int i = 0; i < cList.size(); ++i ) 
-                {   
-                    ClosedItem ci;
-                    
-                    ci.id = cList.at( i ).namedItem( "sr" ).toElement().text();
-                    ci.customer =  cList.at( i ).namedItem( "customer" ).toElement().text();
-                    ci.bdesc = cList.at( i ).namedItem( "bdesc" ).toElement().text();
-                    ci.tts = cList.at( i ).namedItem( "tts" ).toElement().text().toInt();
-                    
-                    statz.closedList.append( ci );
-                }
-            }
-            else if ( e.tagName() == "csat" )
-            {
-                QDomNodeList csatList = e.childNodes();
-
-                for ( int i = 0; i < csatList.size(); ++i ) 
-                {   
-                    Survey s;
-            
-                    s.id = csatList.at( i ).namedItem( "sr" ).toElement().text();
-                    s.customer = csatList.at( i ).namedItem( "customer" ).toElement().text();
-                    s.bdesc = csatList.at( i ).namedItem( "bdesc" ).toElement().text();
-                    s.rts = csatList.at( i ).namedItem( "rts" ).toElement().text().toInt();
-                    s.engsat = csatList.at( i ).namedItem( "engsat" ).toElement().text().toInt();
-                    s.srsat = csatList.at( i ).namedItem( "srsat" ).toElement().text().toInt();
-                                
-                    statz.surveyList.append( s );
-                }
-            }
-            else if ( e.tagName() == "closeddata" )
-            {
-                QDomNode closednode = e.firstChild();
-                
-                while ( !closednode.isNull() )
-                {
-                    QDomElement closedelement = closednode.toElement();
-                    
-                    if ( !closedelement.isNull() )
-                    {
-                        if ( closedelement.tagName() == "srs" )
-                        {
-                            statz.closedSr = closedelement.text().toInt();
-                        }
-                        else if ( closedelement.tagName() == "crs" )
-                        {
-                            statz.closedCr = closedelement.text().toInt();
-                        }
-                        else if ( closedelement.tagName() == "srttsavg" )
-                        {
-                            statz.srTtsAvg = closedelement.text().toInt();
-                        }
-                    }
-                    
-                    closednode = closednode.nextSibling();
-                }
-            }
-            else if ( e.tagName() == "csatdata" )
-            {
-                QDomNode csatnode = e.firstChild();
-                
-                while ( !csatnode.isNull() )
-                {
-                    QDomElement csatelement = csatnode.toElement();
-                    
-                    if ( !csatelement.isNull() )
-                    {
-                        if ( csatelement.tagName() == "engavg" )
-                        {
-                            statz.csatEngAvg = csatelement.text().toInt();
-                        }
-                        else if ( csatelement.tagName() == "sravg" )
-                        {
-                            statz.csatSrAvg = csatelement.text().toInt();
-                        }
-                        else if ( csatelement.tagName() == "rtsavg" )
-                        {
-                            statz.csatRtsPercent = csatelement.text().toInt();
-                        }
-                    }
-                    
-                    csatnode = csatnode.nextSibling();
-                }
-            }
-        }
-        
-        n = n.nextSibling();
-    }
-    
-    Database::updateStats( statz, mDB );
-    updateStatsBrowser();
 }
 
 #include "data.moc"

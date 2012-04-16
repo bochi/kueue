@@ -30,168 +30,168 @@
 
 QString HTML::styleSheet()
 {
-    return QString( "<head><style type='text/css'>"
-                    "#Head1 {" 
-                    "    position: absolute;"
-                    "    z-index: 1; top: 0px;"
-                    "    left: 0px; width: 50px;"
-                    "    visibility: visible;"
+    return QString( "<head><style type='text/css'>\n"
+                    "#Head1 {\n" 
+                    "    position: absolute;\n"
+                    "    z-index: 1; top: 0px;\n"
+                    "    left: 0px; width: 50px;\n"
+                    "    visibility: visible;\n"
                     "}"
                     
-                    "#logo {"
-                    "    position: absolute;"
-                    "    z-index: 2;"
-                    "    top: 0px;"
-                    "    right: 5px;"
-                    "    width: 175px;"
-                    "    height: 80px;"
-                    "    visibility: visible;"
-                    "}"
+                    "#logo {\n"
+                    "    position: absolute;\n"
+                    "    z-index: 2;\n"
+                    "    top: 0px;\n"
+                    "    right: 5px;\n"
+                    "    width: 175px;\n"
+                    "    height: 80px;\n"
+                    "    visibility: visible;\n"
+                    "}\n"
                     
-                    "#logo1 {"
-                    "    position: absolute;"
-                    "    z-index: 3;"
-                    "    top: 0px;"
-                    "    right: 0px;"
-                    "    width: 12px;"
-                    "    height: 80px;"
-                    "    visibility: visible;"
-                    "}"
+                    "#logo1 {\n"
+                    "    position: absolute;\n"
+                    "    z-index: 3;\n"
+                    "    top: 0px;\n"
+                    "    right: 0px;\n"
+                    "    width: 12px;\n"
+                    "    height: 80px;\n"
+                    "    visibility: visible;\n"
+                    "}\n"
                    
-                    "#Apptitle {"
-                    "    position: absolute;"
-                    "    overflow:hidden;"
-                    "    z-index: 1;"
-                    "    top: 0px;"
-                    "    left: 10px;"
-                    "    right: 20px;"
-                    "    height: 80px;"
-                    "    visibility: visible;"
-                    "}"
+                    "#Apptitle {\n"
+                    "    position: absolute;\n"
+                    "    overflow:hidden;\n"
+                    "    z-index: 1;\n"
+                    "    top: 0px;\n"
+                    "    left: 10px;\n"
+                    "    right: 20px;\n"
+                    "    height: 80px;\n"
+                    "    visibility: visible;\n"
+                    "}\n"
                     
-                    "body {"
-                    "    background: white url('qrc:/images/filler.gif') repeat-x 0% 0%;"
-                    "}"
+                    "body {\n"
+                    "    background: white url('qrc:/images/filler.gif') repeat-x 0% 0%;\n"
+                    "}\n"
                     
-                    ".apptitle1 {"
-                    "    color: white;"
-                    "    text-decoration: none;"
-                    "    font-family: arial,helvetica,sans-serif;"
-                    "    font-weight: normal;"
-                    "    font-size: 1.7em;"
-                    "    line-height: 2.7em;"
-                    "    background: url('qrc:/images/bg.gif') repeat-x 0% 0%;"
-                    "}"
+                    ".apptitle1 {\n"
+                    "    color: white;\n"
+                    "    text-decoration: none;\n"
+                    "    font-family: arial,helvetica,sans-serif;\n"
+                    "    font-weight: normal;\n"
+                    "    font-size: 1.7em;\n"
+                    "    line-height: 2.7em;\n"
+                    "    background: url('qrc:/images/bg.gif') repeat-x 0% 0%;\n"
+                    "}\n"
                     
-                    ".apptitle2 {"
-                    "    color: white;"
-                    "    font-family: arial,helvetica,sans-serif;"
-                    "    text-decoration: none;"
-                    "    font-weight: normal;"
-                    "    font-size: 0.9em;"
-                    "    line-height: 1.2em;"
-                    "    right: 40px;"
-                    "    background: url('qrc:/images/logo_im.gif') background-repeat:no-repeat;"
-                    "}"
+                    ".apptitle2 {\n"
+                    "    color: white;\n"
+                    "    font-family: arial,helvetica,sans-serif;\n"
+                    "    text-decoration: none;\n"
+                    "    font-weight: normal;\n"
+                    "    font-size: 0.9em;\n"
+                    "    line-height: 1.2em;\n"
+                    "    right: 40px;\n"
+                    "    background: url('qrc:/images/logo_im.gif') background-repeat:no-repeat;\n"
+                    "}\n"
                     
-                    "#abstand {"
-                    "    margin-bottom:10px;"
-                    "}"
+                    "#abstand {\n"
+                    "    margin-bottom:10px;\n"
+                    "}\n"
                     
-                    "#content {"
-                    "    margin-top:90px;"
-                    "    font-family: arial,helvetica,sans-serif;"
-                    "}"
+                    "#content {\n"
+                    "    margin-top:90px;\n"
+                    "    font-family: arial,helvetica,sans-serif;\n"
+                    "}\n"
                     
-                    "hr {"
-                    "    background: url('qrc:/images/bg.gif') repeat-x 0% 0%;"
-                    "    height: 1px;"
-                    "    margin-top: 2px;"
-                    "    margin-bottom: 10px;"
-                    "}"
+                    "hr {\n"
+                    "    background: url('qrc:/images/bg.gif') repeat-x 0% 0%;\n"
+                    "    height: 1px;\n"
+                    "    margin-top: 2px;\n"
+                    "    margin-bottom: 10px;\n"
+                    "}\n"
                     
-                    "table {}"
+                    "table {}\n"
                     
-                    "td {}"
+                    "td {}\n"
                     
-                    ".qmonheader {"
-                    "    background: url('qrc:/images/bg.gif') repeat-x 0% 0%;"
-                    "    padding:5;"
-                    "    margin:5;"
-                    "    text-align: center;"
-                    "    color: white;"
-                    "    font-weight: bold;"
-                    "    font-size: 1.2em;"
-                    "    line-height: 1.2em;"
-                    "    width: 100%;"
-                    "    height: 55px;"
-                    "}"
+                    ".qmonheader {\n"
+                    "    background: url('qrc:/images/bg.gif') repeat-x 0% 0%;\n"
+                    "    padding:5;\n"
+                    "    margin:5;\n"
+                    "    text-align: center;\n"
+                    "    color: white;\n"
+                    "    font-weight: bold;\n"
+                    "    font-size: 1.2em;\n"
+                    "    line-height: 1.2em;\n"
+                    "    width: 100%;\n"
+                    "    height: 55px;\n"
+                    "}\n"
                     
-                    "p {" 
-                    "    margin-bottom:5px;"
-                    "    margin-top:5px;"
-                    "}"
+                    "p {\n" 
+                    "    margin-bottom:5px;\n"
+                    "    margin-top:5px;\n"
+                    "}\n"
                     
-                    ".qph {"
-                    "    font-family: arial,helvetica,sans-serif;"
-                    "    font-weight: bold;"
-                    "    font-size: 1.2em;"
-                    "    margin-bottom: 1px;"
-                    "}"
+                    ".qph {\n"
+                    "    font-family: arial,helvetica,sans-serif;\n"
+                    "    font-weight: bold;\n"
+                    "    font-size: 1.2em;\n"
+                    "    margin-bottom: 1px;\n"
+                    "}\n"
                     
-                    "a {"
-                    "    color:#333;"
-                    "    text-decoration:none;"
-                    "    -khtml-user-select: none;"
-                    "}"
+                    "a {\n"
+                    "    color:#333;\n"
+                    "    text-decoration:none;\n"
+                    "    -khtml-user-select: none;\n"
+                    "}\n"
                     
-                    ".dotlinehoriz {"
-                    "    background-image: url('qrc:/images/dotlinebg_horiz.gif');"
-                    "    height:1px;"
-                    "    line-height:1px;"
-                    "    overflow:hidden;"
-                    "}"
+                    ".dotlinehoriz {\n"
+                    "    background-image: url('qrc:/images/dotlinebg_horiz.gif');\n"
+                    "    height:1px;\n"
+                    "    line-height:1px;\n"
+                    "    overflow:hidden;\n"
+                    "}\n"
                     
-                    ".dotlinevert {"
-                    "    background-image: url('qrc:/images/dotlinebg_vert.gif');"
-                    "    width:1px;"
-                    "}"
+                    ".dotlinevert {\n"
+                    "    background-image: url('qrc:/images/dotlinebg_vert.gif');\n"
+                    "    width:1px;\n"
+                    "}\n"
                     
-                    ".gadgetHead {"
-                    "    font:14px/18px arial,helvetica,sans-serif;"
-                    "    margin-top:10px;"
-                    "    margin-bottom:10px;"
-                    "}"
+                    ".gadgetHead {\n"
+                    "    font:14px/18px arial,helvetica,sans-serif;\n"
+                    "    margin-top:10px;\n"
+                    "    margin-bottom:10px;\n"
+                    "}\n"
                     
-                    ".gadgetText {"
-                    "    font:14px/24px arial,helvetica,sans-serif;"
-                    "}" 
+                    ".gadgetText {\n"
+                    "    font:14px/24px arial,helvetica,sans-serif;\n"
+                    "}\n" 
                   
-                    "</style></head><body>" );
+                    "</style></head><body>\n" );
 }
 
 QString HTML::pageHeader( const QString& engineer, int total )
 {
     QString ph;
     
-    ph += QString( "<div id='Head1'>"
-                   "    <img src='qrc:/images/gfx_top_in.gif' width='32' height='80' border='0'/>"
-                   "</div>"
+    ph += QString( "<div id='Head1'>\n"
+                   "    <img src='qrc:/images/gfx_top_in.gif' width='32' height='80' border='0'/>\n"
+                   "</div>\n"
                    
-                   "<div id='Apptitle' style='left:30px; right:60px; top:0px; height: 80px'>"
-                   "    <div id='AppTitleDiv' class='apptitle1' style='padding-top: 3px; padding-bottom: 3px; width: 100%'>"
-                   "        <b>" + engineer + "'s Queue</b>"
-                   "    </div>"
-                   "</div>"
+                   "<div id='Apptitle' style='left:30px; right:60px; top:0px; height: 80px'>\n"
+                   "    <div id='AppTitleDiv' class='apptitle1' style='padding-top: 3px; padding-bottom: 3px; width: 100%'>\n"
+                   "        <b>" + engineer + "'s Queue</b>\n"
+                   "    </div>\n"
+                   "</div>\n"
                    
-                   "<div id='logo' style='z-index:2'>"
-                   "    <img src='qrc:/images/logo_im.gif' width='175' height='80' border='0'>"
-                   "</div>"
+                   "<div id='logo' style='z-index:2'>\n"
+                   "    <img src='qrc:/images/logo_im.gif' width='175' height='80' border='0'>\n"
+                   "</div>\n"
                    
-                   "<div id='Apptitle' style='left:20px; right:20px; top:0px; height: 80px; z-index: 4'>"
-                   "    <div id='AppTitleDiv' class='apptitle2' style='text-align:right; padding-top: 21px; "
-                   " padding-bottom: 3px; width: 100%; z-index: 3'>"
-                   "         SRs total:&nbsp;" + QString::number( total ) + "<br>" );
+                   "<div id='Apptitle' style='left:20px; right:20px; top:0px; height: 80px; z-index: 4'>\n"
+                   "    <div id='AppTitleDiv' class='apptitle2' style='text-align:right; padding-top: 21px; \n"
+                   " padding-bottom: 3px; width: 100%; z-index: 3'>\n"
+                   "         SRs total:&nbsp;" + QString::number( total ) + "<br>\n" );
 
     if ( Settings::sortAge() )
     {
@@ -202,13 +202,13 @@ QString HTML::pageHeader( const QString& engineer, int total )
         ph += "Sorted by last activity";
     }
 
-    ph += QString( "<br>"
-                   "    </div>"
-                   "</div>"
-                   "<div id='logo' style='z-index:2'>"
-                   "    <img src='qrc:/images/logo_im.gif' width='175' height='80' border='0'>"
-                   "</div>"
-                   "<div id='content'>" );
+    ph += QString( "<br>\n"
+                   "    </div>\n"
+                   "</div>\n"
+                   "<div id='logo' style='z-index:2'>\n"
+                   "    <img src='qrc:/images/logo_im.gif' width='175' height='80' border='0'>\n"
+                   "</div>\n"
+                   "<div id='content'>\n" );
     
     return ph;
 }
@@ -220,24 +220,24 @@ QString HTML::SRTable( QueueSR sr )
     
     if ( sr.id == "00000000000" )
     {
-        return "Updating...";
+        return "Updating...\n";
     }
     
-    srtab += QString (  "<table id='" + sr.id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
-                            "<tr>"
-                                "<td colspan='3'>"
-                                    "<div class='dotlinehoriz'>"
-                                        "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''>"
-                                    "</div>"
-                                "</td>"
-                            "</tr>"
-                            "<tr>"
-                                "<td width='1' rowspan='4' class='dotlinevert'>"
-                                    "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''>"
-                                "</td>"
-                                "<td width='100%' bgcolor='#E8E8E8'>"
-                                    "<a href='sr://" + sr.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
-                                        "<tr width='100%'>"
+    srtab += QString (  "<table id='" + sr.id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>\n"
+                            "<tr>\n"
+                                "<td colspan='3'>\n"
+                                    "<div class='dotlinehoriz'>\n"
+                                        "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''>\n"
+                                    "</div>\n"
+                                "</td>\n"
+                            "</tr>\n"
+                            "<tr>\n"
+                                "<td width='1' rowspan='4' class='dotlinevert'>\n"
+                                    "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''>\n"
+                                "</td>\n"
+                                "<td width='100%' bgcolor='#E8E8E8'>\n"
+                                    "<a href='sr://" + sr.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>\n"
+                                        "<tr width='100%'>\n"
                                             "<td class='gadgetHead' valign='center' width='15%'><font" );
 
     if ( sr.severity ==  "High" )
@@ -251,7 +251,7 @@ QString HTML::SRTable( QueueSR sr )
     
     if ( sr.srtype == "cr" ) 
     {    
-        srtab += QString("><p style='line-height:0.8em;'><b>&nbsp;CR# " + sr.id + "&nbsp;</b></font></p><p style='line-height:0.7em;'><font size='-1'><i>&nbsp;" + sr.status + "</i></p>" );
+        srtab += QString("><p style='line-height:0.8em;'><b>&nbsp;CR# " + sr.id + "&nbsp;</b></font></p><p style='line-height:0.7em;'><font size='-1'><i>&nbsp;" + sr.status + "</i></p>\n" );
     }
     else 
     {    
@@ -477,22 +477,22 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         return "Updating...";
     }
         
-    srtab += QString (  "<table id='" + sr.id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>"
-                            "<tr>"
-                                "<td colspan='3'>"
-                                    "<div class='dotlinehoriz'>"
-                                        "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''>"
-                                    "</div>"
-                                "</td>"
-                            "</tr>"
-                            "<tr>"
-                                "<td width='1' rowspan='4' class='dotlinevert'>"
-                                    "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''>"
-                                "</td>"
-                                "<td width='100%' bgcolor='#E8E8E8'>"
-                                    "<a href='sr://" + sr.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>"
-                                        "<tr width='100%'>"
-                                            "<td class='gadgetHead' valign='center' width='18%'>" );
+    srtab += QString (  "<table id='" + sr.id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>\n"
+                            "<tr>\n"
+                                "<td colspan='3'>\n"
+                                    "<div class='dotlinehoriz'>\n"
+                                        "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''>\n"
+                                    "</div>\n"
+                                "</td>\n"
+                            "</tr>\n"
+                            "<tr>\n"
+                                "<td width='1' rowspan='4' class='dotlinevert'>\n"
+                                    "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''>\n"
+                                "</td>\n"
+                                "<td width='100%' bgcolor='#E8E8E8'>\n"
+                                    "<a href='sr://" + sr.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>\n"
+                                        "<tr width='100%'>\n"
+                                            "<td class='gadgetHead' valign='center' width='18%'>\n" );
 
     if (  sr.isCr )
     {
@@ -530,7 +530,7 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         srtab += QString( sr.severity );
     }
 
-    srtab += QString( "</font></b></p></td><td width='52%' valign='center' align='left' class='gadgetText'>" );
+    srtab += QString( "</font></b></p></td><td width='52%' valign='center' align='left' class='gadgetHead'>\n" );
    
     if ( sr.cus_account.isEmpty() )
     {
@@ -538,10 +538,10 @@ QString HTML::qmonSrInQueue( QmonSR sr )
     }
     
     srtab += QString (  "<p style='line-height:0.7em;'>" +  sr.bdesc.trimmed() + "</p>"
-                            "<p style='line-height:0.5em;'><font size='-2'><b><i>" + sr.cus_account.trimmed() + "</b></i></font></p>"
-                        "</td></a>"
-                        "<td width='30%' align='right' valign='center' class='gadgetText'><font size='-1'>" 
-                        "<p style='line-height:0.7em;'>Age: " + timeString( sr.agesec ) + "</p>" );
+                            "<p style='line-height:0.5em;'><font size='-2'><b><i>" + sr.cus_account.trimmed() + "</b></i></font></p>\n"
+                        "</td></a>\n"
+                        "<td width='30%' align='right' valign='center' class='gadgetHead'><font size='-1'>\n" 
+                        "<p style='line-height:0.7em;'>Age: " + timeString( sr.agesec ) + "</p>\n" );
     
     srtab += QString( "<p style='line-height:0.7em;'>In Q: " + timeString( sr.timeinqsec ) );
                         
@@ -550,23 +550,23 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         srtab += QString( " - SLA: " + timeString( sr.slasec ) );
     }
                                    
-    srtab += ( "</p></font></td><td align='right'>"
-                 "<a href='arrow://" + sr.id + "'><img src='qrc:/images/ni_gadget_arrow.gif'></img></a><br>"
-                "</td>"
-                "</tr>"
-                "</table>"
-                "</td>"
-                  "<td width='1' rowspan='4' class='dotlinevert'>"
-                   "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''></img>"
-                "</td>"
-              "</tr>"
-               "<tr>"
-                 "<td colspan='3'><div class='dotlinehoriz'>"
-                   "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''></img>"
-                   "</div>"
-                 "</td>"
-              "</tr>"
-           "</table>" );
+    srtab += ( "</p></font></td><td align='right'>\n"
+                 "<a href='arrow://" + sr.id + "'><img src='qrc:/images/ni_gadget_arrow.gif'></img></a><br>\n"
+                "</td>\n"
+                "</tr>\n"
+                "</table>\n"
+                "</td>\n"
+                  "<td width='1' rowspan='4' class='dotlinevert'>\n"
+                   "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''></img>\n"
+                "</td>\n"
+              "</tr>\n"
+               "<tr>\n"
+                 "<td colspan='3'><div class='dotlinehoriz'>\n"
+                   "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''></img>\n"
+                   "</div>\n"
+                 "</td>\n"
+              "</tr>\n"
+           "</table>\n" );
       
    srtab += (
     "<a href='sr://" + sr.id + "'><table id='" + sr.id + "_body' width='100%' cellspacing='0' cellpadding='0' border='0' style='display:" );
@@ -580,17 +580,17 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         srtab += sr.display;
     }
   
-    srtab+=(    "'>"
-                "<tr>"
-                "<td width='1' rowspan='4' class='dotlinevert'>"
-                    "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''></img>"
-                "</td>"
-                "<td width='100%'>"
-                    "<table cellpadding='0' cellspacing='0' border='0' width='100%'>" );
+    srtab+=(    "'>\n"
+                "<tr>\n"
+                "<td width='1' rowspan='4' class='dotlinevert'>\n"
+                    "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''></img>\n"
+                "</td>\n"
+                "<td width='100%'>\n"
+                    "<table cellpadding='0' cellspacing='0' border='0' width='100%'>\n" );
 
     if ( !sr.isCr )
     {
-        srtab += QString( "<tr><td class='gadgetText' width='18%'>&nbsp;Contact</td>"
+        srtab += QString( "<tr><td class='gadgetText' width='18%'>&nbsp;Contact</td>\n"
                           "<td class='gadgetText' width='82%'>" + sr.cus_firstname.trimmed() + " " + sr.cus_lastname.trimmed() );
                
         
@@ -604,39 +604,41 @@ QString HTML::qmonSrInQueue( QmonSR sr )
             srtab += QString( + " (" + sr.cus_lang.trimmed() + ")" );
         }
         
+        srtab += "</tr>";
+        
         if (  !sr.cus_email.isEmpty() )
         {
             QString mailto = "mailto:" + QUrl::toPercentEncoding( sr.cus_email ) + "?cc=techsup@novell.com&subject=SR" + QUrl::toPercentEncoding( " " + sr.id + " - " + sr.bdesc )
                                     + "&body=" + QUrl::toPercentEncoding( sr.cus_firstname + " " + sr.cus_lastname );
             
-            srtab+=( "<tr>"
-                      "<td class='gadgetText'>&nbsp;Email</td>"
-                      "<td class='gadgetText'><a href=" + mailto + ">" + sr.cus_email + "</a></td>"
-                    "</tr>" );
+            srtab+=( "<tr>\n"
+                      "<td class='gadgetText'>&nbsp;Email</td>\n"
+                      "<td class='gadgetText'><a href=" + mailto + ">" + sr.cus_email + "</a></td>\n"
+                    "</tr>\n" );
         }
         
         if (  !sr.cus_phone.isEmpty() )
         {
-            srtab+=( "<tr>"
-                      "<td class='gadgetText'>&nbsp;Phone</td>"
-                      "<td class='gadgetText'>" + sr.cus_phone + "</td>"
-                    "</tr>" );
+            srtab+=( "<tr>\n"
+                      "<td class='gadgetText'>&nbsp;Phone</td>\n"
+                      "<td class='gadgetText'>" + sr.cus_phone + "</td>\n"
+                    "</tr>\n" );
         }
         
         if (  !sr.cus_onsitephone.isEmpty() )
         {
-            srtab+=( "<tr>"
-                      "<td class='gadgetText'>&nbsp;Onsite Phone</td>"
-                      "<td class='gadgetText'>" + sr.cus_onsitephone + "</td>"
-                    "</tr>" );
+            srtab+=( "<tr>\n"
+                      "<td class='gadgetText'>&nbsp;Onsite Phone</td>\n"
+                      "<td class='gadgetText'>" + sr.cus_onsitephone + "</td>\n"
+                    "</tr>\n" );
         }
         
         if ( !sr.respond_via.isEmpty() )
         {
-            srtab += QString( "<tr>"
-                                "<td class='gadgetText'>&nbsp;Contact via</td>"
-                                "<td class='gadgetText'>" + sr.respond_via + "</td>"
-                              "</tr>" );
+            srtab += QString( "<tr>\n"
+                                "<td class='gadgetText'>&nbsp;Contact via</td>\n"
+                                "<td class='gadgetText'>" + sr.respond_via + "</td>\n"
+                              "</tr>\n" );
         }
     }
     else
@@ -644,53 +646,53 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         srtab += QString( "<tr><td class='gadgetText' width='18%'>&nbsp;Created by</td><td class='gadgetText' width='82%'>" + sr.creator.trimmed() );
     }
         
-    srtab += QString( "</td></tr><tr>"
-                        "<td class='gadgetText'>&nbsp;Status</td>"
-                        "<td class='gadgetText'>" + sr.status + "</td>"
-                      "</tr>" );
+    srtab += QString( "</td></tr><tr>\n"
+                        "<td class='gadgetText'>&nbsp;Status</td>\n"
+                        "<td class='gadgetText'>" + sr.status + "</td>\n"
+                      "</tr>\n" );
         
     if ( sr.isChat )
     {
-        srtab += QString( "<tr>"
-                            "<td class='gadgetText'>&nbsp;Bomgar Queue/Owner</td>"
-                            "<td class='gadgetText'>" + sr.bomgarQ + "</td>"
-                          "</tr>" );
+        srtab += QString( "<tr>\n"
+                            "<td class='gadgetText'>&nbsp;Bomgar Queue/Owner</td>\n"
+                            "<td class='gadgetText'>" + sr.bomgarQ + "</td>\n"
+                          "</tr>\n" );
     }
   
     if ( !sr.isCr )
     {
-        srtab += QString( "<tr>"
-                            "<td class='gadgetText'>&nbsp;Contract</td>"
-                            "<td class='gadgetText'>" + sr.support_program_long + "</td>"
-                          "</tr>" );
+        srtab += QString( "<tr>\n"
+                            "<td class='gadgetText'>&nbsp;Contract</td>\n"
+                            "<td class='gadgetText'>" + sr.support_program_long + "</td>\n"
+                          "</tr>\n" );
     }
     
-    srtab += QString(  "<tr>"
-                         "<td class='gadgetText'>&nbsp;Last Update</td>"
-                         "<td class='gadgetText'>" + QString::number( secDays( sr.lastupdatesec ) ) + " days ago</td>"
-                       "</tr>" );
+    srtab += QString(  "<tr>\n"
+                         "<td class='gadgetText'>&nbsp;Last Update</td>\n"
+                         "<td class='gadgetText'>" + QString::number( secDays( sr.lastupdatesec ) ) + " days ago</td>\n"
+                       "</tr>\n" );
     
     if ( sr.highvalue )
     {
-        srtab += QString( "<tr>"
-                            "<td class='gadgetText'>&nbsp;High Value</td>"
-                            "<td class='gadgetText'>Yes <img src='qrc:/images/obacht.png'></img></td>"
-                          "</tr>" );
+        srtab += QString( "<tr>\n"
+                            "<td class='gadgetText'>&nbsp;High Value</td>\n"
+                            "<td class='gadgetText'>Yes <img src='qrc:/images/obacht.png'></img></td>\n"
+                          "</tr>\n" );
     }
 
     if ( sr.critsit )
     {
-        srtab += QString( "<tr>"
-                            "<td class='gadgetText'>&nbsp;CritSit</td>"
-                            "<td class='gadgetText'>Yes <img src='qrc:/images/obacht.png'></img></td>"
-                          "</tr>" );
+        srtab += QString( "<tr>\n"
+                            "<td class='gadgetText'>&nbsp;CritSit</td>\n"
+                            "<td class='gadgetText'>Yes <img src='qrc:/images/obacht.png'></img></td>\n"
+                          "</tr>\n" );
     }
     
-    srtab +=( "</td></tr>" );
+    srtab +=( "</td></tr>\n" );
   
     srtab+= (   "</table></a></a></td><td width='1' rowspan='4' class='dotlinevert'><img src='qrc:/images/spacer.gif'"
-                "width='1' height='1' border='0' alt=''></td></tr><tr><td colspan='3'><div class='dotlinehoriz'>"
-                "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''></div></td></tr></table><div id='abstand'></div></a>" );  
+                "width='1' height='1' border='0' alt=''></td></tr><tr><td colspan='3'><div class='dotlinehoriz'>\n"
+                "<img src='qrc:/images/spacer.gif' width='1' height='1' alt=''></div></td></tr></table><div id='abstand'></div></a>\n" );  
   
     return srtab;
 }
