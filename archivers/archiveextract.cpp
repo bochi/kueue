@@ -58,7 +58,7 @@ void ArchiveExtract::run()
 
     const QFileInfo fileinfo( mArchivePath );
    
-    if ( !fileinfo.isReadable() )
+    if ( !fileinfo.isReadable() || extArgs.isEmpty() || listArgs.isEmpty() )
     {
         return;
     }

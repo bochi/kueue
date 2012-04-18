@@ -29,6 +29,7 @@
 #include "ui/kueuewindow.h"
 #include "ui/detailwindow.h"
 #include "ui_kueuewindow.h"
+#include "ui/statusbar.h"
 #include "ui/configdialog.h"
 #include "kueue.h"
 
@@ -122,9 +123,12 @@ void KueueWindow::closeEvent( QCloseEvent* e )
 
 bool KueueWindow::eventFilter( QObject* o, QEvent* e )
 {
+    qDebug() << "event" << e->type();
+    
     if ( e->type() == 24 )
     {
         Kueue::attention( false );
+        StatusBar::hideDownloadManager();
         return true;
     }
     else 

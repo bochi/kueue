@@ -54,12 +54,8 @@ StatusBar::StatusBar()
     mDownloadButton->setGeometry( 0, 0, 20, 20 );
     mDownloadButton->setIcon( QIcon(":/icons/menus/download.png"));
     
-    mDownloadManager = new DownloadManager( mDownloadButton );
-    mDownloadManager->setModal(true);
-    //mDownloadManager->setWindowModality(Qt::ApplicationModal);
-    mDownloadManager->setWindowFlags( Qt::Window | Qt::X11BypassWindowManagerHint | Qt::FramelessWindowHint );
+    mDownloadManager = new DownloadManager;
 
-        
     connect( mDownloadButton, SIGNAL( clicked(bool) ), 
              this, SLOT( toggleDownloadManager()) );
     
@@ -113,6 +109,11 @@ void StatusBar::showDownloadManager()
                             window()->y() + window()->height() - mDownloadManager->height() );
     
     mDownloadManager->show();   
+}
+
+void StatusBar::hideDownloadManagerImpl()
+{
+    mDownloadManager->hide();
 }
 
 void StatusBar::popupDownloadManager()

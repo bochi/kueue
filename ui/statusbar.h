@@ -82,6 +82,10 @@ class StatusBar : public QStatusBar
         {
             instance->startJobStatusImpl( text, total );
         }
+        static void hideDownloadManager()
+        {
+            instance->hideDownloadManagerImpl();
+        }
         
     public slots:
         void showMessageImpl( QString, int = 15000 );
@@ -92,6 +96,7 @@ class StatusBar : public QStatusBar
         void resetStatusBarImpl();
         void toggleDownloadManager();
         void showDownloadManager();
+        void hideDownloadManagerImpl();
         void popupDownloadManager();
     
 };

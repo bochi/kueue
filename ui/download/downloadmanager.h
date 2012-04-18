@@ -146,6 +146,7 @@ private slots:
     void updateRow();
     void finished();
 
+
 private:
     void addItem(DownloadItem *item);
     void updateItemCount();
@@ -161,6 +162,9 @@ private:
     QString mDownloadDir;
 
     friend class DownloadModel;
+    
+protected:
+    void focusOutEvent( QFocusEvent* );
     
 signals:
     void downloadFinished();

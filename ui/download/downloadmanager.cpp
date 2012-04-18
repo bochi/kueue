@@ -39,6 +39,8 @@
 
 #include <math.h>
 
+#include "qtsingleapplication/QtSingleApplication"
+
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QFileIconProvider>
@@ -559,6 +561,12 @@ DownloadManager::DownloadManager(QWidget *parent)
 {
     setupUi(this);
 
+    setWindowFlags( Qt::Tool );
+    setFocusPolicy( Qt::StrongFocus );
+    QtSingleApplication::setActiveWindow( this );
+    QApplication::setActiveWindow(this);
+    setFocus( Qt::MouseFocusReason );
+    
     QSettings settings;
     settings.beginGroup(QLatin1String("downloadmanager"));
     QString defaultLocation = QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);
@@ -584,6 +592,12 @@ DownloadManager::~DownloadManager()
     mAutoSaver->saveIfNeccessary();
     if (mIconProvider)
         delete mIconProvider;
+}
+
+void DownloadManager::focusOutEvent( QFocusEvent* event )
+{
+    hide();
+    QWidget::focusOutEvent( event );
 }
 
 int DownloadManager::activeDownloads() const
