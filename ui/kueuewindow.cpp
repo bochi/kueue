@@ -123,8 +123,6 @@ void KueueWindow::closeEvent( QCloseEvent* e )
 
 bool KueueWindow::eventFilter( QObject* o, QEvent* e )
 {
-    qDebug() << "event" << e->type();
-    
     if ( e->type() == 24 )
     {
         Kueue::attention( false );
