@@ -544,6 +544,11 @@ void UnityBrowser::fillOutProduct()
     {
         mUnityPage->fillOutProduct( "Open Enterprise Server", action->text() );
     }
+    
+    else if ( action->text().startsWith( "SUSE Linux Enterprise Point of Service" ) )
+    {
+        mUnityPage->fillOutProduct( "SUSE Linux Enterprise Point of Service", action->text() );
+    }
 }
 
 void UnityBrowser::historyBack()
