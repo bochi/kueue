@@ -150,6 +150,9 @@ class Settings
         static bool todoShowEsc();
         static void setTodoShowEsc( const bool& );
         
+        static bool todoDisabled();
+        static void setTodoDisabled( const bool& );
+        
         static bool todoShowStat();
         static void setTodoShowStat( const bool& );
         

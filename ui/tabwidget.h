@@ -87,6 +87,7 @@ class TabWidget : public QTabWidget
         QAction* mActionConfig;
         QAction* mActionShowSR;
         QAction* mActionShowCR;
+        QAction* mActionDisableTodo;
         QAction* mActionTodoShowUp;
         QAction* mActionTodoShowStat;
         QAction* mActionTodoShowSmilies;
@@ -129,6 +130,7 @@ class TabWidget : public QTabWidget
         void tabMiddleClicked( int, QPoint );
         void tabRightClicked( int, QPoint );
         void setMenus();
+        void toggleTodo( bool );
         void unityTabMenu( int tab, const QPoint& p );
         void closeActionTriggered();
         void clipboardActionTriggered();

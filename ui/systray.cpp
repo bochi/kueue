@@ -527,7 +527,10 @@ void Systray::changeIcon()
 
 void Systray::winMessageClicked()
 {
-    Kueue::showDetailedDescription( mCurrentMsg );
+    if ( Kueue::isSrNr( mCurrentMsg ) )
+    {
+        Kueue::showDetailedDescription( mCurrentMsg );
+    }
 }
 
 #include "systray.moc"

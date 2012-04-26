@@ -512,6 +512,19 @@ void Settings::setTodoShowUp( const bool& b )
     settings.setValue( "todoShowUp", b );
     settings.sync();
 }
+
+bool Settings::todoDisabled()
+{
+    QSettings settings;
+    return settings.value( "todoDisabled", false ).toBool();
+}
+
+void Settings::setTodoDisabled( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "todoDisabled", b );
+    settings.sync();
+}
         
 bool Settings::todoShowEsc()
 {

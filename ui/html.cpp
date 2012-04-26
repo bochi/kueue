@@ -413,7 +413,8 @@ QString HTML::SRTable( QueueSR sr )
     
     if( !( !( Settings::todoShowEsc() ) && 
         !(Settings::todoShowStat() ) && 
-        !( Settings::todoShowUp() ) ) )
+        !( Settings::todoShowUp() ) ) &&
+        !( Settings::todoDisabled() ) )
     {                
         srtab+= ( "<tr><td class='gadgetText' valign='top'>&nbsp;TODO</td><td class='gadgetText'>" );
   
