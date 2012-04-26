@@ -553,7 +553,7 @@ void DownloadItem::nsaFinished()
     extract zipped files or anything fancy.
   */
 DownloadManager::DownloadManager(QWidget *parent)
-    : QDialog(parent)
+    : QWidget(parent)
     , mAutoSaver(new AutoSaver(this))
     , mModel(new DownloadModel(this))
     , mIconProvider(0)
@@ -561,12 +561,10 @@ DownloadManager::DownloadManager(QWidget *parent)
 {
     setupUi(this);
 
-    setWindowFlags( Qt::Tool );
+    setWindowFlags( Qt::Window | Qt::FramelessWindowHint );
     setFocusPolicy( Qt::StrongFocus );
-    QtSingleApplication::setActiveWindow( this );
-    QApplication::setActiveWindow(this);
-    setFocus( Qt::MouseFocusReason );
-    
+    window()->activateWindow();
+
     QSettings settings;
     settings.beginGroup(QLatin1String("downloadmanager"));
     QString defaultLocation = QDesktopServices::storageLocation(QDesktopServices::DesktopLocation);
@@ -598,6 +596,13 @@ void DownloadManager::focusOutEvent( QFocusEvent* event )
 {
     hide();
     QWidget::focusOutEvent( event );
+}
+
+void DownloadManager::showEvent( QShowEvent* event )
+{
+	qDebug() << "showevent";
+	activateWindow();
+	QWidget::showEvent( event );
 }
 
 int DownloadManager::activeDownloads() const

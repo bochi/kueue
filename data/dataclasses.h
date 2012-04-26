@@ -60,6 +60,7 @@ class QueueSR
         qint32 service_level;
         bool highvalue;
         bool critsit;
+        bool isCr;
 };
 
 /* An SR in the queue monitor */

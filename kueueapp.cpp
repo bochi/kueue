@@ -175,6 +175,9 @@ void KueueApp::connectDataThread()
     
     connect( mDataThread, SIGNAL( statsDataChanged( QString ) ),
              mTabWidget, SLOT( updateStatsBrowser(QString) ) );
+
+    connect( mDataThread, SIGNAL( netError() ), 
+             this, SLOT( openConfig() ) );
 }
 
 void KueueApp::updateJobDone()

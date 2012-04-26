@@ -223,6 +223,15 @@ QString HTML::SRTable( QueueSR sr )
         return "Updating...\n";
     }
     
+    if ( sr.srtype == "cr" )
+    {
+        sr.isCr = true;
+    }
+    else
+    {
+        sr.isCr = false;
+    }
+    
     srtab += QString (  "<table id='" + sr.id + "_head' width='100%' cellspacing='0' cellpadding='0' border='0'>\n"
                             "<tr>\n"
                                 "<td colspan='3'>\n"
@@ -249,7 +258,7 @@ QString HTML::SRTable( QueueSR sr )
         srtab += ( " color='DarkBlue'" );
     }
     
-    if ( sr.srtype == "cr" ) 
+    if ( sr.isCr )
     {    
         srtab += QString("><p style='line-height:0.8em;'><b>&nbsp;CR# " + sr.id + "&nbsp;</b></font></p><p style='line-height:0.7em;'><font size='-1'><i>&nbsp;" + sr.status + "</i></p>\n" );
     }
@@ -266,9 +275,18 @@ QString HTML::SRTable( QueueSR sr )
     }
     
     srtab += QString( "</font></td><td class='gadgetText' width='60%'><p style='line-height:0.7em;'>" + sr.bdesc + "</p>"
-                      + "<p style='line-height:0.5em;'><b><i><font size='-2'>" + sr.cus_account + "</font></p></i></b></td>" );
+                      "<p style='line-height:0.5em;'><b><i><font size='-2'>" );
     
-    srtab += QString( "<td width='25%' align='right'><p style='line-height:0.6em;'><font size='-1'>"
+    if ( sr.isCr )
+    {
+        srtab += sr.creator;
+    }
+    else
+    {
+        srtab += sr.cus_account;
+    }
+    
+    srtab += QString( "</font></p></i></b></td><td width='25%' align='right'><p style='line-height:0.6em;'><font size='-1'>"
                       "Age: " + QString::number( sr.age ) + " days&nbsp;</p><p style='line-height:0.6em;'>"
                       "Last update: " + QString::number( sr.lastUpdateDays ) + " days ago&nbsp;</p></td>" );
     
@@ -316,53 +334,63 @@ QString HTML::SRTable( QueueSR sr )
                                 "<tr>"
                                     "<td class='gadgetText' width='15%'>&nbsp;Severity</td>"
                                     "<td class='gadgetText' width='85%'>" + sr.severity + "</td>"
-                                "</tr>"
-                                "<tr>"
-                                    "<td class='gadgetText'>&nbsp;Customer</td>"
-                                    "<td class='gadgetText'>" + sr.cus_account + "</td>"
-                                "</tr>"
-                                "<tr>"
-                                    "<td class='gadgetText'>&nbsp;Contact</td>"
-                                    "<td class='gadgetText'>" + sr.cus_firstname + " " + 
-                                     sr.cus_lastname );
-    
-    if ( !sr.cus_title.isEmpty() )
+                                "</tr>" );
+                                
+    if ( sr.isCr )
     {
-        srtab+=( " (" + sr.cus_title + ")" );
+        srtab+=( "<tr>"
+                    "<td class='gadgetText'>&nbsp;Created by</td>"
+                    "<td class='gadgetText'>" + sr.creator + "</td>"
+                "</tr>" );
     }
-    
-    if ( !sr.cus_lang.isEmpty() )
+    else
     {
-        srtab+=( " (" + sr.cus_lang + ")" );
-    }
+        srtab+=( "<tr>"
+                    "<td class='gadgetText'>&nbsp;Customer</td>"
+                    "<td class='gadgetText'>" + sr.cus_account + "</td>"
+                "</tr>"
+                "<tr>"
+                    "<td class='gadgetText'>&nbsp;Contact</td>"
+                    "<td class='gadgetText'>" + sr.cus_firstname + " " + sr.cus_lastname );
     
-    srtab+=( "</td></tr>" );
-    
-    if (  !sr.cus_email.isEmpty() )
-    {
-        QString mailto = "mailto:" + QUrl::toPercentEncoding( sr.cus_email ) + "?cc=techsup@novell.com&subject=SR" + QUrl::toPercentEncoding( " " + sr.id + " - " + sr.bdesc )
-                                   + "&body=" + QUrl::toPercentEncoding( sr.cus_firstname + " " + sr.cus_lastname );
+        if ( !sr.cus_title.isEmpty() )
+        {
+            srtab+=( " (" + sr.cus_title + ")" );
+        }
         
-        srtab+=( "<tr>"
-                   "<td class='gadgetText'>&nbsp;Email</td>"
-                   "<td class='gadgetText'><a href=" + mailto + ">" + sr.cus_email + "</a></td>"
-                 "</tr>" );
-    }
-    
-    if (  !sr.cus_phone.isEmpty() )
-    {
-        srtab+=( "<tr>"
-                   "<td class='gadgetText'>&nbsp;Phone</td>"
-                   "<td class='gadgetText'>" + sr.cus_phone + "</td>"
-                 "</tr>" );
-    }
-    
-    if (  !sr.cus_onsitephone.isEmpty() )
-    {
-        srtab+=( "<tr>"
-                   "<td class='gadgetText'>&nbsp;Onsite Phone</td>"
-                   "<td class='gadgetText'>" + sr.cus_onsitephone + "</td>"
-                 "</tr>" );
+        if ( !sr.cus_lang.isEmpty() )
+        {
+            srtab+=( " (" + sr.cus_lang + ")" );
+        }
+        
+        srtab+=( "</td></tr>" );
+        
+        if (  !sr.cus_email.isEmpty() )
+        {
+            QString mailto = "mailto:" + QUrl::toPercentEncoding( sr.cus_email ) + "?cc=techsup@novell.com&subject=SR" + QUrl::toPercentEncoding( " " + sr.id + " - " + sr.bdesc )
+                                    + "&body=" + QUrl::toPercentEncoding( sr.cus_firstname + " " + sr.cus_lastname );
+            
+            srtab+=( "<tr>"
+                    "<td class='gadgetText'>&nbsp;Email</td>"
+                    "<td class='gadgetText'><a href=" + mailto + ">" + sr.cus_email + "</a></td>"
+                    "</tr>" );
+        }
+        
+        if (  !sr.cus_phone.isEmpty() )
+        {
+            srtab+=( "<tr>"
+                    "<td class='gadgetText'>&nbsp;Phone</td>"
+                    "<td class='gadgetText'>" + sr.cus_phone + "</td>"
+                    "</tr>" );
+        }
+        
+        if (  !sr.cus_onsitephone.isEmpty() )
+        {
+            srtab+=( "<tr>"
+                    "<td class='gadgetText'>&nbsp;Onsite Phone</td>"
+                    "<td class='gadgetText'>" + sr.cus_onsitephone + "</td>"
+                    "</tr>" );
+        }
     }
     
     if ( sr.highvalue )

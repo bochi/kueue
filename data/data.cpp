@@ -47,6 +47,11 @@ Data::Data()
         mIPs.append( al.at( i ).toString() );
     }
     
+    if ( mIPs.isEmpty() )
+    {
+        emit netError();
+    }
+    
     mDB = "db-thread";
 
     QDir dir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) );

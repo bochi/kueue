@@ -56,6 +56,9 @@ class Network : public QObject
 
     private slots:
         void error( QNetworkReply::NetworkError );
+        
+    signals:
+        void netError();
 };
 
 #endif

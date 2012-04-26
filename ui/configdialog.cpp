@@ -724,9 +724,6 @@ BasicConfig::BasicConfig()
         dbServer->setText( Settings::dBServer() );
     }
     else
-    {
-        dbServer->setText( "http://" );
-    }
     
     if ( !Settings::engineer().isEmpty() )
     {

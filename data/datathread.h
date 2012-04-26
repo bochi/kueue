@@ -85,6 +85,7 @@ class DataThread : public QThread
         void statsDataChanged( QString );
         void qmonUpdateDone( const QString& );
         void statsUpdateDone( const QString& );
+        void netError();
         void killed();
 };
 

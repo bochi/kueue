@@ -26,6 +26,7 @@
 #include "network.h"
 #include "settings.h"
 #include "kueue.h"
+#include "ui/configdialog.h"
 
 #include <QtGui>
 #include <QDebug>
@@ -59,6 +60,15 @@ Network::Network()
     QHostInfo info = QHostInfo::fromName( Settings::dBServer() );
     QList<QHostAddress> al = info.addresses();
     
+    if ( info.error() )
+    {
+        Kueue::notify( "kueue-general", "Couldn't resolve hostname", "Unable to resolve hostname, please check your config", "NONE" );
+        BasicConfig* bc = new BasicConfig();
+        bc->exec();
+        delete bc;
+        destroy();
+    }
+    
     for ( int i = 0; i < al.size(); ++i ) 
     { 
         mIPs.append( al.at( i ).toString() );
@@ -74,33 +84,39 @@ Network::~Network()
 
 QNetworkReply* Network::getImpl( const QString& u )
 {
-    int r = qrand() % mIPs.size();
+    if ( !mIPs.isEmpty() )
+    {
+        int r = qrand() % mIPs.size();
 
-    QNetworkRequest request( QUrl( "http://" + mIPs.at(r) + ":8080/" + u ) );
+        QNetworkRequest request( QUrl( "http://" + mIPs.at(r) + ":8080/" + u ) );
 
-    request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
-    
-    QNetworkReply* reply = mNAM->get( request );
-    
-    connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
-             this, SLOT( error( QNetworkReply::NetworkError ) ) );
+        request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
+        
+        QNetworkReply* reply = mNAM->get( request );
+        
+        connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
+                this, SLOT( error( QNetworkReply::NetworkError ) ) );
 
-    //qDebug() << "[NETWORK] Downloading" << request.url();
-    return reply;
+        //qDebug() << "[NETWORK] Downloading" << request.url();
+        return reply;
+    }
 }
 
 QNetworkReply* Network::getExtImpl( const QUrl& url )
 {
-    QNetworkRequest request( url );
-    request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
-    
-    QNetworkReply* reply = mNAM->get( request );
-    
-    connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
-             this, SLOT( error( QNetworkReply::NetworkError ) ) );
+    if ( !mIPs.isEmpty() )
+    {
+        QNetworkRequest request( url );
+        request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
+        
+        QNetworkReply* reply = mNAM->get( request );
+        
+        connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
+                this, SLOT( error( QNetworkReply::NetworkError ) ) );
 
-    //qDebug() << "[NETWORK] Downloading" << request.url();
-    return reply;
+        //qDebug() << "[NETWORK] Downloading" << request.url();
+        return reply;
+    }
 }
 
 void Network::error( QNetworkReply::NetworkError error )

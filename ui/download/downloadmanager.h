@@ -106,7 +106,7 @@ class QFileIconProvider;
 class QMimeData;
 QT_END_NAMESPACE
 
-class DownloadManager : public QDialog, public Ui_DownloadDialog
+class DownloadManager : public QWidget, public Ui_DownloadDialog
 {
     Q_OBJECT
     Q_PROPERTY(RemovePolicy removePolicy READ removePolicy WRITE setRemovePolicy)
@@ -165,7 +165,7 @@ private:
     
 protected:
     void focusOutEvent( QFocusEvent* );
-    
+    void showEvent( QShowEvent* ); 
 signals:
     void downloadFinished();
 };

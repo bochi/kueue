@@ -104,6 +104,9 @@ void DataThread::createData()
     
     connect( this, SIGNAL( updateQmonBrowserRequested() ), 
              mData, SLOT( updateQmonBrowser() ) );
+    
+    connect( mData, SIGNAL( netError() ), 
+             this, SIGNAL( netError() ) );
 }
 
 void DataThread::newDataSlot()

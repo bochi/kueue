@@ -63,6 +63,7 @@ class Data : public QObject
         void queueDataChanged( QString );
         void qmonDataChanged( QString );
         void statsDataChanged( QString );
+        void netError();
 };
 
 #endif
