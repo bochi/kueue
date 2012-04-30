@@ -238,6 +238,23 @@
     
 </chapter>
 
+<chapter id="ddescwin">
+<title>Detailed Description window</title>
+
+   <para>This is the window that you get when viewing the detailed description for an SR.</para>
+   <para>You can directly assign an SR to an engineer from that window.</para>
+    
+   <para>
+      <screenshot><screeninfo>Detailed Description</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="detailed.png" width="95%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+    
+    <tip><para>If the description is in a language that you don't understand, just press F1 :-)</para></tip>
+    
+</chapter>
+
 <chapter id="statsbrowser">
 <title>Statistics</title>
 
