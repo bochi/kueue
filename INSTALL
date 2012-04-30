@@ -6,6 +6,7 @@ Other than that, it's a straight-forward cmake process:
   # mkdir build
   # cd build
   # cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+  # make
   # make install (as root)
 
 Dependencies:
