@@ -110,6 +110,7 @@ class TabWidget : public QTabWidget
     public slots:
         void setTabsPosition();
         void addUnityBrowser( const QString& = QString::Null() );
+        void addUnityBrowserWithSR();
         void removeUnityBrowser( int );
         void showMonitorTab( bool );
         void showStatsTab( bool );

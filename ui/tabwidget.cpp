@@ -84,8 +84,11 @@ TabWidget::TabWidget( QWidget* parent )
     TabButton* newTabButton = new TabButton( this );
     TabButton* mMenuButton = new TabButton( this );
     
-    connect( newTabButton, SIGNAL(clicked()), 
+    connect( newTabButton, SIGNAL( clicked() ), 
              this, SLOT( addUnityBrowser()) );
+    
+    connect( newTabButton, SIGNAL( middleClicked() ), 
+             this, SLOT( addUnityBrowserWithSR() ) );
     
     connect( mMenuButton, SIGNAL( clicked() ),
              mMenuButton, SLOT( showMenu()) );
@@ -284,6 +287,26 @@ void TabWidget::addUnityBrowser( const QString& sr )
     
     if ( sr != QString::Null() )
     {
+        switchToTab( tab );
+    }
+}
+
+void TabWidget::addUnityBrowserWithSR()
+{   
+    // create a new unitywidget and add it as a tab
+    QString sr = Kueue::getClipboard();
+    
+    if ( Kueue::isSrNr( sr ) )
+    {
+        UnityWidget* w = new UnityWidget( this, Kueue::getClipboard() );
+    
+        int tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
+    
+        w->setTabId( tab );
+    
+        mUnityWidgetList.append( w );
+        mUnityBrowserMap[ tab ] = w->browser();
+    
         switchToTab( tab );
     }
 }
