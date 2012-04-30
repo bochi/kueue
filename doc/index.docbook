@@ -126,23 +126,6 @@
 
   </sect1>
 
-  <sect1 id="stats">
-  <title>Stats</title>
-   
-    <para>This section includes the options for the Statistics feature </para>
-   
-    <para>
-      <screenshot><screeninfo>Stats</screeninfo>
-      <mediaobject><imageobject>
-          <imagedata fileref="config_stats.png" width="95%" format="PNG"/>
-      </imageobject></mediaobject></screenshot>
-    </para>
-
-    <para>The statistics feature is not complete yet, as you can see in the configuration dialog.</para>
-    <para>The team-stats stuff is not yet used at all, so don't fill it out :-)</para>
-
-  </sect1>
-
   <sect1 id="uconf">
   <title>Unity</title>
    
