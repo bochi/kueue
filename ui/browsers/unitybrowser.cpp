@@ -736,6 +736,11 @@ QString UnityBrowser::currentSR()
     return mUnityPage->currentSr();
 }
 
+bool UnityBrowser::isCR()
+{
+    return mUnityPage->isCr();
+}
+
 /* 
  * 
  *      UnityWidget class
@@ -938,12 +943,27 @@ void UnityWidget::currentSrChanged( QString sr )
     }
     else if ( !mToolbarDisabled )
     {
-        mSrButton->setText( "SR#" + sr );
+        if ( mUnityBrowser->isCR() )
+        {
+            mSrButton->setText( "CR#" + sr );
+        }
+        else
+        {
+            mSrButton->setText( "SR#" + sr );
+        }
+ 
         mToolBar->setEnabled( true );
     }
     else
     {
-        mSrButton->setText( "SR#" + sr );
+        if ( mUnityBrowser->isCR() )
+        {
+            mSrButton->setText( "CR#" + sr );
+        }
+        else
+        {
+            mSrButton->setText( "SR#" + sr );
+        }
     }
 }
 

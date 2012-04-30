@@ -455,7 +455,8 @@ void UnityPage::goToActivities()
     
     for ( int i = 0; i < fc.count(); ++i ) 
     {  
-        if ( fc.at(i).attribute("href").contains("Service+Request+Detail+View") )
+        if ( ( fc.at(i).attribute("href").contains("c_d") ) &&
+             ( fc.at(i).attribute("id").contains( "s_2_2_94" ) ) )
         {
             QString js = fc.at(i).attribute("href").remove( "Javascript:" );
             mViewFrame->evaluateJavaScript( js );
@@ -725,6 +726,8 @@ void UnityPage::getCurrentSR()
     {
         mCurrentSR = "";
         emit currentSrChanged( "" );
+        mIsCr = false;
+        qDebug() << "currentSrChanged to empty";
     }
     else
     {
@@ -734,7 +737,9 @@ void UnityPage::getCurrentSR()
         if ( !srnr.isEmpty() )
         {
             mCurrentSR = srnr;
+            checkIfCR();
             emit currentSrChanged( srnr );
+            qDebug() << "currentSrChanged to" << srnr;
         }
         else
         {
@@ -750,7 +755,9 @@ void UnityPage::getCurrentSR()
                     if ( mCurrentSR != csr )
                     {
                         mCurrentSR = csr;
+                        checkIfCR();
                         emit currentSrChanged( csr );
+                        qDebug() << "currentSrChanged to" << csr;
                     }
                     
                     i = fc.count();
@@ -766,15 +773,46 @@ void UnityPage::getCurrentSR()
             if ( ( !keep ) && 
                 ( !title.isEmpty() ) && 
                 ( title != "Body" ) && 
+                ( title != "Details" ) && 
+                ( !title.contains( "Activity" ) ) && 
                 ( title != "Service Request Attachments" ) &&
+                ( title != "Communication Attachments" ) &&
+                ( title != "Communication Histories" ) &&
                 ( title != "Service Request Activities" ) )
             {
                 mCurrentSR = "";
                 emit currentSrChanged( "" );
+                mIsCr = false;
+                qDebug() << "currentSrChanged to empty";
             }
         }
     }
 }    
+
+void UnityPage::checkIfCR()
+{
+    QWebElementCollection fc = mViewFrame->findAllElements( "input" );
+            
+    for ( int i = 0; i < fc.count(); ++i ) 
+    {  
+        if ( fc.at( i ).attribute( "id" ).contains( "s_1_1_70" ) ||
+            fc.at( i ).attribute( "tabindex" ).contains( "1002" ) )
+        {
+            qDebug() << "found" << fc.at(i).attribute("value");
+            
+            if ( fc.at( i ).attribute( "value" ).contains( "NTS COLLABORATION" ) )
+            {
+                qDebug() << "IS CR";
+                mIsCr = true;
+            }
+            else
+            {
+                qDebug() << "IS NO CR";
+                mIsCr = false;
+            }
+        }
+    }
+}
 
 void UnityPage::sendEmail()
 {

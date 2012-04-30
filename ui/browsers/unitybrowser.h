@@ -49,6 +49,7 @@ class UnityBrowser : public QWebView
         ~UnityBrowser();
         
         QString currentSR();
+        bool isCR();
           
     public slots:
         void querySR( const QString& = QString::Null() );

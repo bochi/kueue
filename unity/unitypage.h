@@ -44,6 +44,7 @@ class UnityPage : public QWebPage
         bool navReady() { return mNavReady; }
         bool loggedIn() { return mLoggedIn; }
         bool isNsaReport() { return mIsNsaReport; }
+        bool isCr() { return mIsCr; }
         QWebHitTestResult getElementAt( const QPoint& );
         QString currentSr() { return mCurrentSR; }
         QWebFrame* viewFrame() { return mViewFrame; }
@@ -79,6 +80,7 @@ class UnityPage : public QWebPage
         void goToActivities();
         void actionDone();
         void newActivity();
+        void checkIfCR();
         
         void setSSconfirmed();
         void setSSrejected();
@@ -163,6 +165,7 @@ class UnityPage : public QWebPage
         bool mNoJsConfirm;
         bool mPageErbert;
         bool mSetStatus;
+        bool mIsCr;
         bool checkMandatoryForClose();
 
     protected:
