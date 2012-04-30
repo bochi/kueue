@@ -4,12 +4,12 @@ doc directory first, otherwise it won't build properly.
 Other than that, it's a straight-forward cmake process:
 
   # mkdir build
-  # cmake .. -DCMAKE_INSTALL_PREFIX=/Usr
-  # sudo make install
+  # cd build
+  # cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+  # make install (as root)
 
 Dependencies:
 
-  * LibArchive
   * Qt 4
   * Qt Sqlite
   * Qt WebKit

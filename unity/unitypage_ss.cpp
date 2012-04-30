@@ -81,14 +81,27 @@ void UnityPage::setSSfirst()
     disconnect( mViewFrame, 0, 0, 0 );
 
     QString changeJS;
-
+    QString audienceID;
+    QString activityID;
+    
+    if ( mIsCr )
+    {
+        audienceID = "s_5_2_23";
+        activityID = "s_5_2_32";
+    }
+    else
+    {
+        audienceID = "s_2_2_20";
+        activityID = "s_2_2_32";
+    }
+    
     QWebElementCollection c = mViewFrame->findAllElements( "select" );
     QWebElement done;
     QWebElement e;
     
     for ( int i = 0; i < c.count(); ++i )
     {
-        if ( c.at(i).attribute( "id" ).contains( "s_2_2_20" ) )
+        if ( c.at(i).attribute( "id" ).contains( audienceID ) )
         {
             changeJS = c.at(i).attribute( "onchange" );
             
@@ -108,7 +121,7 @@ void UnityPage::setSSfirst()
             mViewFrame->evaluateJavaScript( changeJS );
         }
         
-        else if ( c.at(i).attribute( "id" ).contains( "s_2_2_32" ) )
+        else if ( c.at(i).attribute( "id" ).contains( activityID ) )
         {
             changeJS = c.at(i).attribute( "onchange" );
             
@@ -142,12 +155,23 @@ void UnityPage::setSSsecond()
     disconnect( mViewFrame, 0, 0, 0 );
 
     QString changeJS;
+    QString statusID;
+    
+    if ( mIsCr )
+    {
+        statusID = "s_5_2_35";
+    }
+    else
+    {
+        statusID = "s_2_2_35";
+    }
+    
     QWebElementCollection c = mViewFrame->findAllElements( "select" );
     QWebElement e;
     
     for ( int i = 0; i < c.count(); ++i )
     {
-        if ( c.at(i).attribute( "id" ).contains( "s_2_2_35" ) )
+        if ( c.at(i).attribute( "id" ).contains( statusID ) )
         {
             changeJS = c.at( i ).attribute( "onchange" );
             
@@ -177,6 +201,19 @@ void UnityPage::setSSsecond()
 void UnityPage::setSSthird()
 {
     mSetSS = true;
+    QString commentID;
+    QString commentTab;
+    
+    if ( mIsCr )
+    {
+        commentID = "s_5_2_38";
+        commentTab = "3997";
+    }
+    else
+    {
+        commentID = "s_2_2";
+        commentTab = "2014";
+    }
     
     disconnect( mViewFrame, 0, 0, 0 );
 
@@ -187,7 +224,7 @@ void UnityPage::setSSthird()
     
     for ( int i = 0; i < rc.count(); ++i ) 
     {  
-        if ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2014" ) ) )
+        if ( ( rc.at(i).attribute( "id" ).contains( commentID ) ) && ( rc.at(i).attribute( "tabindex" ).contains( commentTab ) ) )
         {
             rc.at(i).setInnerXml( mSsDialog->ssText() );
         }
