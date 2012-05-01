@@ -391,6 +391,22 @@ QString HTML::SRTable( QueueSR sr )
                     "<td class='gadgetText'>" + sr.cus_onsitephone + "</td>"
                     "</tr>" );
         }
+        
+        if (  !sr.alt_contact.isEmpty() )
+        {
+            srtab+=( "<tr>"
+                    "<td class='gadgetText'>&nbsp;Alternate contact</td>"
+                    "<td class='gadgetText'>" + sr.alt_contact + "</td>"
+                    "</tr>" );
+        }
+    }
+    
+    if ( !sr.bug.isEmpty() )
+    {
+        srtab+=( "<tr>"
+                    "<td class='gadgetText'>&nbsp;Bug</td>"
+                    "<td class='gadgetText'><a href='https://bugzilla.novell.com/show_bug.cgi?id=" + sr.bug + "'>" + sr.bug + "</a></td>"
+                "</tr>" );
     }
     
     if ( sr.highvalue )

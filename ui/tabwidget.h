@@ -59,7 +59,7 @@ class TabWidget : public QTabWidget
         
         static void newUnityWithSR( const QString& id )
         {
-            TabWidget::tw().addUnityBrowser( id );
+            TabWidget::tw().addUnityBrowserWithSR( id );
         }
         
     private:
@@ -109,8 +109,8 @@ class TabWidget : public QTabWidget
         
     public slots:
         void setTabsPosition();
-        void addUnityBrowser( const QString& = QString::Null() );
-        void addUnityBrowserWithSR();
+        void addUnityBrowser();
+        void addUnityBrowserWithSR( QString = QString::Null() );
         void removeUnityBrowser( int );
         void showMonitorTab( bool );
         void showStatsTab( bool );

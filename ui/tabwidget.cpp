@@ -259,20 +259,11 @@ void TabWidget::showUnityTab( bool b )
     }
 }
 
-void TabWidget::addUnityBrowser( const QString& sr )
+void TabWidget::addUnityBrowser()
 {   
     // create a new unitywidget and add it as a tab
-    UnityWidget* w;
+    UnityWidget* w = new UnityWidget( this );
     
-    if ( sr == QString::Null() )
-    {
-        w = new UnityWidget( this );
-    }
-    else
-    {
-        w = new UnityWidget( this, sr );
-    }
-
     int tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
     
     // set the tabId for the widget for tab handling 
@@ -284,17 +275,14 @@ void TabWidget::addUnityBrowser( const QString& sr )
     
     mUnityWidgetList.append( w );
     mUnityBrowserMap[ tab ] = w->browser();
-    
-    if ( sr != QString::Null() )
-    {
-        switchToTab( tab );
-    }
 }
 
-void TabWidget::addUnityBrowserWithSR()
+void TabWidget::addUnityBrowserWithSR( QString sr )
 {   
-    // create a new unitywidget and add it as a tab
-    QString sr = Kueue::getClipboard();
+    if ( sr.isNull() )
+    {
+        sr = Kueue::getClipboard();
+    }
     
     if ( Kueue::isSrNr( sr ) )
     {

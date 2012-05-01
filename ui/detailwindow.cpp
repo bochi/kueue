@@ -28,6 +28,7 @@
 #include <data/data.h>
 #include "config.h"
 #include "kueue.h"
+#include "settings.h"
 
 #include <QtGui>
 #include <QDesktopServices>

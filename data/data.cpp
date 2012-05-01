@@ -173,6 +173,8 @@ void Data::queueUpdateFinished()
             sr.cus_phone = list.at( i ).namedItem( "cus_phone" ).toElement().text(); 
             sr.cus_onsitephone = list.at( i ).namedItem( "cus_onsitephone" ).toElement().text(); 
             sr.cus_lang = list.at( i ).namedItem( "cus_lang" ).toElement().text(); 
+            sr.alt_contact = list.at( i ).namedItem( "alt_contact" ).toElement().text();
+            sr.bug = list.at( i ).namedItem( "bug" ).toElement().text(); 
             sr.severity = list.at( i ).namedItem( "severity" ).toElement().text(); 
             sr.status = list.at( i ).namedItem( "status" ).toElement().text(); 
             sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text(); 
@@ -229,6 +231,8 @@ void Data::qmonUpdateFinished()
                 sr.cus_phone = list.at( i ).namedItem( "cus_phone" ).toElement().text(); 
                 sr.cus_onsitephone = list.at( i ).namedItem( "cus_onsitephone" ).toElement().text(); 
                 sr.cus_lang = list.at( i ).namedItem( "cus_lang" ).toElement().text(); 
+                sr.alt_contact = list.at( i ).namedItem( "alt_contact" ).toElement().text();
+                sr.bug = list.at( i ).namedItem( "bug" ).toElement().text(); 
                 sr.severity = list.at( i ).namedItem( "severity" ).toElement().text(); 
                 sr.status = list.at( i ).namedItem( "status" ).toElement().text(); 
                 sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text(); 

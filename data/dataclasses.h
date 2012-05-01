@@ -54,6 +54,8 @@ class QueueSR
         QString created;
         QString lastupdate;
         QString display;
+        QString alt_contact;
+        QString bug;
         QStringList todoList;
         qint32 age;
         qint32 lastUpdateDays;
@@ -101,6 +103,8 @@ class QmonSR
         QString queuedate;
         QString sla;
         QString display;
+        QString alt_contact;
+        QString bug;
         qint32 agesec;
         qint32 timeinqsec;
         qint32 slasec;

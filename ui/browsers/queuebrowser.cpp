@@ -200,10 +200,11 @@ void QueueBrowser::mousePressEvent( QMouseEvent* event )
     }
     
     if ( ( event->button() == 1 ) && 
-         ( mUrl.toString().startsWith(  "mailto" ) ) )
+         ( mUrl.toString().startsWith(  "mailto" ) || mUrl.toString().startsWith( "http" ) ) )
     {
         QDesktopServices::openUrl( mUrl );
     }
+    
     
     // Right mouse button     
     
