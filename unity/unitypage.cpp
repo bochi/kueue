@@ -727,7 +727,6 @@ void UnityPage::getCurrentSR()
         mCurrentSR = "";
         emit currentSrChanged( "" );
         mIsCr = false;
-        qDebug() << "currentSrChanged to empty";
     }
     else
     {
@@ -739,7 +738,6 @@ void UnityPage::getCurrentSR()
             mCurrentSR = srnr;
             checkIfCR();
             emit currentSrChanged( srnr );
-            qDebug() << "currentSrChanged to" << srnr;
         }
         else
         {
@@ -757,7 +755,6 @@ void UnityPage::getCurrentSR()
                         mCurrentSR = csr;
                         checkIfCR();
                         emit currentSrChanged( csr );
-                        qDebug() << "currentSrChanged to" << csr;
                     }
                     
                     i = fc.count();
@@ -783,7 +780,6 @@ void UnityPage::getCurrentSR()
                 mCurrentSR = "";
                 emit currentSrChanged( "" );
                 mIsCr = false;
-                qDebug() << "currentSrChanged to empty";
             }
         }
     }
@@ -798,16 +794,13 @@ void UnityPage::checkIfCR()
         if ( fc.at( i ).attribute( "id" ).contains( "s_1_1_70" ) ||
             fc.at( i ).attribute( "tabindex" ).contains( "1002" ) )
         {
-            qDebug() << "found" << fc.at(i).attribute("value");
             
             if ( fc.at( i ).attribute( "value" ).contains( "NTS COLLABORATION" ) )
             {
-                qDebug() << "IS CR";
                 mIsCr = true;
             }
             else
             {
-                qDebug() << "IS NO CR";
                 mIsCr = false;
             }
         }

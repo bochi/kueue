@@ -910,7 +910,7 @@ QString HTML::closedTableHeader( int c, int a )
 {
     QString ph;
  
-    ph += QString ( "<p class='qph'><b>Closed SRs/Time to solution</b></p><hr>"
+    ph += QString ( "<br><p class='qph'><b>Closed SRs/Time to solution</b></p><hr>"
                     "You closed " + QString::number( c ) + " SRs so far<br>"
                     "Average time to solution: " + QString::number( a ) + " days<br><br>" );
 
