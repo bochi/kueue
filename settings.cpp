@@ -629,7 +629,20 @@ void Settings::setQueuesToMonitor( const QStringList& l )
     settings.setValue( "queuesToMonitor", l );
     settings.sync();
 }
-        
+
+QString Settings::qmonFilter()
+{
+    QSettings settings;
+    return settings.value( "qmonFilter", "ALL" ).toString();
+}
+
+void Settings::setQmonFilter( const QString& s )
+{
+    QSettings settings;
+    settings.setValue( "qmonFilter", s );
+    settings.sync();
+}
+
 bool Settings::monitorPersonalBomgar()
 {
     QSettings settings;

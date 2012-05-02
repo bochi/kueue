@@ -420,19 +420,19 @@ void QMonBrowser::setFilter()
     
     if ( sc->objectName() == "emea" )
     {
-        mFilter = "EMEA";
+        Settings::setQmonFilter( "EMEA" );
     }
     else if ( sc->objectName() == "us" )
     {
-        mFilter = "USA";
+        Settings::setQmonFilter( "USA" );
     }
     else if ( sc->objectName() == "apac" )
     {
-        mFilter  = "APAC";
+        Settings::setQmonFilter( "ASIAPAC" );
     }
     else
     {
-        mFilter = QString::Null();
+        Settings::setQmonFilter( "ALL" );
     }
     
     DataThread::updateQmonBrowser();

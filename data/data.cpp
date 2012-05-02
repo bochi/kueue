@@ -175,6 +175,7 @@ void Data::queueUpdateFinished()
             sr.cus_lang = list.at( i ).namedItem( "cus_lang" ).toElement().text(); 
             sr.alt_contact = list.at( i ).namedItem( "alt_contact" ).toElement().text();
             sr.bug = list.at( i ).namedItem( "bug" ).toElement().text(); 
+            sr.bugtitle = list.at( i ).namedItem( "bug_desc" ).toElement().text(); 
             sr.severity = list.at( i ).namedItem( "severity" ).toElement().text(); 
             sr.status = list.at( i ).namedItem( "status" ).toElement().text(); 
             sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text(); 
@@ -450,7 +451,7 @@ void Data::updateQmonBrowser()
             html += HTML::qmonTableHeader( list.at( i ).split( "|" ).at( 0 ) );
         }
         
-        QList< QmonSR > l( Database::getQmonQueue( list.at( i ).split( "|" ).at( 1 ), mDB ) );
+        QList< QmonSR > l( Database::getQmonQueue( list.at( i ).split( "|" ).at( 1 ), Settings::qmonFilter(), mDB ) );
     
         for ( int i = 0; i < l.size(); ++i ) 
         {
@@ -463,11 +464,6 @@ void Data::updateQmonBrowser()
     if ( !html.isEmpty() )
     {
         emit qmonDataChanged( html );
-        QFile file("/tmp/qmon.html");
-        file.open(QIODevice::WriteOnly | QIODevice::Text);
-        QTextStream out(&file);
-        out << html;
-        file.close(); 
     }
 }
 

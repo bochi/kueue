@@ -895,7 +895,7 @@ void TabButton::mousePressEvent( QMouseEvent* e )
 
 void TabWidget::makeNsaReport()
 {
-    QString filename = QFileDialog::getOpenFileName(this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
+    QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
     NSA* n = new NSA( filename ); 
 }
 

@@ -182,6 +182,9 @@ class Settings
         static QString bomgarName();
         static void setBomgarName( const QString& );
         
+        static QString qmonFilter();
+        static void setQmonFilter( const QString& );
+        
         /* QBoss Group */
         
         static bool qbossFeatures();

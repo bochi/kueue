@@ -405,7 +405,8 @@ QString HTML::SRTable( QueueSR sr )
     {
         srtab+=( "<tr>"
                     "<td class='gadgetText'>&nbsp;Bug</td>"
-                    "<td class='gadgetText'><a href='https://bugzilla.novell.com/show_bug.cgi?id=" + sr.bug + "'>" + sr.bug + "</a></td>"
+                    "<td class='gadgetText'><a href='https://bugzilla.novell.com/show_bug.cgi?id=" + sr.bug + "'>" + 
+                    sr.bug + " (" + sr.bugtitle + ")</a></td>"
                 "</tr>" );
     }
     
