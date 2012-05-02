@@ -71,7 +71,7 @@ Data::Data()
         Database::dropQmon();
         
         QTimer* qmonTimer = new QTimer( this );
-        qmonTimer->start( 51219 );
+        qmonTimer->start( 41219 );
     
         connect( qmonTimer, SIGNAL( timeout() ),
                  this, SLOT( updateQmon() ) );
