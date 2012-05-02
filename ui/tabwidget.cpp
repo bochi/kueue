@@ -279,14 +279,14 @@ void TabWidget::addUnityBrowser()
 
 void TabWidget::addUnityBrowserWithSR( QString sr )
 {   
-    if ( sr.isNull() )
+    if ( sr == QString::Null() )
     {
         sr = Kueue::getClipboard();
     }
     
     if ( Kueue::isSrNr( sr ) )
     {
-        UnityWidget* w = new UnityWidget( this, Kueue::getClipboard() );
+        UnityWidget* w = new UnityWidget( this, sr );
     
         int tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
     
