@@ -3,7 +3,7 @@
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "kueue"
 !define PRODUCT_PUBLISHER "Stefan Bogner"
-!define PRODUCT_WEB_SITE "http://w3.suse.de/~sbogner/kueue"
+!define PRODUCT_WEB_SITE "http://data.kueue.tk"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\kueue.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -44,7 +44,8 @@ ShowInstDetails show
 ShowUnInstDetails show
 
 Section "Main" SEC01
-  File /r "kueue/"
+SetOutPath "$INSTDIR"                                                                                                                                                                                                                        
+File /r kueue\*     
 SectionEnd
 
 Section -AdditionalIcons

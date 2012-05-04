@@ -33,7 +33,7 @@ copy %MINGWDIR%\libgcc_s_dw2-1.dll kueue
 
 copy C:\OpenSSL\libeay32.dll kueue
 copy C:\OpenSSL\libssl32.dll kueue
-copy "C:\Users\bogi\winbin\*" kueue
+xcopy /E "C:\Users\bogi\winbin\*" kueue
 copy "C:\Program Files\kueue\*.dll" kueue
 copy c:\dev\zlibwapi.dll kueue
 copy C:\OpenSSL\ssleay32.dll kueue
