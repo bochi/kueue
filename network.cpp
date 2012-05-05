@@ -90,7 +90,16 @@ QNetworkReply* Network::getImpl( const QString& u )
 
         QNetworkRequest request( QUrl( "http://" + mIPs.at(r) + ":8080/" + u ) );
 
-        request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
+        QByteArray os;
+    
+#ifdef IS_WIN32
+        os = "kueue " + QApplication::applicationVersion().toUtf8() + " (win)";
+#elif defined IS_OSX
+        os = "kueue " + QApplication::applicationVersion().toUtf8() + " (osx)";
+#else
+        os = "kueue " + QApplication::applicationVersion().toUtf8() + " (linux)";
+#endif
+        request.setRawHeader( "User-Agent", os );
         
         QNetworkReply* reply = mNAM->get( request );
         
