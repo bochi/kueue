@@ -347,8 +347,14 @@ void TarArchiverStrategy::configure()
 
     if (which("tar") != QString::null)
     {
+#ifdef IS_WIN32
+        setExtractArguments("tar -xvf @F");
+#elif defined IS_OSX
+        setExtractArguments("tar xfv @F");
+#else
         setExtractArguments("tar --overwrite -xvf @F");
-        setListArguments("tar -tf @F");
+#endif
+        setListArguments("tar tf @F");
         setSupported();
     }
 }
@@ -371,12 +377,14 @@ void Tarbz2ArchiverStrategy::configure()
 
     if (which("tar") != QString::null)
     {
-#ifndef IS_WIN32
-        setExtractArguments("tar --overwrite -xvjf @F");
-#else
+#ifdef IS_WIN32
         setExtractArguments("tar -xvjf @F");
+#elif defined IS_OSX
+        setExtractArguments("tar xjfv @F");
+#else
+        setExtractArguments("tar --overwrite -xvjf @F");
 #endif
-        setListArguments("tar -tjf @F");
+        setListArguments("tar tjf @F");
         setSupported();
     }
 }
@@ -399,12 +407,14 @@ void TargzArchiverStrategy::configure()
 
     if (which("tar") != QString::null)
     {
-#ifndef IS_WIN32
-        setExtractArguments("tar --overwrite -xvzf @F");
-#else
+#ifdef IS_WIN32
         setExtractArguments("tar -xvzf @F");
+#elif defined IS_OSX
+        setExtractArguments("tar xvzf @F");
+#else
+        setExtractArguments("tar --overwrite -xvzf @F");
 #endif
-        setListArguments("tar -tzf @F");
+        setListArguments("tar tzf @F");
         setSupported();
     }
 }
