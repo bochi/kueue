@@ -57,7 +57,7 @@ Network::Network()
 {
     qDebug() << "[NETWORK] Constructing";   
     
-    QHostInfo info = QHostInfo::fromName( Settings::dBServer() );
+    /*QHostInfo info = QHostInfo::fromName( Settings::dBServer() );
     QList<QHostAddress> al = info.addresses();
     
     if ( info.error() )
@@ -72,7 +72,7 @@ Network::Network()
     for ( int i = 0; i < al.size(); ++i ) 
     { 
         mIPs.append( al.at( i ).toString() );
-    }
+    }*/
     
     mNAM = new QNetworkAccessManager( this );
 }
@@ -84,11 +84,14 @@ Network::~Network()
 
 QNetworkReply* Network::getImpl( const QString& u )
 {
-    if ( !mIPs.isEmpty() )
-    {
-        int r = qrand() % mIPs.size();
+    QNetworkReply* reply;
+    
+    //if ( !mIPs.isEmpty() )
+    //{
+        //int r = qrand() % mIPs.size();
 
-        QNetworkRequest request( QUrl( "http://" + mIPs.at(r) + ":8080/" + u ) );
+        //QNetworkRequest request( QUrl( "http://" + mIPs.at(r) + ":8080/" + u ) );
+        QNetworkRequest request( QUrl( "http://" + Settings::dBServer() + ":8080/" + u ) );
 
         QByteArray os;
     
@@ -101,20 +104,21 @@ QNetworkReply* Network::getImpl( const QString& u )
 #endif
         request.setRawHeader( "User-Agent", os );
         
-        QNetworkReply* reply = mNAM->get( request );
+        reply = mNAM->get( request );
         
         connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
                 this, SLOT( error( QNetworkReply::NetworkError ) ) );
 
         //qDebug() << "[NETWORK] Downloading" << request.url();
-        return reply;
-    }
+    //}
+    
+    return reply;
 }
 
 QNetworkReply* Network::getExtImpl( const QUrl& url )
 {
-    if ( !mIPs.isEmpty() )
-    {
+    //if ( !mIPs.isEmpty() )
+    //{
         QNetworkRequest request( url );
         request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
         
@@ -125,7 +129,7 @@ QNetworkReply* Network::getExtImpl( const QUrl& url )
 
         //qDebug() << "[NETWORK] Downloading" << request.url();
         return reply;
-    }
+    //}
 }
 
 void Network::error( QNetworkReply::NetworkError error )

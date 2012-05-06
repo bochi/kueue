@@ -26,6 +26,7 @@
 #include "kueueapp.h"
 
 #include <QtSingleApplication>
+#include <QMessageBox>
 #include <QDebug>
 
 int main(int argc, char *argv[])
@@ -38,6 +39,7 @@ int main(int argc, char *argv[])
     if ( app.isRunning() && !app.arguments().contains( "restart" ) )
     {
         qDebug() << "Kueue is already running.";
+        QMessageBox::critical( 0, "Error", "kueue is already running" );
         return 0;
     }
 

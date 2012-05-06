@@ -39,7 +39,7 @@ Data::Data()
     
     mNAM = new QNetworkAccessManager( this );
  
-    QHostInfo info = QHostInfo::fromName( Settings::dBServer() );
+    /*QHostInfo info = QHostInfo::fromName( Settings::dBServer() );
     QList<QHostAddress> al = info.addresses();
     
     for ( int i = 0; i < al.size(); ++i ) 
@@ -50,7 +50,7 @@ Data::Data()
     if ( mIPs.isEmpty() )
     {
         emit netError();
-    }
+    }*/
     
     mDB = "db-thread";
 
@@ -100,8 +100,9 @@ Data::~Data()
 
 QNetworkReply* Data::get( const QString& u )
 {
-    int r = qrand() % mIPs.size();
-    QNetworkRequest request( QUrl( "http://" + mIPs.at(r) + ":8080/" + u ) );
+    //int r = qrand() % mIPs.size();
+    //QNetworkRequest request( QUrl( "http://" + mIPs.at(r) + ":8080/" + u ) );
+    QNetworkRequest request( QUrl( "http://" + Settings::dBServer() + ":8080/" + u ) );
     
     QByteArray os;
     

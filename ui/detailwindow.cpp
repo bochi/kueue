@@ -159,6 +159,10 @@ DetailWindow::DetailWindow( QString sr, bool nb )
              this, SLOT( assignSR() ) );
     connect( takeButton, SIGNAL( clicked() ),
              this, SLOT( takePressed() ) );
+    
+#ifdef IS_OSX
+    closeButton->hide();
+#endif
 }
 
 DetailWindow::~DetailWindow()

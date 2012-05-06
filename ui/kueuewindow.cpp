@@ -173,6 +173,7 @@ void KueueWindow::showDetailedDescription( QString id, bool b )
 
 void KueueWindow::detailWindowClosed( DetailWindow* det )
 {
+    det->close();
     delete det;
 }
 
