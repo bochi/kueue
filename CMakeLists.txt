@@ -52,9 +52,9 @@ IF( QT_PHONON_FOUND )
     SET( QT_USE_PHONON TRUE )
 ENDIF( QT_PHONON_FOUND )
 
-IF( QT_QTDBUS_FOUND AND NOT APPLE )
+IF( QT_QTDBUS_FOUND )
     OPTION( QT_HAS_DBUS "Enable DBUS Support" ON )
-ENDIF( QT_QTDBUS_FOUND AND NOT APPLE )
+ENDIF( QT_QTDBUS_FOUND )
 
 IF( WIN32 )
     OPTION( IS_WIN32 "Windows?" ON )
@@ -171,7 +171,6 @@ IF( WIN32 )
     SET( RES_FILE "ui/icons/app/kueue.rc" )
     SET( CMAKE_RC_COMPILER_INIT windres )
     ENABLE_LANGUAGE( RC )
-    OPTION( QT_HAS_DBUS "Enable DBUS Support" OFF )    
     SET( CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>" )
     ADD_EXECUTABLE( kueue WIN32 ${RES_FILE} ${kueue_CPP} ${kueue_QRC_SRCS} ${kueue_UI_H} )
 ENDIF( WIN32 )
@@ -206,7 +205,6 @@ IF( APPLE )
     ADD_CUSTOM_TARGET( OSX_BUNDLE_DIRS COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/kueue.app/Contents/Resources
                                        COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/kueue.app/Contents/MacOS ) 
     SET_SOURCE_FILES_PROPERTIES( ${OSX_ICON_FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
-    OPTION( QT_HAS_DBUS "Enable DBUS Support" OFF )    
     SET( kueue_SRC ${kueue_CPP} ${OSX_ICON_FILE} )
     ADD_EXECUTABLE( kueue MACOSX_BUNDLE ${kueue_SRC} ${kueue_QRC_SRCS} ${kueue_UI_H} )
     ADD_DEPENDENCIES( kueue OSX_BUNDLE_DIRS )
@@ -221,28 +219,29 @@ ENDIF( APPLE )
 #
 
 IF ( QT_HAS_DBUS )
-TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
-                             ${QT_PHONON_LIBRARY} 
-                             ${QT_QTCORE_LIBRARY} 
-                             ${QT_QTWEBKIT_LIBRARY} 
-                             ${QT_QTSQL_LIBRARIES} 
-                             ${QT_QTUITOOLS_LIBRARY} 
-                             ${QT_QTDBUS_LIBRARY}
-                             ${QT_QTNETWORK_LIBRARY} 
-			     ${QT_QTXML_LIBRARY}
-                             ${QT_QTGUI_LIBRARY} 
-                             ${QT_SINGLEAPP_LIBRARY} )
+
+    TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
+                                 ${QT_PHONON_LIBRARY} 
+                                 ${QT_QTCORE_LIBRARY} 
+                                 ${QT_QTWEBKIT_LIBRARY} 
+                                 ${QT_QTSQL_LIBRARIES} 
+                                 ${QT_QTUITOOLS_LIBRARY} 
+                                 ${QT_QTDBUS_LIBRARY}
+                                 ${QT_QTNETWORK_LIBRARY} 
+		                 ${QT_QTXML_LIBRARY}
+                                 ${QT_QTGUI_LIBRARY} 
+                                 ${QT_SINGLEAPP_LIBRARY} )
 ELSE ( QT_HAS_DBUS )
 
-TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
-                             ${QT_PHONON_LIBRARY} 
-                             ${QT_QTCORE_LIBRARY} 
-                             ${QT_QTWEBKIT_LIBRARY} 
-                             ${QT_QTSQL_LIBRARIES} 
-                             ${QT_QTUITOOLS_LIBRARY} 
-                             ${QT_QTNETWORK_LIBRARY} 
-                             ${QT_QTXML_LIBRARY}
-                             ${QT_QTGUI_LIBRARY} 
-                             ${QT_SINGLEAPP_LIBRARY} )
+    TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
+                                 ${QT_PHONON_LIBRARY} 
+                                 ${QT_QTCORE_LIBRARY} 
+                                 ${QT_QTWEBKIT_LIBRARY} 
+                                 ${QT_QTSQL_LIBRARIES} 
+                                 ${QT_QTUITOOLS_LIBRARY} 
+                                 ${QT_QTNETWORK_LIBRARY} 
+                                 ${QT_QTXML_LIBRARY}
+                                 ${QT_QTGUI_LIBRARY} 
+                                 ${QT_SINGLEAPP_LIBRARY} )
 
 ENDIF ( QT_HAS_DBUS )
