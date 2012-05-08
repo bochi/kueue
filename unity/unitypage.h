@@ -95,7 +95,6 @@ class UnityPage : public QWebPage
         void download( const QNetworkRequest& );
         void fillOutProductNext();
         void saveCurrentActivity();
-        void saveCurrentActivitySecond();
         
         void setScConfirmed();
         void setScRejected();

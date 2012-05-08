@@ -1006,6 +1006,11 @@ void UnityWidget::setToolbarButtonsEnabled( bool status )
     mScButton->setEnabled( status );
     mAddNoteButton->setEnabled( status );
     mCloseSrButton->setEnabled( status );
+    
+    if ( mUnityBrowser->isCR() )
+    {
+        mScButton->setEnabled( false );
+    }
 }
 
 void UnityWidget::setOtherButtonsEnabled( bool enabled )

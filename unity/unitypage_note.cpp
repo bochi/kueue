@@ -34,7 +34,7 @@
 
 void UnityPage::addNote()
 {
-    mNoteDialog = new NoteDialog( this, mCurrentSR );
+    mNoteDialog = new NoteDialog( this, mCurrentSR, mIsCr );
      
     connect( mNoteDialog, SIGNAL( addNoteAccepted() ), 
              this, SLOT( addNoteAccepted() ) );
@@ -47,10 +47,18 @@ void UnityPage::addNote()
 
 void UnityPage::addNoteAccepted()
 {
-    emit pageErbert( "Adding Note to SR#" + mNoteDialog->sr() );
+    if ( mIsCr )
+    {
+        emit pageErbert( "Adding Note to CR#" + mNoteDialog->sr() );
+    }
+    else
+    {
+        emit pageErbert( "Adding Note to SR#" + mNoteDialog->sr() );
+    }
     
-    if ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) &&
-         ( mCurrentSR == mNoteDialog->sr() ) )
+    if ( ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) ||
+           ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Related SRs" ) ) &&
+           ( mCurrentSR == mNoteDialog->sr() ) )
     {
         mAddNote = true;
         newActivity();
@@ -114,22 +122,19 @@ void UnityPage::addNoteFirst()
                 
                 if ( ( d.at( i ).attribute( "value" ) == "Internal" ) && ( mNoteDialog->type() == NoteDialog::Internal ) )
                 {
-                    qDebug() << "found int";
                     e = d.at( i );
                 }
             }
 
             e.setAttribute( "selected", "Yes" );
-            qDebug() << "js" << changeJS;
-            mViewFrame->evaluateJavaScript( "top._swescript.HandleAppletClickSI('SWEApplet1')" );
+
             mViewFrame->evaluateJavaScript( changeJS );
         }
         
         else if ( c.at(i).attribute( "id" ).contains( id2 ) )
         {
             changeJS = c.at(i).attribute( "onchange" );
-            qDebug() << "js" << changeJS;
-            QWebElementCollection d = c.at(i).findAll( "*" );
+            QWebElementCollection d = c.at( i ).findAll( "*" );
             
             for ( int i = 0; i < d.count(); ++i )
             {
@@ -147,12 +152,12 @@ void UnityPage::addNoteFirst()
         }
     }
     
+    mAddNote = false;
+    
     if ( mIsCr )
     {
         addNoteSecond();
     }
-    
-    mAddNote = false;
 }
 
 void UnityPage::addNoteSecond()
@@ -202,12 +207,12 @@ void UnityPage::addNoteSecond()
         }
     }
     
+    mAddNote = false; 
+
     if ( mIsCr )
     {
         addNoteThird();
     }
-    
-    mAddNote = false; 
 }
 
 void UnityPage::addNoteThird()
@@ -235,7 +240,7 @@ void UnityPage::addNoteThird()
             rc.at(i).setInnerXml( mNoteDialog->briefDesc() );
         }
     }
-    
+
     delete mNoteDialog;
     mAddNote = false;
     saveCurrentActivity();

@@ -38,7 +38,8 @@ void UnityPage::setStatus( const QString& status )
     mNewStatus = status;
     mNoJsConfirm = true;
     
-    if ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" )
+    if ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) ||
+         ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Related SRs" ) )
     {
         setStatusFirst();
     }

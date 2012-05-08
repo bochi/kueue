@@ -56,8 +56,9 @@ void UnityPage::setSSconfirmed()
 {
     emit pageErbert( "Setting Solution Suggested for SR#" + mSsDialog->sr() );
     
-    if ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) &&
-         ( mCurrentSR == mSsDialog->sr() ) )
+    if ( ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) ||
+           ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Related SRs" ) ) &&
+           ( mCurrentSR == mSsDialog->sr() ) )
     {
         mSetSS = true;
         newActivity();
@@ -146,6 +147,11 @@ void UnityPage::setSSfirst()
              this, SLOT( setSSsecond() ) );
     
     mSetSS = false;
+    
+    if ( mIsCr )
+    {
+        setSSsecond();
+    }
 }
 
 void UnityPage::setSSsecond()
@@ -196,6 +202,11 @@ void UnityPage::setSSsecond()
              this, SLOT( setSSthird() ) );
     
     mSetSS = false;
+    
+    if ( mIsCr )
+    {
+        setSSthird();
+    }
 }
 
 void UnityPage::setSSthird()

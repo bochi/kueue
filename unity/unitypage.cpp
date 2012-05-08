@@ -334,6 +334,7 @@ void UnityPage::querySR( const QString& sr )
              ( mSetStatus ) )
         {
             mPageErbert = true;
+            emit pageErbert();
         }
         else
         {
@@ -478,8 +479,14 @@ void UnityPage::actionDone()
 
 void UnityPage::newActivity()
 {
+    emit pageErbert();
     disconnect( mViewFrame, 0, 0, 0 );
 
+    if ( mIsCr )
+    {
+        mViewFrame->evaluateJavaScript( "top._swescript.HandleAppletClickSI('SWEApplet5')" );
+    }
+    
     if ( mSetSS )
     {                
         connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
@@ -493,13 +500,7 @@ void UnityPage::newActivity()
     else if ( mAddNote )
     {
         connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
-                 this, SLOT( addNoteFirst() ) );
-        
-        if ( mIsCr )
-        {
-            mViewFrame->evaluateJavaScript( "top._swescript.HandleAppletClickSI('SWEApplet1')" );
-        }
-        
+                 this, SLOT( addNoteFirst() ) );        
     }       
     
     QWebElementCollection fc = mViewFrame->findAllElements( "a" );
@@ -908,22 +909,8 @@ void UnityPage::saveCurrentActivity()
 {
     disconnect( mViewFrame, 0, 0, 0 );
     
-    if ( mIsCr )
-    {
-        connect( mViewFrame, SIGNAL( loadFinished( bool ) ),
-                 this, SLOT( saveCurrentActivitySecond() ) );
-        
-        mViewFrame->evaluateJavaScript( "top._swescript.HandleAppletClickSI('SWEApplet1')" );
-    }
-    else
-    {
-        saveCurrentActivitySecond();
-    }
-}
-
-void UnityPage::saveCurrentActivitySecond()
-{
-    disconnect( mViewFrame, 0, 0, 0 );
+    connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+             this, SLOT( actionDone() ) );
     
     QString id;
     QString saveJS;
@@ -946,10 +933,14 @@ void UnityPage::saveCurrentActivitySecond()
             saveJS = sc.at(i).attribute( "href" ).remove( "JavaScript:" );
         }
     }
+       
+    if ( mIsCr )
+    {
+        mViewFrame->evaluateJavaScript( "top._swescript.HandleAppletClickSI('SWEApplet1')" );
+    }
     
     mViewFrame->evaluateJavaScript( saveJS );
 }
-
 
 // To reduce filesize and make the whole thing a bit more managable I split up the code in several files
 // and include them here:

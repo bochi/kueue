@@ -54,8 +54,9 @@ void UnityPage::closeSrRejected()
 
 void UnityPage::closeSrAccepted()
 {
-    if ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) &&
-         ( mCurrentSR == mCloseDialog->sr() ) )
+    if ( ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) ||
+           ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Related SRs" ) ) &&
+           ( mCurrentSR == mCloseDialog->sr() ) )
     {
         closeSrFirst();
     }

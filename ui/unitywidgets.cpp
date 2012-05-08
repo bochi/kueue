@@ -137,7 +137,7 @@ void CloseDialog::closeEvent( QCloseEvent* event )
  * 
  */
 
-NoteDialog::NoteDialog( QObject* parent, QString sr )
+NoteDialog::NoteDialog( QObject* parent, QString sr, bool isCr )
 {
     qDebug() << "[NOTEDIALOG] Constructing";
 
@@ -153,7 +153,15 @@ NoteDialog::NoteDialog( QObject* parent, QString sr )
     connect( checkBoxExt, SIGNAL( toggled( bool ) ),
              this, SLOT( changeCheckBoxInt( bool ) ) );
     
-    titleLabel->setText( "<b>Add a note to SR#" + mSr + "</b>" );
+    if ( isCr )
+    {
+        titleLabel->setText( "<b>Add a note to CR#" + mSr + "</b>" );
+        noteTypeCombo->addItem( "Collaboration Response" );
+    }
+    else
+    {
+        titleLabel->setText( "<b>Add a note to SR#" + mSr + "</b>" );
+    }
 }
 
 NoteDialog::~NoteDialog()

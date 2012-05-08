@@ -101,7 +101,7 @@ class NoteDialog : public QDialog, private Ui::NoteDialog
     Q_OBJECT
 
     public:
-        NoteDialog( QObject* parent = 0L, QString = "NOSR" );
+        NoteDialog( QObject* parent = 0L, QString = "NOSR", bool = false );
          ~NoteDialog();
         
         enum type
