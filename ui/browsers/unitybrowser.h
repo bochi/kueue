@@ -70,6 +70,7 @@ class UnityBrowser : public QWebView
         void disconnectShortcuts();
         void connectShortcuts();
         void pageErbert( const QString& = QString::Null() );
+        void deleteWebInspector( QObject* );
         void pageErbertNed();
         void mousePressEvent( QMouseEvent* );
         void urlHovered( const QString&, const QString& = 0, const QString& = 0 );
@@ -110,6 +111,7 @@ class UnityBrowser : public QWebView
     signals:
         void searchRequested( QString );
         void currentSrChanged( QString );
+        void loggedIn( bool );
         void disableToolbar();
         void enableToolbar();
         void enableProgressIndicator( QString );
@@ -146,7 +148,10 @@ class UnityWidget : public QWidget
         QToolButton* mAddNoteButton;
         QToolButton* mCloseSrButton;
         QToolButton* mHomeButton;
+        QToolButton* mQueryGoButton;
+        QToolButton* mBackButton;
         QToolButton* mChangeStatusButton;
+        QLabel* mQueryLabel;
         
     public slots:
         void currentSrChanged( QString );
@@ -157,6 +162,8 @@ class UnityWidget : public QWidget
     private slots:
         void disableToolbar();
         void enableToolbar(); 
+        void setToolbarButtonsEnabled( bool );
+        void setOtherButtonsEnabled( bool );
         void querySR();
         void changeStatus( QAction* );
         

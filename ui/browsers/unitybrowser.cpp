@@ -82,6 +82,9 @@ UnityBrowser::UnityBrowser( QWidget *parent, QString sr )
         connect( mUnityPage, SIGNAL( linkClicked( QUrl ) ),
                  this, SLOT( linkClicked( QUrl ) ) );
         
+        connect( mUnityPage, SIGNAL( loggedIn( bool ) ),
+                 this, SIGNAL( loggedIn( bool ) ) );
+        
         mSendEmailSC = new QShortcut( QKeySequence( Qt::Key_F1 ), this );
         mSaveSrSC = new QShortcut( QKeySequence( Qt::Key_F2 ), this );
         mFileBrowserSC = new QShortcut( QKeySequence( Qt::Key_F3 ), this );
@@ -218,15 +221,23 @@ void UnityBrowser::openWebInspector()
 {
     QWebSettings::globalSettings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
     
-    QWidget* w = new QWidget;
-    QGridLayout* l = new QGridLayout;
-    w->setLayout( l );
-    QWebInspector* i = new QWebInspector( w );
-    l->addWidget( i );
+    //QWidget* w = new QWidget;
+    //QGridLayout* l = new QGridLayout( w );
+    //w->setLayout( l );
+    QWebInspector* i = new QWebInspector();
     i->setPage( page() );
-    w->setWindowTitle( "Webinspector - unitybrowser" );
-    w->show();
+    //l->addWidget( i );
+    //i->setPage( page() );
+    i->setWindowTitle( "Webinspector - unitybrowser" );
+    i->show();
 }
+
+void UnityBrowser::deleteWebInspector( QObject* o )
+{
+    QWebInspector* i = qobject_cast<QWebInspector*>( sender() );
+    delete i;
+}
+
 
 void UnityBrowser::querySR( const QString& sr )
 {
@@ -753,8 +764,8 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     
     mToolBar = new QToolBar( this );
     mToolBar->setIconSize( QSize( 22, 22 ) );
-    mToolBar->setEnabled( false );
-    
+    //mToolBar->setEnabled( false );
+        
     QGridLayout* unityBrowserLayout = new QGridLayout();
     QStackedLayout* overlayLayout = new QStackedLayout();
     overlayLayout->setStackingMode(QStackedLayout::StackAll);
@@ -788,14 +799,17 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     connect( mUnityBrowser, SIGNAL( disableProgressIndicator() ),
              this, SLOT( deactivateProgressWidget() ) );
     
+    connect( mUnityBrowser, SIGNAL( loggedIn( bool ) ), 
+             this, SLOT( setOtherButtonsEnabled( bool ) ) );
+    
     //WebViewWithSearch* mWebViewWithSearch = new WebViewWithSearch( mUnityBrowser, this );
     setLayout( unityBrowserLayout );
 
-    QToolButton* back = new QToolButton;
-    back->setIcon(QIcon( ":/icons/menus/back.png" ) );
+    mBackButton = new QToolButton;
+    mBackButton->setIcon(QIcon( ":/icons/menus/back.png" ) );
 
-    QToolButton* queryGo = new QToolButton;
-    queryGo->setIcon(QIcon( ":/icons/menus/ok.png" ) );
+    mQueryGoButton = new QToolButton;
+    mQueryGoButton->setIcon(QIcon( ":/icons/menus/ok.png" ) );
     
     mSendEmailButton = new QToolButton( mToolBar );
     mSendEmailButton->setIcon( QIcon( ":/icons/toolbar/send_email.png" ) );
@@ -804,6 +818,7 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     mHomeButton = new QToolButton( mToolBar );
     mHomeButton->setIcon( QIcon( ":/icons/toolbar/home.png" ) );
     mHomeButton->setToolTip( "Go Home" );
+    mHomeButton->setEnabled( false );
     
     mChangeStatusButton = new QToolButton( mToolBar );
     mChangeStatusButton->setIcon( QIcon( ":/icons/toolbar/status.png" ) );
@@ -841,7 +856,7 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     mSrButton = new QToolButton;
     mSrButton->setText( "No SR" );
     
-    connect( back, SIGNAL( pressed() ),
+    connect( mBackButton, SIGNAL( pressed() ),
              mUnityBrowser, SLOT( historyBack() ) );
     
     connect( mGoBackButton, SIGNAL( pressed() ),
@@ -874,7 +889,7 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     connect( mCloseSrButton, SIGNAL( pressed() ), 
              mUnityBrowser, SLOT( closeSr() ) );
     
-    connect( queryGo, SIGNAL( pressed() ),
+    connect( mQueryGoButton, SIGNAL( pressed() ),
              this, SLOT( querySR() ) );
 
     QWidget* spacer = new QWidget();
@@ -883,10 +898,10 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     mQueryLine = new QLineEdit;
     mQueryLine->setMaximumWidth( 150 );
     
-    QLabel* label = new QLabel;
-    label->setText( "Query" );
+    mQueryLabel = new QLabel;
+    mQueryLabel->setText( "Query" );
     
-    mToolBar->addWidget( back );
+    mToolBar->addWidget( mBackButton );
     mToolBar->addWidget( mGoBackButton );
     mToolBar->addWidget( mHomeButton );
     mToolBar->addSeparator();
@@ -902,9 +917,9 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     mToolBar->addWidget( mAddNoteButton );
     mToolBar->addWidget( mCloseSrButton );
     mToolBar->addWidget( spacer );
-    mToolBar->addWidget( label );
+    mToolBar->addWidget( mQueryLabel );
     mToolBar->addWidget( mQueryLine );
-    mToolBar->addWidget( queryGo );
+    mToolBar->addWidget( mQueryGoButton );
     
     if ( Settings::unityToolbarEnabled() )
     {
@@ -912,6 +927,7 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     }
     
     unityBrowserLayout->addLayout( overlayLayout, 1, 0 );
+    setToolbarButtonsEnabled( false );
 }
 
 UnityWidget::~UnityWidget()
@@ -939,7 +955,7 @@ void UnityWidget::currentSrChanged( QString sr )
     if ( ( sr == "" ) || ( !Kueue::isSrNr( sr ) ) )
     {
         mSrButton->setText( "No SR" );
-        mToolBar->setEnabled( false );
+        setToolbarButtonsEnabled( false );
     }
     else if ( !mToolbarDisabled )
     {
@@ -952,7 +968,7 @@ void UnityWidget::currentSrChanged( QString sr )
             mSrButton->setText( "SR#" + sr );
         }
  
-        mToolBar->setEnabled( true );
+        setToolbarButtonsEnabled( true );
     }
     else
     {
@@ -970,13 +986,35 @@ void UnityWidget::currentSrChanged( QString sr )
 void UnityWidget::disableToolbar()
 {
     mToolbarDisabled = true;
-    mToolBar->setEnabled( false );
+    setToolbarButtonsEnabled( false );
 }
 
 void UnityWidget::enableToolbar()
 {
     mToolbarDisabled = false;
-    mToolBar->setEnabled( true );
+    setToolbarButtonsEnabled( true );
+}
+
+void UnityWidget::setToolbarButtonsEnabled( bool status )
+{
+    mGoBackButton->setEnabled( status );
+    mSaveSrButton->setEnabled( status );
+    mFileBrowserButton->setEnabled( status );
+    mSendEmailButton->setEnabled( status );
+    mChangeStatusButton->setEnabled( status );
+    mSsButton->setEnabled( status );
+    mScButton->setEnabled( status );
+    mAddNoteButton->setEnabled( status );
+    mCloseSrButton->setEnabled( status );
+}
+
+void UnityWidget::setOtherButtonsEnabled( bool enabled )
+{
+    mHomeButton->setEnabled( enabled );
+    mQueryLine->setEnabled( enabled );
+    mQueryGoButton->setEnabled( enabled );
+    mQueryLabel->setEnabled( enabled );
+    mBackButton->setEnabled( enabled );
 }
 
 void UnityWidget::querySR()

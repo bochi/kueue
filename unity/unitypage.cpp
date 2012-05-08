@@ -131,6 +131,7 @@ void UnityPage::addFrame( QWebFrame* f )
     {
         mViewFrame = f;
         mLoggedIn = true;
+        emit loggedIn( true );
         
         connect( mViewFrame, SIGNAL( loadFinished(bool) ),
                  this, SLOT( viewFrameStarted() ) );
@@ -199,6 +200,7 @@ void UnityPage::pageLoaded()
     else if ( mainFrame()->url().toString().contains( "SWECmd=Logoff&SWEService=SWE+Command+Manager" ) )
     {
         mLoggedIn = false;
+        emit loggedIn( false );
         loggedOut();
     }
     
@@ -206,6 +208,7 @@ void UnityPage::pageLoaded()
     {
         emit pageErbertNed();
         mLoggedIn = false;
+        emit loggedIn( false );
         loggedOut();
     }
    
@@ -252,6 +255,7 @@ void UnityPage::loggedOut()
 void UnityPage::loginToUnity()
 {
     mLoggedIn = false;
+    emit loggedIn( false );
     
     QWebElement nameInput = mainFrame()->findFirstElement( "input#s_swepi_1" );
     QWebElement passInput = mainFrame()->findFirstElement( "input#s_swepi_2" );
@@ -490,6 +494,12 @@ void UnityPage::newActivity()
     {
         connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
                  this, SLOT( addNoteFirst() ) );
+        
+        if ( mIsCr )
+        {
+            mViewFrame->evaluateJavaScript( "top._swescript.HandleAppletClickSI('SWEApplet1')" );
+        }
+        
     }       
     
     QWebElementCollection fc = mViewFrame->findAllElements( "a" );
@@ -896,12 +906,42 @@ void UnityPage::saveCurrentSR()
 
 void UnityPage::saveCurrentActivity()
 {
-    QWebElementCollection sc = mViewFrame->findAllElements( "a" );
+    disconnect( mViewFrame, 0, 0, 0 );
+    
+    if ( mIsCr )
+    {
+        connect( mViewFrame, SIGNAL( loadFinished( bool ) ),
+                 this, SLOT( saveCurrentActivitySecond() ) );
+        
+        mViewFrame->evaluateJavaScript( "top._swescript.HandleAppletClickSI('SWEApplet1')" );
+    }
+    else
+    {
+        saveCurrentActivitySecond();
+    }
+}
+
+void UnityPage::saveCurrentActivitySecond()
+{
+    disconnect( mViewFrame, 0, 0, 0 );
+    
+    QString id;
     QString saveJS;
+    
+    if ( mIsCr )
+    {
+        id = "s_5_1_14";
+    }
+    else
+    {
+        id = "s_2_1_14";
+    }
+    
+    QWebElementCollection sc = mViewFrame->findAllElements( "a" );
     
     for ( int i = 0; i < sc.count(); ++i ) 
     {  
-        if ( sc.at(i).attribute( "id" ).contains( "s_2_1_14" ) )
+        if ( sc.at(i).attribute( "id" ).contains( id ) )
         {
             saveJS = sc.at(i).attribute( "href" ).remove( "JavaScript:" );
         }
@@ -909,6 +949,7 @@ void UnityPage::saveCurrentActivity()
     
     mViewFrame->evaluateJavaScript( saveJS );
 }
+
 
 // To reduce filesize and make the whole thing a bit more managable I split up the code in several files
 // and include them here:

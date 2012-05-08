@@ -95,6 +95,7 @@ class UnityPage : public QWebPage
         void download( const QNetworkRequest& );
         void fillOutProductNext();
         void saveCurrentActivity();
+        void saveCurrentActivitySecond();
         
         void setScConfirmed();
         void setScRejected();
@@ -173,6 +174,7 @@ class UnityPage : public QWebPage
         bool javaScriptConfirm( QWebFrame*, const QString& );
 
     signals:
+        void loggedIn( bool );
         void contentChanged();
         void currentSrChanged( QString );
         void pageErbert();

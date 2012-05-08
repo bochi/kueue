@@ -77,6 +77,19 @@ void UnityPage::addNoteFirst()
              this, SLOT( addNoteSecond() ) );
 
     QString changeJS;
+    QString id;
+    QString id2;
+    
+    if ( mIsCr )
+    {
+        id = "s_5_2_23";
+        id2 = "s_5_2_32";
+    }
+    else
+    {
+        id = "s_2_2_20";
+        id2 = "s_2_2_32";
+    }
 
     QWebElementCollection c = mViewFrame->findAllElements( "select" );
     QWebElement done;
@@ -84,7 +97,7 @@ void UnityPage::addNoteFirst()
     
     for ( int i = 0; i < c.count(); ++i )
     {
-        if ( c.at(i).attribute( "id" ).contains( "s_2_2_20" ) )
+        if ( c.at(i).attribute( "id" ).contains( id ) )
         {
             changeJS = c.at(i).attribute( "onchange" );
             
@@ -101,18 +114,21 @@ void UnityPage::addNoteFirst()
                 
                 if ( ( d.at( i ).attribute( "value" ) == "Internal" ) && ( mNoteDialog->type() == NoteDialog::Internal ) )
                 {
+                    qDebug() << "found int";
                     e = d.at( i );
                 }
             }
 
             e.setAttribute( "selected", "Yes" );
+            qDebug() << "js" << changeJS;
+            mViewFrame->evaluateJavaScript( "top._swescript.HandleAppletClickSI('SWEApplet1')" );
             mViewFrame->evaluateJavaScript( changeJS );
         }
         
-        else if ( c.at(i).attribute( "id" ).contains( "s_2_2_32" ) )
+        else if ( c.at(i).attribute( "id" ).contains( id2 ) )
         {
             changeJS = c.at(i).attribute( "onchange" );
-            
+            qDebug() << "js" << changeJS;
             QWebElementCollection d = c.at(i).findAll( "*" );
             
             for ( int i = 0; i < d.count(); ++i )
@@ -122,12 +138,18 @@ void UnityPage::addNoteFirst()
                 if ( d.at( i ).attribute( "value" ) == mNoteDialog->noteType() )
                 {
                     e = d.at( i );
+                    qDebug() << "notetype" << e.attribute("value");
                 }
             }
         
             e.setAttribute( "selected", "Yes" );
             mViewFrame->evaluateJavaScript( changeJS );
         }
+    }
+    
+    if ( mIsCr )
+    {
+        addNoteSecond();
     }
     
     mAddNote = false;
@@ -143,12 +165,23 @@ void UnityPage::addNoteSecond()
              this, SLOT( addNoteThird() ) );
 
     QString changeJS;
+    QString id; 
+    
+    if ( mIsCr )
+    {
+        id = "s_5_2_35";
+    }
+    else
+    {
+        id = "s_2_2_35";
+    }
+    
     QWebElementCollection c = mViewFrame->findAllElements( "select" );
     QWebElement e;
     
     for ( int i = 0; i < c.count(); ++i )
     {
-        if ( c.at(i).attribute( "id" ).contains( "s_2_2_35" ) )
+        if ( c.at(i).attribute( "id" ).contains( id ) )
         {
             changeJS = c.at( i ).attribute( "onchange" );
             
@@ -169,6 +202,11 @@ void UnityPage::addNoteSecond()
         }
     }
     
+    if ( mIsCr )
+    {
+        addNoteThird();
+    }
+    
     mAddNote = false; 
 }
 
@@ -185,12 +223,14 @@ void UnityPage::addNoteThird()
     
     for ( int i = 0; i < rc.count(); ++i ) 
     {  
-        if ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2014" ) ) )
+        if ( ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2014" ) ) ) ||
+             ( ( rc.at(i).attribute( "id" ).contains( "s_5_2_37" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "3997" ) ) ) )
         {
             rc.at(i).setInnerXml( mNoteDialog->comment() );
         }
         
-        if ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2005" ) ) )
+        if ( ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2005" ) ) ) ||
+             ( ( rc.at(i).attribute( "id" ).contains( "s_5_2_38" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "3997" ) ) ) )
         {
             rc.at(i).setInnerXml( mNoteDialog->briefDesc() );
         }
