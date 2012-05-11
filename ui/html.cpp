@@ -286,9 +286,30 @@ QString HTML::SRTable( QueueSR sr )
         srtab += sr.cus_account;
     }
     
+    QString uday;
+    QString aday;
+    
+    if ( sr.lastUpdateDays == 1 )
+    {
+        uday = " day";
+    }
+    else
+    {
+        uday = " days";
+    }
+    
+    if ( sr.age == 1 )
+    {
+        aday = " day";
+    }
+    else
+    {
+        aday = " days";
+    }
+    
     srtab += QString( "</font></p></i></b></td><td width='25%' align='right'><p style='line-height:0.6em;'><font size='-1'>"
-                      "Age: " + QString::number( sr.age ) + " days&nbsp;</p><p style='line-height:0.6em;'>"
-                      "Last update: " + QString::number( sr.lastUpdateDays ) + " days ago&nbsp;</p></td>" );
+                      "Age: " + QString::number( sr.age ) + aday + "&nbsp;</p><p style='line-height:0.6em;'>"
+                      "Last update: " + QString::number( sr.lastUpdateDays ) + uday + " ago&nbsp;</p></td>" );
     
    
     srtab += QString (  "</td></a>"
@@ -713,9 +734,21 @@ QString HTML::qmonSrInQueue( QmonSR sr )
                           "</tr>\n" );
     }
     
+    QString uday;
+    
+    if ( secDays( sr.lastupdatesec ) == 1 )
+    {
+        uday = " day";
+    }
+    else
+    {
+        uday = " days";
+    }
+      
+    
     srtab += QString(  "<tr>\n"
                          "<td class='gadgetText'>&nbsp;Last Update</td>\n"
-                         "<td class='gadgetText'>" + QString::number( secDays( sr.lastupdatesec ) ) + " days ago</td>\n"
+                         "<td class='gadgetText'>" + QString::number( secDays( sr.lastupdatesec ) ) + uday + " ago</td>\n"
                        "</tr>\n" );
     
     if ( sr.highvalue )

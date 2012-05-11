@@ -48,6 +48,13 @@ class Systray : public QSystemTrayIcon
         bool mIsGnome;
         
     public:
+        enum NotificationType
+        {
+            Recommended = 1,
+            Warning = 3,
+            Critical = 4
+        };
+
         static Systray& tray();
         static void destroy();
         
