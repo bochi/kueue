@@ -270,6 +270,15 @@ void Data::qmonUpdateFinished()
                 sr.lupdate = list.at( i ).namedItem( "lastupdatedate" ).toElement().text();
                 sr.cdate = list.at( i ).namedItem( "agedate" ).toElement().text();
                 
+                if ( sr.creator.isEmpty() )
+                {
+                    sr.isCr = false;
+                }
+                else
+                {
+                    sr.isCr = true;
+                }
+                
                 q.srList.append( sr );
             }
                 
