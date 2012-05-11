@@ -33,25 +33,51 @@
 #include <QtGui>
 #include <QDesktopServices>
 #include <QHttp>
+#include <QtXml>
 
 #ifdef QT_HAS_DBUS
     #include <QtDBus/QDBusConnection>
     #include <QtDBus/QDBusConnectionInterface>
 #endif
 
-DetailWindow::DetailWindow( QString sr, bool nb )
+DetailWindow::DetailWindow( QString id, bool nb )
 {
     qDebug() << "[DETAILWINDOW] Constructing";
     
     setupUi( this ); 
         
-    mSr = sr;
+    mSr = id;
+    mIsCr = false;
     
     #ifndef QT_HAS_DBUS
     
         kopeteCheckBox->setVisible( false );
     
     #endif
+    
+        contactLabel->setVisible( false );
+        contactLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
+        contactLabel1->setVisible( false );
+        contactEmailLabel->setVisible( false );
+        contactEmailLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
+        contactEmailLabel1->setVisible( false );
+        contactPhoneLabel->setVisible( false );
+        contactPhoneLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
+        contactPhoneLabel1->setVisible( false );
+        ageLabel->setVisible( false );
+        ageLabel1->setVisible( false );
+        lastUpdateLabel->setVisible( false );
+        lastUpdateLabel1->setVisible( false );
+        contractLabel->setVisible( false );
+        contactLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
+        contractLabel1->setVisible( false );
+        hvLabel->setVisible( false );
+        hvLabel1->setVisible( false );
+        customerLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
+        briefDescLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
+        statusLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
+        
+    mDetailed = false;
     
     QShortcut* closesc = new QShortcut( Qt::Key_Escape, this );
     mTransSC = new QShortcut( Qt::Key_F1, this );
@@ -62,49 +88,21 @@ DetailWindow::DetailWindow( QString sr, bool nb )
     connect( mTransSC, SIGNAL( activated() ),
              this, SLOT( translate() ) );
     
-    if ( Database::isCr( mSr ) )
+    connect( moreDetailButton, SIGNAL( clicked() ), 
+             this, SLOT( toggleMoreDetails() ) );
+    
+    QueueSR sr = Database::getSrInfo( mSr );
+    
+    if ( !sr.id.isEmpty() )
     {
-        srLabel->setText( "<font size='+1'><b>Details for CR#" + mSr + "</b></font>" );
+        mIsCr = sr.isCr;
+        fillDetails( sr );
     }
     else
     {
-        srLabel->setText( "<font size='+1'><b>Details for SR#" + mSr + "</b></font>" );
-    }
-    
-    if ( Database::getBriefDescription( mSr ) == "ERROR" )
-    {
-        briefDescLabel->setVisible( false );
-        briefDescLabel1->setVisible( false );
-    }
-    else
-    {
-        briefDescLabel->setText( Database::getBriefDescription( mSr ) );
-    }
-    
-    mDetails = Database::getDetailedDescription( sr );
-    
-    if ( mDetails == "ERROR" )
-    {
-        mDetails.clear();
         downloadDetails();
     }
-    else
-    {
-        detailBrowser->setText( mDetails );
-        
-        if ( Database::isCr( mSr ) )
-        {
-            customerLabel1->setText( "Created by:" );
-            customerLabel->setText( Database::getCreator( mSr ) );
-        }
-        else
-        {
-            customerLabel->setText( Database::getCustomer( mSr ) );
-        }
-        
-        statusLabel->setText( Database::getStatus( mSr ) );
-    }
-
+    
     for ( int i = 0; i < Settings::engineerList().size(); ++i ) 
     {
         assignCombo->addItem( Settings::engineerList().at( i ) );
@@ -163,6 +161,10 @@ DetailWindow::DetailWindow( QString sr, bool nb )
 #ifdef IS_OSX
     closeButton->hide();
 #endif
+    
+#ifndef QT_HAS_DBUS
+    kopeteCheckBox->setVisible( false );
+#endif
 }
 
 DetailWindow::~DetailWindow()
@@ -173,6 +175,49 @@ DetailWindow::~DetailWindow()
     Settings::setDetWinSize( size() );
 }
 
+void DetailWindow::fillDetails( QueueSR sr )
+{
+    if ( sr.isCr )
+    {
+        srLabel->setText( "<font size='+1'><b>Details for CR#" + mSr + "</b></font>" );
+    }
+    else
+    {
+        srLabel->setText( "<font size='+1'><b>Details for SR#" + mSr + "</b></font>" );
+    }
+    
+    briefDescLabel->setText( sr.bdesc );
+    detailBrowser->setText( sr.ddesc );
+        
+        if ( sr.isCr )
+        {
+            customerLabel1->setText( "Created by:" );
+            customerLabel->setText( sr.creator );
+        }
+        else
+        {
+            customerLabel->setText( sr.cus_account );
+        }
+        
+        statusLabel->setText( sr.status );
+  
+        contactLabel->setText( sr.cus_firstname + " " + sr.cus_lastname + " (" + sr.cus_lang + ")" );
+        
+        QString mailto = "mailto:" + QUrl::toPercentEncoding( sr.cus_email ) + "?cc=techsup@novell.com&subject=SR" + QUrl::toPercentEncoding( " " + sr.id + " - " + sr.bdesc )
+                         + "&body=" + QUrl::toPercentEncoding( sr.cus_firstname + " " + sr.cus_lastname );
+                
+        contactEmailLabel->setTextInteractionFlags( Qt::LinksAccessibleByMouse | Qt::TextSelectableByMouse );
+        
+        contactEmailLabel->setOpenExternalLinks( true );
+        contactEmailLabel->setText( "<a href=" + mailto + ">" + sr.cus_email + "</a>" );
+        contactPhoneLabel->setText( sr.cus_phone );
+        
+        ageLabel->setText( QString::number( sr.age ) + " days" );
+        lastUpdateLabel->setText( QString::number( sr.lastUpdateDays ) + " days ago" );
+        hvLabel->setText( "No / No" );
+        contractLabel->setText( sr.contract );
+}
+
 void DetailWindow::closeEvent( QCloseEvent* e )
 {
     e->ignore();
@@ -181,74 +226,76 @@ void DetailWindow::closeEvent( QCloseEvent* e )
 
 void DetailWindow::downloadDetails()
 {
-    mDet2 = Network::get( "/stefan.asp?sr=" );
-    
-    connect( mDet2, SIGNAL( finished() ), 
-             this, SLOT( detail2Finished() ) );
+            QNetworkReply* r = Network::get( "srinfo/" + mSr );
+        
+        connect( r, SIGNAL( finished() ), 
+                 this, SLOT( detailFinished() ) );
+        
+        
 }
 
 void DetailWindow::detailFinished()
 {
-    QString details = QString::fromUtf8( mDet1->readAll() );
-
-    if( mDet1->error() )
+    QNetworkReply* r = qobject_cast<QNetworkReply*>( sender() );
+    QString det = r->readAll();
+    
+    if( r->error() )
     {
         QMessageBox::critical( this, "Error", "Downloading details for SR# " + mSr + " failed." );
         close();
     }
-    else if( details.startsWith( "NOT FOUND") )
+    else if( det.startsWith( "No SR") )
     {
-        QMessageBox::critical( this, "Error", "SR " + mSr + " not found." );
+        QMessageBox::critical( this, "Error", "Something went wrong while trying to fetch details for " + mSr );
         close();
-    }
-    else if( details.isEmpty() )
-    {
-        detailBrowser->setText( "Sorry, no detailed description available." );
     }
     else
     {
-        detailBrowser->setText( details );
+        QDomDocument doc;
+        doc.setContent( det );
+        QDomNode node = doc.documentElement();
+        
+        QueueSR sr;
+            
+        sr.id = node.namedItem( "id" ).toElement().text(); 
+        sr.srtype = node.namedItem( "srtype" ).toElement().text(); 
+        sr.creator = node.namedItem( "creator" ).toElement().text(); 
+        sr.cus_account = node.namedItem( "cus_account" ).toElement().text(); 
+        sr.cus_firstname = node.namedItem( "cus_firstname" ).toElement().text(); 
+        sr.cus_lastname = node.namedItem( "cus_lastname" ).toElement().text(); 
+        sr.cus_title = node.namedItem( "cus_title" ).toElement().text(); 
+        sr.cus_email = node.namedItem( "cus_email" ).toElement().text(); 
+        sr.cus_phone = node.namedItem( "cus_phone" ).toElement().text(); 
+        sr.cus_onsitephone = node.namedItem( "cus_onsitephone" ).toElement().text(); 
+        sr.cus_lang = node.namedItem( "cus_lang" ).toElement().text(); 
+        sr.alt_contact = node.namedItem( "alt_contact" ).toElement().text();
+        sr.bug = node.namedItem( "bug" ).toElement().text(); 
+        sr.bugtitle = node.namedItem( "bug_desc" ).toElement().text(); 
+        sr.severity = node.namedItem( "severity" ).toElement().text(); 
+        sr.status = node.namedItem( "status" ).toElement().text(); 
+        sr.bdesc = node.namedItem( "bdesc" ).toElement().text(); 
+        sr.ddesc = node.namedItem( "ddesc" ).toElement().text(); 
+        sr.geo = node.namedItem( "geo" ).toElement().text(); 
+        sr.hours = node.namedItem( "hours" ).toElement().text(); 
+        sr.contract = node.namedItem( "contract" ).toElement().text(); 
+        sr.created = node.namedItem( "created" ).toElement().text(); 
+        sr.lastupdate = node.namedItem( "lastupdate" ).toElement().text(); 
+        sr.service_level = node.namedItem( "service_level" ).toElement().text().toInt();
+        sr.highvalue = node.namedItem( "highvalue" ).toElement().text().toInt(); 
+        sr.critsit = node.namedItem( "critsit" ).toElement().text().toInt();
+        
+        if ( !sr.creator.isEmpty() )
+        {
+            mIsCr = true;
+            sr.isCr = true;
+        }
+        
+        fillDetails( sr );
     }
 }
 
 void DetailWindow::detail2Finished()
 {
-    if( mDet2->error() )
-    {
-        statusLabel->setVisible( false );
-        statusLabel1->setVisible( false );
-        customerLabel->setVisible( false );
-        customerLabel1->setVisible( false );
-    }
-    else
-    {
-        QString details = mDet2->readAll();
-        
-        if ( details.contains( "|||" ) )
-        {
-            details.remove( QRegExp( "<(?:div|span|tr|td|br|body|html|tt|a|strong|p)[^>]*>", Qt::CaseInsensitive ) );
-        
-            customerLabel->setText( details.split("|||").at( 4 ).trimmed() + " (" + details.split("|||").at( 5 ).trimmed() + ")" );
-            statusLabel->setText( details.split("|||").at( 3 ).trimmed() );
-        }
-        else
-        {
-            statusLabel->setVisible( false );
-            statusLabel1->setVisible( false );
-            customerLabel->setVisible( false );
-            customerLabel1->setVisible( false );
-        }
-    }
-        
-    if ( detailBrowser->document()->isEmpty() )
-    {
-        qDebug() << "[DETAILWINDOW] No detailed description found, trying another URL...";
-                
-        mDet1 = Network::get( "detailed/" + mSr );
-        
-        connect( mDet1, SIGNAL( finished() ),
-                 this, SLOT( detailFinished() ) );
-    }
 }
 
 void DetailWindow::takePressed()
@@ -416,7 +463,6 @@ void DetailWindow::sendWithKopete()
         QDBusMessage m = QDBusMessage::createMethodCall( dbusServiceName, dbusPath, dbusInterfaceName, "sendMessage" );
         QList<QVariant> args;
 
-        qDebug() << Settings::kopeteText().replace( "$SR", mSr );
         args.append( mEngineer.toLower() + ".novell" );
         args.append( Settings::kopeteText().replace( "$SR", mSr ) );
 
@@ -447,5 +493,52 @@ void DetailWindow::showProgress( const QString& eng )
     mProgress->setWindowModality( Qt::WindowModal );
     mProgress->show();
 }
+
+void DetailWindow::toggleMoreDetails()
+{
+    if ( mDetailed )
+    {
+        contactLabel->setVisible( false );
+        contactLabel1->setVisible( false );
+        contactEmailLabel->setVisible( false );
+        contactEmailLabel1->setVisible( false );
+        contactPhoneLabel->setVisible( false );
+        contactPhoneLabel1->setVisible( false );
+        ageLabel->setVisible( false );
+        ageLabel1->setVisible( false );
+        lastUpdateLabel->setVisible( false );
+        lastUpdateLabel1->setVisible( false );
+        hvLabel->setVisible( false );
+        hvLabel1->setVisible( false );
+        contractLabel->setVisible( false );
+        contractLabel1->setVisible( false );
+        moreDetailButton->setIcon( QIcon( ":/icons/menus/add.png" ).pixmap( QSize( 16, 16 ) ) );
+        mDetailed = false;
+    }
+    else
+    {
+        if ( !mIsCr )
+        {
+            contactLabel->setVisible( true );
+            contactLabel1->setVisible( true );
+            contactEmailLabel->setVisible( true );
+            contactEmailLabel1->setVisible( true );
+            contactPhoneLabel->setVisible( true );
+            contactPhoneLabel1->setVisible( true );
+            contractLabel->setVisible( true );
+            contractLabel1->setVisible( true );
+            hvLabel->setVisible( true );
+            hvLabel1->setVisible( true );
+        }
+       
+        ageLabel->setVisible( true );
+        ageLabel1->setVisible( true );
+        lastUpdateLabel->setVisible( true );
+        lastUpdateLabel1->setVisible( true );
+        moreDetailButton->setIcon( QIcon( ":/icons/menus/remove.png" ).pixmap( QSize( 16, 16 ) ) );
+        mDetailed = true;
+    }
+}
+
 
 #include "detailwindow.moc"

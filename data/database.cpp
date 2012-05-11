@@ -120,7 +120,8 @@ void Database::openDbConnection( QString dbname )
                             "  DDESC TEXT, GEO TEXT, HOURS TEXT, SOURCE TEXT, SUPPORT_PROGRAM TEXT, SUPPORT_PROGRAM_LONG TEXT, "
                             "  ROUTING_PRODUCT TEXT, SUPPORT_GROUP_ROUTING TEXT, INT_TYPE TEXT, SUBTYPE TEXT, "
                             "  SERVICE_LEVEL INTEGER, CATEGORY TEXT, RESPOND_VIA TEXT, AGE TEXT, LASTUPDATE TEXT, "
-                            "  TIMEINQ TEXT, SLA TEXT, HIGHVALUE INTEGER, CRITSIT INTEGER, DISPLAY TEXT, ALT_CONTACT TEXT, BUG TEXT, BUGTITLE TEXT )" ) )
+                            "  TIMEINQ TEXT, SLA TEXT, HIGHVALUE INTEGER, CRITSIT INTEGER, DISPLAY TEXT, ALT_CONTACT TEXT, "
+                            "  BUG TEXT, BUGTITLE TEXT, LUPDATE TEXT, CREATEDATE TEXT )" ) )
         {
             qDebug() << "[DATABASE] Error:" << query.lastError();
         }
@@ -135,7 +136,6 @@ void Database::openDbConnection( QString dbname )
 
 
 */
-
 
 void Database::updateQueue( PersonalQueue pq, const QString& dbname )
 {
@@ -553,6 +553,92 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname )
     return srlist;
 }
 
+QueueSR Database::getSrInfo( const QString& id, const QString& dbname )
+{
+    QSqlDatabase db = QSqlDatabase::database( "sqliteDB" );
+    QDateTime now = QDateTime::currentDateTime();
+    QueueSR sr;
+
+    QSqlQuery query( db );
+    
+    query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
+                    "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
+                    "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + " WHERE ( ID = :id )" );
+    
+    query.bindValue( ":id", id );
+        
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
+    
+    if( !query.next() )
+    {
+
+        query.prepare( "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, "
+                       "       CUS_PHONE, CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, SUPPORT_PROGRAM_LONG, "
+                       "       SERVICE_LEVEL, CREATEDATE, LUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE "
+                       "       FROM QMON WHERE ( ID = :id )" );
+        
+        query.bindValue( ":id", id );
+        
+        if ( !query.exec() ) 
+        {
+            qDebug() << query.lastError().text();
+        }
+        
+        if ( !query.next() )
+        {
+            return sr;
+        }
+    }
+    
+    sr.id = query.value(0).toString();
+    sr.srtype = query.value(1).toString();
+    sr.creator = query.value(2).toString();
+    sr.cus_account = query.value(3).toString();
+    sr.cus_firstname = query.value(4).toString();
+    sr.cus_lastname = query.value(5).toString();
+    sr.cus_title = query.value(6).toString();
+    sr.cus_email = query.value(7).toString();
+    sr.cus_phone = query.value(8).toString();
+    sr.cus_onsitephone = query.value(9).toString();
+    sr.cus_lang = query.value(10).toString();
+    sr.severity = query.value(11).toString();
+    sr.status = query.value(12).toString();
+    sr.bdesc = query.value(13).toString();
+    sr.ddesc = query.value(14).toString();
+    sr.geo = query.value(15).toString();
+    sr.hours = query.value(16).toString();
+    sr.contract = query.value(17).toString();
+    sr.service_level = query.value(18).toInt();
+    sr.created = query.value(19).toString();
+    sr.lastupdate = query.value(20).toString();
+    sr.highvalue = query.value(21).toBool();
+    sr.critsit = query.value(22).toBool();
+    sr.display = query.value(23).toString();
+    sr.alt_contact = query.value(24).toString();
+    sr.bug = query.value(25).toString();
+    sr.bugtitle = query.value(26).toString();
+    
+    if ( !sr.creator.isEmpty() )
+    {
+        sr.isCr = true;
+    }
+    else
+    {
+        sr.isCr = false;
+    }
+    
+    QDateTime a = QDateTime::fromString( sr.created, "yyyy-MM-dd hh:mm:ss" );
+    QDateTime u = QDateTime::fromString( sr.lastupdate, "yyyy-MM-dd hh:mm:ss" );
+    
+    sr.age = a.daysTo( now );
+    sr.lastUpdateDays = u.daysTo( now );
+
+    return sr;
+}
+
 QStringList Database::getSrNrList( const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
@@ -785,17 +871,17 @@ void Database::insertQmonSR( QmonSR sr, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
     QSqlQuery query( db );
-            
+           
     query.prepare( "INSERT INTO QMON "
                    "( ID, QUEUE, BOMGARQ, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, "
                    "  CUS_PHONE, CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, SOURCE, SUPPORT_PROGRAM, "
                    "  SUPPORT_PROGRAM_LONG, ROUTING_PRODUCT, SUPPORT_GROUP_ROUTING, INT_TYPE, SUBTYPE, SERVICE_LEVEL, CATEGORY, "
-                   "  RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE ) "
+                   "  RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, LUPDATE, CREATEDATE ) "
                    " VALUES "
                    "( :id, :queue, :bomgarq, :srtype, :creator, :cus_account, :cus_firstname, :cus_lastname, :cus_title, :cus_email, "
                    "  :cus_phone, :cus_onsitephone, :cus_lang, :severity, :status, :bdesc, :ddesc, :geo, :hours, :source, :support_program, "
                    "  :support_program_long, :routing_product, :support_group_routing, :int_type, :subtype, :service_level, :category, "
-                   "  :respond_via, :age, :lastupdate, :timeinq, :sla, :highvalue, :critsit, 'none', :alt_contact, :bug, :bugtitle )" );
+                   "  :respond_via, :age, :lastupdate, :timeinq, :sla, :highvalue, :critsit, 'none', :alt_contact, :bug, :bugtitle, :lupdate, :createdate )" );
   
     query.bindValue( ":id", sr.id );
     query.bindValue( ":queue", sr.queue );
@@ -835,6 +921,8 @@ void Database::insertQmonSR( QmonSR sr, const QString& dbname )
     query.bindValue( ":alt_contact", sr.alt_contact );
     query.bindValue( ":bug", sr.bug );
     query.bindValue( ":bugtitle", sr.bugtitle );
+    query.bindValue( ":lupdate", sr.lupdate );
+    query.bindValue( ":createdate", sr.cdate );
     
     if ( !query.exec() ) 
     {
@@ -866,7 +954,7 @@ void Database::updateQmonSR( QmonSR sr, const QString& dbname )
                    " SUPPORT_PROGRAM=:support_program, SUPPORT_PROGRAM_LONG=:support_program_long, ROUTING_PRODUCT=:routing_product, "
                    " SUPPORT_GROUP_ROUTING=:support_group_routing, INT_TYPE=:int_type, SUBTYPE=:subtype, SERVICE_LEVEL=:service_level, "
                    " CATEGORY=:category, RESPOND_VIA=:respond_via, AGE=:age, LASTUPDATE=:lastupdate, TIMEINQ=:timeinq, SLA=:sla, "
-                   " HIGHVALUE=:highvalue, CRITSIT=:critsit, ALT_CONTACT=:alt_contact, BUG=:bug, BUGTITLE=:bugtitle WHERE ID=:id" );
+                   " HIGHVALUE=:highvalue, CRITSIT=:critsit, ALT_CONTACT=:alt_contact, BUG=:bug, BUGTITLE=:bugtitle, LUPDATE=:lupdate, CREATEDATE=:createdate WHERE ID=:id" );
                      
     query.bindValue( ":queue", sr.queue );
     query.bindValue( ":bomgarq", sr.bomgarQ );
@@ -906,6 +994,8 @@ void Database::updateQmonSR( QmonSR sr, const QString& dbname )
     query.bindValue( ":bug", sr.bug );
     query.bindValue( ":bugtitle", sr.bugtitle );
     query.bindValue( ":id", sr.id );    
+    query.bindValue( ":lupdate", sr.lupdate );    
+    query.bindValue( ":createdate", sr.cdate );    
     
     if ( !query.exec() )
     {
@@ -931,9 +1021,17 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
     QList< QmonSR > srList = qd.srList;
-    QStringList existList = getQmonSrNrs();
+    QStringList existList = getQmonSrNrs( dbname );
     QStringList newList;
+    
     bool initial = existList.isEmpty();
+    
+    QStringList q;
+    
+    for ( int i = 0; i < Settings::queuesToMonitor().size(); ++i )
+    {
+        q.append( Settings::queuesToMonitor().at( i ).split( "|" ).at( 1 ) );
+    }
     
     db.transaction();
     
@@ -941,25 +1039,36 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
     {
         QmonSR sr = srList.at( i );
         
+        QString type;
+        
+        if ( sr.isCr )
+        {
+            type = "CR";
+        }
+        else
+        {
+            type = "SR";
+        }
+        
         if ( qmonExists( sr.id ) )
         {
-            if ( qmonQueueChanged( sr, dbname ) && Settings::queuesToMonitor().contains( sr.queue ) )
+            if ( qmonQueueChanged( sr, dbname ) && q.contains( sr.queue ) )
             {
                 if ( sr.severity == "Low" )
                 {
-                    Kueue::notify( "kueue-monitor-low", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Kueue::notify( "kueue-monitor-low", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
                 }
                 else if ( sr.severity == "Medium" )
                 {
-                    Kueue::notify( "kueue-monitor-medium", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Kueue::notify( "kueue-monitor-medium", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
                 }
                 else if ( sr.severity == "Urgent" )
                 {
-                    Kueue::notify( "kueue-monitor-urgent", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Kueue::notify( "kueue-monitor-urgent", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
                 }
                 else if ( sr.severity == "High" )
                 {
-                    Kueue::notify( "kueue-monitor-high", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Kueue::notify( "kueue-monitor-high", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
                 }
             }
             
@@ -969,23 +1078,23 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
         {
             insertQmonSR( sr, dbname );
             
-            if ( !initial && Settings::queuesToMonitor().contains( sr.queue ) )
+            if ( !initial && q.contains( sr.queue ) )
             {
                 if ( sr.severity == "Low" )
                 {
-                    Kueue::notify( "kueue-monitor-low", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Kueue::notify( "kueue-monitor-low", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
                 }
                 else if ( sr.severity == "Medium" )
                 {
-                    Kueue::notify( "kueue-monitor-medium", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Kueue::notify( "kueue-monitor-medium", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
                 }
                 else if ( sr.severity == "Urgent" )
                 {
-                    Kueue::notify( "kueue-monitor-urgent", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Kueue::notify( "kueue-monitor-urgent", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
                 }
                 else if ( sr.severity == "High" )
                 {
-                    Kueue::notify( "kueue-monitor-high", "New SR in " + QString( sr.queue ), "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Kueue::notify( "kueue-monitor-high", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
                 }
             }
         }

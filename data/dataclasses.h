@@ -107,6 +107,8 @@ class QmonSR
         QString alt_contact;
         QString bug;
         QString bugtitle;
+        QString lupdate;
+        QString cdate;
         qint32 agesec;
         qint32 timeinqsec;
         qint32 slasec;

@@ -27,6 +27,7 @@
 #define DETAILWINDOW_H
  
 #include "ui_detailwindow.h"
+#include "data/database.h"
 
 #include <QNetworkReply>
 #include <QProgressDialog>
@@ -52,6 +53,8 @@ class DetailWindow : public QMainWindow, private Ui::DetailWindowDLG
         QNetworkReply* mAssign;
         QProgressDialog* mProgress;
         QShortcut* mTransSC;
+        bool mDetailed;
+        bool mIsCr;
         
     private slots:
         void downloadDetails();
@@ -66,6 +69,8 @@ class DetailWindow : public QMainWindow, private Ui::DetailWindowDLG
         void assignNow();
         void sendWithKopete();
         void closeEvent( QCloseEvent* );
+        void toggleMoreDetails();
+        void fillDetails( QueueSR );
 
     signals:
         void toClipboard( const QString& );

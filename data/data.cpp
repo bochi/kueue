@@ -267,6 +267,8 @@ void Data::qmonUpdateFinished()
                 sr.slasec = list.at( i ).namedItem( "sla" ).toElement().text().toInt(); 
                 sr.highvalue = list.at( i ).namedItem( "highvalue" ).toElement().text().toInt();
                 sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
+                sr.lupdate = list.at( i ).namedItem( "lastupdatedate" ).toElement().text();
+                sr.cdate = list.at( i ).namedItem( "agedate" ).toElement().text();
                 
                 q.srList.append( sr );
             }
