@@ -238,6 +238,7 @@ void DetailWindow::detailFinished()
 {
     QNetworkReply* r = qobject_cast<QNetworkReply*>( sender() );
     QString det = r->readAll();
+    QDateTime now = QDateTime::currentDateTime();
     
     if( r->error() )
     {
@@ -284,6 +285,12 @@ void DetailWindow::detailFinished()
         sr.highvalue = node.namedItem( "highvalue" ).toElement().text().toInt(); 
         sr.critsit = node.namedItem( "critsit" ).toElement().text().toInt();
         
+        QDateTime a = QDateTime::fromString( sr.created, "yyyy-MM-dd hh:mm:ss" );
+        QDateTime u = QDateTime::fromString( sr.lastupdate, "yyyy-MM-dd hh:mm:ss" );
+        
+        sr.age = a.daysTo( now );
+        
+        sr.lastUpdateDays = u.daysTo( now );
         if ( !sr.creator.isEmpty() )
         {
             mIsCr = true;
