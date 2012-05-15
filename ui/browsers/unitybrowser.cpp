@@ -779,9 +779,10 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
         mUnityBrowser = new UnityBrowser( this );
     }
     
+    mWebViewWithSearch = new WebViewWithSearch( mUnityBrowser );
     mBusyWidget = new BusyWidget( this );
     
-    overlayLayout->addWidget( mUnityBrowser );
+    overlayLayout->addWidget( mWebViewWithSearch );
     overlayLayout->addWidget( mBusyWidget );
     
     connect( mUnityBrowser, SIGNAL( currentSrChanged( QString ) ),
@@ -802,7 +803,6 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     connect( mUnityBrowser, SIGNAL( loggedIn( bool ) ), 
              this, SLOT( setOtherButtonsEnabled( bool ) ) );
     
-    //WebViewWithSearch* mWebViewWithSearch = new WebViewWithSearch( mUnityBrowser, this );
     setLayout( unityBrowserLayout );
 
     mBackButton = new QToolButton;

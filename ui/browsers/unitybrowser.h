@@ -127,10 +127,12 @@ class UnityWidget : public QWidget
         ~UnityWidget();
         
         UnityBrowser* browser() { return mUnityBrowser; }
+        WebViewWithSearch* webViewWithSearch() { return mWebViewWithSearch; }
         int tabId() { return mTabId; }
         
     private:
         UnityBrowser* mUnityBrowser;
+        WebViewWithSearch* mWebViewWithSearch;
         QToolBar* mToolBar;
         BusyWidget* mBusyWidget;
         int mTabId;

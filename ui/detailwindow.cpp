@@ -448,8 +448,6 @@ void DetailWindow::assignJobDone()
     }
     
     else QMessageBox::critical( this, "Error", "Unknown reply: " + data );
-     
-    Kueue::setClipboard( mSr );
 }
 
 void DetailWindow::sendWithKopete()
@@ -526,6 +524,7 @@ void DetailWindow::toggleMoreDetails()
     {
         if ( !mIsCr )
         {
+            
             contactLabel->setVisible( true );
             contactLabel1->setVisible( true );
             contactEmailLabel->setVisible( true );

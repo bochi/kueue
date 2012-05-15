@@ -98,7 +98,6 @@ void SearchBar::clear()
 
 void SearchBar::showFind()
 {
-    qDebug() << "SHOWFIND";
     if (!isVisible()) {
         show();
         m_timeLine->setFrameRange(-1 * m_widget->height(), 0);
@@ -106,9 +105,14 @@ void SearchBar::showFind()
         disconnect(m_timeLine, SIGNAL(finished()),
                    this, SLOT(hide()));
         m_timeLine->start();
+        ui.searchLineEdit->setFocus();
+        ui.searchLineEdit->selectAll();
     }
-    ui.searchLineEdit->setFocus();
-    ui.searchLineEdit->selectAll();
+    else
+    {
+        hide();
+    }
+    
 }
 
 void SearchBar::resizeEvent(QResizeEvent *event)

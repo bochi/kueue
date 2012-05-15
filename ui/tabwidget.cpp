@@ -30,6 +30,7 @@
 #include "nsa/nsa.h"
 #include "kueuethreads.h"
 #include "browsers/helpbrowser.h"
+#include "browsers/unitybrowser.h"
 #include "data/datathread.h"
 
 #include <QGridLayout> 
@@ -812,8 +813,17 @@ void TabWidget::showSearch()
 
 WebViewSearch* TabWidget::webViewSearch( int index )
 {
-    QWidget *widget = this->widget( index );
-    WebViewWithSearch* webViewWithSearch = qobject_cast<WebViewWithSearch*>( widget );
+    WebViewWithSearch* webViewWithSearch;
+
+    if ( mUnityBrowserMap.keys().contains( index ) || ( index == indexOf( mUnityTab ) ) )
+    {
+        UnityWidget* uw = qobject_cast<UnityWidget*>( this->widget( index ) );
+        webViewWithSearch = uw->webViewWithSearch();
+    }
+    else
+    {
+        webViewWithSearch = qobject_cast<WebViewWithSearch*>( this->widget( index ) );
+    }
     
     return webViewWithSearch->m_webViewSearch;
 }

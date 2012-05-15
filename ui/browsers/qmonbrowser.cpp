@@ -46,7 +46,7 @@
 
 
 QMonBrowser::QMonBrowser( QObject *parent )
-        : QWebView( ( QWidget* ) 0 )
+            : QWebView( ( QWidget* ) 0 )
 {
     qDebug() << "[QMONBROWSER] Constructing";
     
