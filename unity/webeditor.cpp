@@ -33,6 +33,7 @@ WebEditor::WebEditor( QWebElement element, QString sr, QObject* parent)
     qDebug() << "[WEBEDITOR] Constructing";
     
     mElement = element;
+    mElement.evaluateJavaScript( "this.innerHTML = this.value;" );    
     
     // set the directory to save the .txt files
     
@@ -53,12 +54,13 @@ WebEditor::WebEditor( QWebElement element, QString sr, QObject* parent)
     file.open( QIODevice::WriteOnly | QIODevice::Text );
     
     QTextStream out(&file);
+    
     QString content =  mElement.toInnerXml();
     
-    if ( content.isEmpty() )
+    /*if ( content.isEmpty() )
     {
         content = mElement.attribute( "value" );
-    }
+    }*/
 
     content.replace( "&lt;", "<" );
     content.replace( "&gt;", ">" );
@@ -115,7 +117,7 @@ void WebEditor::writeBack()
         qDebug() << "[WEBEDITOR] writing back to" << mFileName;
         mText = text;
         mElement.setInnerXml( text );
-	mElement.setAttribute( "value", text );
+	mElement.evaluateJavaScript( "this.value=this.innerHTML.replace( /&gt;/g, \">\" ).replace( /&lt;/g, \"<\" ).replace( /&amp;/g, \"&\" );" );
     }
 }
 

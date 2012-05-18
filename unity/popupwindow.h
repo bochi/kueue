@@ -70,9 +70,12 @@ class PopupWindow : public QDialog
         
     public slots:
         void resizeRequested( const QRect& );
-        void contentChanged();
+        //void contentChanged();
         void loadFinished();
         void closeWindow();
+        
+    private slots:
+        void openWebInspector();
 
 };
 

@@ -98,27 +98,35 @@ void SearchBar::clear()
 
 void SearchBar::showFind()
 {
-    if (!isVisible()) {
+    if (!isVisible()) 
+    {
         show();
+        
         m_timeLine->setFrameRange(-1 * m_widget->height(), 0);
         m_timeLine->setDirection(QTimeLine::Forward);
-        disconnect(m_timeLine, SIGNAL(finished()),
-                   this, SLOT(hide()));
+        
+        disconnect( m_timeLine, SIGNAL( finished() ),
+                   this, SLOT( hide() ) );
+        
         m_timeLine->start();
         ui.searchLineEdit->setFocus();
         ui.searchLineEdit->selectAll();
     }
     else
     {
+        ui.searchLineEdit->clear();
+        ui.highlightAllButton->setChecked(false);
         hide();
     }
-    
 }
 
 void SearchBar::resizeEvent(QResizeEvent *event)
 {
     if (event->size().width() != m_widget->width())
+    {
         m_widget->resize(event->size().width(), m_widget->height());
+    }
+    
     QWidget::resizeEvent(event);
 }
 

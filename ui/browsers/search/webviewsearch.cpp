@@ -55,12 +55,12 @@ WebViewSearch::WebViewSearch(QWebView *webView, QWidget *parent)
 
 void WebViewSearch::findNext()
 {
-    find(QWebPage::FindWrapsAroundDocument);
+    find( QWebPage::FindWrapsAroundDocument );
 }
 
 void WebViewSearch::findPrevious()
 {
-    find(QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument);
+    find( QWebPage::FindBackward | QWebPage::FindWrapsAroundDocument );
 }
 
 #if QT_VERSION >= 0x040600 || defined(WEBKIT_TRUNK)

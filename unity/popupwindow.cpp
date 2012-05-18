@@ -34,6 +34,7 @@
 #include <QWebFrame>
 #include <QToolButton>
 #include <QDesktopServices>
+#include <QWebInspector>
 
 PopupWindow::PopupWindow( QNetworkAccessManager* nam, QWidget* parent )
 {
@@ -45,7 +46,11 @@ PopupWindow::PopupWindow( QNetworkAccessManager* nam, QWidget* parent )
     setLayout( l );
     
     mWebView = new PopupWindowWebView( this );
-   
+    QShortcut* wi = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_I ), this );
+    
+    connect( wi, SIGNAL( activated() ),
+             this, SLOT( openWebInspector() ) );
+    
     l->addWidget( mWebView );
     
     mWebView->page()->setNetworkAccessManager( nam );
@@ -92,14 +97,29 @@ void PopupWindow::resizeRequested( const QRect& r )
     }
 }
 
-void PopupWindow::contentChanged()
+/*void PopupWindow::contentChanged()
 {
     qDebug() << "[POPUPWINDOW] Content Changed";
-}
+}*/
 
 void PopupWindow::loadFinished()
 {
     setWindowTitle( mWebView->page()->mainFrame()->findFirstElement( "title" ).toPlainText() );
+}
+
+void PopupWindow::openWebInspector()
+{
+    QWebSettings::globalSettings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+    
+    //QWidget* w = new QWidget;
+    //QGridLayout* l = new QGridLayout( w );
+    //w->setLayout( l );
+    QWebInspector* i = new QWebInspector();
+    i->setPage( mWebView->page() );
+    //l->addWidget( i );
+    //i->setPage( page() );
+    i->setWindowTitle( "Webinspector - unitybrowser" );
+    i->show();
 }
 
 void PopupWindow::closeWindow()

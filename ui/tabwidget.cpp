@@ -766,7 +766,7 @@ void TabWidget::aboutDialog()
 
 void TabWidget::reportBug()
 {
-    QString url = "mailto:sbogner@suse.com?subject=Bug%20in%20kueue%20" + QApplication::applicationVersion() + 
+    QString url = "mailto:kueue@suse.de?subject=Bug%20in%20kueue%20" + QApplication::applicationVersion() + 
                   "&body=Please%20describe%20the%20bug%20and%20steps%20on%20how%20to%20reproduce%20in%20detail";
     
     QDesktopServices::openUrl( QUrl( url ) );
@@ -774,7 +774,7 @@ void TabWidget::reportBug()
 
 void TabWidget::suggestFeature()
 {
-    QString url = "mailto:sbogner@suse.com?subject=Feature%20for%20kueue&body=Please%20describe%20the%20feature%20in%20detail.";
+    QString url = "mailto:kueue@suse.de?subject=Feature%20for%20kueue&body=Please%20describe%20the%20feature%20in%20detail.";
     
     QDesktopServices::openUrl( QUrl( url ) );
 }
