@@ -5,6 +5,10 @@
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
@@ -32,8 +36,13 @@ WebEditor::WebEditor( QWebElement element, QString sr, QObject* parent)
 {
     qDebug() << "[WEBEDITOR] Constructing";
     
+    mHasValue = element.hasAttribute( "value" );
     mElement = element;
-    mElement.evaluateJavaScript( "this.innerHTML = this.value;" );    
+
+    if ( !mHasValue )
+    {
+        mElement.evaluateJavaScript( "this.innerHTML = this.value;" );    
+    }
     
     // set the directory to save the .txt files
     
@@ -53,14 +62,18 @@ WebEditor::WebEditor( QWebElement element, QString sr, QObject* parent)
     
     file.open( QIODevice::WriteOnly | QIODevice::Text );
     
-    QTextStream out(&file);
+    QTextStream out( &file );
     
-    QString content =  mElement.toInnerXml();
+    QString content;
     
-    /*if ( content.isEmpty() )
+    if ( mHasValue )
     {
         content = mElement.attribute( "value" );
-    }*/
+    }
+    else
+    {
+        content = mElement.toInnerXml();
+    }
 
     content.replace( "&lt;", "<" );
     content.replace( "&gt;", ">" );
@@ -114,10 +127,19 @@ void WebEditor::writeBack()
     
     if ( mText != text )
     {
-        qDebug() << "[WEBEDITOR] writing back to" << mFileName;
         mText = text;
-        mElement.setInnerXml( text );
-	mElement.evaluateJavaScript( "this.value=this.innerHTML.replace( /&gt;/g, \">\" ).replace( /&lt;/g, \"<\" ).replace( /&amp;/g, \"&\" );" );
+        
+        if ( mHasValue )
+        {
+            mElement.setAttribute( "value", text );
+        }
+        else
+        {
+            mElement.setInnerXml( text );
+            mElement.evaluateJavaScript( "this.value=this.innerHTML.replace( /&gt;/g, \">\" )"
+                                         "                         .replace( /&lt;/g, \"<\" )"
+                                         "                         .replace( /&amp;/g, \"&\" );" );
+        }
     }
 }
 

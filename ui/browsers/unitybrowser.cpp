@@ -221,13 +221,8 @@ void UnityBrowser::openWebInspector()
 {
     QWebSettings::globalSettings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
     
-    //QWidget* w = new QWidget;
-    //QGridLayout* l = new QGridLayout( w );
-    //w->setLayout( l );
     QWebInspector* i = new QWebInspector();
     i->setPage( page() );
-    //l->addWidget( i );
-    //i->setPage( page() );
     i->setWindowTitle( "Webinspector - unitybrowser" );
     i->show();
 }

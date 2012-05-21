@@ -125,7 +125,7 @@ void KueueApp::createApp()
 
     if ( update )
     {
-        UpdateDialog* ud = new UpdateDialog( this );
+        /*UpdateDialog* ud = new UpdateDialog( this );
         
         qDebug() << "[KUEUE] Update detected: " << Settings::appVersion() << "vs." << QApplication::applicationVersion();
         qDebug() << "[KUEUE] Updatedialog? Anything you'd like to share?";
@@ -137,7 +137,7 @@ void KueueApp::createApp()
         
         qDebug() << "[KUEUE] OK, thanks. I'll delete you and rebuild the DB.";
         
-        delete ud;
+        delete ud;*/
         
         Settings::setAppVersion( QApplication::applicationVersion() );
     }

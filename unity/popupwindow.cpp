@@ -55,14 +55,13 @@ PopupWindow::PopupWindow( QNetworkAccessManager* nam, QWidget* parent )
     
     mWebView->page()->setNetworkAccessManager( nam );
     
-    connect( mWebView->page(), SIGNAL( contentsChanged() ), 
-             this, SLOT( contentChanged() ) );
     connect( mWebView->page(), SIGNAL( geometryChangeRequested( QRect ) ), 
              this, SLOT( resizeRequested( QRect ) ) );
     connect( mWebView->page(), SIGNAL( windowCloseRequested() ), 
              this, SLOT( closeWindow() ) );
     connect( mWebView->page(), SIGNAL( loadFinished( bool ) ), 
              this, SLOT( loadFinished() ) );
+
     connect( this, SIGNAL( rejected() ), 
              this, SLOT( closeWindow() ) );
     connect( this, SIGNAL( accepted() ),
@@ -97,11 +96,6 @@ void PopupWindow::resizeRequested( const QRect& r )
     }
 }
 
-/*void PopupWindow::contentChanged()
-{
-    qDebug() << "[POPUPWINDOW] Content Changed";
-}*/
-
 void PopupWindow::loadFinished()
 {
     setWindowTitle( mWebView->page()->mainFrame()->findFirstElement( "title" ).toPlainText() );
@@ -110,14 +104,9 @@ void PopupWindow::loadFinished()
 void PopupWindow::openWebInspector()
 {
     QWebSettings::globalSettings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
-    
-    //QWidget* w = new QWidget;
-    //QGridLayout* l = new QGridLayout( w );
-    //w->setLayout( l );
+
     QWebInspector* i = new QWebInspector();
     i->setPage( mWebView->page() );
-    //l->addWidget( i );
-    //i->setPage( page() );
     i->setWindowTitle( "Webinspector - unitybrowser" );
     i->show();
 }
@@ -133,7 +122,6 @@ void PopupWindow::closeWindow()
 
     close();
     deleteLater();
-//    delete this;
 }
 
 /*
@@ -338,8 +326,6 @@ QWebPage* PopupWindowWebPage::createWindow( QWebPage::WebWindowType type )
 
 void PopupWindowWebPage::pageLoaded()
 {
-    qDebug() << "[POPUPWINDOWWEBPAGE] loaded" << mainFrame()->url();
-    
     if ( mainFrame()->url().toString().contains( "SWEMethod=*Server*Communications+Client+*FileSendMail*+*Email" ) &&
        ( mEmailStage == 0 ) )
     {
@@ -454,7 +440,6 @@ static bool contentSniff( const QByteArray &data )
 
 void PopupWindowWebPage::handleUnsupportedContent( QNetworkReply* reply )
 {
-    qDebug() << "HUC";
     if ( !reply )
     {
         return;

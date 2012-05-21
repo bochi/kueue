@@ -46,7 +46,7 @@ class WebEditor : public QObject
         QString mFileName;
         QString mText;
         QProcess* mProcess;
-
+        bool mHasValue;
         
     private slots:
         void writeBack();

@@ -70,7 +70,6 @@ class PopupWindow : public QDialog
         
     public slots:
         void resizeRequested( const QRect& );
-        //void contentChanged();
         void loadFinished();
         void closeWindow();
         
