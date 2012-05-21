@@ -352,8 +352,7 @@ void UnityPage::querySR( const QString& sr )
     }
     else 
     {
-        qDebug() << "[UNITYPAGE] Navigation not yet usable (probably not finished loading)?";
-        StatusBar::showMessage( "Not yet logged in, please wait and try again..." );
+        mStartSR = sr;
     }
 }
 

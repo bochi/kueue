@@ -561,7 +561,8 @@ DownloadManager::DownloadManager(QWidget *parent)
 {
     setupUi(this);
 
-    setWindowFlags( Qt::Window | Qt::FramelessWindowHint );
+    setWindowFlags( Qt::Popup );
+    //setWindowFlags( Qt::Window | Qt::FramelessWindowHint );
     setFocusPolicy( Qt::StrongFocus );
     window()->activateWindow();
 
@@ -600,7 +601,6 @@ void DownloadManager::focusOutEvent( QFocusEvent* event )
 
 void DownloadManager::showEvent( QShowEvent* event )
 {
-	qDebug() << "showevent";
 	activateWindow();
 	QWidget::showEvent( event );
 }

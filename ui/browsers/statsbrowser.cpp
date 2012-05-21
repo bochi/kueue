@@ -51,6 +51,8 @@ StatsBrowser::~StatsBrowser()
 
 void StatsBrowser::update( const QString& html )
 {
+    qDebug() << "[STATSBROWSER] Updating";
+
     QPoint pos = page()->currentFrame()->scrollPosition();
     page()->currentFrame()->setHtml( html );
     page()->currentFrame()->setScrollPosition( pos );

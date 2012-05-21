@@ -31,8 +31,8 @@
 #include <QTimer>
 #include <QDateTime>
 
-WebEditor::WebEditor( QWebElement element, QString sr, QObject* parent)
-          : QObject(parent)
+WebEditor::WebEditor( QWebElement element, QString sr, QObject* parent )
+          : QObject( parent )
 {
     qDebug() << "[WEBEDITOR] Constructing";
     
@@ -50,7 +50,11 @@ WebEditor::WebEditor( QWebElement element, QString sr, QObject* parent)
 
     // under the user defined directory, create a subdirectory for the sr
     
-    if ( !dir.exists( Settings::editorSaveLocation() + "/" + sr ) ) dir.mkdir( sr );
+    if ( !dir.exists( Settings::editorSaveLocation() + "/" + sr ) ) 
+    {
+        dir.mkdir( sr );
+    }
+    
     dir.cd( sr );
 
     // the filename is yyyyMMddhhmmss.txt
@@ -95,7 +99,7 @@ WebEditor::WebEditor( QWebElement element, QString sr, QObject* parent)
     
     // watch the file for changes and write the content back to the element
     
-    QTimer* timer = new QTimer;
+    QTimer* timer = new QTimer( this );
     
     connect( timer, SIGNAL( timeout() ), 
              this, SLOT( writeBack() ) );
