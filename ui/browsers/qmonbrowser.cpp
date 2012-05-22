@@ -128,6 +128,8 @@ void QMonBrowser::update( const QString& html )
 
 void QMonBrowser::mousePressEvent( QMouseEvent* event )
 {
+    StatusBar::hideDownloadManager();
+    
     // Left mouse button 
     // Different actions for different "protocols"
     

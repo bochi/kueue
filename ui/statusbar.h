@@ -98,6 +98,7 @@ class StatusBar : public QStatusBar
         void showDownloadManager();
         void hideDownloadManagerImpl();
         void popupDownloadManager();
+        void mousePressEvent( QMouseEvent* );
     
 };
 

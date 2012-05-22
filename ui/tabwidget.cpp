@@ -759,9 +759,8 @@ void TabWidget::setShowStatusOthers( bool s )
 void TabWidget::aboutDialog()
 {
     QMessageBox::about( this, "About", "<b>kueue " + QApplication::applicationVersion() + 
-                              "</b><br>(C) 2011 Stefan Bogner<br><a href='mailto:sbogner@suse.com'>sbogner@suse.com</a><br>"
-                              "<br>Kueue is a Qt application that helps you to keep track of your SR queue and implements queue "
-                              "monitor functionality. It is available for Linux, Windows and Mac OSX." );
+                              "</b><br>(C) 2011 - 2012 Stefan Bogner<br><a href='mailto:sbogner@suse.com'>sbogner@suse.com</a><br>"
+                              "<br>Have a lot of fun :-)" );
 }
 
 void TabWidget::reportBug()
@@ -796,7 +795,7 @@ void TabWidget::helpClosed()
 
 void TabWidget::openWebsite()
 {
-    QDesktopServices::openUrl( QUrl( "http://www.kueue.tk" ) );
+    QDesktopServices::openUrl( QUrl( "http://data.kueue.tk" ) );
 }
 
 void TabWidget::updateUiData()
@@ -863,6 +862,8 @@ int TabBar::selectTab( const QPoint &pos ) const
 
 void TabBar::mousePressEvent( QMouseEvent* event )
 {
+    StatusBar::hideDownloadManager();
+    
     if ( ( event->button() == Qt::RightButton ) &&
          ( selectTab( event->pos() ) != -1 ) )
     {

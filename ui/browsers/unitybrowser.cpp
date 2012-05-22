@@ -249,6 +249,8 @@ void UnityBrowser::urlHovered( const QString& url, const QString& title, const Q
 
 void UnityBrowser::mousePressEvent( QMouseEvent* event )
 {
+    StatusBar::hideDownloadManager();
+    
     if ( ( event->button() == 2 ) &&
          ( mUnityPage->loggedIn() ) )
     {

@@ -117,8 +117,15 @@ void KueueWindow::toggleWindow()
 
 void KueueWindow::closeEvent( QCloseEvent* e )
 {
-    e->ignore();
-    hideWindow();
+    if ( e->spontaneous() )
+    {
+	e->ignore();
+        hideWindow();
+    }
+    else
+    {
+        qApp->quit();
+    }
 }
 
 bool KueueWindow::eventFilter( QObject* o, QEvent* e )
@@ -128,6 +135,15 @@ bool KueueWindow::eventFilter( QObject* o, QEvent* e )
         Kueue::attention( false );
         StatusBar::hideDownloadManager();
         return true;
+    }
+    else if ( e->type() == 13 )
+    {
+        // move
+        StatusBar::hideDownloadManager();
+    }
+    else if ( e->type() == 99 )
+    {
+        StatusBar::hideDownloadManager();
     }
     else 
     {

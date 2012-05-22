@@ -71,6 +71,8 @@ void StatsBrowser::urlHovered( const QString& url, const QString& title, const Q
 
 void StatsBrowser::mousePressEvent( QMouseEvent* event )
 {
+    StatusBar::hideDownloadManager();
+    
     if ( ( event->button() == 1 ) && 
          ( mUrl.toString().startsWith(  "sr://" ) ) )
     {

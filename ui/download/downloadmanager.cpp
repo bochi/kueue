@@ -61,7 +61,7 @@
     as update the information/progressbar and report errors.
  */
 
-DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString dir, QWidget *parent )
+DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString dir, QWidget* parent )
     : QWidget( parent )
     , mReply( reply )
     , mRequestFilename( requestFileName )
@@ -561,10 +561,7 @@ DownloadManager::DownloadManager(QWidget *parent)
 {
     setupUi(this);
 
-    setWindowFlags( Qt::Popup );
-    //setWindowFlags( Qt::Window | Qt::FramelessWindowHint );
-    setFocusPolicy( Qt::StrongFocus );
-    window()->activateWindow();
+    setWindowFlags( Qt::ToolTip );
 
     QSettings settings;
     settings.beginGroup(QLatin1String("downloadmanager"));
@@ -591,18 +588,6 @@ DownloadManager::~DownloadManager()
     mAutoSaver->saveIfNeccessary();
     if (mIconProvider)
         delete mIconProvider;
-}
-
-void DownloadManager::focusOutEvent( QFocusEvent* event )
-{
-    hide();
-    QWidget::focusOutEvent( event );
-}
-
-void DownloadManager::showEvent( QShowEvent* event )
-{
-	activateWindow();
-	QWidget::showEvent( event );
 }
 
 int DownloadManager::activeDownloads() const

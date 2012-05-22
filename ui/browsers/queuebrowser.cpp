@@ -171,6 +171,8 @@ void QueueBrowser::update( const QString& html )
 
 void QueueBrowser::mousePressEvent( QMouseEvent* event )
 {
+    StatusBar::hideDownloadManager();
+    
     // Left mouse button 
     // Different actions for different "protocols"
     

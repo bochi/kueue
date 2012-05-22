@@ -119,7 +119,7 @@ public:
         SuccessFullDownload
     };
 
-    DownloadManager(QWidget *parent = 0);
+    DownloadManager( QWidget *parent = 0 );
     ~DownloadManager();
     int activeDownloads() const;
     bool allowQuit();
@@ -146,7 +146,6 @@ private slots:
     void updateRow();
     void finished();
 
-
 private:
     void addItem(DownloadItem *item);
     void updateItemCount();
@@ -162,10 +161,7 @@ private:
     QString mDownloadDir;
 
     friend class DownloadModel;
-    
-protected:
-    void focusOutEvent( QFocusEvent* );
-    void showEvent( QShowEvent* ); 
+
 signals:
     void downloadFinished();
 };

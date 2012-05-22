@@ -54,7 +54,7 @@ StatusBar::StatusBar()
     mDownloadButton->setGeometry( 0, 0, 20, 20 );
     mDownloadButton->setIcon( QIcon(":/icons/menus/download.png"));
     
-    mDownloadManager = new DownloadManager;
+    mDownloadManager = new DownloadManager( window() );
 
     connect( mDownloadButton, SIGNAL( clicked(bool) ), 
              this, SLOT( toggleDownloadManager()) );
@@ -98,6 +98,12 @@ void StatusBar::toggleDownloadManager()
     {
         mDownloadManager->hide();
     }
+}
+
+void StatusBar::mousePressEvent( QMouseEvent* e )
+{
+    hideDownloadManager();
+    QStatusBar::mousePressEvent( e );
 }
 
 void StatusBar::showDownloadManager()

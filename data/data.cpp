@@ -59,7 +59,7 @@ Data::Data()
     Database::openDbConnection( mDB );
     
     QTimer* queueTimer = new QTimer( this );
-    queueTimer->start( 104726 );
+    queueTimer->start( 84726 );
     
     connect( queueTimer, SIGNAL( timeout() ),
              this, SLOT( updateQueue() ) );
@@ -71,7 +71,7 @@ Data::Data()
         Database::dropQmon();
         
         QTimer* qmonTimer = new QTimer( this );
-        qmonTimer->start( 51219 );
+        qmonTimer->start( 41219 );
     
         connect( qmonTimer, SIGNAL( timeout() ),
                  this, SLOT( updateQmon() ) );
@@ -82,7 +82,7 @@ Data::Data()
     if ( Settings::statsEnabled() )
     {
         QTimer* statsTimer = new QTimer( this );
-        statsTimer->start( 1005180 );
+        statsTimer->start( 1800000 );
     
         connect( statsTimer, SIGNAL( timeout() ),
                  this, SLOT( updateStats() ) );
