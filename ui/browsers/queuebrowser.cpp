@@ -208,7 +208,6 @@ void QueueBrowser::mousePressEvent( QMouseEvent* event )
         QDesktopServices::openUrl( mUrl );
     }
     
-    
     // Right mouse button     
     
     if ( ( event->button() == 2 ) && 
@@ -249,7 +248,7 @@ void QueueBrowser::mousePressEvent( QMouseEvent* event )
         }
     }
     
-    return QWebView::mousePressEvent(event);
+    return QWebView::mousePressEvent( event );
 }
 
 void QueueBrowser::contextMenu( QMouseEvent* event, const QString& id )
@@ -440,7 +439,5 @@ void QueueBrowser::toggleTables()
         mOpen = true;
     }
 }
-
-
 
 #include "queuebrowser.moc"
