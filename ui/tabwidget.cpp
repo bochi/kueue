@@ -638,7 +638,7 @@ void TabWidget::permanentUnityTabMenu( const QPoint& p )
 {
     QMenu* menu = new QMenu( this );
 
-    QAction* closeTab = new QAction( "Close all other tabs", menu );
+    QAction* closeTab = new QAction( "Close other Unity tabs", menu );
     QAction* clipboard = new QAction( "Open SR# in clipboard", menu );
 
     connect( closeTab, SIGNAL( triggered() ),

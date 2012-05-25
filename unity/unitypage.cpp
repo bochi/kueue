@@ -50,6 +50,7 @@ UnityPage::UnityPage( QObject *parent, QString sr )
     
     mViewFrame = 0;
     
+    mIsCr = false;
     mNavReady = false;
     mLoggedIn = false;
     mDontLogin = false;
