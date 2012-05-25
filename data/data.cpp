@@ -198,8 +198,8 @@ void Data::queueUpdateFinished()
             sr.bugtitle = list.at( i ).namedItem( "bug_desc" ).toElement().text(); 
             sr.severity = list.at( i ).namedItem( "severity" ).toElement().text(); 
             sr.status = list.at( i ).namedItem( "status" ).toElement().text(); 
-            sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text(); 
-            sr.ddesc = list.at( i ).namedItem( "ddesc" ).toElement().text(); 
+            sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text().replace( "]]&gt;", "]]>" ); 
+            sr.ddesc = list.at( i ).namedItem( "ddesc" ).toElement().text().replace( "]]&gt;", "]]>" );; 
             sr.geo = list.at( i ).namedItem( "geo" ).toElement().text(); 
             sr.hours = list.at( i ).namedItem( "hours" ).toElement().text(); 
             sr.contract = list.at( i ).namedItem( "contract" ).toElement().text(); 
@@ -259,8 +259,8 @@ void Data::qmonUpdateFinished()
             sr.bug = list.at( i ).namedItem( "bug" ).toElement().text(); 
             sr.severity = list.at( i ).namedItem( "severity" ).toElement().text(); 
             sr.status = list.at( i ).namedItem( "status" ).toElement().text(); 
-            sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text(); 
-            sr.ddesc = list.at( i ).namedItem( "ddesc" ).toElement().text(); 
+            sr.bdesc = list.at( i ).namedItem( "bdesc" ).toElement().text().replace( "]]&gt;", "]]>" );; 
+            sr.ddesc = list.at( i ).namedItem( "ddesc" ).toElement().text().replace( "]]&gt;", "]]>" );; 
             sr.geo = list.at( i ).namedItem( "geo" ).toElement().text(); 
             sr.hours = list.at( i ).namedItem( "hours" ).toElement().text(); 
             sr.source = list.at( i ).namedItem( "source" ).toElement().text(); 

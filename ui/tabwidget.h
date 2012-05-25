@@ -133,8 +133,11 @@ class TabWidget : public QTabWidget
         void setMenus();
         void toggleTodo( bool );
         void unityTabMenu( int tab, const QPoint& p );
+        void permanentUnityTabMenu( const QPoint& p );
         void closeActionTriggered();
         void clipboardActionTriggered();
+        void closeAllOtherActionTriggered();
+        void permClipboardActionTriggered();
         void setShowSR( bool );
         void setShowCR( bool );
         void setTodoShowUp( bool );

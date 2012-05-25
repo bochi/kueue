@@ -210,6 +210,10 @@ void TabWidget::tabRightClicked( int id, QPoint point )
     {
         unityTabMenu( id, point );
     }
+    else if ( indexOf( mUnityTab ) == id )
+    {
+        permanentUnityTabMenu( point );
+    }
 }
 
 void TabWidget::showPersonalTab( bool b )
@@ -630,6 +634,33 @@ void TabWidget::unityTabMenu( int tab, const QPoint& p )
     menu->exec( p );
 }
 
+void TabWidget::permanentUnityTabMenu( const QPoint& p )
+{
+    QMenu* menu = new QMenu( this );
+
+    QAction* closeTab = new QAction( "Close all other tabs", menu );
+    QAction* clipboard = new QAction( "Open SR# in clipboard", menu );
+
+    connect( closeTab, SIGNAL( triggered() ),
+             this, SLOT( closeAllOtherActionTriggered() ) );
+
+    connect( clipboard, SIGNAL( triggered() ),
+             this, SLOT( permClipboardActionTriggered() ) );
+
+    closeTab->setIcon( QIcon( ":/icons/menus/quit.png" ) );
+    clipboard->setIcon( QIcon( ":/icons/menus/clipboard.png" ) );
+    
+    menu->addAction( closeTab );
+    menu->addAction( clipboard );
+    
+    if ( mUnityBrowserMap.keys().size() < 1 )
+    {
+        closeTab->setEnabled( false );
+    }
+    
+    menu->exec( p );
+}
+
 void TabWidget::openInUnityImp( const QString& sr )
 {
     if ( Kueue::isSrNr( sr ) )
@@ -643,7 +674,6 @@ void TabWidget::closeActionTriggered()
 {
     QAction* action = qobject_cast<QAction*>( QObject::sender() );
     removeUnityBrowser( action->data().toInt() );
-    
 }
 
 void TabWidget::clipboardActionTriggered()
@@ -653,6 +683,25 @@ void TabWidget::clipboardActionTriggered()
     if ( Kueue::isSrNr( Kueue::getClipboard() ) )
     {
         showSrInUnityBrowser( action->data().toInt(), Kueue::getClipboard() );
+    }
+}
+
+void TabWidget::closeAllOtherActionTriggered()
+{
+    QList<int> u = mUnityBrowserMap.keys();
+    
+    for ( int i = 0; i < u.size(); ++i )
+    {
+        int tab = mUnityBrowserMap.keys().at( 0 );
+        removeUnityBrowser( tab );
+    }
+}
+
+void TabWidget::permClipboardActionTriggered()
+{
+    if ( Kueue::isSrNr( Kueue::getClipboard() ) )
+    {
+        mUnityBrowser->querySR( Kueue::getClipboard() );
     }
 }
 
