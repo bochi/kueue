@@ -305,6 +305,32 @@ void Settings::setEditorSaveLocation( const QString& s )
     settings.sync();
 }
 
+bool Settings::replyFormatEnabled()
+{
+    QSettings settings;
+    return settings.value( "replyFormatEnabled", false ).toBool();
+}
+
+void Settings::setReplyFormatEnabled( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "replyFormatEnabled", b );
+    settings.sync();
+}
+
+int Settings::replyFormatLineBreak()
+{
+    QSettings settings;
+    return settings.value( "replyFormatLineBreak", 75 ).toInt();
+}
+
+void Settings::setReplyFormatLineBreak( const int& i )
+{
+    QSettings settings;
+    settings.setValue( "replyFormatLineBreak", i );
+    settings.sync();
+}
+
 QString Settings::downloadDirectory()
 {
     QSettings settings;

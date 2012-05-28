@@ -285,6 +285,7 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
     QAction* head = new QAction( menu );
     QAction* his = new QAction( "Back", menu );
     QAction* edit = new QAction( "Open in external editor", menu );
+    QAction* edit_f = new QAction( "Open in external editor (quoted)", menu );
     QAction* copy = new QAction( "Copy", menu );
     QAction* paste = new QAction( "Paste", menu );
     QAction* back = new QAction( "Go back to SR", menu );
@@ -299,6 +300,9 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
     
     connect( edit, SIGNAL( triggered(bool) ), 
              this, SLOT( openWebEditor() ) );
+    
+    connect( edit_f, SIGNAL( triggered(bool) ), 
+             this, SLOT( openWebEditorFormat() ) );
     
     connect( copy, SIGNAL( triggered( bool ) ), 
              this, SLOT( copyToClipboard() ) );
@@ -336,6 +340,9 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
     edit->setData( QString::number( event->pos().x() ) + "||" + QString::number( event->pos().y() ) + "||" + id );
     edit->setIcon( QIcon( ":/icons/menus/toggle.png" ) );
     
+    edit_f->setData( QString::number( event->pos().x() ) + "||" + QString::number( event->pos().y() ) + "||" + id );
+    edit_f->setIcon( QIcon( ":/icons/menus/toggle.png" ) );
+    
     copy->setData( selectedText() );
     copy->setIcon( QIcon( ":/icons/menus/clipboard.png" ) );
     
@@ -357,11 +364,18 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
     menu->addAction( edit );
     edit->setEnabled( false );
     
+    if ( Settings::replyFormatEnabled() )
+    {
+        menu->addAction( edit_f );
+        edit_f->setEnabled( false );
+    }
+    
     if ( ( element.attribute( "type" ) == "input" ) ||
          ( element.attribute( "type" ) == "text" ) ||
          ( isTextArea( element ) ) )
     {
         edit->setEnabled( true );
+        edit_f->setEnabled( true );
     }
     
     menu->addSeparator();
@@ -582,7 +596,23 @@ void UnityBrowser::openWebEditor()
     p.setX( data.split("||").at(0).toInt() );
     p.setY( data.split("||").at(1).toInt() );
 
-    WebEditor* w = new WebEditor( mUnityPage->getElementAt( p ).element(), data.split("||").at( 2 ) );
+    WebEditor* w = new WebEditor( mUnityPage->getElementAt( p ).element(), data.split("||").at( 2 ), false );
+
+    connect( mUnityPage, SIGNAL( loadStarted() ),
+             w, SLOT( killYourself() ) );
+}
+
+void UnityBrowser::openWebEditorFormat()
+{
+    QAction* action = qobject_cast<QAction*>( QObject::sender() );
+    
+    QString data = action->data().toString();
+
+    QPoint p;
+    p.setX( data.split("||").at(0).toInt() );
+    p.setY( data.split("||").at(1).toInt() );
+
+    WebEditor* w = new WebEditor( mUnityPage->getElementAt( p ).element(), data.split("||").at( 2 ), true );
 
     connect( mUnityPage, SIGNAL( loadStarted() ),
              w, SLOT( killYourself() ) );

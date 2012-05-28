@@ -211,6 +211,8 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_externalEditorEnabled->setChecked( Settings::externalEditorEnabled() );
     cfg_editorCommand->setText( Settings::editorCommand() );
     cfg_editorSaveLocation->setText( Settings::editorSaveLocation() );
+    cfg_replyFormat->setChecked( Settings::replyFormatEnabled() );
+    cfg_replyLinebreak->setValue( Settings::replyFormatLineBreak() );
     cfg_downloadDirectory->setText( Settings::downloadDirectory() );
     cfg_useSrDirectory->setChecked( Settings::useSrDirectory() );
     cfg_autoExtract->setChecked( Settings::autoExtract() );
@@ -373,6 +375,8 @@ void ConfigDialog::writeSettings()
     Settings::setExternalEditorEnabled( cfg_externalEditorEnabled->isChecked() );
     Settings::setEditorCommand( cfg_editorCommand->text() );
     Settings::setEditorSaveLocation( cfg_editorSaveLocation->text() );
+    Settings::setReplyFormatEnabled( cfg_replyFormat->isChecked() );
+    Settings::setReplyFormatLineBreak( cfg_replyLinebreak->value() );
     Settings::setShowSystemTray( cfg_showSystemTray->isChecked() );
     Settings::setAnimateQueue( cfg_animateQueue->isChecked() );
     Settings::setAnimateQmon( cfg_animateQmon->isChecked() );

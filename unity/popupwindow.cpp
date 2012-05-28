@@ -183,6 +183,7 @@ void PopupWindowWebView::contextMenu( QMouseEvent* event, const QString& id )
             
     QAction* ba = new QAction( menu );
     QAction* ac = new QAction( "Open in external editor", menu );
+    QAction* ac_f = new QAction( "Open in external editor (quoted)", menu );
     QAction* cb = new QAction( "Copy to clipboard", menu );
     QWidgetAction* wa = new QWidgetAction( menu );
     
@@ -206,6 +207,10 @@ void PopupWindowWebView::contextMenu( QMouseEvent* event, const QString& id )
                  "||" + id + "|ed" );
     ac->setIcon( QIcon( ":/icons/menus/toggle.png" ) );
     
+    ac_f->setData( QString::number( event->pos().x() ) + "||" + QString::number( event->pos().y() ) +
+                 "||" + id + "|fe" );
+    ac_f->setIcon( QIcon( ":/icons/menus/toggle.png" ) );
+
     cb->setData( selectedText() + "|cb" );
     cb->setIcon( QIcon( ":/icons/menus/clipboard.png" ) );
     
@@ -216,6 +221,7 @@ void PopupWindowWebView::contextMenu( QMouseEvent* event, const QString& id )
          ( isTextArea( element ) ) )
     {
         menu->addAction( ac );
+        menu->addAction( ac_f );
     }
     
     menu->addAction( cb );
@@ -271,7 +277,22 @@ void PopupWindowWebView::contextMenuItemTriggered( QAction* a )
         
         QWebHitTestResult res = page()->mainFrame()->hitTestContent( p );
         
-        WebEditor* w = new WebEditor( res.element(), data.split("||").at( 2 ) );
+        WebEditor* w = new WebEditor( res.element(), data.split("||").at( 2 ), false );
+        
+        connect( page(), SIGNAL( loadStarted() ),
+                 w, SLOT( killYourself()) );
+    }
+    else if ( a->data().toString().contains( "|fe" ) )
+    {
+        QString data = a->data().toString().remove("|fe");
+   
+        QPoint p;
+        p.setX( data.split("||").at(0).toInt() );
+        p.setY( data.split("||").at(1).toInt() );
+        
+        QWebHitTestResult res = page()->mainFrame()->hitTestContent( p );
+        
+        WebEditor* w = new WebEditor( res.element(), data.split("||").at( 2 ), true );
         
         connect( page(), SIGNAL( loadStarted() ),
                  w, SLOT( killYourself()) );

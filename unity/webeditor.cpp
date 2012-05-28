@@ -30,8 +30,12 @@
 #include <QDebug>
 #include <QTimer>
 #include <QDateTime>
+#include <QTextDocument>
+#include <QTextOption>
+#include <QTextBlock>
+#include <QTextCursor>
 
-WebEditor::WebEditor( QWebElement element, QString sr, QObject* parent )
+WebEditor::WebEditor( QWebElement element, QString sr, bool format, QObject* parent )
           : QObject( parent )
 {
     qDebug() << "[WEBEDITOR] Constructing";
@@ -83,7 +87,41 @@ WebEditor::WebEditor( QWebElement element, QString sr, QObject* parent )
     content.replace( "&gt;", ">" );
     content.replace( "&amp;", "&" );
     
-    out << content;
+    if ( format )
+    {
+        QTextDocument doc( content );
+        
+        for ( int i = 0; i < doc.blockCount(); ++i )
+        {
+            QStringList words = doc.findBlockByNumber( i ).text().split( " " );
+            QString txt;
+            int le = Settings::replyFormatLineBreak();
+            
+            for ( int x = 0; x < words.size(); ++x )
+            {
+                if ( txt.length() + words.at(x).size() < le )
+                {
+                    txt += words.at( x ) + " ";
+                }
+                else
+                {
+                    le = ( txt.size() + Settings::replyFormatLineBreak() );
+                    txt += "\n" + words.at(x) + " ";
+                }
+            }
+            
+            QStringList lines = txt.split( "\n" );
+            
+            for ( int x = 0; x < lines.size(); ++x )
+            {
+                out << "> " + lines.at(x) + "\n";
+            }
+        }
+    }
+    else
+    {
+        out << content;
+    }
     
     file.close();
    
@@ -95,7 +133,7 @@ WebEditor::WebEditor( QWebElement element, QString sr, QObject* parent )
     // and finally run the editor
     
     mProcess = new QProcess( this );
-    mProcess->start( Settings::editorCommand(), arg );
+    mProcess->startDetached( Settings::editorCommand(), arg );
     
     // watch the file for changes and write the content back to the element
     

@@ -188,14 +188,17 @@ void UnityPage::fixQueryBox()
 
 void UnityPage::pageLoaded()
 {   
+    
     //QWebSettings::globalSettings()->clearMemoryCaches();
     //qDebug() << mainFrame()->url().toString();
         
     if ( ( mainFrame()->url().toString().contains( "start.swe?SWECmd=Start&SWEHo=siebelprd" ) ) ||
          ( mainFrame()->url().toString().contains( "SWECmd=Login&SWEFullRefresh=1&SWEFullRefresh=1" ) ) )
     {
-        if ( mainFrame()->findFirstElement( "input#s_swepi_1" ).attribute("id") != "" )
-        loginToUnity();
+        if ( mainFrame()->findFirstElement( "input#s_swepi_1" ).attribute( "id" ) != "" )
+        {
+            loginToUnity();
+        }
     }
 
     else if ( mainFrame()->url().toString().contains( "SWECmd=Logoff&SWEService=SWE+Command+Manager" ) )
@@ -282,6 +285,8 @@ void UnityPage::loginToUnity()
         qDebug() << "[UNITYPAGE] Trying to login to unity...";
         mainFrame()->evaluateJavaScript( "SWEExecuteLogin(document.SWEEntryForm,'/callcentersi_enu/start.swe','_top')" );
     }
+    
+    mLoggedIn = true;
 }
 
 void UnityPage::passwordReceived()

@@ -97,6 +97,12 @@ class Settings
         static QString editorSaveLocation();
         static void setEditorSaveLocation( const QString& );
         
+        static bool replyFormatEnabled();
+        static void setReplyFormatEnabled( const bool& );
+        
+        static int replyFormatLineBreak();
+        static void setReplyFormatLineBreak( const int& );
+        
         static QString downloadDirectory();
         static void setDownloadDirectory( const QString& );
         

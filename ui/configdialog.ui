@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>754</width>
-    <height>531</height>
+    <width>715</width>
+    <height>487</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -669,7 +669,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>General</string>
+          <string/>
          </property>
          <layout class="QGridLayout" name="gridLayout_37">
           <item row="0" column="0">
@@ -742,7 +742,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Appearance</string>
+          <string/>
          </property>
          <layout class="QGridLayout" name="gridLayout_25">
           <item row="0" column="0">
@@ -794,7 +794,7 @@
          <property name="title">
           <string/>
          </property>
-         <layout class="QGridLayout" name="gridLayout_45">
+         <layout class="QGridLayout" name="gridLayout_28">
           <item row="0" column="0">
            <layout class="QGridLayout" name="gridLayout_44">
             <item row="0" column="0">
@@ -841,6 +841,37 @@
             </item>
            </layout>
           </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QCheckBox" name="cfg_replyFormat">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Enable reply formatting (Add quoting + Linebreak after</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="cfg_replyLinebreak">
+              <property name="value">
+               <number>75</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>characters)</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
          </layout>
         </widget>
        </item>
@@ -850,7 +881,7 @@
           <bool>true</bool>
          </property>
          <property name="title">
-          <string>Downloads</string>
+          <string/>
          </property>
          <layout class="QGridLayout" name="gridLayout_18">
           <item row="2" column="0">

@@ -35,7 +35,7 @@ class WebEditor : public QObject
     Q_OBJECT
 
     public:
-        explicit WebEditor( QWebElement element, QString sr, QObject* parent = 0L );
+        explicit WebEditor( QWebElement element, QString sr, bool format, QObject* parent = 0L);
         ~WebEditor();
     
     public slots:
