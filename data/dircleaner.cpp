@@ -31,17 +31,17 @@
 
 DirCleaner::DirCleaner( const QStringList& dirs ) : KueueThread()
 {
-    qDebug() << "[DIRCLEANER] Constructing" << currentThreadId();
     mDirs = dirs;
 }
 
 DirCleaner::~DirCleaner()
 {
-    qDebug() << "[DIRCLEANER] Destroying";
 }
 
 void DirCleaner::run()
-{           
+{         
+    emit threadStarted( "Cleaning up download directories...", mDirs.size() );
+    
     for ( int i = 0; i < mDirs.size(); ++i ) 
     {
         qDebug() << "[DIRCLEANER] Deleting download directory for" << mDirs.at( i );
@@ -68,6 +68,7 @@ void DirCleaner::run()
         }
 
         dir.rmdir( dir.path() );
+        emit threadProgress( i );
     }
         
     emit threadFinished( this );

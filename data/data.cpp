@@ -604,8 +604,6 @@ bool Data::srIsClosed(const QString& sr )
     
     o = ass->readAll();
 
-    qDebug() << o;
-    
     if ( o == "Open" )
     {
         return false;
@@ -617,4 +615,3 @@ bool Data::srIsClosed(const QString& sr )
 }
 
 #include "data.moc"
-

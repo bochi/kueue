@@ -51,7 +51,7 @@ void KueueThreads::destroy()
 
 KueueThreads::KueueThreads( QObject* parent ) 
 {
-    qDebug() << "[KUEUETHREADS] Constructing" << mThreadList.size();
+    qDebug() << "[KUEUETHREADS] Constructing";
     
     mStatusBar = &mStatusBar->getInstance();
     mCurrentThread = 0;    
