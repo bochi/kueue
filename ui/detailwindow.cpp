@@ -25,6 +25,7 @@
 
 #include "detailwindow.h"
 #include "data/database.h"
+#include "data/datathread.h"
 #include <data/data.h>
 #include "config.h"
 #include "kueue.h"
@@ -448,6 +449,8 @@ void DetailWindow::assignJobDone()
     }
     
     else QMessageBox::critical( this, "Error", "Unknown reply: " + data );
+    
+    DataThread::updateQmon();
 }
 
 void DetailWindow::sendWithKopete()

@@ -370,6 +370,19 @@ void Settings::setAutoExtract( const bool& b )
     settings.sync();
 }
 
+bool Settings::cleanupDownloadDirectory()
+{
+    QSettings settings;
+    return settings.value( "cleanupDownloadDirectory", false ).toBool();
+}
+
+void Settings::setCleanupDownloadDirectory( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "cleanupDownloadDirectory", b );
+    settings.sync();
+}
+
 bool Settings::showSystemTray()
 {
     QSettings settings;

@@ -74,6 +74,11 @@ class Database
         static void deleteQmonSR( const QString&, const QString& = "sqliteDB" );
         static QStringList getQmonSrNrs( const QString& = "sqliteDB" );
         static QList< QmonSR > getQmonQueue( const QString&, QString = QString::Null(), const QString& = "sqliteDB" );
+        
+        static void addGoneSR( const QString&, const QString& = "sqliteDB" );
+        static void delGoneSR( const QString&, const QString& = "sqliteDB" );
+        static QStringList getGoneSRs( const QString& = "sqliteDB" );
+        static int getGoneDays( const QString&, const QString& = "sqliteDB" );
                        
         static QString convertTime( const QString& );
         

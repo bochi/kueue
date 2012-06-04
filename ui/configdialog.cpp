@@ -216,6 +216,7 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_downloadDirectory->setText( Settings::downloadDirectory() );
     cfg_useSrDirectory->setChecked( Settings::useSrDirectory() );
     cfg_autoExtract->setChecked( Settings::autoExtract() );
+    cfg_cleanupDownloadDirectory->setChecked( Settings::cleanupDownloadDirectory() );
     
     cfg_notificationsDisabled->setChecked( Settings::notificationsDisabled() );
 
@@ -384,6 +385,7 @@ void ConfigDialog::writeSettings()
     Settings::setMiddleMouseButton( cfg_middleMouseButton->currentIndex() );
     Settings::setRightMouseButton( cfg_rightMouseButton->currentIndex() );
     Settings::setAutoExtract( cfg_autoExtract->isChecked() );
+    Settings::setCleanupDownloadDirectory( cfg_cleanupDownloadDirectory->isChecked() );
     Settings::setUseSrDirectory( cfg_useSrDirectory->isChecked() );
     Settings::setMonitorEnabled( cfg_monitorEnabled->isChecked() );
     

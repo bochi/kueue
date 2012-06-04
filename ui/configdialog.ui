@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>715</width>
-    <height>487</height>
+    <height>512</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -923,7 +923,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QCheckBox" name="cfg_autoExtract">
             <property name="text">
              <string>Automatically extract archives</string>
@@ -961,6 +961,13 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="cfg_cleanupDownloadDirectory">
+            <property name="text">
+             <string>Keep download directory clean (remove if SR gone from queue)</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

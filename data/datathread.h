@@ -50,6 +50,11 @@ class DataThread : public QThread
             DataThread::thread().updateQmonBrowserSlot();
         }
         
+        static void updateQmon()
+        {
+            DataThread::thread().updateQmonSlot();
+        }
+        
         static void updateStatsBrowser()
         {
             DataThread::thread().updateStatsBrowserSlot();
@@ -72,13 +77,16 @@ class DataThread : public QThread
     public slots:
         void updateQueueBrowserSlot();
         void updateQmonBrowserSlot();
+        void updateQmonSlot();
         void updateStatsBrowserSlot();
         void newDataSlot();
         
     signals:
         void notify( const QString&, QString, QString, const QString& );
+        void dirsToDelete( QStringList );
         void updateQueueBrowserRequested();
         void updateQmonBrowserRequested();
+        void updateQmonRequested();
         void updateStatsBrowserRequested();
         void queueDataChanged( QString );
         void qmonDataChanged( QString );

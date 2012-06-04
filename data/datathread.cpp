@@ -90,6 +90,9 @@ void DataThread::createData()
     connect( mData, SIGNAL( queueDataChanged( const QString& ) ), 
              this, SIGNAL( queueDataChanged( const QString& ) ) );
     
+    connect( mData, SIGNAL( dirsToDelete( QStringList ) ),
+             this, SIGNAL( dirsToDelete( QStringList ) ) );
+    
     connect( this, SIGNAL( updateQueueBrowserRequested() ), 
              mData, SLOT( updateQueueBrowser() ) );
 
@@ -104,6 +107,9 @@ void DataThread::createData()
     
     connect( this, SIGNAL( updateQmonBrowserRequested() ), 
              mData, SLOT( updateQmonBrowser() ) );
+    
+    connect( this, SIGNAL( updateQmonRequested() ), 
+             mData, SLOT( updateQmon() ) );
     
     connect( mData, SIGNAL( netError() ), 
              this, SIGNAL( netError() ) );
@@ -123,6 +129,11 @@ void DataThread::updateQueueBrowserSlot()
 void DataThread::updateQmonBrowserSlot()
 {
     emit updateQmonBrowserRequested();
+}
+
+void DataThread::updateQmonSlot()
+{
+    emit updateQmonRequested();
 }
 
 void DataThread::updateStatsBrowserSlot()

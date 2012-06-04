@@ -174,6 +174,7 @@ void Data::queueUpdateFinished()
     {
         QDomDocument doc;
         doc.setContent( xml );
+        QStringList goneList = Database::getGoneSRs( mDB );
         QDomNodeList list = doc.elementsByTagName( "sr" );
         
         PersonalQueue q;
@@ -210,9 +211,76 @@ void Data::queueUpdateFinished()
             sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
             
             q.srList.append( sr );
+            
+            if ( goneList.contains( sr.id ) )
+            {
+                Database::delGoneSR( sr.id, mDB );
+            }
         }
         
         Database::updateQueue( q, mDB );   
+        
+        if ( Settings::cleanupDownloadDirectory() )
+        {
+            QDir dlDir = Settings::downloadDirectory();
+            dlDir.setFilter( QDir::Dirs );
+            
+            QStringList subDirs = dlDir.entryList();
+            QStringList existList;
+            QStringList currentList;
+            QStringList deleteList;
+            
+            for ( int i = 0; i < subDirs.size(); ++i ) 
+            {
+                QString dir = subDirs.at( i );
+                
+                if ( ( dir != "." ) &&
+                    ( dir != ".." ) &&
+                    ( Kueue::isSrNr( dir ) ) )
+                    {
+                        existList.append( subDirs.at( i ) );
+                    }
+            }
+            
+            for ( int i = 0; i < q.srList.size(); ++i ) 
+            {
+                currentList.append( q.srList.at( i ).id );
+            }
+            
+            for ( int i = 0; i < existList.size(); ++i ) 
+            {
+                QString sr = existList.at( i );
+                
+                if ( !currentList.contains( sr ) )
+                {
+                    if ( !goneList.contains( sr ) )
+                    {
+                        if ( srIsClosed( sr ) )
+                        {
+                            deleteList.append( sr );
+                        }
+                        else
+                        {
+                            Database::addGoneSR( sr, mDB );
+                        }
+                    }
+                    else
+                    {
+                        if ( Database::getGoneDays( sr, mDB ) > 3 )
+                        {
+                            Database::delGoneSR( sr, mDB );
+                            deleteList.append( sr );
+                        }
+                    }
+                }
+            }
+                            
+            if ( deleteList.size() > 0 )
+            {
+                emit dirsToDelete( deleteList );
+            }
+        }
+        
         updateQueueBrowser();
     }
 }
@@ -518,6 +586,33 @@ void Data::updateStatsBrowser()
     if ( !html.isEmpty() )
     {
         emit statsDataChanged( html );
+    }
+}
+
+bool Data::srIsClosed(const QString& sr )
+{
+    QEventLoop loop;
+    QString o;
+    QNetworkReply* ass;
+            
+    ass = get( "srstatus/" + sr );
+    
+    QObject::connect( ass, SIGNAL( finished() ), 
+                        &loop, SLOT( quit() ) );
+
+    loop.exec();
+    
+    o = ass->readAll();
+
+    qDebug() << o;
+    
+    if ( o == "Open" )
+    {
+        return false;
+    }
+    else
+    {
+        return true;
     }
 }
 

@@ -113,6 +113,13 @@ void Database::openDbConnection( QString dbname )
             qDebug() << "[DATABASE] Error:" << query.lastError();
         }
         
+        if ( !query.exec(   "CREATE TABLE IF NOT EXISTS SR_GONE "
+                            "( ID INTEGER PRIMARY KEY UNIQUE, DATE TEXT )" ) )
+            
+        {
+            qDebug() << "[DATABASE] Error:" << query.lastError();
+        }
+        
         if ( !query.exec(   "CREATE TABLE IF NOT EXISTS QMON "
                             "( ID INTEGER PRIMARY KEY UNIQUE, QUEUE TEXT, BOMGARQ TEXT, SRTYPE TEXT, CREATOR TEXT, "
                             "  CUS_ACCOUNT TEXT, CUS_FIRSTNAME TEXT, CUS_LASTNAME TEXT, CUS_TITLE TEXT, CUS_EMAIL TEXT, "
@@ -1561,6 +1568,78 @@ void Database::newDB( bool ask )
         qApp->quit();
         QProcess::startDetached( qApp->arguments()[0], arg );
     }
+}
+
+void Database::addGoneSR( const QString& sr, const QString& dbname )
+{
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    
+    QSqlQuery query( "INSERT INTO SR_GONE( ID, DATE ) "
+                     "VALUES"
+                     "( :id, :date )", db );
+  
+    query.bindValue( ":id", sr );
+    query.bindValue( ":date", QDateTime::currentDateTime().toString( "yyyy-MM-dd hh:mm:ss" ) );
+    
+    if ( !query.exec() )
+    {
+        qDebug() << query.lastError().text();
+    }
+}
+
+void Database::delGoneSR( const QString& sr, const QString& dbname )
+{
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query( db );
+    
+    query.prepare( "DELETE FROM SR_GONE WHERE ID = :id" );
+    query.bindValue( ":id", sr );
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
+}
+
+QStringList Database::getGoneSRs( const QString& dbname )
+{
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query( db );
+    QStringList list;
+    
+    query.prepare( "SELECT ID FROM SR_GONE" );
+    query.exec();
+    
+    while ( query.next() )
+    {
+        list.append( query.value( 0 ).toString() );
+    }
+    
+    return list;
+}
+
+int Database::getGoneDays( const QString& sr, const QString& dbname )
+{
+    int days;
+    QDateTime date;
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QSqlQuery query( db );
+    
+    query.prepare( "SELECT DATE FROM SR_GONE WHERE ID = :id" );
+    query.bindValue( ":id", sr );
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
+    
+    if ( query.next() )
+    {
+        date = QDateTime::fromString( query.value( 0 ).toString(), "yyyy-MM-dd hh:mm:ss" );
+        days = date.daysTo( QDateTime::currentDateTime() );
+    }
+    
+    return days;
 }
 
 QString Database::convertTime( const QString& dt )

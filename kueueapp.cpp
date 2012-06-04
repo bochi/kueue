@@ -32,6 +32,7 @@
 #include "ui/configdialog.h"
 #include "ui/updatedialog.h"
 #include "nsa/nsa.h"
+#include "data/dircleaner.h"
 #include "data/datathread.h"
 
 #include "ui/busywidget.h"
@@ -101,6 +102,29 @@ void KueueApp::cleanupTemp()
         {
             QFile::remove( dirWalker.filePath() );
         }
+    }
+}
+
+void KueueApp::deleteDirs( QStringList dirs )
+{
+    int reply = QMessageBox::Yes;
+    
+    if ( dirs.size() > 5 )
+    {
+        QMessageBox* box = new QMessageBox;
+        box->setText( "I am about to delete " + QString::number( dirs.size() ) + " directories from your download directory. Continue?" );
+        box->setWindowTitle( "Really delete?" );
+        box->setStandardButtons(  QMessageBox::Yes | QMessageBox::No );
+        box->setDefaultButton( QMessageBox::No );
+        box->setIcon( QMessageBox::Critical );
+        
+        reply = box->exec();
+    }
+    
+    if ( reply == QMessageBox::Yes )
+    {
+        DirCleaner* d = new DirCleaner( dirs );
+        KueueThreads::enqueue( d );
     }
 }
 
@@ -178,6 +202,9 @@ void KueueApp::connectDataThread()
 
     connect( mDataThread, SIGNAL( netError() ), 
              this, SLOT( openConfig() ) );
+    
+    connect( mDataThread, SIGNAL( dirsToDelete( QStringList ) ),
+             this, SLOT( deleteDirs( QStringList ) ) );
 }
 
 void KueueApp::updateJobDone()

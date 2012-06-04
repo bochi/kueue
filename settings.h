@@ -112,6 +112,9 @@ class Settings
         static bool autoExtract();
         static void setAutoExtract( const bool& );        
         
+        static bool cleanupDownloadDirectory();
+        static void setCleanupDownloadDirectory( const bool& );
+        
         static bool showSystemTray();
         static void setShowSystemTray( const bool& );
         

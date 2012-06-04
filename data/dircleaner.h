@@ -23,49 +23,24 @@
 
 */
 
-#ifndef DATA_H
-#define DATA_H
+#ifndef DIRCLEANER_H
+#define DIRCLEANER_H
 
-#include "settings.h"
-#include "dataclasses.h"
+#include "kueuethreads.h"
 
-#include <QtNetwork>
-
-class Data : public QObject
+class DirCleaner : public KueueThread
 {
     Q_OBJECT
 
     public: 
-        Data();
-        ~Data();
-    
-    private:
-        QNetworkAccessManager* mNAM;
-        QNetworkReply* get( const QString& );
-        QString mDB;
-        QStringList mIPs;
-        bool srIsClosed( const QString& );
-    
-    public slots:
-        void updateQueueBrowser();
-        void updateQmonBrowser();
-        void updateQmon();
-        void updateStatsBrowser();
-
-    private slots:
-        void getError( QNetworkReply::NetworkError );
-        void updateQueue();
-        void updateStats();
-        void queueUpdateFinished();
-        void qmonUpdateFinished();
-        void statsUpdateFinished();
+        DirCleaner( const QStringList& );
+        ~DirCleaner();
         
-    signals:
-        void queueDataChanged( QString );
-        void dirsToDelete( QStringList );
-        void qmonDataChanged( QString );
-        void statsDataChanged( QString );
-        void netError();
+    private:
+        QStringList mDirs;
+        
+    protected: 
+        void run();
 };
 
 #endif

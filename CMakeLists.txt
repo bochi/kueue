@@ -93,6 +93,7 @@ SET( kueue_CPP  main.cpp
                 data/database.cpp
 		data/data.cpp
 		data/datathread.cpp
+		data/dircleaner.cpp
 
                 unity/unitypage.cpp
                 unity/popupwindow.cpp
