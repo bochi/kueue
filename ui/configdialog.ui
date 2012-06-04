@@ -965,7 +965,7 @@
           <item row="4" column="0">
            <widget class="QCheckBox" name="cfg_cleanupDownloadDirectory">
             <property name="text">
-             <string>Keep download directory clean (remove if SR gone from queue)</string>
+             <string>Keep download directory clean</string>
             </property>
            </widget>
           </item>

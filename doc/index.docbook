@@ -141,12 +141,13 @@
     <para>
         <itemizedlist>
             <listitem><para>Unity password needs to be set to your innerweb/unity password</para></listitem>
-            <listitem><para>Unity URL needs to be set to the URL for the SI client</para></listitem>
             <listitem><para>Download Directory specifies the directory for Unity to download files to per default</para></listitem>
             <listitem><para>Use DownloadDirectory/SRNUMBER... - if checked, files will automatically be downloaded in seperate directories per SR</para></listitem>
+            <listitem><para>Keep download directory clean - This will automatically keep your download directory clean. If an SR is closed, it will be deleted immediately, if it is still open (ie. it changed its assignee), it will be removed after 4 days.</para></listitem>
             <listitem><para>Enable toolbar - enable the unity toolbar with all shortcuts accessible via icons</para></listitem>
             <listitem><para>Automatically extract archives - the name says it all</para></listitem>
             <listitem><para>Enable editing with an external Editor - see the feature description in the "Unity Integration" section for details. If you'd like to use this feature, the next 2 options need to be set as well.</para></listitem>
+            <listitem><para>Enable reply formatting - If checked, another option for opening in an external editor will appear (formatted, with ">" and linebreak</para></listitem>
             <listitem><para>Open download directory - select either the default filemanager or a custom filemanager to open the download directories.</para>
             <para>As an example, here is what I am using: <ulink url="scripts/kueue_yakuake">kueue_yakuake</ulink></para></listitem>
         </itemizedlist>
