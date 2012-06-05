@@ -164,7 +164,6 @@ void Data::updateStats()
 
 void Data::queueUpdateFinished()
 {
-    mQueueUpdateRunning = false;
     QNetworkReply* r = qobject_cast<QNetworkReply*>( sender() );
     QString xml = QString::fromUtf8( r->readAll() );
     
@@ -288,6 +287,7 @@ void Data::queueUpdateFinished()
         }
         
         updateQueueBrowser();
+        mQueueUpdateRunning = false;
     }
 }
 
