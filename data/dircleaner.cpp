@@ -40,35 +40,39 @@ DirCleaner::~DirCleaner()
 
 void DirCleaner::run()
 {         
-    emit threadStarted( "Cleaning up download directories...", mDirs.size() );
+    emit threadStarted( "Cleaning up download directory...", mDirs.size() );
     
     for ( int i = 0; i < mDirs.size(); ++i ) 
     {
         qDebug() << "[DIRCLEANER] Deleting download directory for" << mDirs.at( i );
         
         QDir dir( Settings::downloadDirectory() + "/" + mDirs.at( i ) );
-        QDirIterator fileWalker( dir.path(), QDir::Files | QDir::Hidden | QDir::NoSymLinks, QDirIterator::Subdirectories );
-    
-        while( fileWalker.hasNext() )
+        
+        if ( dir.exists() )
         {
-            fileWalker.next();
-            QFile::remove( fileWalker.filePath() );
-        }
-    
-        QDirIterator dirWalker( dir.path(), QDir::Dirs | QDir::NoSymLinks, QDirIterator::Subdirectories );
-    
-        while( dirWalker.hasNext() )
-        {
-            dirWalker.next();
-            
-            if ( dirWalker.fileName() != "." && dirWalker.fileName() != ".." )
-            {
-                dir.rmpath( dirWalker.filePath() );
-            }
-        }
+            QDirIterator fileWalker( dir.path(), QDir::Files | QDir::Hidden | QDir::NoSymLinks, QDirIterator::Subdirectories );
 
-        dir.rmdir( dir.path() );
-        emit threadProgress( i );
+            while( fileWalker.hasNext() )
+            {
+                fileWalker.next();
+                QFile::remove( fileWalker.filePath() );
+            }
+
+            QDirIterator dirWalker( dir.path(), QDir::Dirs | QDir::NoSymLinks, QDirIterator::Subdirectories );
+
+            while( dirWalker.hasNext() )
+            {
+                dirWalker.next();
+                
+                if ( dirWalker.fileName() != "." && dirWalker.fileName() != ".." )
+                {
+                    dir.rmpath( dirWalker.filePath() );
+                }
+            }
+
+            dir.rmdir( dir.path() );
+            emit threadProgress( i );
+        }
     }
         
     emit threadFinished( this );
