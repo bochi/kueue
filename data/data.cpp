@@ -37,6 +37,7 @@ Data::Data()
 {
     qDebug() << "[DATA] Constructing, threadID" << thread()->currentThreadId();
     
+    mQueueUpdateRunning = false;
     mNAM = new QNetworkAccessManager( this );
  
     /*QHostInfo info = QHostInfo::fromName( Settings::dBServer() );
@@ -135,10 +136,14 @@ void Data::getError( QNetworkReply::NetworkError error )
 
 void Data::updateQueue()
 {
-    QNetworkReply* r = get( "userqueue/" + Settings::engineer() );
+    if ( !mQueueUpdateRunning )
+    { 
+        mQueueUpdateRunning = true;
+        QNetworkReply* r = get( "userqueue/" + Settings::engineer() );
     
-    connect( r, SIGNAL( finished() ), 
-             this, SLOT( queueUpdateFinished() ) );
+        connect( r, SIGNAL( finished() ), 
+                this, SLOT( queueUpdateFinished() ) );
+    }
 }
 
 void Data::updateQmon()
@@ -159,6 +164,7 @@ void Data::updateStats()
 
 void Data::queueUpdateFinished()
 {
+    mQueueUpdateRunning = false;
     QNetworkReply* r = qobject_cast<QNetworkReply*>( sender() );
     QString xml = QString::fromUtf8( r->readAll() );
     

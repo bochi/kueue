@@ -45,6 +45,7 @@ class Data : public QObject
         QString mDB;
         QStringList mIPs;
         bool srIsClosed( const QString& );
+        bool mQueueUpdateRunning;
     
     public slots:
         void updateQueueBrowser();
