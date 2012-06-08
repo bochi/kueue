@@ -65,7 +65,7 @@ REM The next step assumes that makensis is in %PATH%
 REM
 
 makensis /DPRODUCT_VERSION=%1 kueue-setup.nsi
-copy /Y kueue-%1-setup.exe %HOMEPATH%
+copy /Y kueue-%1-setup.exe %HOMEPATH%\kueue-setup.exe
 goto END
 
 :MISSING
