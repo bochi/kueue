@@ -132,13 +132,16 @@ void Data::getError( QNetworkReply::NetworkError error )
     Kueue::notify( "kueue-general", "Update failed", "Failed to update your data. Networking issues or no VPN connection?", "NONE" );
     
     qDebug() << "[DATA] Error getting" << reply->url();
+    
+    mQueueUpdateRunning = false;
+    
+    reply->deleteLater();
 }
 
 void Data::updateQueue()
 {
     if ( !mQueueUpdateRunning )
     { 
-        mQueueUpdateRunning = true;
         QNetworkReply* r = get( "userqueue/" + Settings::engineer() );
     
         connect( r, SIGNAL( finished() ), 
@@ -240,8 +243,8 @@ void Data::queueUpdateFinished()
                 QString dir = subDirs.at( i );
                 
                 if ( ( dir != "." ) &&
-                    ( dir != ".." ) &&
-                    ( Kueue::isSrNr( dir ) ) )
+                     ( dir != ".." ) &&
+                     ( Kueue::isSrNr( dir ) ) )
                     {
                         existList.append( subDirs.at( i ) );
                     }
@@ -254,6 +257,8 @@ void Data::queueUpdateFinished()
             
             for ( int i = 0; i < existList.size(); ++i ) 
             {
+                mQueueUpdateRunning = true;
+                
                 QString sr = existList.at( i );
                 
                 if ( !currentList.contains( sr ) )
@@ -278,6 +283,8 @@ void Data::queueUpdateFinished()
                         }
                     }
                 }
+                
+                mQueueUpdateRunning = false;
             }
                             
             if ( deleteList.size() > 0 )
@@ -287,8 +294,9 @@ void Data::queueUpdateFinished()
         }
         
         updateQueueBrowser();
-        mQueueUpdateRunning = false;
     }
+
+    r->deleteLater();
 }
 
 void Data::qmonUpdateFinished()
@@ -372,6 +380,8 @@ void Data::qmonUpdateFinished()
         Database::updateQmon( q, mDB );
         updateQmonBrowser();
     }
+    
+    r->deleteLater();
 }
 
 void Data::statsUpdateFinished()
@@ -503,6 +513,8 @@ void Data::statsUpdateFinished()
         Database::updateStats( statz, mDB );
         updateStatsBrowser();
     }
+    
+    r->deleteLater();
 }
 
 void Data::updateQueueBrowser()
@@ -595,20 +607,21 @@ void Data::updateStatsBrowser()
     }
 }
 
-bool Data::srIsClosed(const QString& sr )
+bool Data::srIsClosed( const QString& sr )
 {
     QEventLoop loop;
     QString o;
-    QNetworkReply* ass;
+    QNetworkReply* r;
             
-    ass = get( "srstatus/" + sr );
+    r = get( "srstatus/" + sr );
     
-    QObject::connect( ass, SIGNAL( finished() ), 
-                        &loop, SLOT( quit() ) );
-
+    QObject::connect( r, SIGNAL( finished() ), 
+                      &loop, SLOT( quit() ) );
+    
     loop.exec();
     
-    o = ass->readAll();
+    o = r->readAll();
+    r->deleteLater();
 
     if ( o == "Open" )
     {
