@@ -324,6 +324,9 @@ PopupWindowWebPage::PopupWindowWebPage( QObject* parent ) : QWebPage( parent )
     
     mStatusBar = &mStatusBar->getInstance();
     mEmailStage = 0;
+    
+    setForwardUnsupportedContent( true );
+    setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
 
     connect( mainFrame(), SIGNAL( loadFinished( bool ) ),
              this, SLOT( pageLoaded() ) );
