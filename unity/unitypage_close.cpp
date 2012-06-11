@@ -117,7 +117,7 @@ void UnityPage::closeSrFirst()
         
         for ( int i = 0; i < c.count(); ++i )
         {
-            if ( c.at(i).attribute( "id" ).contains( "s_1_1_92" ) )
+            if ( c.at(i).attribute( "id" ).contains( "s_1_1_94" ) )
             {
                 changeJS = c.at(i).attribute( "onchange" );
                 
@@ -154,7 +154,7 @@ void UnityPage::closeSrSecond()
     
     for ( int i = 0; i < c.count(); ++i )
     {
-        if ( c.at(i).attribute( "id" ).contains( "s_1_1_93" ) )
+        if ( c.at(i).attribute( "id" ).contains( "s_1_1_95" ) )
         {
             changeJS = c.at(i).attribute( "onchange" );
             

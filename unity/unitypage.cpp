@@ -419,7 +419,7 @@ void UnityPage::doQuery()
         }
     }
     
-    QWebElement sr = mViewFrame->findFirstElement( "input#s_2_2_94_0" );
+    QWebElement sr = mViewFrame->findFirstElement( "input#s_2_2_95_0" );
     sr.setAttribute( "value", mQuerySR );
     
     QWebElementCollection c = mViewFrame->findAllElements( "a" );   
@@ -466,7 +466,7 @@ void UnityPage::goToActivities()
     for ( int i = 0; i < fc.count(); ++i ) 
     {  
         if ( ( fc.at(i).attribute("href").contains("c_d") ) &&
-             ( fc.at(i).attribute("id").contains( "s_2_2_94" ) ) )
+             ( fc.at(i).attribute("id").contains( "s_2_2_95" ) ) )
         {
             QString js = fc.at(i).attribute("href").remove( "Javascript:" );
             mViewFrame->evaluateJavaScript( js );
@@ -747,7 +747,7 @@ void UnityPage::getCurrentSR()
     else
     {
         bool keep = false;
-        QString srnr = mViewFrame->findFirstElement( "span#s_1_1_69_0" ).toInnerXml().trimmed();
+        QString srnr = mViewFrame->findFirstElement( "span#s_1_1_70_0" ).toInnerXml().trimmed();
         
         if ( !srnr.isEmpty() )
         {
@@ -807,7 +807,7 @@ void UnityPage::checkIfCR()
             
     for ( int i = 0; i < fc.count(); ++i ) 
     {  
-        if ( fc.at( i ).attribute( "id" ).contains( "s_1_1_70" ) ||
+        if ( fc.at( i ).attribute( "id" ).contains( "s_1_1_71" ) ||
             fc.at( i ).attribute( "tabindex" ).contains( "1002" ) )
         {
             
