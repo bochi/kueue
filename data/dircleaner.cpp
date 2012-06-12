@@ -25,6 +25,7 @@
 
 #include "dircleaner.h"
 #include "settings.h"
+#include "config.h"
 
 #include <QDir>
 #include <QFile>
@@ -48,6 +49,22 @@ void DirCleaner::run()
         
         QDir dir( Settings::downloadDirectory() + "/" + mDirs.at( i ) );
         
+    #ifndef IS_WIN32
+        QProcess p;
+        QStringList args;
+        
+        args.append( "-R" );
+        args.append( "777" );
+        args.append( dir.path() );
+        
+        p.start( "chmod", args );
+        
+        if (  !p.waitForFinished ( -1 ) )
+        {
+            return;
+        }
+    #endif
+
         if ( dir.exists() )
         {
             QDirIterator fileWalker( dir.path(), QDir::Files | QDir::Hidden | QDir::NoSymLinks, QDirIterator::Subdirectories );

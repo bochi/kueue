@@ -80,6 +80,7 @@ class UnityBrowser : public QWebView
         void fillOutProduct();
         void openInBugzilla();
         void processFinished();
+        void setPopupHidden();
         
         void openWebEditor();
         void openWebEditorFormat();     
@@ -97,6 +98,7 @@ class UnityBrowser : public QWebView
         bool isProductField( QWebElement );
         bool isBugzillaField( QWebElement );
         bool isEngineerField( QWebElement );
+        bool mShowPopup;
         
         QShortcut* mSendEmailSC;
         QShortcut* mSaveSrSC;
@@ -108,6 +110,7 @@ class UnityBrowser : public QWebView
         QShortcut* mCloseSrSC;
         QShortcut* mLogOutSC;
         QShortcut* mWebInspectorSC;
+        QShortcut* mExportSrSC;
         
     signals:
         void searchRequested( QString );

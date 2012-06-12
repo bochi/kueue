@@ -58,7 +58,7 @@ class PopupWindow : public QDialog
     Q_OBJECT
      
     public:
-        explicit PopupWindow( QNetworkAccessManager*, QWidget* parent = 0L );
+        explicit PopupWindow( QNetworkAccessManager*, QWidget* parent = 0L, bool shown = true );
         ~PopupWindow();
         
         QWebPage* webPage() { return mWebView->page(); }

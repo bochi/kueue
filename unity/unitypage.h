@@ -64,7 +64,8 @@ class UnityPage : public QWebPage
         void closeSr();
         void setStatus( const QString& );
         void goToService();
-        
+        void exportSr();
+
     private slots:
         void pageLoaded();
         void loginToUnity();
@@ -81,7 +82,7 @@ class UnityPage : public QWebPage
         void actionDone();
         void newActivity();
         void checkIfCR();
-        
+         
         void setSSconfirmed();
         void setSSrejected();
         void setSSfirst();
@@ -179,6 +180,7 @@ class UnityPage : public QWebPage
         void pageErbert();
         void pageErbert( QString );
         void pageErbertNed();
+        void hideNextPopup();
 };
 
 #endif

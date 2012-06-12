@@ -36,7 +36,7 @@
 #include <QDesktopServices>
 #include <QWebInspector>
 
-PopupWindow::PopupWindow( QNetworkAccessManager* nam, QWidget* parent )
+PopupWindow::PopupWindow( QNetworkAccessManager* nam, QWidget* parent, bool shown )
 {
     qDebug() << "[POPUPWINDOW] Constructing";
 
@@ -68,6 +68,8 @@ PopupWindow::PopupWindow( QNetworkAccessManager* nam, QWidget* parent )
              this, SLOT( closeWindow() ) );
     
     show();
+    
+    if ( !shown ) window()->hide();
 }
 
 PopupWindow::~PopupWindow()
@@ -98,7 +100,9 @@ void PopupWindow::resizeRequested( const QRect& r )
 
 void PopupWindow::loadFinished()
 {
-    setWindowTitle( mWebView->page()->mainFrame()->findFirstElement( "title" ).toPlainText() );
+    QString title = mWebView->page()->mainFrame()->findFirstElement( "title" ).toPlainText();
+    setWindowTitle( title );
+    qDebug() << "[POPUPWINDOW]" << title;
 }
 
 void PopupWindow::openWebInspector()

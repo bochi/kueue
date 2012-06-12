@@ -47,6 +47,8 @@ UnityBrowser::UnityBrowser( QWidget *parent, QString sr )
     
     if ( Settings::unityEnabled() )
     {
+        mShowPopup = true;
+        
         QWebSettings::globalSettings()->setAttribute( QWebSettings::JavaEnabled, false );
         QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptEnabled, true );
         QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
@@ -85,6 +87,9 @@ UnityBrowser::UnityBrowser( QWidget *parent, QString sr )
         connect( mUnityPage, SIGNAL( loggedIn( bool ) ),
                  this, SIGNAL( loggedIn( bool ) ) );
         
+        connect( mUnityPage, SIGNAL( hideNextPopup() ), 
+                 this, SLOT( setPopupHidden() ) );
+        
         mSendEmailSC = new QShortcut( QKeySequence( Qt::Key_F1 ), this );
         mSaveSrSC = new QShortcut( QKeySequence( Qt::Key_F2 ), this );
         mFileBrowserSC = new QShortcut( QKeySequence( Qt::Key_F3 ), this );
@@ -93,6 +98,7 @@ UnityBrowser::UnityBrowser( QWidget *parent, QString sr )
         mScSC = new QShortcut( QKeySequence( Qt::Key_F6 ), this );
         mAddNoteSC = new QShortcut( QKeySequence( Qt::Key_F7 ), this );
         mCloseSrSC = new QShortcut( QKeySequence( Qt::Key_F8 ), this );
+        mExportSrSC = new QShortcut( QKeySequence( Qt::Key_F11 ), this );
 
         mLogOutSC = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_L ), this );
         mWebInspectorSC = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_I ), this );
@@ -140,6 +146,9 @@ void UnityBrowser::connectShortcuts()
     
     connect( mAddNoteSC, SIGNAL( activated() ), 
              mUnityPage, SLOT( addNote() ) );
+    
+    connect( mExportSrSC, SIGNAL( activated() ),
+             mUnityPage, SLOT( exportSr() ) );
 }
 
 void UnityBrowser::disconnectShortcuts()
@@ -156,6 +165,7 @@ void UnityBrowser::disconnectShortcuts()
     disconnect( mSaveSrSC, 0, 0, 0 );
     disconnect( mCloseSrSC, 0, 0, 0 );
     disconnect( mAddNoteSC, 0, 0, 0 );
+    disconnect( mExportSrSC, 0, 0, 0 );
 }
 
 void UnityBrowser::pageErbert( const QString& text )
@@ -232,7 +242,6 @@ void UnityBrowser::deleteWebInspector( QObject* o )
     QWebInspector* i = qobject_cast<QWebInspector*>( sender() );
     delete i;
 }
-
 
 void UnityBrowser::querySR( const QString& sr )
 {
@@ -719,8 +728,14 @@ void UnityBrowser::openInBugzilla()
 
 QWebPage* UnityBrowser::newWindow()
 {
-    PopupWindow* p = new PopupWindow( page()->networkAccessManager(), this );
+    PopupWindow* p = new PopupWindow( page()->networkAccessManager(), this, mShowPopup );
+    mShowPopup = true;
     return p->webPage();
+}
+
+void UnityBrowser::setPopupHidden()
+{
+    mShowPopup = false;
 }
 
 void UnityBrowser::openFileBrowser()

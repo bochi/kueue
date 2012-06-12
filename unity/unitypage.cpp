@@ -33,6 +33,7 @@
 #include "kueue.h"
 #include "unitypage.h"
 #include "ui/statusbar.h"
+#include "popupwindow.h"
 
 #include <QWebElementCollection>
 #include <QDesktopServices>
@@ -317,7 +318,9 @@ QWebPage* UnityPage::createWindow( QWebPage::WebWindowType type )
 {
     UnityBrowser* browser = qobject_cast< UnityBrowser* >( view() );
     QWebPage* webPage = qobject_cast< QWebPage* > ( browser->newWindow() );
+    
     return webPage;
+    
 }
 
 void UnityPage::goToService()
@@ -956,5 +959,6 @@ void UnityPage::saveCurrentActivity()
 #include "unitypage_close.cpp"
 #include "unitypage_note.cpp"
 #include "unitypage_status.cpp"
+#include "unitypage_export.cpp"
 
 #include "unitypage.moc"

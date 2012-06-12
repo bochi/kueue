@@ -220,10 +220,37 @@ void UnityPage::setScFourth()
     
     disconnect( mViewFrame, 0, 0, 0 );
     
-    connect( mViewFrame, SIGNAL( loadFinished(bool) ),
+    connect( mViewFrame, SIGNAL( loadFinished( bool ) ),
              this, SLOT( setScFifth() ) );
 
-    saveCurrentActivity();
+    QString id;
+    QString saveJS;
+    
+    if ( mIsCr )
+    {
+        id = "s_5_1_14";
+    }
+    else
+    {
+        id = "s_2_1_14";
+    }
+    
+    QWebElementCollection sc = mViewFrame->findAllElements( "a" );
+    
+    for ( int i = 0; i < sc.count(); ++i ) 
+    {  
+        if ( sc.at(i).attribute( "id" ).contains( id ) )
+        {
+            saveJS = sc.at(i).attribute( "href" ).remove( "JavaScript:" );
+        }
+    }
+       
+    if ( mIsCr )
+    {
+        mViewFrame->evaluateJavaScript( "top._swescript.HandleAppletClickSI('SWEApplet1')" );
+    }
+    
+    mViewFrame->evaluateJavaScript( saveJS );
     
     mSetSC = false;
 }
