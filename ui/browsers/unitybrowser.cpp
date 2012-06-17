@@ -48,6 +48,7 @@ UnityBrowser::UnityBrowser( QWidget *parent, QString sr )
     if ( Settings::unityEnabled() )
     {
         mShowPopup = true;
+        mCurrentZoom = 100;
         
         QWebSettings::globalSettings()->setAttribute( QWebSettings::JavaEnabled, false );
         QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptEnabled, true );
@@ -278,6 +279,26 @@ void UnityBrowser::mousePressEvent( QMouseEvent* event )
     }
     
     return QWebView::mousePressEvent( event );
+}
+
+void UnityBrowser::wheelEvent( QWheelEvent* event )
+{
+    if ( event->modifiers() && Qt::ControlModifier ) 
+    {
+        int numDegrees = event->delta() / 8;
+        int numSteps = numDegrees / 15;
+        mCurrentZoom = mCurrentZoom + numSteps * 10;
+        applyZoom();
+        event->accept();
+        return;
+    }
+    
+    QWebView::wheelEvent( event );
+}
+
+void UnityBrowser::applyZoom()
+{
+    setZoomFactor( qreal( mCurrentZoom ) / 100.0 );
 }
 
 void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )

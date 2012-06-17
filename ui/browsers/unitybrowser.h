@@ -73,6 +73,7 @@ class UnityBrowser : public QWebView
         void deleteWebInspector( QObject* );
         void pageErbertNed();
         void mousePressEvent( QMouseEvent* );
+        void wheelEvent( QWheelEvent* );
         void urlHovered( const QString&, const QString& = 0, const QString& = 0 );
         void contextMenu( QMouseEvent*, const QString& );
         void contextMenuEvent( QContextMenuEvent * ev );
@@ -81,7 +82,7 @@ class UnityBrowser : public QWebView
         void openInBugzilla();
         void processFinished();
         void setPopupHidden();
-        
+        void applyZoom();
         void openWebEditor();
         void openWebEditorFormat();     
         void copyToClipboard();
@@ -91,15 +92,17 @@ class UnityBrowser : public QWebView
 
     private:
         UnityPage* mUnityPage;
-        
-        QMenu* productMenu( QMenu* parent );
         QUrl mUrl;
+
+        QMenu* productMenu( QMenu* parent );
         bool isTextArea( QWebElement );     
         bool isProductField( QWebElement );
         bool isBugzillaField( QWebElement );
         bool isEngineerField( QWebElement );
         bool mShowPopup;
         
+        int mCurrentZoom;
+    
         QShortcut* mSendEmailSC;
         QShortcut* mSaveSrSC;
         QShortcut* mFileBrowserSC;
