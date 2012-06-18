@@ -91,6 +91,23 @@ void DirCleaner::run()
             emit threadProgress( i );
         }
     }
+    
+    QStringList failedList;
+    
+    for ( int i = 0; i < mDirs.size(); ++i ) 
+    {
+        QDir d( Settings::downloadDirectory() + "/" + mDirs.at( i ) );
+        
+        if ( d.exists() )
+        {
+            failedList.append( Settings::downloadDirectory() + "/" + mDirs.at( i ) );
+        }
+    }
+    
+    if ( failedList.size() > 0 )
+    {
+        emit dirsFailed( failedList );
+    }
         
     emit threadFinished( this );
 }

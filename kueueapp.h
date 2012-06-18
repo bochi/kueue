@@ -59,6 +59,7 @@ class KueueApp : public QObject
     private slots:
         void newDB();
         void deleteDirs( QStringList );
+        void deleteDirsFailed( QStringList );
         void cleanupTemp();
         void createApp();
         void updateJobDone();

@@ -124,8 +124,35 @@ void KueueApp::deleteDirs( QStringList dirs )
     if ( reply == QMessageBox::Yes )
     {
         DirCleaner* d = new DirCleaner( dirs );
+        
+        connect( d, SIGNAL( dirsFailed( QStringList ) ), 
+                 this, SLOT( deleteDirsFailed( QStringList ) ) );
+        
         KueueThreads::enqueue( d );
     }
+}
+
+void KueueApp::deleteDirsFailed( QStringList fail )
+{
+    QString text;
+    
+    text += "Failed to delete the following directories:<br><br>";
+    
+    for ( int i = 0; i < fail.size(); ++i ) 
+    {
+        text += fail.at( i ) + "<br>";
+    }
+    
+    text += "<br>Please delete these manually.<br>";
+    
+    QMessageBox* box = new QMessageBox;
+    box->setText( text );
+    box->setWindowTitle( "Delete failed" );
+    box->setStandardButtons(  QMessageBox::Ok );
+    box->setDefaultButton( QMessageBox::Ok );
+    box->setIcon( QMessageBox::Critical );
+    
+    box->exec();
 }
 
 void KueueApp::createApp()

@@ -41,6 +41,9 @@ class DirCleaner : public KueueThread
         
     protected: 
         void run();
+        
+    signals:
+        void dirsFailed( QStringList );
 };
 
 #endif
