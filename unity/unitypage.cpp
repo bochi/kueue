@@ -202,7 +202,8 @@ void UnityPage::pageLoaded()
         }
     }
 
-    else if ( mainFrame()->url().toString().contains( "SWECmd=Logoff&SWEService=SWE+Command+Manager" ) )
+    else if ( ( mainFrame()->url().toString().contains( "SWECmd=Logoff&SWEService=SWE+Command+Manager" ) ) ||
+              ( mainFrame()->findFirstElement( "body" ).attribute( "class" ) == "loginBody" ) )
     {
         mLoggedIn = false;
         emit loggedIn( false );
@@ -320,7 +321,6 @@ QWebPage* UnityPage::createWindow( QWebPage::WebWindowType type )
     QWebPage* webPage = qobject_cast< QWebPage* > ( browser->newWindow() );
     
     return webPage;
-    
 }
 
 void UnityPage::goToService()
@@ -393,7 +393,8 @@ void UnityPage::goHomeFirst()
     
     for ( int i = 0; i < fc.count(); ++i ) 
     {  
-        if ( ( fc.at( i ).toInnerXml() == "Query" ) && ( fc.at( i ).attribute( "tabindex" ).startsWith( "1" ) ) )
+        if ( ( fc.at( i ).toInnerXml() == "Query" ) && 
+             ( fc.at( i ).attribute( "tabindex" ).startsWith( "1" ) ) )
         {
             js = fc.at( i ).attribute( "href" ).remove( "Javascript:" );
         }
@@ -468,10 +469,10 @@ void UnityPage::goToActivities()
     
     for ( int i = 0; i < fc.count(); ++i ) 
     {  
-        if ( ( fc.at(i).attribute("href").contains("c_d") ) &&
-             ( fc.at(i).attribute("id").contains( "s_2_2_95" ) ) )
+        if ( ( fc.at(i).attribute( "href" ).contains( "c_d" ) ) &&
+             ( fc.at(i).attribute( "id" ).contains( "s_2_2_95" ) ) )
         {
-            QString js = fc.at(i).attribute("href").remove( "Javascript:" );
+            QString js = fc.at(i).attribute( "href" ).remove( "Javascript:" );
             mViewFrame->evaluateJavaScript( js );
         }
     }
