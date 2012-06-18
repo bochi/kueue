@@ -52,6 +52,7 @@ class KueueApp : public QObject
         StatusBar* mStatusBar;
         QShortcut* mDbRebuild;
         DataThread* mDataThread;
+        bool mFailedMessageDisplayed;
         
     public slots:
         void updateUiData();

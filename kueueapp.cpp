@@ -54,6 +54,8 @@ KueueApp::KueueApp()
 
     putenv( path.toAscii() );
 #endif
+
+    mFailedMessageDisplayed = false;
     
     if ( !Settings::settingsOK() )
     {
@@ -134,25 +136,31 @@ void KueueApp::deleteDirs( QStringList dirs )
 
 void KueueApp::deleteDirsFailed( QStringList fail )
 {
-    QString text;
-    
-    text += "Failed to delete the following directories:<br><br>";
-    
-    for ( int i = 0; i < fail.size(); ++i ) 
+    if ( !mFailedMessageDisplayed )
     {
-        text += fail.at( i ) + "<br>";
+        QString text;
+        
+        text += "Failed to delete the following directories:<br><br>";
+        
+        for ( int i = 0; i < fail.size(); ++i ) 
+        {
+            text += fail.at( i ) + "<br>";
+        }
+        
+        text += "<br>Please delete these manually.<br>";
+        
+        QMessageBox* box = new QMessageBox;
+        box->setText( text );
+        box->setWindowTitle( "Delete failed" );
+        box->setStandardButtons(  QMessageBox::Ok );
+        box->setDefaultButton( QMessageBox::Ok );
+        box->setIcon( QMessageBox::Critical );
+     
+        mFailedMessageDisplayed = true;
+        box->exec();
     }
     
-    text += "<br>Please delete these manually.<br>";
-    
-    QMessageBox* box = new QMessageBox;
-    box->setText( text );
-    box->setWindowTitle( "Delete failed" );
-    box->setStandardButtons(  QMessageBox::Ok );
-    box->setDefaultButton( QMessageBox::Ok );
-    box->setIcon( QMessageBox::Critical );
-    
-    box->exec();
+    mFailedMessageDisplayed = false;
 }
 
 void KueueApp::createApp()
