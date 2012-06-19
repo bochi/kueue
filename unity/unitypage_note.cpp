@@ -143,7 +143,6 @@ void UnityPage::addNoteFirst()
                 if ( d.at( i ).attribute( "value" ) == mNoteDialog->noteType() )
                 {
                     e = d.at( i );
-                    qDebug() << "notetype" << e.attribute("value");
                 }
             }
         

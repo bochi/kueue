@@ -121,6 +121,8 @@ void KueueApp::deleteDirs( QStringList dirs )
         box->setIcon( QMessageBox::Critical );
         
         reply = box->exec();
+        
+        delete box;
     }
     
     if ( reply == QMessageBox::Yes )
@@ -158,6 +160,8 @@ void KueueApp::deleteDirsFailed( QStringList fail )
      
         mFailedMessageDisplayed = true;
         box->exec();
+        
+        delete box;
     }
     
     mFailedMessageDisplayed = false;
