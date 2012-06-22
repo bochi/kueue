@@ -41,6 +41,8 @@ void DataThread::destroy()
 {
     if ( instance )
     {
+        instance->quit();
+        instance->wait();
         delete instance;
     }
       
