@@ -107,6 +107,8 @@ void KueueThreads::endThread()
     
     mStatusBar->resetStatusBar();
     mThreadList.removeAt( mThreadList.indexOf( t ) );
+    t->quit();
+    t->wait();
     delete t;
     next();
 }
