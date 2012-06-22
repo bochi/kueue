@@ -47,10 +47,10 @@ SET( QT_USE_XML TRUE )
 # Configure defines for the preprocessor
 #
 
-IF( QT_PHONON_FOUND )
+IF( QT_PHONON_FOUND AND NOT APPLE )
     OPTION( USE_PHONON "Use Phonon?" ON )
     SET( QT_USE_PHONON TRUE )
-ENDIF( QT_PHONON_FOUND )
+ENDIF( QT_PHONON_FOUND AND NOT APPLE )
 
 IF( QT_QTDBUS_FOUND AND NOT APPLE )
     OPTION( QT_HAS_DBUS "Enable DBUS Support" ON )
@@ -219,7 +219,7 @@ ENDIF( APPLE )
 # And finally, link kueue against a few Qt libraries
 #
 
-IF ( QT_HAS_DBUS )
+IF ( QT_HAS_DBUS AND NOT APPLE )
 
     TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
                                  ${QT_PHONON_LIBRARY} 
@@ -232,7 +232,19 @@ IF ( QT_HAS_DBUS )
 		                 ${QT_QTXML_LIBRARY}
                                  ${QT_QTGUI_LIBRARY} 
                                  ${QT_SINGLEAPP_LIBRARY} )
-ELSE ( QT_HAS_DBUS )
+ELSEIF ( APPLE )
+
+    TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
+                                 ${QT_QTCORE_LIBRARY} 
+                                 ${QT_QTWEBKIT_LIBRARY} 
+                                 ${QT_QTSQL_LIBRARIES} 
+                                 ${QT_QTUITOOLS_LIBRARY} 
+                                 ${QT_QTNETWORK_LIBRARY} 
+                                 ${QT_QTXML_LIBRARY}
+                                 ${QT_QTGUI_LIBRARY} 
+                                 ${QT_SINGLEAPP_LIBRARY} )
+
+ELSE ()
 
     TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
                                  ${QT_PHONON_LIBRARY} 
