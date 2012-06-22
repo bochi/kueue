@@ -68,6 +68,7 @@ class DataThread : public QThread
         
     private slots:
         void createData();
+        void deleteData();
         
     public slots:
         void updateQueueBrowserSlot();

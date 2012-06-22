@@ -95,6 +95,7 @@ Data::Data()
 Data::~Data()
 {
     qDebug() << "[DATA] Destroying";
+    mNAM->disconnect();
     QSqlDatabase::database( mDB ).close();
     QSqlDatabase::removeDatabase( mDB );
 }

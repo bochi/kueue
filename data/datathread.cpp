@@ -41,6 +41,7 @@ void DataThread::destroy()
 {
     if ( instance )
     {
+        instance->deleteData();
         instance->quit();
         instance->wait();
         delete instance;
@@ -67,7 +68,6 @@ DataThread::DataThread( QObject *parent ) : QThread( parent )
 
 DataThread::~DataThread()
 {
-    delete mData;
     qDebug() << "[DATATHREAD] Destroying";
 }
 
@@ -120,6 +120,11 @@ void DataThread::createData()
     
     connect( mData, SIGNAL( netError() ), 
              this, SIGNAL( netError() ) );
+}
+
+void DataThread::deleteData()
+{
+    delete mData;
 }
 
 void DataThread::updateQueueBrowserSlot()
