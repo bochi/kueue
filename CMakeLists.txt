@@ -257,4 +257,4 @@ ELSE ()
                                  ${QT_QTGUI_LIBRARY} 
                                  ${QT_SINGLEAPP_LIBRARY} )
 
-ENDIF ( QT_HAS_DBUS )
+ENDIF ()
