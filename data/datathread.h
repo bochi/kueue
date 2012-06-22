@@ -60,11 +60,6 @@ class DataThread : public QThread
             DataThread::thread().updateStatsBrowserSlot();
         }
         
-        static void newData()
-        {
-            DataThread::thread().newDataSlot();
-        }
-        
     private:
         static DataThread* instance;
         DataThread( QObject *parent = 0L );
@@ -79,7 +74,6 @@ class DataThread : public QThread
         void updateQmonBrowserSlot();
         void updateQmonSlot();
         void updateStatsBrowserSlot();
-        void newDataSlot();
         
     signals:
         void notify( const QString&, QString, QString, const QString& );

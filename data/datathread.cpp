@@ -51,6 +51,11 @@ void DataThread::destroy()
 
 DataThread& DataThread::restart()
 {
+    if ( instance != 0 )
+    {
+        instance->wait();
+    }
+    
     instance = new DataThread;
     return *instance;
 }
@@ -115,12 +120,6 @@ void DataThread::createData()
     
     connect( mData, SIGNAL( netError() ), 
              this, SIGNAL( netError() ) );
-}
-
-void DataThread::newDataSlot()
-{
-    delete mData;
-    delete this;
 }
 
 void DataThread::updateQueueBrowserSlot()
