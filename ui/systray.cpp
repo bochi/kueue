@@ -495,6 +495,9 @@ void Systray::closeNotification( uint id )
 
 void Systray::requiresAttention( const bool& b )
 {
+#ifndef IS_WIN32
+#ifndef IS_OSX
+
     if ( b )
     {
         if ( mMovie->state() != QMovie::Running )
@@ -511,6 +514,9 @@ void Systray::requiresAttention( const bool& b )
         
         changeIcon();
     }
+    
+#endif
+#endif
 }
 
 void Systray::changeIcon()
