@@ -144,7 +144,7 @@ void Database::openDbConnection( QString dbname )
 
 */
 
-void Database::updateQueue( PersonalQueue pq, const QString& dbname )
+QList<Notification> Database::updateQueue( PersonalQueue pq, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
 
@@ -152,6 +152,8 @@ void Database::updateQueue( PersonalQueue pq, const QString& dbname )
     QStringList existList = getSrNrList( dbname );
     QList< QueueSR > srList = pq.srList;
     bool initial = existList.isEmpty();
+    QList<Notification> nl;
+    
     db.transaction();
         
     for ( int i = 0; i < srList.size(); ++i ) 
@@ -161,9 +163,14 @@ void Database::updateQueue( PersonalQueue pq, const QString& dbname )
         if ( queueSrExists( sr.id, dbname ) )
         {
             if ( ( srWasUpdated( sr, dbname ) &&
-                 !( sr.status == "Awaiting Customer" ) ) )
+                 ( sr.status != "Awaiting Customer" ) ) )
             {
-                Kueue::notify( "kueue-sr-update", "SR Updated", "<b>SR#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                Notification n;
+                n.type = "kueue-sr-update";
+                n.title = "SR Updated";
+                n.body = "<b>SR#" + sr.id + "</b><br>" + sr.bdesc;
+                n.sr = sr.id;
+                nl.append( n );
             }
             
             updateQueueSR( sr, dbname );
@@ -174,7 +181,12 @@ void Database::updateQueue( PersonalQueue pq, const QString& dbname )
             
             if ( !initial )
             {
-                Kueue::notify( "kueue-sr-new", "New SR in your queue", "<b>" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                Notification n;
+                n.type = "kueue-sr-new";
+                n.title = "New SR in your queue";
+                n.body = "<b>" + sr.id + "</b><br>" + sr.bdesc;
+                n.sr = sr.id;
+                nl.append( n );
             }
         }
         
@@ -190,6 +202,7 @@ void Database::updateQueue( PersonalQueue pq, const QString& dbname )
     }
     
     db.commit();
+    return nl;
 }
 
 void Database::updateQueueSR( QueueSR sr, const QString& dbname )
@@ -1024,12 +1037,13 @@ void Database::setQmonDisplay( const QString& display, const QString& dbname )
     }
 }
 
-void Database::updateQmon( QmonData qd, const QString& dbname )
+QList<Notification> Database::updateQmon( QmonData qd, const QString& dbname )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
     QList< QmonSR > srList = qd.srList;
     QStringList existList = getQmonSrNrs( dbname );
     QStringList newList;
+    QList<Notification> nl;
     
     bool initial = existList.isEmpty();
     
@@ -1063,19 +1077,39 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
             {
                 if ( sr.severity == "Low" )
                 {
-                    Kueue::notify( "kueue-monitor-low", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Notification n;
+                    n.type = "kueue-monitor-low";
+                    n.title = "New " + type + " in " + QString( sr.queue );
+                    n.body = "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc;
+                    n.sr = sr.id;
+                    nl.append( n );
                 }
                 else if ( sr.severity == "Medium" )
                 {
-                    Kueue::notify( "kueue-monitor-medium", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Notification n;
+                    n.type = "kueue-monitor-medium";
+                    n.title = "New " + type + " in " + QString( sr.queue );
+                    n.body = "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc;
+                    n.sr = sr.id;
+                    nl.append( n );
                 }
                 else if ( sr.severity == "Urgent" )
                 {
-                    Kueue::notify( "kueue-monitor-urgent", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Notification n;
+                    n.type = "kueue-monitor-urgent";
+                    n.title = "New " + type + " in " + QString( sr.queue );
+                    n.body = "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc;
+                    n.sr = sr.id;
+                    nl.append( n );
                 }
                 else if ( sr.severity == "High" )
                 {
-                    Kueue::notify( "kueue-monitor-high", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Notification n;
+                    n.type = "kueue-monitor-high";
+                    n.title = "New " + type + " in " + QString( sr.queue );
+                    n.body = "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc;
+                    n.sr = sr.id;
+                    nl.append( n );
                 }
             }
             
@@ -1089,19 +1123,39 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
             {
                 if ( sr.severity == "Low" )
                 {
-                    Kueue::notify( "kueue-monitor-low", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Notification n;
+                    n.type = "kueue-monitor-low";
+                    n.title = "New " + type + " in " + QString( sr.queue );
+                    n.body = "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc;
+                    n.sr = sr.id;
+                    nl.append( n );
                 }
                 else if ( sr.severity == "Medium" )
                 {
-                    Kueue::notify( "kueue-monitor-medium", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Notification n;
+                    n.type = "kueue-monitor-medium";
+                    n.title = "New " + type + " in " + QString( sr.queue );
+                    n.body = "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc;
+                    n.sr = sr.id;
+                    nl.append( n );
                 }
                 else if ( sr.severity == "Urgent" )
                 {
-                    Kueue::notify( "kueue-monitor-urgent", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Notification n;
+                    n.type = "kueue-monitor-urgent";
+                    n.title = "New " + type + " in " + QString( sr.queue );
+                    n.body = "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc;
+                    n.sr = sr.id;
+                    nl.append( n );
                 }
                 else if ( sr.severity == "High" )
                 {
-                    Kueue::notify( "kueue-monitor-high", "New " + type + " in " + QString( sr.queue ), "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc, sr.id );
+                    Notification n;
+                    n.type = "kueue-monitor-high";
+                    n.title = "New " + type + " in " + QString( sr.queue );
+                    n.body = "<b>" + type + "#" + sr.id + "</b><br>" + sr.bdesc;
+                    n.sr = sr.id;
+                    nl.append( n );
                 }
             }
         }
@@ -1118,6 +1172,7 @@ void Database::updateQmon( QmonData qd, const QString& dbname )
     }
     
     db.commit();
+    return nl;
 }
 
 void Database::deleteQmonSR( const QString& id, const QString& dbname )

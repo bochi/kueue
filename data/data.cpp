@@ -226,7 +226,12 @@ void Data::queueUpdateFinished()
             }
         }
         
-        Database::updateQueue( q, mDB );   
+        QList<Notification> nl = Database::updateQueue( q, mDB );   
+        
+        for ( int i = 0; i < nl.size(); ++i ) 
+        {   
+            emit notify( nl.at( i ).type, nl.at( i ).title, nl.at( i ).body, nl.at( i ).sr );
+        }
         
         if ( Settings::cleanupDownloadDirectory() )
         {
@@ -377,7 +382,13 @@ void Data::qmonUpdateFinished()
         }
             
         q.total = q.srList.size();
-        Database::updateQmon( q, mDB );
+        QList<Notification> nl = Database::updateQmon( q, mDB );
+        
+        for ( int i = 0; i < nl.size(); ++i ) 
+        {   
+            emit notify( nl.at( i ).type, nl.at( i ).title, nl.at( i ).body, nl.at( i ).sr );
+        }
+ 
         updateQmonBrowser();
     }
     

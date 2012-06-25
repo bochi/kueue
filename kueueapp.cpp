@@ -244,6 +244,9 @@ void KueueApp::connectDataThread()
     
     connect( mDataThread, SIGNAL( dirsToDelete( QStringList ) ),
              this, SLOT( deleteDirs( QStringList ) ) );
+    
+    connect( mDataThread, SIGNAL( notify( QString, QString, QString, QString ) ),
+             this, SLOT( notify( QString, QString, QString, QString ) ) );
 }
 
 void KueueApp::updateJobDone()
@@ -269,6 +272,11 @@ void KueueApp::createSystray()
 void KueueApp::createDatabase()
 {
     Database::openDbConnection( "sqliteDB" );
+}
+
+void KueueApp::notify( QString type, QString title, QString body, QString sr )
+{
+    mSystray->notify( type, title, body, sr );
 }
 
 void KueueApp::createMainWindow()

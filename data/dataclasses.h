@@ -176,4 +176,14 @@ class QmonData
         QList<QmonSR> srList;
 };
 
+class Notification
+{
+    public:
+        QString type;
+        QString title;
+        QString body;
+        QString sr;
+};
+    
+
 #endif

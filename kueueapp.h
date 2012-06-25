@@ -62,6 +62,7 @@ class KueueApp : public QObject
         void deleteDirs( QStringList );
         void deleteDirsFailed( QStringList );
         void cleanupTemp();
+        void notify( QString, QString, QString, QString );
         void createApp();
         void updateJobDone();
         void connectDataThread();

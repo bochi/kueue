@@ -50,7 +50,7 @@ class Database
         static void closeAllTables( const QString& = "sqliteDB");
         static void expandAllTables( const QString& = "sqliteDB");
         
-        static void updateQueue( PersonalQueue, const QString& = "sqliteDB" );
+        static QList<Notification> updateQueue( PersonalQueue, const QString& = "sqliteDB" );
         static void insertQueueSR( QueueSR, const QString& = "sqliteDB" );
         static void updateQueueSR( QueueSR, const QString& = "sqliteDB" );
         static void deleteQueueSR( const QString&, const QString& = "sqliteDB" );
@@ -64,7 +64,7 @@ class Database
         static void insertClosed( ClosedItem, const QString& = "sqliteDB" );
         static Statz getStatz( const QString& = "sqliteDB" );
         
-        static void updateQmon( QmonData, const QString& = "sqliteDB" );
+        static QList<Notification> updateQmon( QmonData, const QString& = "sqliteDB" );
         static void dropQmon( const QString& = "sqliteDB" );
         static void insertQmonSR( QmonSR, const QString& = "sqliteDB" );
         static void updateQmonSR( QmonSR, const QString& = "sqliteDB" );

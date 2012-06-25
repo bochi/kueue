@@ -120,6 +120,9 @@ void DataThread::createData()
     
     connect( mData, SIGNAL( netError() ), 
              this, SIGNAL( netError() ) );
+    
+    connect( mData, SIGNAL( notify( QString, QString, QString, QString ) ),
+             this, SIGNAL( notify( QString, QString, QString, QString ) ) );
 }
 
 void DataThread::deleteData()
