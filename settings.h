@@ -55,9 +55,6 @@ class Settings
         static bool unityEnabled();
         static void setUnityEnabled( const bool& );
         
-        static bool unityToolbarEnabled();
-        static void setUnityToolbarEnabled( const bool& );
-
         static bool showDownloadManager();
         static void setShowDownloadManager( const bool& );
         

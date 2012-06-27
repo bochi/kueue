@@ -984,11 +984,7 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     mToolBar->addWidget( mQueryLine );
     mToolBar->addWidget( mQueryGoButton );
     
-    if ( Settings::unityToolbarEnabled() )
-    {
-        unityBrowserLayout->addWidget( mToolBar );
-    }
-    
+    unityBrowserLayout->addWidget( mToolBar );
     unityBrowserLayout->addLayout( overlayLayout, 1, 0 );
     setToolbarButtonsEnabled( false );
 }

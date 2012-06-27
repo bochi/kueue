@@ -123,19 +123,6 @@ void Settings::setUnityEnabled( const bool& b )
     settings.sync();
 }
 
-bool Settings::unityToolbarEnabled()
-{
-    QSettings settings;
-    return settings.value( "unityToolbarEnabled", true ).toBool();
-}
-
-void Settings::setUnityToolbarEnabled( const bool& b )
-{
-    QSettings settings;
-    settings.setValue( "unityToolbarEnabled", b );
-    settings.sync();
-}
-
 bool Settings::showDownloadManager()
 {
     QSettings settings;

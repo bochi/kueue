@@ -560,8 +560,16 @@ DownloadManager::DownloadManager(QWidget *parent)
     , mRemovePolicy(Never)
 {
     setupUi(this);
+    
+#ifdef IS_WIN32
+    
+    setWindowFlags( Qt::Popup );
+    
+#else
 
     setWindowFlags( Qt::ToolTip );
+    
+#endif
 
     QSettings settings;
     settings.beginGroup(QLatin1String("downloadmanager"));
