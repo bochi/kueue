@@ -106,11 +106,18 @@ UnityBrowser::UnityBrowser( QWidget *parent, QString sr )
         
         connectShortcuts();
     }
+    else
+    {
+        mUnityPage = 0;
+    }
 }
 
 UnityBrowser::~UnityBrowser()
 {
-    delete mUnityPage;
+    if ( mUnityPage != 0 )
+    {
+        delete mUnityPage;  
+    }
     qDebug() << "[UNITYBROWSER] Destroying";
 }
 

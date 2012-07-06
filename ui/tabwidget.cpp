@@ -127,15 +127,22 @@ TabWidget::TabWidget( QWidget* parent )
     mStatsBrowser = new StatsBrowser( this );
     mStatsTab = new WebViewWithSearch( mStatsBrowser, this );
 
-    mUnityTab = new UnityWidget( this );
-    mUnityBrowser = mUnityTab->browser();
+    if ( Settings::unityEnabled() )
+    {
+        mUnityTab = new UnityWidget( this );
+        mUnityBrowser = mUnityTab->browser();
+    }
     
     // ...and add them to the tabbar
     
     insertTab( 0, mPersonalTab, QIcon( ":icons/conf/targets.png" ), "Personal queue" );
     insertTab( 1, mMonitorTab, QIcon( ":/icons/conf/monitor.png" ), "Queue monitor" );
     insertTab( 2, mStatsTab, QIcon( ":/icons/conf/stats.png" ), "Statistics" );
-    insertTab( 3, mUnityTab, QIcon( ":/icons/menus/siebel.png" ), "Unity" );    
+    
+    if ( Settings::unityEnabled() )
+    {
+        insertTab( 3, mUnityTab, QIcon( ":/icons/menus/siebel.png" ), "Unity" );    
+    }
     
     QShortcut* search = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
    
@@ -170,15 +177,6 @@ void TabWidget::refreshTabs()
     else 
     {
         showStatsTab( true );
-    }
-    
-    if ( !Settings::unityEnabled() )
-    {
-        showUnityTab( false );
-    }
-    else
-    {
-        showUnityTab( true );
     }
     
     setCurrentIndex( current );

@@ -151,7 +151,7 @@ void QueueBrowser::showAll()
 
 void QueueBrowser::urlHovered( const QString& url, const QString& title, const QString& text )
 {
-    // Copy the last hovered URL to mSr
+    // Copy the last hovered URL to mUrl
     // Necessary to make the mouseButtonEvents work on links
     
     (void)title;
