@@ -209,7 +209,7 @@ void KueueApp::createApp()
     QShortcut* newUnityTab = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_U ), mWindow );
     QShortcut* dbrebuild = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_R ), mWindow );
    
-    //QNetworkReply* r = Network::get( "latestkueue" );
+    QNetworkReply* r = Network::get( "latestkueue" );
         
     connect( r, SIGNAL( finished() ),
              this, SLOT( updateJobDone() ) );    
