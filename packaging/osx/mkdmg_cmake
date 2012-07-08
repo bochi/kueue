@@ -19,8 +19,8 @@ function build_dmg {
 APP=kueue.app
 VOL="kueue $VER"
 
-rm -rfv kueue.app/Contents/Frameworks/*
-rm -rfv kueue.app/Contents/PlugIns/*
+rm -rfv kueue.app/Contents/Frameworks
+rm -rfv kueue.app/Contents/PlugIns
 
 # running macdeployqt to add libraries
 echo "Adding required libraries to app bundle..."
@@ -121,8 +121,8 @@ function build_debug_dmg {
 APP=kueue.app
 VOL="kueue $VER debug"
 
-rm -rfv kueue.app/Contents/Frameworks/*
-rm -rfv kueue.app/Contents/PlugIns/*
+rm -rfv kueue.app/Contents/Frameworks
+rm -rfv kueue.app/Contents/PlugIns
 
 # running macdeployqt to add libraries
 echo "Adding required libraries to app bundle..."
