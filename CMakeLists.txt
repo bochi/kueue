@@ -201,9 +201,9 @@ ENDIF( UNIX AND NOT APPLE )
 #
 
 IF( APPLE )
-    SET( OSX_ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/ui/icons/app/kueue.icns )
-    SET( MACOSX_BUNDLE_BUNDLE_NAME kueue )
     ADD_CUSTOM_TARGET( OSX_REMOVE_DIR  COMMAND rm -r ${CMAKE_CURRENT_BINARY_DIR}/kueue.app )
+    SET( OSX_ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/ui/icons/app/kueue.icns )
+    SET( MACOSX_BUNDLE_BUNDLE_NAME kueue )    
     ADD_CUSTOM_TARGET( OSX_BUNDLE_DIRS COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/kueue.app/Contents/Resources
                                        COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/kueue.app/Contents/MacOS 
 				       DEPENDS OSX_REMOVE_DIR ) 

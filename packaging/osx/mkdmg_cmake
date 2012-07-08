@@ -107,10 +107,10 @@ if [ -f "${DMG_TMP}" ]; then
 fi
 
 echo "Copying image to your home directory..."
-cp kueue-$VER.dmg $HOME
+cp kueue-$VER.dmg $HOME/Documents
 echo ""
 echo "Successfully built dmg installer"
-echo $HOME/kueue-$VER.dmg
+echo $HOME/Documents/kueue-$VER.dmg
 echo "Have fun :-)" 
 }
 
