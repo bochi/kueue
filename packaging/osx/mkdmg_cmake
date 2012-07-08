@@ -116,7 +116,6 @@ echo "Have fun :-)"
 
 function build_debug_dmg {
 APP=kueue.app
-VER=$1
 VOL="kueue $VER debug"
 
 # running macdeployqt to add libraries
