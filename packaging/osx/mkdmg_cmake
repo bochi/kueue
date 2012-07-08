@@ -213,12 +213,14 @@ echo $HOME/Documents/kueue-$VER-debug.dmg
 echo "Have fun :-)" 
 }
 
+export VER = $1
+
 echo "Do you want to create a dmg now? (y(es)/n(o)/d(ebug))"
 read CONF
 
+
 if [ "$CONF" = "y" ]; then
 
-    VER=$1
     echo ""
     echo "Building dmg..."
     echo ""
