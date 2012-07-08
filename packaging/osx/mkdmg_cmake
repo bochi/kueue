@@ -17,8 +17,7 @@ function check_rc() {
 
 function build_dmg {
 APP=kueue.app
-VER=$1
-VOL="kueue $1"
+VOL="kueue $VER"
 
 # running macdeployqt to add libraries
 echo "Adding required libraries to app bundle..."
@@ -118,7 +117,7 @@ echo "Have fun :-)"
 function build_debug_dmg {
 APP=kueue.app
 VER=$1
-VOL="kueue $1 debug"
+VOL="kueue $VER debug"
 
 # running macdeployqt to add libraries
 echo "Adding required libraries to app bundle..."
@@ -220,6 +219,7 @@ read CONF
 
 if [ "$CONF" = "y" ]; then
 
+    VER=$1
     echo ""
     echo "Building dmg..."
     echo ""
