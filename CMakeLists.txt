@@ -201,17 +201,17 @@ ENDIF( UNIX AND NOT APPLE )
 #
 
 IF( APPLE )
+    SET( OSX_ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/ui/icons/app/kueue.icns )
+    SET( MACOSX_BUNDLE_BUNDLE_NAME kueue )
     ADD_CUSTOM_TARGET( OSX_REMOVE_DIR  COMMAND rm -r ${CMAKE_CURRENT_BINARY_DIR}/kueue.app )
     ADD_CUSTOM_TARGET( OSX_BUNDLE_DIRS COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/kueue.app/Contents/Resources
                                        COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/kueue.app/Contents/MacOS 
 				       DEPENDS OSX_REMOVE_DIR ) 
+    SET_SOURCE_FILES_PROPERTIES( ${OSX_ICON_FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
     SET( kueue_SRC ${kueue_CPP} ${OSX_ICON_FILE} )
     ADD_EXECUTABLE( kueue MACOSX_BUNDLE ${kueue_SRC} ${kueue_QRC_SRCS} ${kueue_UI_H} )
     ADD_DEPENDENCIES( kueue OSX_BUNDLE_DIRS )
     SET_TARGET_PROPERTIES( kueue PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/packaging/osx/kueue.plist )
-    SET( OSX_ICON_FILE ${CMAKE_CURRENT_SOURCE_DIR}/ui/icons/app/kueue.icns )
-    SET( MACOSX_BUNDLE_BUNDLE_NAME kueue )   
-    SET_SOURCE_FILES_PROPERTIES( ${OSX_ICON_FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources )
     ADD_CUSTOM_TARGET( OSX_MAKE_INSTALLER ALL 
                                           COMMAND /bin/bash ${CMAKE_CURRENT_SOURCE_DIR}/packaging/osx/mkdmg_cmake ${KUEUE_VERSION} 
                                           DEPENDS kueue OSX_BUNDLE_DIRS )
