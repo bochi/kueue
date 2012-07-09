@@ -102,7 +102,6 @@ void PopupWindow::loadFinished()
 {
     QString title = mWebView->page()->mainFrame()->findFirstElement( "title" ).toPlainText();
     setWindowTitle( title );
-    qDebug() << "[POPUPWINDOW]" << title;
 }
 
 void PopupWindow::openWebInspector()

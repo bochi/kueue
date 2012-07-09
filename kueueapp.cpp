@@ -332,7 +332,6 @@ void KueueApp::settingsChanged()
     #endif
     #endif
 
-    mDataThread->destroy();
     mDataThread = &mDataThread->restart();
     connectDataThread();
     

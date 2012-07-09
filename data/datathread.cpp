@@ -54,7 +54,10 @@ DataThread& DataThread::restart()
 {
     if ( instance != 0 )
     {
+        instance->deleteData();
+        instance->quit();
         instance->wait();
+        delete instance;
     }
     
     instance = new DataThread;
