@@ -145,10 +145,8 @@ bool KueueWindow::eventFilter( QObject* o, QEvent* e )
     {
         StatusBar::hideDownloadManager();
     }
-    else 
-    {
-        return QObject::event( e );
-    }
+
+    return QObject::event( e );
 }
 
 void KueueWindow::playSound( const QString& file )
