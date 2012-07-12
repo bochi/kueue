@@ -35,7 +35,7 @@
 NSAJob::NSAJob( const QString& scfile, const QString& sc ) : KueueThread()
 {
     qDebug() << "[NSAJOB] Constructing";
-    qDebug() << currentThreadId() << "nsajob";
+
     mSupportConfig = sc;
     mSupportConfigFile = scfile;
 }
