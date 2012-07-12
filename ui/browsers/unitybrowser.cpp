@@ -428,12 +428,12 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
     if ( !mUnityPage->currentSr().isEmpty() &&
          Kueue::isSrNr( mUnityPage->currentSr() ) )
     {
-        menu->addAction( back ), this, (void) SLOT( goBackToSr() );
+        menu->addAction( back ), (void) this, (void) SLOT( goBackToSr() );
     }
 
     if ( mUnityPage->isNsaReport() )
     {
-        (void) menu->addAction( nsa ), mUnityPage, (void) SLOT( saveNsaReport() );
+        (void) menu->addAction( nsa ), (void) mUnityPage, (void) SLOT( saveNsaReport() );
     }
 
     if ( !res.imageUrl().isEmpty() ) 
