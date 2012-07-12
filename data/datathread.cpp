@@ -24,6 +24,7 @@
 */
 
 #include "datathread.h"
+#include "config.h"
 
 QPointer<DataThread> DataThread::instance = 0;
 
@@ -35,19 +36,6 @@ DataThread& DataThread::thread()
     }
  
     return *instance; 
-}
-
-void DataThread::destroy()
-{
-    if ( instance )
-    {
-        instance->deleteData();
-        instance->quit();
-        instance->wait();
-        delete instance;
-    }
-      
-    instance = 0;
 }
 
 DataThread& DataThread::restart()
@@ -130,7 +118,13 @@ void DataThread::createData()
 
 void DataThread::deleteData()
 {
+    // on OSX Lion this will crash for whatever reason, thus
+    // we will simply not delete mData here. Maybe I'll find a 
+    // proper solution at some point, but for now this is good enough.
+    
+    #ifndef IS_OSX
     delete mData;
+    #endif
 }
 
 void DataThread::updateQueueBrowserSlot()

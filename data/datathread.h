@@ -37,7 +37,7 @@ class DataThread : public QThread
     public:
         static DataThread& thread();
         static DataThread& restart();
-        static void destroy();
+
         void run();
         
         static void updateQueueBrowser()
