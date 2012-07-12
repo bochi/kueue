@@ -61,10 +61,10 @@ class DataThread : public QThread
         }
         
     private:
-        static DataThread* instance;
+        static QPointer<DataThread> instance;
         DataThread( QObject *parent = 0L );
         ~DataThread();
-        Data* mData;
+        QPointer<Data> mData;
         
     private slots:
         void createData();

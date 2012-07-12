@@ -25,7 +25,7 @@
 
 #include "datathread.h"
 
-DataThread* DataThread::instance = 0;
+QPointer<DataThread> DataThread::instance = 0;
 
 DataThread& DataThread::thread()
 {

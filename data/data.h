@@ -40,7 +40,7 @@ class Data : public QObject
         ~Data();
     
     private:
-        QNetworkAccessManager* mNAM;
+        QPointer<QNetworkAccessManager> mNAM;
         QNetworkReply* get( const QString& );
         QString mDB;
         QStringList mIPs;
