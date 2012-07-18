@@ -634,13 +634,13 @@ bool Data::srIsClosed( const QString& sr )
     o = r->readAll();
     r->deleteLater();
 
-    if ( o == "Open" )
+    if ( o == "Closed" )
     {
-        return false;
+        return true;
     }
     else
     {
-        return true;
+        return false;
     }
 }
 
