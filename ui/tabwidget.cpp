@@ -680,7 +680,7 @@ void TabWidget::clipboardActionTriggered()
     
     if ( Kueue::isSrNr( Kueue::getClipboard() ) )
     {
-        showSrInUnityBrowser( action->data().toInt(), Kueue::getClipboard() );
+        showSrInUnityBrowser( action->data().toInt(), Kueue::getClipboard().trimmed() );
     }
 }
 
@@ -699,7 +699,7 @@ void TabWidget::permClipboardActionTriggered()
 {
     if ( Kueue::isSrNr( Kueue::getClipboard() ) )
     {
-        mUnityBrowser->querySR( Kueue::getClipboard() );
+        mUnityBrowser->querySR( Kueue::getClipboard().trimmed() );
     }
 }
 
@@ -735,7 +735,7 @@ void TabWidget::openClipboardInUnity( int browser )
 {
     if ( Kueue::isSrNr( Kueue::getClipboard() ) )
     {
-        showSrInUnityBrowser( browser, Kueue::getClipboard() );
+        showSrInUnityBrowser( browser, Kueue::getClipboard().trimmed() );
         switchToTab( browser );
     }
 }

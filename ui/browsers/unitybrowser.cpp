@@ -282,7 +282,7 @@ void UnityBrowser::mousePressEvent( QMouseEvent* event )
          ( !isTextArea( mUnityPage->getElementAt( event->pos() ).element() ) ) &&
          ( Kueue::isSrNr( Kueue::getClipboard() ) ) )
     {
-        querySR( Kueue::getClipboard() );
+        querySR( Kueue::getClipboard().trimmed() );
     }
     
     return QWebView::mousePressEvent( event );
@@ -1092,7 +1092,7 @@ void UnityWidget::querySR()
 {
     if ( Kueue::isSrNr( mQueryLine->text() ) )
     {
-        mUnityBrowser->querySR( mQueryLine->text() );
+        mUnityBrowser->querySR( mQueryLine->text().trimmed() );
         mQueryLine->clear();
     }
 }

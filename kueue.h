@@ -101,7 +101,7 @@ namespace Kueue
     {
         QRegExp srnr( "^[0-9]{11}$" );
     
-        if ( srnr.exactMatch( data ) )
+        if ( srnr.exactMatch( data.trimmed() ) )
         {
             return true;
         }

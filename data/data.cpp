@@ -632,16 +632,23 @@ bool Data::srIsClosed( const QString& sr )
     loop.exec();
     
     o = r->readAll();
+    
+    if ( !r->error() )
+    {
+        r->deleteLater();
+        
+        if ( o == "Open" )
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    
     r->deleteLater();
-
-    if ( o == "Closed" )
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return false;
 }
 
 #include "data.moc"
