@@ -759,7 +759,59 @@ void Settings::setStatsEnabled( const bool& b )
     settings.setValue( "statsEnabled", b );
     settings.sync();
 }
-        
+
+bool Settings::studioEnabled()
+{
+    QSettings settings;
+    return settings.value( "studioEnabled", false ).toBool();
+}
+
+void Settings::setStudioEnabled( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "studioEnabled", b );
+    settings.sync();
+}
+
+QString Settings::studioServer()
+{
+    QSettings settings;
+    return settings.value( "studioServer" ).toString();
+}
+
+void Settings::setStudioServer( const QString& s )
+{
+    QSettings settings;
+    settings.setValue( "studioServer", s );
+    settings.sync();
+}
+
+QString Settings::studioUser()
+{
+    QSettings settings;
+    return settings.value( "studioUser" ).toString();
+}
+
+void Settings::setStudioUser( const QString& s )
+{
+    QSettings settings;
+    settings.setValue( "studioUser", s );
+    settings.sync();
+}
+
+QString Settings::studioApiKey()
+{
+    QSettings settings;
+    return settings.value( "studioApiKey" ).toString();
+}
+
+void Settings::setStudioApiKey( const QString& s )
+{
+    QSettings settings;
+    settings.setValue( "studioApiKey", s );
+    settings.sync();
+}
+
 bool Settings::notificationsDisabled()
 {
     QSettings settings;

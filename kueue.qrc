@@ -10,6 +10,7 @@
     <file alias="conf/notifications.png">ui/icons/conf/notifications.png</file>
     <file alias="conf/qboss.png">ui/icons/conf/qboss.png</file>
     <file alias="conf/stats.png">ui/icons/conf/stats.png</file>
+    <file alias="conf/studio.png">ui/icons/conf/studio.png</file>
     <file alias="conf/targets.png">ui/icons/conf/targets.png</file>
     <file alias="menus/clipboard.png">ui/icons/menus/clipboard.png</file>
     <file alias="menus/configure.png">ui/icons/menus/configure.png</file>

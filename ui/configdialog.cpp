@@ -114,6 +114,8 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              this, SLOT( toggleMonitor( bool ) ) );
     connect( cfg_qbossFeatures, SIGNAL( toggled( bool ) ),
              this, SLOT( toggleQboss( bool ) ) );
+    connect( cfg_studioEnabled, SIGNAL( toggled( bool ) ),
+             this, SLOT( toggleStudio( bool ) ) );
     connect( cfg_notificationsDisabled, SIGNAL( toggled( bool ) ), 
              this, SLOT( toggleNotifications( bool ) ) );
     
@@ -176,8 +178,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_dBServer->setText( Settings::dBServer() );
     cfg_engineer->setText( Settings::engineer() );
     
-
-    
     cfg_showAppWindow->setChecked( Settings::showAppWindow() );
     cfg_showTabsAtTop->setChecked( Settings::showTabsAtTop() );
     cfg_showSystemTray->setChecked( Settings::showSystemTray() );
@@ -217,6 +217,11 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_useSrDirectory->setChecked( Settings::useSrDirectory() );
     cfg_autoExtract->setChecked( Settings::autoExtract() );
     cfg_cleanupDownloadDirectory->setChecked( Settings::cleanupDownloadDirectory() );
+    
+    cfg_studioEnabled->setChecked( Settings::studioEnabled() );
+    cfg_studioServer->setText( Settings::studioServer() );
+    cfg_studioUser->setText( Settings::studioUser() );
+    cfg_studioApiKey->setText( Settings::studioApiKey() );
     
     cfg_notificationsDisabled->setChecked( Settings::notificationsDisabled() );
 
@@ -289,6 +294,7 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     toggleQboss( Settings::qbossFeatures() );
     toggleNotifications( Settings::notificationsDisabled() );
     toggleUnity( Settings::unityEnabled() );
+    toggleStudio( Settings::studioEnabled() );
     
     #ifndef QT_HAS_DBUS
     
@@ -404,6 +410,11 @@ void ConfigDialog::writeSettings()
     Settings::setQbossFeatures( cfg_qbossFeatures->isChecked() );
     Settings::setCheckKopete( cfg_checkKopete->isChecked() );
     Settings::setKopeteText( cfg_kopeteText->text() );
+    
+    Settings::setStudioEnabled( cfg_studioEnabled->isChecked() );
+    Settings::setStudioServer( cfg_studioServer->text() );
+    Settings::setStudioUser( cfg_studioUser->text() );
+    Settings::setStudioApiKey( cfg_studioApiKey->text() );
     
     QStringList el;
     
@@ -579,6 +590,11 @@ void ConfigDialog::toggleUnity( const bool& b )
     }
     
     cfg_useIdleTimeout->setEnabled( b );
+}
+
+void ConfigDialog::toggleStudio( const bool& b )
+{
+    pageListWidget->item( 4 )->setHidden( !b );
 }
 
 void ConfigDialog::toggleUnityEditor( const bool& b )

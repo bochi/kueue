@@ -136,7 +136,10 @@ SET( kueue_CPP  main.cpp
                 
                 nsa/nsa.cpp
 		nsa/nsawindow.cpp
-	        nsa/nsajob.cpp )
+	        nsa/nsajob.cpp 
+		
+		studio/studio.cpp
+		studio/studiojob.cpp )
                 
 SET( kueue_QRC  kueue.qrc )
 

@@ -63,6 +63,7 @@ class ConfigDialog : public QDialog, private Ui_ConfigDialog
         void toggleSystemTray( const bool& );
         void toggleMonitor( const bool& );
         void toggleQboss( const bool& );
+        void toggleStudio( const bool& );
         void toggleNotifications( const bool& );
         void toggleUnity( const bool& );
         void toggleUnityEditor( const bool& );

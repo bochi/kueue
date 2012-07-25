@@ -209,7 +209,24 @@ class Settings
         
         static bool statsEnabled();
         static void setStatsEnabled( const bool& );
-       
+        
+        /* Studio Group */
+        
+        static bool studioEnabled();
+        static void setStudioEnabled( const bool& );
+        
+        static QString studioScriptVersion();
+        static void setStudioScriptVersion( const QString& );
+        
+        static QString studioServer();
+        static void setStudioServer( const QString& );
+        
+        static QString studioUser();
+        static void setStudioUser( const QString& );
+        
+        static QString studioApiKey();
+        static void setStudioApiKey( const QString& );
+        
         /* Notifications Group */
         
         static bool notificationsDisabled();
