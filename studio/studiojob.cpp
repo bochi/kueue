@@ -25,10 +25,9 @@
 
 #include "studiojob.h"
 #include "config.h"
-#include "qsusestudio_global.h"
-#include "qsusestudio.h"
 #include "settings.h"
 
+#include <QSuSEStudio>
 #include <QDesktopServices>
 #include <QDebug>
 #include <QProcess>

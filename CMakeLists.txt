@@ -72,11 +72,21 @@ CONFIGURE_FILE( ${CMAKE_SOURCE_DIR}/config.h.cmake ${CMAKE_SOURCE_DIR}/config.h 
 #
 
 ADD_SUBDIRECTORY( qtsingleapplication )
+ADD_SUBDIRECTORY( studio/qsusestudio )
+ADD_SUBDIRECTORY( simplecrypt )
 
 SET( QtSingleApp_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qtsingleapplication )
 SET( QT_SINGLEAPP_LIBRARY qtsingleapplication )
 
+SET( QtStudio_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/studio/qsusestudio )
+SET( QT_STUDIO_LIBRARY qsusestudio )
+
+SET( SimpleCrypt_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/simplecrypt )
+SET( SIMPLECRYPT_LIBRARY simplecrypt )
+
 INCLUDE_DIRECTORIES( ${QtSingleApp_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES( ${QtStudio_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES( ${ArchiveExtract_INCLUDE_DIR} )
 
 #
 # Define the source files
@@ -139,8 +149,7 @@ SET( kueue_CPP  main.cpp
 	        nsa/nsajob.cpp 
 		
 		studio/studio.cpp
-		studio/studiojob.cpp 
-		studio/qsusestudio.cpp )
+		studio/studiojob.cpp )
                 
 SET( kueue_QRC  kueue.qrc )
 
@@ -235,7 +244,9 @@ IF ( QT_HAS_DBUS AND NOT APPLE )
                                  ${QT_QTNETWORK_LIBRARY} 
 		                 ${QT_QTXML_LIBRARY}
                                  ${QT_QTGUI_LIBRARY} 
-                                 ${QT_SINGLEAPP_LIBRARY} )
+                                 ${QT_SINGLEAPP_LIBRARY} 
+				 ${QT_STUDIO_LIBRARY} 
+				 ${SIMPLECRYPT_LIBRARY} ) 
 ELSEIF ( APPLE )
 
     TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
@@ -246,7 +257,9 @@ ELSEIF ( APPLE )
                                  ${QT_QTNETWORK_LIBRARY} 
                                  ${QT_QTXML_LIBRARY}
                                  ${QT_QTGUI_LIBRARY} 
-                                 ${QT_SINGLEAPP_LIBRARY} )
+                                 ${QT_SINGLEAPP_LIBRARY}
+				 ${QT_STUDIO_LIBRARY} 
+				 ${SIMPLECRYPT_LIBRARY} )
 
 ELSE ()
 
@@ -256,9 +269,12 @@ ELSE ()
                                  ${QT_QTWEBKIT_LIBRARY} 
                                  ${QT_QTSQL_LIBRARIES} 
                                  ${QT_QTUITOOLS_LIBRARY} 
-                                 ${QT_QTNETWORK_LIBRARY} 
+				 ${QT_QTNETWORK_LIBRARY} 
                                  ${QT_QTXML_LIBRARY}
                                  ${QT_QTGUI_LIBRARY} 
-                                 ${QT_SINGLEAPP_LIBRARY} )
+                                 ${QT_SINGLEAPP_LIBRARY} 
+				 ${QT_STUDIO_LIBRARY} 
+				 ${SIMPLECRYPT_LIBRARY} )
+
 
 ENDIF ()
