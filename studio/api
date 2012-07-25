@@ -1,0 +1,10 @@
+API-Doc @ http://susestudio.com/help/api/v2
+
+Required calls: 
+
+POST /api/v2/user/appliances?clone_from=<appliance_id>&name=<name>&arch=<arch>
+POST /api/v2/user/rpms?base_system=<base>
+POST /api/v2/user/appliances/<id>/cmd/add_user_repository
+POST /api/v2/user/running_builds?appliance_id=<id>&force=<force>&version=<version>&image_type=<type>&multi=<multi>
+GET  /api/v2/user/builds/<build_id>
+POST /api/v2/user/appliances/<id>/cmd/add_package?name=<name>&version=<version>&repository_id=<repo_id>
