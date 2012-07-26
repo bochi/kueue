@@ -23,8 +23,8 @@
 
 */
 
-#include "studio.h"
 #include "clone.h"
+#include "studio.h"
 #include "build.h"
 #include "kueue.h"
 #include "kueuethreads.h"
@@ -36,7 +36,7 @@
 #include <QDebug>
 #include <QtXml>
 
-Studio::Studio( const QString& sc )
+Clone::Clone( const QString& sc )
 {
     qDebug() << "[STUDIO] Constructing";
     
@@ -56,16 +56,16 @@ Studio::Studio( const QString& sc )
     KueueThreads::enqueue( x );
 }
 
-Studio::~Studio()
+Clone::~Clone()
 {
     qDebug() << "[STUDIO] Destroying";
 }
 
-void Studio::createThread( const QString& scfile, const QString& scdir )
+void Clone::createThread( const QString& scfile, const QString& scdir )
 {
 }
 
-void Studio::studioThreadFinished()
+void Clone::studioThreadFinished()
 {
     // do something?
     emit buildFinished();

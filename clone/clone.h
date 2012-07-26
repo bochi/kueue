@@ -23,8 +23,8 @@
 
 */
 
-#ifndef STUDIO_H
-#define STUDIO_H
+#ifndef CLONE_H
+#define CLONE_H
 
 #include <QDir>
 #include <QFile>
@@ -33,13 +33,13 @@
 
 class KueueThreads;
 
-class Studio : public QObject
+class Clone : public QObject
 {
     Q_OBJECT
 
     public: 
-        Studio( const QString& );
-        ~Studio();
+        Clone( const QString& );
+        ~Clone();
         
     private:
         QDir mTmpDir;
@@ -51,8 +51,7 @@ class Studio : public QObject
         void studioThreadFinished();
         
     signals:
-        void buildFinished();
-        
+        void buildFinished();    
 };
 
 

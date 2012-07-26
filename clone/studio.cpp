@@ -23,24 +23,28 @@
 
 */
 
-#ifndef CLONE_H
-#define CLONE_H
+#include "studio.h"
+#include "config.h"
+#include "settings.h"
 
-#include "kueuethreads.h"
+#include <QSuSEStudio>
+#include <QDebug>
+#include <QObject>
 
-class Clone : public KueueThread
+Studio::Studio( const QString& sc ) : KueueThread()
 {
-    Q_OBJECT
+    qDebug() << "[BUILD] Constructing";
 
-    public: 
-        Clone( const QString& );
-        ~Clone();
-        
-    private:
-        QString mScDir;
-        
-    protected: 
-        void run();
-};
+    mScDir = sc;
+}
 
-#endif
+Studio::~Studio()
+{
+    qDebug() << "[BUILD] Destroying";
+}
+
+void Studio::run()
+{
+}
+
+#include "studio.moc"
