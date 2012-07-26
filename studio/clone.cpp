@@ -23,27 +23,28 @@
 
 */
 
-#ifndef STUDIOJOB_H
-#define STUDIOJOB_H
+#include "clone.h"
+#include "config.h"
+#include "settings.h"
 
-#include "kueuethreads.h"
+#include <QDesktopServices>
+#include <QDebug>
+#include <QProcess>
 
-class StudioJob : public KueueThread
+Clone::Clone( const QString& sc ) : KueueThread()
 {
-    Q_OBJECT
+    qDebug() << "[CLONE] Constructing";
 
-    public: 
-        StudioJob( const QString& );
-        ~StudioJob();
-        
-    private:
-        QString mScDir;
-        
-    private slots:
-        void receivedReply( QVariantMap );
-        
-    protected: 
-        void run();
-};
+    mScDir = sc;
+}
 
-#endif
+Clone::~Clone()
+{
+    qDebug() << "[CLONE] Destroying";
+}
+
+void Clone::run()
+{
+}
+
+#include "clone.moc"

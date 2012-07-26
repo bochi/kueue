@@ -149,7 +149,8 @@ SET( kueue_CPP  main.cpp
 	        nsa/nsajob.cpp 
 		
 		studio/studio.cpp
-		studio/studiojob.cpp )
+		studio/build.cpp
+	        studio/clone.cpp )
                 
 SET( kueue_QRC  kueue.qrc )
 

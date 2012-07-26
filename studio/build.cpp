@@ -23,42 +23,28 @@
 
 */
 
-#include "studiojob.h"
+#include "build.h"
 #include "config.h"
 #include "settings.h"
 
 #include <QSuSEStudio>
-#include <QDesktopServices>
 #include <QDebug>
-#include <QProcess>
 #include <QObject>
 
-StudioJob::StudioJob( const QString& sc ) : KueueThread()
+Build::Build( const QString& sc ) : KueueThread()
 {
-    qDebug() << "[STUDIOJOB] Constructing";
+    qDebug() << "[BUILD] Constructing";
 
     mScDir = sc;
 }
 
-StudioJob::~StudioJob()
+Build::~Build()
 {
-    qDebug() << "[STUDIOJOB] Destroying";
+    qDebug() << "[BUILD] Destroying";
 }
 
-void StudioJob::run()
+void Build:run()
 {
-    QSUSEStudio* studio = new QSUSEStudio( Settings::studioUser(), Settings::studioApiKey() );
- 
-    connect( studio, SIGNAL( responseReady( QVariantMap ) ), 
-             this, SLOT( receivedReply( QVariantMap ) ) );
-              
-    emit threadStarted( "Building...", 100 );
-    emit threadFinished( this );
 }
 
-void StudioJob::receivedReply( QVariantMap map )
-{
-    QSUSEStudio::printMap( map );
-}
-
-#include "studiojob.moc"
+#include "build.moc"
