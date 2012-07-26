@@ -43,7 +43,7 @@ Build::~Build()
     qDebug() << "[BUILD] Destroying";
 }
 
-void Build:run()
+void Build::run()
 {
 }
 

@@ -24,7 +24,8 @@
 */
 
 #include "studio.h"
-#include "studiojob.h"
+#include "clone.h"
+#include "build.h"
 #include "kueue.h"
 #include "kueuethreads.h"
 #include "archivers/archiveextract.h"
@@ -62,12 +63,6 @@ Studio::~Studio()
 
 void Studio::createThread( const QString& scfile, const QString& scdir )
 {
-    StudioJob* j = new StudioJob( scdir );
-    
-    connect( j, SIGNAL( threadFinished( KueueThread* ) ),
-             this, SLOT( studioThreadFinished() ) );
-    
-    KueueThreads::enqueue( j );
 }
 
 void Studio::studioThreadFinished()
