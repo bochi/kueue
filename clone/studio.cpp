@@ -33,18 +33,27 @@
 
 Studio::Studio( const QString& sc ) : KueueThread()
 {
-    qDebug() << "[BUILD] Constructing";
+    qDebug() << "[STUDIO] Constructing";
 
     mScDir = sc;
 }
 
 Studio::~Studio()
 {
-    qDebug() << "[BUILD] Destroying";
+    qDebug() << "[STUDIO] Destroying";
 }
 
 void Studio::run()
 {
+    QSUSEStudio* studio = new QSUSEStudio( Settings::studioUser(), Settings::studioApiKey() );
+    
+    connect( studio, SIGNAL( responseReady( QVariantMap ) ),
+             this, SLOT( receivedReply( QVariantMap ) ) );
+}
+
+void Studio::receivedResponse( QVariantMap map )
+{
+    QSUSEStudio::printMap( map );
 }
 
 #include "studio.moc"

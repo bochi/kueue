@@ -72,13 +72,13 @@ CONFIGURE_FILE( ${CMAKE_SOURCE_DIR}/config.h.cmake ${CMAKE_SOURCE_DIR}/config.h 
 #
 
 ADD_SUBDIRECTORY( qtsingleapplication )
-ADD_SUBDIRECTORY( studio/qsusestudio )
+ADD_SUBDIRECTORY( clone/qsusestudio )
 ADD_SUBDIRECTORY( simplecrypt )
 
 SET( QtSingleApp_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qtsingleapplication )
 SET( QT_SINGLEAPP_LIBRARY qtsingleapplication )
 
-SET( QtStudio_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/studio/qsusestudio )
+SET( QtStudio_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/clone/qsusestudio )
 SET( QT_STUDIO_LIBRARY qsusestudio )
 
 SET( SimpleCrypt_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/simplecrypt )
@@ -148,9 +148,9 @@ SET( kueue_CPP  main.cpp
 		nsa/nsawindow.cpp
 	        nsa/nsajob.cpp 
 		
-		studio/studio.cpp
-		studio/build.cpp
-	        studio/clone.cpp )
+		clone/clone.cpp
+		clone/studio.cpp
+		clone/build.cpp )
                 
 SET( kueue_QRC  kueue.qrc )
 

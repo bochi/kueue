@@ -51,7 +51,7 @@ Clone::Clone( const QString& sc )
     ArchiveExtract* x = new ArchiveExtract( mSupportConfig, mTmpDir.absolutePath() );
     
     connect( x, SIGNAL( extracted( QString, QString ) ),
-             this, SLOT( createThread( QString, QString ) ) );
+             this, SLOT( downloadScript( QString, QString ) ) );
     
     KueueThreads::enqueue( x );
 }
@@ -61,14 +61,50 @@ Clone::~Clone()
     qDebug() << "[STUDIO] Destroying";
 }
 
-void Clone::createThread( const QString& scfile, const QString& scdir )
+void Clone::downloadScript( const QString& archive, const QString& dir )
+{
+    mScDir = dir;
+    QEventLoop loop;
+    QNetworkReply* r;
+
+    r = Network::get( "http://w3.suse.de/~ajohansson/clone.sh" );
+        
+    QObject::connect( r, SIGNAL( finished() ), 
+                      &loop, SLOT( quit() ) );
+                                    
+    loop.exec();
+                    
+    QFile file( mScDir.absolutePath() + "/clone.sh" );
+    
+    if ( !file.open( QIODevice::WriteOnly ) )
+    {
+        return;
+    }
+    
+    file.write( r->readAll() );
+    file.close();
+}
+
+void Clone::runScript()
+{
+    Build* build = new Build( mScDir.absolutePath() );
+    
+    connect( build, SIGNAL( threadFinished( KueueThread* ) ),
+             this, SLOT( buildAppliance() ) );
+    
+    KueueThreads::enqueue( build );
+}
+
+void Clone::buildAppliance()
+{
+    Studio* studio = new Studio( mScDir.absolutePath() );
+    
+    connect( studio, SIGNAL( threadFinished( KueueThread* ) ),
+             this, SLOT( cloneDone() ) );
+}
+
+void Clone::cloneDone()
 {
 }
 
-void Clone::studioThreadFinished()
-{
-    // do something?
-    emit buildFinished();
-}
-
-#include "studio.moc"
+#include "clone.moc"

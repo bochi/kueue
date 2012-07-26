@@ -43,12 +43,15 @@ class Clone : public QObject
         
     private:
         QDir mTmpDir;
+        QDir mScDir;
         QString mSupportConfig;
         KueueThreads* mThreads;
         
     private slots:
-        void createThread( const QString&, const QString& );
-        void studioThreadFinished();
+        void downloadScript( const QString&, const QString& );
+        void runScript();
+        void buildAppliance();
+        void cloneDone();
         
     signals:
         void buildFinished();    

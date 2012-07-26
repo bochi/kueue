@@ -36,6 +36,9 @@ class Studio : public KueueThread
         Studio( const QString& );
         ~Studio();
         
+    private slots:
+        void receivedResponse( QVariantMap );
+        
     private:
         QString mScDir;
         

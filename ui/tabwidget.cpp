@@ -32,6 +32,7 @@
 #include "browsers/helpbrowser.h"
 #include "browsers/unitybrowser.h"
 #include "data/datathread.h"
+#include "clone/clone.h"
 
 #include <QGridLayout> 
 #include <QMenu>
@@ -384,6 +385,10 @@ QMenu* TabWidget::kueueMainMenu()
     mActionNSA->setText( "Generate NSA Report" );
     mActionNSA->setIcon( QIcon( ":/icons/menus/nsa.png" ) );
     
+    mActionClone = new QAction( kueue );
+    mActionClone->setText( "Clone system from supportconfig" );
+    mActionClone->setIcon( QIcon( ":/icons/conf/studio.png" ) );
+    
     if ( Settings::unityEnabled() )
     {
         mActionAddUnityTab = new QAction( kueue );
@@ -403,6 +408,7 @@ QMenu* TabWidget::kueueMainMenu()
     }
     
     kueue->addAction( mActionNSA );    
+    kueue->addAction( mActionClone );
     kueue->addAction( mActionQuit );
     
     QMenu* view = new QMenu( menu );
@@ -581,6 +587,9 @@ QMenu* TabWidget::kueueMainMenu()
     
     connect( mActionNSA, SIGNAL( activated() ), 
              this, SLOT( makeNsaReport() ) );
+    
+    connect( mActionClone, SIGNAL( activated() ),
+             this, SLOT( cloneSystem() ) );
 
     return menu;
 }
@@ -955,6 +964,12 @@ void TabWidget::makeNsaReport()
 {
     QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
     NSA* n = new NSA( filename ); 
+}
+
+void TabWidget::cloneSystem()
+{
+    QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
+    Clone* c = new Clone( filename );
 }
 
 #include "tabwidget.moc"

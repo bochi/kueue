@@ -105,6 +105,7 @@ class TabWidget : public QTabWidget
         QAction* mActionWebsite;
         QAction* mActionAddUnityTab;
         QAction* mActionNSA;
+        QAction* mActionClone;
         BusyWidget* mBusyWidget;
         
     public slots:
@@ -158,6 +159,7 @@ class TabWidget : public QTabWidget
         void openWebsite();
         void showSearch();
         void makeNsaReport();
+        void cloneSystem();
         
     signals:
         void unityTabMiddleClicked( int );
