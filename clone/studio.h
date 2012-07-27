@@ -26,9 +26,14 @@
 #ifndef STUDIO_H
 #define STUDIO_H
 
-#include "kueuethreads.h"
+#include <QtNetwork>
+#include <QtCore/qvarlengtharray.h>
 
-class Studio : public KueueThread
+class Template;
+class TemplateSet;
+class Appliance;
+
+class Studio : public QObject
 {
     Q_OBJECT
 
@@ -36,14 +41,66 @@ class Studio : public KueueThread
         Studio( const QString& );
         ~Studio();
         
-    private slots:
-        void receivedResponse( QVariantMap );
-        
+    public:
+        QList<TemplateSet> getTemplates();
+        Appliance cloneAppliance( int, const QString&, const QString& );
+        bool uploadRPM( const QString& );
+
     private:
-        QString mScDir;
+        QNetworkAccessManager* mNAM;
+        QString getRequest( const QString& );
+        QString putRequest( const QString&, const QByteArray& );
+        QString postRequest( const QString&, const QByteArray& );
+        QString deleteRequest( const QString& );
         
-    protected: 
-        void run();
+    private slots:
+
+        void networkError( QNetworkReply::NetworkError );
+        void authenticate( QNetworkReply*, QAuthenticator* );
 };
+
+class TemplateSet
+{
+    public:
+        QString name;
+        QString description;
+        QList<Template> templates;
+};
+
+class Template
+{
+    public:
+        int id;
+        QString name;
+        QString description;
+        QString basesystem;
+};
+
+class Appliance
+{
+    public:
+        int id;
+        QString name;
+        QString arch;
+        QString type; 
+        QString last_edited;
+        QString estimated_raw_size;
+        QString estimated_compressed_size;
+        QString edit_url;
+        QString basesystem;
+        QString uuid; 
+        int parent;
+};
+
+class RPM
+{
+    public:
+        int id;
+        QString filename;
+        QString size;
+        bool archive;
+        QString basesystem;
+};
+
 
 #endif

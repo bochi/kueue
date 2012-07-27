@@ -111,6 +111,7 @@ void ArchiveExtract::run()
             final = final.remove( "x " );
         }
         
+        qDebug() << "EXTR" << mDestination + "/" + final;
         emit extracted( mArchivePath, mDestination + "/" + final );
     }
     

@@ -49,7 +49,7 @@ class Clone : public QObject
         
     private slots:
         void downloadScript( const QString&, const QString& );
-        void runScript();
+        void scriptDownloadDone();
         void buildAppliance();
         void cloneDone();
         

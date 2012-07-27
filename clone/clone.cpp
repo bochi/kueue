@@ -48,7 +48,7 @@ Clone::Clone( const QString& sc )
         tmpdir.mkpath( tmpdir.absolutePath() );
     }
     
-    ArchiveExtract* x = new ArchiveExtract( mSupportConfig, mTmpDir.absolutePath() );
+    ArchiveExtract* x = new ArchiveExtract( mSupportConfig, tmpdir.absolutePath() );
     
     connect( x, SIGNAL( extracted( QString, QString ) ),
              this, SLOT( downloadScript( QString, QString ) ) );
@@ -67,12 +67,15 @@ void Clone::downloadScript( const QString& archive, const QString& dir )
     QEventLoop loop;
     QNetworkReply* r;
 
-    r = Network::get( "http://w3.suse.de/~ajohansson/clone.sh" );
+    r = Network::getExt( QUrl( "http://w3.suse.de/~ajohansson/clone.sh" ) );
         
-    QObject::connect( r, SIGNAL( finished() ), 
-                      &loop, SLOT( quit() ) );
-                                    
-    loop.exec();
+    connect( r, SIGNAL( finished() ), 
+             this, SLOT( scriptDownloadDone() ) );
+}
+
+void Clone::scriptDownloadDone()
+{
+    QNetworkReply* r = qobject_cast< QNetworkReply* >( sender() );
                     
     QFile file( mScDir.absolutePath() + "/clone.sh" );
     
@@ -83,16 +86,14 @@ void Clone::downloadScript( const QString& archive, const QString& dir )
     
     file.write( r->readAll() );
     file.close();
-}
-
-void Clone::runScript()
-{
+    
     Build* build = new Build( mScDir.absolutePath() );
     
     connect( build, SIGNAL( threadFinished( KueueThread* ) ),
              this, SLOT( buildAppliance() ) );
     
     KueueThreads::enqueue( build );
+    buildAppliance();
 }
 
 void Clone::buildAppliance()

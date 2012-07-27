@@ -27,7 +27,6 @@
 #include "config.h"
 #include "settings.h"
 
-#include <QSuSEStudio>
 #include <QDebug>
 #include <QObject>
 
