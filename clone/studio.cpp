@@ -310,6 +310,4 @@ RPM Studio::uploadRPM( const QString& basesystem, const QString& filename )
     QString xml = postRequest( basesystem, a  );
 }
 
-
-
 #include "studio.moc"

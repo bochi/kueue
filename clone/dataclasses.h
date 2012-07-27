@@ -23,37 +23,51 @@
 
 */
 
-#ifndef STUDIO_H
-#define STUDIO_H
+#ifndef DATACLASSES_H
+#define DATACLASSES_H
 
-#include <QtNetwork>
 
-#include "dataclasses.h"
-
-class Studio : public QObject
+class Template
 {
-    Q_OBJECT
-
-    public: 
-        Studio( const QString& );
-        ~Studio();
-        
     public:
-        QList<TemplateSet> getTemplates();
-        Appliance cloneAppliance( int, const QString&, const QString& );
-        RPM uploadRPM( const QString&, const QString& );
+        int id;
+        QString name;
+        QString description;
+        QString basesystem;
+};
 
-    private:
-        QNetworkAccessManager* mNAM;
-        QString getRequest( const QString& );
-        QString putRequest( const QString&, const QByteArray& );
-        QString postRequest( const QString&, const QByteArray& );
-        QString deleteRequest( const QString& );
-        
-    private slots:
+class TemplateSet
+{
+    public:
+        QString name;
+        QString description;
+        QList<Template> templates;
+};
 
-        void networkError( QNetworkReply::NetworkError );
-        void authenticate( QNetworkReply*, QAuthenticator* );
+class Appliance
+{
+    public:
+        int id;
+        QString name;
+        QString arch;
+        QString type; 
+        QString last_edited;
+        QString estimated_raw_size;
+        QString estimated_compressed_size;
+        QString edit_url;
+        QString basesystem;
+        QString uuid; 
+        int parent;
+};
+
+class RPM
+{
+    public:
+        int id;
+        QString filename;
+        QString size;
+        bool archive;
+        QString basesystem;
 };
 
 #endif
