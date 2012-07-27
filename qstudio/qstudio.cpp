@@ -23,7 +23,7 @@
 
 */
 
-#include "studio.h"
+#include "qstudio.h"
 #include "config.h"
 #include "settings.h"
 
@@ -35,9 +35,9 @@
 #include <QDir>
 #include <QDateTime>
 
-Studio::Studio( const QString& server, const QString& user, const QString& key )
+QStudio::QStudio( const QString& server, const QString& user, const QString& key )
 {
-    qDebug() << "[STUDIO] Constructing";
+    qDebug() << "[QSTUDIO] Constructing";
 
     mServer = server;
     mUser = user;
@@ -62,12 +62,12 @@ Studio::Studio( const QString& server, const QString& user, const QString& key )
     }
 }
 
-Studio::~Studio()
+QStudio::~QStudio()
 {
-    qDebug() << "[STUDIO] Destroying";
+    qDebug() << "[QSTUDIO] Destroying";
 }
 
-void Studio::log( const QString& f, const QString& x )
+void QStudio::log( const QString& f, const QString& x )
 {
     if ( Settings::studioLogEnabled() )
     {
@@ -93,7 +93,7 @@ void Studio::log( const QString& f, const QString& x )
     }
 }
 
-QString Studio::getRequest( const QString& req )
+QString QStudio::getRequest( const QString& req )
 {
     QEventLoop loop;
     QString result;
@@ -115,7 +115,7 @@ QString Studio::getRequest( const QString& req )
     return result;
 }
 
-QString Studio::putRequest( const QString& req, const QByteArray& data )
+QString QStudio::putRequest( const QString& req, const QByteArray& data )
 {
     QEventLoop loop;
     QString result;
@@ -136,7 +136,7 @@ QString Studio::putRequest( const QString& req, const QByteArray& data )
     return result;
 }
 
-QString Studio::postRequest( const QString& req, const QByteArray& data )
+QString QStudio::postRequest( const QString& req, const QByteArray& data )
 {
     QEventLoop loop;
     QString result;
@@ -157,7 +157,7 @@ QString Studio::postRequest( const QString& req, const QByteArray& data )
     return result;
 }
 
-QString Studio::deleteRequest( const QString& req )
+QString QStudio::deleteRequest( const QString& req )
 {
     QEventLoop loop;
     QString result;
@@ -178,18 +178,18 @@ QString Studio::deleteRequest( const QString& req )
     return result;
 }
 
-void Studio::authenticate( QNetworkReply* reply, QAuthenticator* auth )
+void QStudio::authenticate( QNetworkReply* reply, QAuthenticator* auth )
 {
     auth->setUser( mUser );
     auth->setPassword( mApiKey );
 }
 
-void Studio::networkError( QNetworkReply::NetworkError error )
+void QStudio::networkError( QNetworkReply::NetworkError error )
 {
     qDebug() << "NETWORK ERROR" << error;
 }
 
-QList<TemplateSet> Studio::getTemplates()
+QList<TemplateSet> QStudio::getTemplates()
 {
     QString xml = getRequest( "/user/template_sets" );
     QList<TemplateSet> list;
@@ -268,7 +268,7 @@ QList<TemplateSet> Studio::getTemplates()
     return list;
 }
 
-Appliance Studio::cloneAppliance( int id, const QString& name, const QString& arch )
+Appliance QStudio::cloneAppliance( int id, const QString& name, const QString& arch )
 {
     QByteArray empty;
     QString xml = postRequest( "/user/appliances?clone_from=" + QString::number( id ) + "&name=" + name + "&arch=" + arch, empty );
@@ -340,7 +340,7 @@ Appliance Studio::cloneAppliance( int id, const QString& name, const QString& ar
     return app;
 }
 
-RPM Studio::uploadRPM( const QString& basesystem, const QString& filename )
+RPM QStudio::uploadRPM( const QString& basesystem, const QString& filename )
 {
     RPM rpm;
     QFile file( filename );
@@ -395,7 +395,7 @@ RPM Studio::uploadRPM( const QString& basesystem, const QString& filename )
     return rpm;
 }
 
-bool Studio::addUserRepository( int id )
+bool QStudio::addUserRepository( int id )
 {
     QByteArray empty;
     QString xml = postRequest( "/user/appliances/" + QString::number( id )  + "/cmd/add_user_repository", empty );

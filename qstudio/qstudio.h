@@ -30,13 +30,13 @@
 
 #include "dataclasses.h"
 
-class Studio : public QObject
+class QStudio : public QObject
 {
     Q_OBJECT
 
     public: 
-        Studio( const QString&, const QString& );
-        ~Studio();
+        QStudio( const QString&, const QString& );
+        ~QStudio();
         
     public:
         QList<TemplateSet> getTemplates();
