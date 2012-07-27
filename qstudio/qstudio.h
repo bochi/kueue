@@ -23,8 +23,8 @@
 
 */
 
-#ifndef STUDIO_H
-#define STUDIO_H
+#ifndef QSTUDIO_H
+#define QSTUDIO_H
 
 #include <QtNetwork>
 
@@ -35,7 +35,7 @@ class QStudio : public QObject
     Q_OBJECT
 
     public: 
-        QStudio( const QString&, const QString& );
+        QStudio( const QString&, const QString&, const QString&, bool = false );
         ~QStudio();
         
     public:
@@ -45,6 +45,7 @@ class QStudio : public QObject
         bool addUserRepository( int );
 
     private:
+        bool mDebug;
         QString mUser;
         QString mApiKey;
         QString mServer;

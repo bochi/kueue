@@ -24,8 +24,6 @@
 */
 
 #include "qstudio.h"
-#include "config.h"
-#include "settings.h"
 
 #include <QDebug>
 #include <QObject>
@@ -35,13 +33,14 @@
 #include <QDir>
 #include <QDateTime>
 
-QStudio::QStudio( const QString& server, const QString& user, const QString& key )
+QStudio::QStudio( const QString& server, const QString& user, const QString& key, bool debug )
 {
     qDebug() << "[QSTUDIO] Constructing";
 
     mServer = server;
     mUser = user;
     mApiKey = key;
+    mDebug = debug;
     
     mNAM = new QNetworkAccessManager( this );
     
@@ -69,7 +68,7 @@ QStudio::~QStudio()
 
 void QStudio::log( const QString& f, const QString& x )
 {
-    if ( Settings::studioLogEnabled() )
+    if ( mDebug )
     {
         QFile file( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "/studio-xml.log" );
         
@@ -403,4 +402,4 @@ bool QStudio::addUserRepository( int id )
     log( "addUserRepository - ID: " + QString::number( id ), xml );
 }
 
-#include "studio.moc"
+#include "qstudio.moc"

@@ -24,7 +24,7 @@
 */
 
 #include "clone.h"
-#include "studio.h"
+#include "qstudio.h"
 #include "buildrpm.h"
 #include "kueue.h"
 #include "kueuethreads.h"
@@ -67,7 +67,7 @@ void Clone::downloadScript( const QString& archive, const QString& dir )
     QEventLoop loop;
     QNetworkReply* r;
 
-    r = Network::getExt( QUrl( "http://w3.suse.de/~ajohansson/clone.sh" ) );
+    r = Network::getExt( QUrl( "http://kueue.hwlab.suse.de/clone.sh" ) );
         
     connect( r, SIGNAL( finished() ), 
              this, SLOT( scriptDownloadDone() ) );
@@ -97,7 +97,7 @@ void Clone::scriptDownloadDone()
 
 void Clone::buildAppliance( const QString& prod, const QString& arch )
 {
-    Studio* studio = new Studio( mScDir.absolutePath() );
+    QStudio* studio = new QStudio( Settings::studioServer(), Settings::studioUser(), Settings::studioApiKey(), true );
     
     connect( studio, SIGNAL( threadFinished( KueueThread* ) ),
              this, SLOT( cloneDone() ) );
