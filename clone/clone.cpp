@@ -86,7 +86,7 @@ void Clone::scriptDownloadDone()
     
     file.write( r->readAll() );
     file.close();
-    
+   
     Build* build = new Build( mScDir.absolutePath() );
     
     connect( build, SIGNAL( threadFinished( KueueThread* ) ),

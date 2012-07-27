@@ -773,6 +773,19 @@ void Settings::setStudioEnabled( const bool& b )
     settings.sync();
 }
 
+bool Settings::studioLogEnabled()
+{
+    QSettings settings;
+    return settings.value( "studioLogEnabled", true ).toBool();
+}
+
+void Settings::setStudioLogEnabled( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "studioLogEnabled", b );
+    settings.sync();
+}
+
 QString Settings::studioServer()
 {
     QSettings settings;

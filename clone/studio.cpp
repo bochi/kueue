@@ -30,6 +30,10 @@
 #include <QDebug>
 #include <QObject>
 #include <QtXml>
+#include <QDesktopServices>
+#include <QFile>
+#include <QDir>
+#include <QDateTime>
 
 Studio::Studio( const QString& sc )
 {
@@ -57,6 +61,32 @@ Studio::Studio( const QString& sc )
 Studio::~Studio()
 {
     qDebug() << "[STUDIO] Destroying";
+}
+
+void Studio::log( const QString& f, const QString& x )
+{
+    if ( Settings::studioLogEnabled() )
+    {
+        QFile file( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "/studio-xml.log" );
+        
+        if ( !file.open( QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text ) )
+        {
+            qDebug() << "Logfile not open";
+            return;
+        }
+        
+        QString d = "[" + QDateTime::currentDateTime().toString( "MM/dd hh:mm:ss" ) + "]";
+        QTextStream out(&file);
+        
+        out << "\n\n";
+        out << "-----" + d + "-----------------------------------------------------------------------------------------";
+        out << "\n\n";
+        out << f;
+        out << "\n\n";
+        out << x;
+        
+        file.close();
+    }
 }
 
 QString Studio::getRequest( const QString& req )
@@ -229,6 +259,8 @@ QList<TemplateSet> Studio::getTemplates()
         list.append( ts );
     }
     
+    log( "getTemplates", xml );
+    
     return list;
 }
 
@@ -299,6 +331,8 @@ Appliance Studio::cloneAppliance( int id, const QString& name, const QString& ar
         n = n.nextSibling();
     }
     
+    log( "cloneAppliance - ID: " + QString::number( id ) + " - NAME: " + name + " - ARCH: " + arch, xml );
+    
     return app;
 }
 
@@ -308,7 +342,7 @@ RPM Studio::uploadRPM( const QString& basesystem, const QString& filename )
     QFile file( filename );
     QByteArray a( file.readAll() );
     
-    QString xml = postRequest( basesystem, a );
+    QString xml = postRequest( "/user/rpms?base_system=" + basesystem, a );
     
     QDomDocument doc;
     doc.setContent( xml );
@@ -352,7 +386,17 @@ RPM Studio::uploadRPM( const QString& basesystem, const QString& filename )
         n = n.nextSibling();
     }
     
+    log( "uploadRPM - BASESYSTEM: " + basesystem + " - FILENAME: " + filename, xml );
+    
     return rpm;
+}
+
+bool Studio::addUserRepository( int id )
+{
+    QByteArray empty;
+    QString xml = postRequest( "/user/appliances/" + QString::number( id )  + "/cmd/add_user_repository", empty );
+    
+    log( "addUserRepository - ID: " + QString::number( id ), xml );
 }
 
 #include "studio.moc"

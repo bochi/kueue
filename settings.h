@@ -215,6 +215,9 @@ class Settings
         static bool studioEnabled();
         static void setStudioEnabled( const bool& );
         
+        static bool studioLogEnabled();
+        static void setStudioLogEnabled( const bool& );
+        
         static QString studioScriptVersion();
         static void setStudioScriptVersion( const QString& );
         

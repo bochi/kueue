@@ -42,6 +42,7 @@ class Studio : public QObject
         QList<TemplateSet> getTemplates();
         Appliance cloneAppliance( int, const QString&, const QString& );
         RPM uploadRPM( const QString&, const QString& );
+        bool addUserRepository( int );
 
     private:
         QNetworkAccessManager* mNAM;
@@ -51,7 +52,7 @@ class Studio : public QObject
         QString deleteRequest( const QString& );
         
     private slots:
-
+        void log( const QString&, const QString& );
         void networkError( QNetworkReply::NetworkError );
         void authenticate( QNetworkReply*, QAuthenticator* );
 };

@@ -29,6 +29,7 @@
 
 #include <QDebug>
 #include <QObject>
+#include <QProcess>
 
 Build::Build( const QString& sc ) : KueueThread()
 {
@@ -44,6 +45,22 @@ Build::~Build()
 
 void Build::run()
 {
+    QProcess p;
+    
+    emit threadStarted( "Building RPM...", 0 );
+    
+    p.setWorkingDirectory( mScDir );
+    
+    p.start( "bash", QStringList() << "clone.sh" );
+    
+    if (  !p.waitForFinished ( -1 ) )
+    {
+        return;
+    }
+    
+    QString out = p.readAllStandardOutput(); 
+    
+    qDebug() << out;
 }
 
 #include "build.moc"
