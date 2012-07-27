@@ -35,10 +35,14 @@
 #include <QDir>
 #include <QDateTime>
 
-Studio::Studio( const QString& sc )
+Studio::Studio( const QString& server, const QString& user, const QString& key )
 {
     qDebug() << "[STUDIO] Constructing";
 
+    mServer = server;
+    mUser = user;
+    mApiKey = key;
+    
     mNAM = new QNetworkAccessManager( this );
     
     connect( mNAM, SIGNAL( authenticationRequired( QNetworkReply*, QAuthenticator* ) ), 
@@ -94,7 +98,7 @@ QString Studio::getRequest( const QString& req )
     QEventLoop loop;
     QString result;
     
-    QNetworkRequest request( QUrl( "http://" + Settings::studioServer() + "/api/v2" + req ) );
+    QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
     QNetworkReply *reply = mNAM->get( request );
     reply->ignoreSslErrors(); 
     qDebug() << request.url();
@@ -116,7 +120,7 @@ QString Studio::putRequest( const QString& req, const QByteArray& data )
     QEventLoop loop;
     QString result;
     
-    QNetworkRequest request( QUrl( "http://" + Settings::studioServer() + "/api/v2" + req ) );
+    QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
     QNetworkReply *reply = mNAM->put( request, data );
      
     QObject::connect( reply, SIGNAL( finished() ), 
@@ -137,7 +141,7 @@ QString Studio::postRequest( const QString& req, const QByteArray& data )
     QEventLoop loop;
     QString result;
     
-    QNetworkRequest request( QUrl( "http://" + Settings::studioServer() + "/api/v2" + req ) );
+    QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
     QNetworkReply *reply = mNAM->get( request );
      
     QObject::connect( reply, SIGNAL( finished() ), 
@@ -158,7 +162,7 @@ QString Studio::deleteRequest( const QString& req )
     QEventLoop loop;
     QString result;
     
-    QNetworkRequest request( QUrl( "http://" + Settings::studioServer() + "/api/v2" + req ) );
+    QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
     QNetworkReply *reply = mNAM->get( request );
      
     QObject::connect( reply, SIGNAL( finished() ), 
@@ -176,8 +180,8 @@ QString Studio::deleteRequest( const QString& req )
 
 void Studio::authenticate( QNetworkReply* reply, QAuthenticator* auth )
 {
-    auth->setUser( Settings::studioUser() );
-    auth->setPassword( Settings::studioApiKey() );
+    auth->setUser( mUser );
+    auth->setPassword( mApiKey );
 }
 
 void Studio::networkError( QNetworkReply::NetworkError error )

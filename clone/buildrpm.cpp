@@ -23,7 +23,7 @@
 
 */
 
-#include "build.h"
+#include "buildrpm.h"
 #include "config.h"
 #include "settings.h"
 
@@ -31,19 +31,19 @@
 #include <QObject>
 #include <QProcess>
 
-Build::Build( const QString& sc ) : KueueThread()
+BuildRPM::BuildRPM( const QString& sc ) : KueueThread()
 {
     qDebug() << "[BUILD] Constructing";
 
     mScDir = sc;
 }
 
-Build::~Build()
+BuildRPM::~BuildRPM()
 {
     qDebug() << "[BUILD] Destroying";
 }
 
-void Build::run()
+void BuildRPM::run()
 {
     QProcess p;
     
@@ -60,7 +60,15 @@ void Build::run()
     
     QString out = p.readAllStandardOutput(); 
     
-    qDebug() << out;
+    if ( out.startsWith( "SUCCESS" ) )
+    {
+        QStringList l = out.split( "/" );
+        emit success( l.at( 1 ), l.at( 2 ) );
+    }
+    else if ( out.startsWith( "FAILED" ) )
+    {
+        emit failed( out.split( "/" ).at( 1 ) );
+    }
 }
 
-#include "build.moc"
+#include "buildrpm.moc"

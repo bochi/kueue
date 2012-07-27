@@ -35,7 +35,7 @@ class Studio : public QObject
     Q_OBJECT
 
     public: 
-        Studio( const QString& );
+        Studio( const QString&, const QString& );
         ~Studio();
         
     public:
@@ -45,6 +45,9 @@ class Studio : public QObject
         bool addUserRepository( int );
 
     private:
+        QString mUser;
+        QString mApiKey;
+        QString mServer;
         QNetworkAccessManager* mNAM;
         QString getRequest( const QString& );
         QString putRequest( const QString&, const QByteArray& );

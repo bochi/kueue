@@ -145,7 +145,7 @@ SET( kueue_CPP  main.cpp
 		
 		clone/clone.cpp
 		clone/studio.cpp
-		clone/build.cpp )
+		clone/buildrpm.cpp )
                 
 SET( kueue_QRC  kueue.qrc )
 

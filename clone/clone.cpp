@@ -25,7 +25,7 @@
 
 #include "clone.h"
 #include "studio.h"
-#include "build.h"
+#include "buildrpm.h"
 #include "kueue.h"
 #include "kueuethreads.h"
 #include "archivers/archiveextract.h"
@@ -87,16 +87,15 @@ void Clone::scriptDownloadDone()
     file.write( r->readAll() );
     file.close();
    
-    Build* build = new Build( mScDir.absolutePath() );
+    BuildRPM* build = new BuildRPM( mScDir.absolutePath() );
     
-    connect( build, SIGNAL( threadFinished( KueueThread* ) ),
-             this, SLOT( buildAppliance() ) );
+    connect( build, SIGNAL( success( QString, QString ) ), 
+             this, SLOT( buildAppliance( QString, QString ) ) );
     
     KueueThreads::enqueue( build );
-    buildAppliance();
 }
 
-void Clone::buildAppliance()
+void Clone::buildAppliance( const QString& prod, const QString& arch )
 {
     Studio* studio = new Studio( mScDir.absolutePath() );
     

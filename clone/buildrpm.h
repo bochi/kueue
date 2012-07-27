@@ -23,24 +23,28 @@
 
 */
 
-#ifndef BUILD_H
-#define BUILD_H
+#ifndef BUILDRPM_H
+#define BUILDRPM_H
 
 #include "kueuethreads.h"
 
-class Build : public KueueThread
+class BuildRPM : public KueueThread
 {
     Q_OBJECT
 
     public: 
-        Build( const QString& );
-        ~Build();
+        BuildRPM( const QString& );
+        ~BuildRPM();
         
     private:
         QString mScDir;
         
     protected: 
         void run();
+        
+    signals:
+        void success( const QString&, const QString& );
+        void failed( const QString& );
 };
 
 #endif
