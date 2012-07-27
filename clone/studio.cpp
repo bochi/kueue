@@ -304,10 +304,55 @@ Appliance Studio::cloneAppliance( int id, const QString& name, const QString& ar
 
 RPM Studio::uploadRPM( const QString& basesystem, const QString& filename )
 {
+    RPM rpm;
     QFile file( filename );
     QByteArray a( file.readAll() );
     
-    QString xml = postRequest( basesystem, a  );
+    QString xml = postRequest( basesystem, a );
+    
+    QDomDocument doc;
+    doc.setContent( xml );
+    
+    QDomElement docelement = doc.documentElement();
+    
+    QDomNode n = docelement.firstChild();
+    
+    while ( !n.isNull() )
+    {
+        QDomElement e = n.toElement();
+        
+        if ( e.tagName() == "id" )
+        {
+            rpm.id = e.text().toInt();
+        }
+        else if ( e.tagName() == "filename" )
+        {
+            rpm.filename = e.text();
+        }
+        else if ( e.tagName() == "size" )
+        {
+            rpm.size = e.text();
+        }
+        else if ( e.tagName() == "archive" )
+        {
+            if ( e.text() == "true" )
+            {
+                rpm.archive = true;
+            }
+            else
+            {
+                rpm.archive = false;
+            }
+        }
+        else if ( e.tagName() == "base_system" )
+        {
+            rpm.basesystem = e.text();
+        }
+        
+        n = n.nextSibling();
+    }
+    
+    return rpm;
 }
 
 #include "studio.moc"
