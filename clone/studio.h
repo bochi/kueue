@@ -44,7 +44,7 @@ class Studio : public QObject
     public:
         QList<TemplateSet> getTemplates();
         Appliance cloneAppliance( int, const QString&, const QString& );
-        bool uploadRPM( const QString& );
+        RPM uploadRPM( const QString& );
 
     private:
         QNetworkAccessManager* mNAM;
