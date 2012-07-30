@@ -26,6 +26,7 @@
 #ifndef QSTUDIO_H
 #define QSTUDIO_H
 
+#include <QObject>
 #include <QtNetwork>
 
 #include "dataclasses.h"
@@ -38,13 +39,11 @@ class QStudio : public QObject
         QStudio( const QString&, const QString&, const QString&, bool = false );
         ~QStudio();
         
-    public:
         QList<TemplateSet> getTemplates();
         Appliance cloneAppliance( int, const QString&, const QString& );
         RPM uploadRPM( const QString&, const QString& );
-        int wtf( int );
         bool addUserRepository( int );
-        
+        bool test( int );
 
     private:
         bool mDebug;
