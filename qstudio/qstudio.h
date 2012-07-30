@@ -43,7 +43,7 @@ class QStudio : public QObject
         Appliance cloneAppliance( int, const QString&, const QString& );
         RPM uploadRPM( const QString&, const QString& );
         bool addUserRepository( int );
-        bool test( int );
+	int startApplianceBuild( int );
 
     private:
         bool mDebug;

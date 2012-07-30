@@ -398,15 +398,20 @@ RPM QStudio::uploadRPM( const QString& basesystem, const QString& filename )
     return rpm;
 }
 
-/*int QStudio::wtf( int id )
+int QStudio::startApplianceBuild( int id )
 {
     QByteArray empty;
     QString xml = postRequest( "/user/running_builds?appliance_id=" + QString::number( id ) + "&image_type=vmx", empty );
     
-    log( "startBuild - ID: " + QString::number( id ), xml );
+    log( "startApplianceBuild - ID: " + QString::number( id ), xml );
     
-    return 1;
-}*/
+    QDomDocument doc;
+    doc.setContent( xml );
+    QDomElement docelement = doc.documentElement();
+    QDomNode n = docelement.firstChildElement( "id" );
+
+    return n.toElement().text().toInt();
+}
 
 bool QStudio::addUserRepository( int id )
 {
@@ -415,17 +420,5 @@ bool QStudio::addUserRepository( int id )
     
     log( "addUserRepository - ID: " + QString::number( id ), xml );
 }
-
-/*int QStudio::monitorBuildStatus( int id )
-{
-    return 1;
-}*/
-
-bool QStudio::test(int a )
-{
-    return true;
-}
-
-
 
 #include "qstudio.moc"

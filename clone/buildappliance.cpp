@@ -95,8 +95,7 @@ void BuildAppliance::run()
         qDebug() << "Uploaded" << r.filename;
     }
     
-    int build = studio->addUserRepository(id);
-    bool bla = studio->test(id);
+    int build = studio->startApplianceBuild( id );
     
     qDebug() << build;
     
