@@ -52,6 +52,7 @@ class Clone : public QObject
         void scriptDownloadDone();
         void buildAppliance( const QString&, const QString& );
         void cloneDone();
+        void failed( const QString& );
         
     signals:
         void buildFinished();    

@@ -46,19 +46,6 @@ QStudio::QStudio( const QString& server, const QString& user, const QString& key
     
     connect( mNAM, SIGNAL( authenticationRequired( QNetworkReply*, QAuthenticator* ) ), 
              this, SLOT( authenticate( QNetworkReply*, QAuthenticator* ) ) );
-    
-    QList<TemplateSet> l = getTemplates();
-    
-    for ( int i = 0; i < l.size(); ++i ) 
-    {   
-        TemplateSet tset = l.at( i );
-        QList<Template> tls = tset.templates;
-        
-        for ( int x = 0; x < tls.size(); ++x ) 
-        {   
-            qDebug() << "TLS" << tls.at( x ).name;
-        }
-    }
 }
 
 QStudio::~QStudio()
@@ -98,6 +85,8 @@ QString QStudio::getRequest( const QString& req )
     QString result;
     
     QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
+    
+    qDebug() << request.url();
     QNetworkReply *reply = mNAM->get( request );
     reply->ignoreSslErrors(); 
     qDebug() << request.url();
@@ -121,7 +110,7 @@ QString QStudio::putRequest( const QString& req, const QByteArray& data )
     
     QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
     QNetworkReply *reply = mNAM->put( request, data );
-     
+    qDebug() << request.url(); 
     QObject::connect( reply, SIGNAL( finished() ), 
                       &loop, SLOT( quit() ) );
      
@@ -139,10 +128,11 @@ QString QStudio::postRequest( const QString& req, const QByteArray& data )
 {
     QEventLoop loop;
     QString result;
+    QByteArray empty;
     
     QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
-    QNetworkReply *reply = mNAM->get( request );
-     
+    QNetworkReply *reply = mNAM->post( request, empty );
+    qDebug() << request.url(); 
     QObject::connect( reply, SIGNAL( finished() ), 
                       &loop, SLOT( quit() ) );
      
@@ -343,9 +333,23 @@ RPM QStudio::uploadRPM( const QString& basesystem, const QString& filename )
 {
     RPM rpm;
     QFile file( filename );
-    QByteArray a( file.readAll() );
+    QByteArray a;
     
-    QString xml = postRequest( "/user/rpms?base_system=" + basesystem, a );
+    QString boundary = "---------------------------193971182219750";
+ 
+    QByteArray datas(QString("--" + boundary + "\r\n").toAscii());
+    datas += "Content-Disposition: form-data; filename=\"" + QFileInfo( filename ).fileName() + "\"\r\n";
+    datas += "Content-Type: application/x-rpm\r\n\r\n";
+    
+    datas += file.readAll();
+    datas += "\r\n";
+    datas += QString("--" + boundary + "\r\n").toAscii();
+    datas += "Content-Disposition: form-data; name=\"upload\"\r\n\r\n";
+    datas += "Uploader\r\n";
+    datas += QString("--" + boundary + "--\r\n").toAscii();
+    
+       
+    QString xml = postRequest( "/user/rpms?base_system=" + basesystem, datas );
     
     QDomDocument doc;
     doc.setContent( xml );
@@ -394,6 +398,16 @@ RPM QStudio::uploadRPM( const QString& basesystem, const QString& filename )
     return rpm;
 }
 
+int QStudio::wtf( int id )
+{
+    QByteArray empty;
+    QString xml = postRequest( "/user/running_builds?appliance_id=" + QString::number( id ) + "&image_type=vmx", empty );
+    
+    log( "startBuild - ID: " + QString::number( id ), xml );
+    
+    return 1;
+}
+
 bool QStudio::addUserRepository( int id )
 {
     QByteArray empty;
@@ -401,5 +415,7 @@ bool QStudio::addUserRepository( int id )
     
     log( "addUserRepository - ID: " + QString::number( id ), xml );
 }
+
+
 
 #include "qstudio.moc"

@@ -26,10 +26,12 @@
 #include "clone.h"
 #include "qstudio.h"
 #include "buildrpm.h"
+#include "buildappliance.h"
 #include "kueue.h"
 #include "kueuethreads.h"
 #include "archivers/archiveextract.h"
 
+#include <QMessageBox>
 #include <QFileDialog>
 #include <QToolBar>
 #include <QDesktopServices>
@@ -92,19 +94,37 @@ void Clone::scriptDownloadDone()
     connect( build, SIGNAL( success( QString, QString ) ), 
              this, SLOT( buildAppliance( QString, QString ) ) );
     
+    connect( build, SIGNAL( failed( QString ) ), 
+             this, SLOT( failed( QString ) ) );
+    
     KueueThreads::enqueue( build );
 }
 
 void Clone::buildAppliance( const QString& prod, const QString& arch )
 {
-    QStudio* studio = new QStudio( Settings::studioServer(), Settings::studioUser(), Settings::studioApiKey(), true );
+    qDebug() << "BUILDAPPLIANCE" << prod.trimmed() << arch.trimmed();
+    BuildAppliance* build = new BuildAppliance( mScDir.absolutePath(), prod.trimmed(), arch.trimmed() );
     
-    connect( studio, SIGNAL( threadFinished( KueueThread* ) ),
-             this, SLOT( cloneDone() ) );
+    connect( build, SIGNAL( success( QString, QString ) ), 
+             this, SLOT( buildAppliance( QString, QString ) ) );
+    
+    KueueThreads::enqueue( build );
 }
 
 void Clone::cloneDone()
 {
+}
+
+void Clone::failed( const QString& msg )
+{
+    QMessageBox* box = new QMessageBox;
+    box->setText( msg );
+    box->setWindowTitle( "Error cloning system" );
+    box->setIcon( QMessageBox::Critical );
+
+    box->exec();
+
+    delete box;
 }
 
 #include "clone.moc"

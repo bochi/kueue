@@ -42,7 +42,9 @@ class QStudio : public QObject
         QList<TemplateSet> getTemplates();
         Appliance cloneAppliance( int, const QString&, const QString& );
         RPM uploadRPM( const QString&, const QString& );
+        int wtf( int );
         bool addUserRepository( int );
+        
 
     private:
         bool mDebug;

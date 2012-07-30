@@ -59,6 +59,7 @@ void BuildRPM::run()
     }
     
     QString out = p.readAllStandardOutput(); 
+    qDebug() << "[BUILDRPM]" << out;
     
     if ( out.startsWith( "SUCCESS" ) )
     {
@@ -67,7 +68,7 @@ void BuildRPM::run()
     }
     else if ( out.startsWith( "FAILED" ) )
     {
-        emit failed( out.split( "/" ).at( 1 ) );
+        emit failed( out.remove( "FAILED/" ) );
     }
 }
 
