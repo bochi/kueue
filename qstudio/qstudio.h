@@ -55,6 +55,7 @@ class QStudio : public QObject
         QString getRequest( const QString& );
         QString putRequest( const QString&, const QByteArray& );
         QString postRequest( const QString&, const QByteArray& );
+        QString postFile( const QString&, const QString& );
         QString deleteRequest( const QString& );
         
     private slots:

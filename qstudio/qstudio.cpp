@@ -99,6 +99,7 @@ QString QStudio::getRequest( const QString& req )
     loop.exec();
     
     result = reply->readAll();
+    reply->deleteLater();
     
     return result;
 }
@@ -120,6 +121,7 @@ QString QStudio::putRequest( const QString& req, const QByteArray& data )
     loop.exec();
     
     result = reply->readAll();
+    reply->deleteLater();
     
     return result;
 }
@@ -128,11 +130,11 @@ QString QStudio::postRequest( const QString& req, const QByteArray& data )
 {
     QEventLoop loop;
     QString result;
-    QByteArray empty;
     
     QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
-    QNetworkReply *reply = mNAM->post( request, empty );
-    qDebug() << request.url(); 
+        
+    QNetworkReply *reply = mNAM->post( request, data );
+    
     QObject::connect( reply, SIGNAL( finished() ), 
                       &loop, SLOT( quit() ) );
      
@@ -142,6 +144,46 @@ QString QStudio::postRequest( const QString& req, const QByteArray& data )
     loop.exec();
     
     result = reply->readAll();
+    reply->deleteLater();
+    
+    return result;
+}
+
+QString QStudio::postFile( const QString& req, const QString& fn )
+{
+    QEventLoop loop;
+    QString result;
+    
+    QHttpMultiPart* mp = new QHttpMultiPart( QHttpMultiPart::FormDataType );
+    QHttpPart fp;
+    QString h = "form-data; name=\"file\"; filename=\"" + QFileInfo( fn ).fileName() + "\"\n";
+
+    fp.setHeader( QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream" ) );
+    fp.setHeader( QNetworkRequest::ContentDispositionHeader, QVariant( h ) );
+    
+    QFile* file = new QFile( fn );
+    file->open( QIODevice::ReadOnly );
+    fp.setBodyDevice( file );
+    file->setParent( mp );
+
+    mp->append( fp );
+    
+    QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
+        
+    QNetworkReply* reply = mNAM->post( request, mp );
+    
+    mp->setParent( reply ); 
+    
+    QObject::connect( reply, SIGNAL( finished() ), 
+                      &loop, SLOT( quit() ) );
+     
+    connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
+             this, SLOT( networkError( QNetworkReply::NetworkError ) ) );
+                                    
+    loop.exec();
+    
+    result = reply->readAll();
+    reply->deleteLater();
     
     return result;
 }
@@ -163,6 +205,7 @@ QString QStudio::deleteRequest( const QString& req )
     loop.exec();
     
     result = reply->readAll();
+    reply->deleteLater();
     
     return result;
 }
@@ -332,30 +375,8 @@ Appliance QStudio::cloneAppliance( int id, const QString& name, const QString& a
 RPM QStudio::uploadRPM( const QString& basesystem, const QString& filename )
 {
     RPM rpm;
-    
-    QByteArray f;
-    
-    QFile file( filename );
-    if ( file.open(QIODevice::ReadOnly) )
-    {
-        f = file.readAll();
-    }
-    else
-    {
-        return rpm;
-    }
-
-    QString boundary = "----------------------------81c4238448f2";
-                        
-    QByteArray filearray;
-    filearray += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n";
-    filearray += boundary + "\r";
-    filearray += "Content-Disposition: form-data; name=\"file\"; filename=\"" + QFileInfo( filename ).fileName() + "\"\r";
-    filearray += "Content-Type: application/octet-stream\r\n";
-    filearray += f;
-    filearray += "--" + boundary + "--\r\n";    
        
-    QString xml = postRequest( "/user/rpms?base_system=" + basesystem, filearray );
+    QString xml = postFile( "/user/rpms?base_system=" + basesystem, filename );
     
     QDomDocument doc;
     doc.setContent( xml );
@@ -400,8 +421,7 @@ RPM QStudio::uploadRPM( const QString& basesystem, const QString& filename )
     }
     
     log( "uploadRPM - BASESYSTEM: " + basesystem + " - FILENAME: " + filename, xml );
-    log( "uploadRPM - BASESYSTEM: " + basesystem + " - FILENAME: " + filename, filearray );
-    
+        
     return rpm;
 }
 
@@ -426,6 +446,15 @@ bool QStudio::addUserRepository( int id )
     QString xml = postRequest( "/user/appliances/" + QString::number( id )  + "/cmd/add_user_repository", empty );
     
     log( "addUserRepository - ID: " + QString::number( id ), xml );
+    
+    if ( xml.contains( "success" ) )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 BuildStatus QStudio::getBuildStatus( int id )

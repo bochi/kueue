@@ -82,7 +82,6 @@ void BuildAppliance::run()
     }
     
     Appliance a = studio->cloneAppliance( id, "BochiClone", mArch );
-    qDebug() << "Cloned" << a.name << a.id;
     
     id = a.id;
     
@@ -96,7 +95,14 @@ void BuildAppliance::run()
         qDebug() << "Uploaded" << r.filename;
     }
     
-    int build = studio->startApplianceBuild( id );
+    bool aur = studio->addUserRepository( id );
+    
+    int build;
+    
+    if ( aur )
+    {
+        build = studio->startApplianceBuild( id );
+    }
     
     BuildStatus bs = studio->getBuildStatus( build );
     qDebug() << bs.state << bs.percent;
