@@ -245,7 +245,8 @@ IF ( QT_HAS_DBUS AND NOT APPLE )
                                  ${QT_QTGUI_LIBRARY} 
                                  ${QT_SINGLEAPP_LIBRARY} 
 				 ${SIMPLECRYPT_LIBRARY} 
-                                 ${QT_STUDIO_LIBRARY} ) 
+                                 ${QT_STUDIO_LIBRARY}
+                                 ${QT_QTTEST_LIBRARY} ) 
 ELSEIF ( APPLE )
 
     TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
@@ -258,7 +259,8 @@ ELSEIF ( APPLE )
                                  ${QT_QTGUI_LIBRARY} 
                                  ${QT_SINGLEAPP_LIBRARY}
 				 ${SIMPLECRYPT_LIBRARY} 
-                                 ${QT_STUDIO_LIBRARY} ) 
+                                 ${QT_STUDIO_LIBRARY}
+                                 ${QT_QTTEST_LIBRARY} ) 
 
 ELSE ()
 
@@ -273,7 +275,8 @@ ELSE ()
                                  ${QT_QTGUI_LIBRARY} 
                                  ${QT_SINGLEAPP_LIBRARY} 
 				 ${SIMPLECRYPT_LIBRARY} 
-                                 ${QT_STUDIO_LIBRARY} )
+                                 ${QT_STUDIO_LIBRARY} 
+                                 ${QT_QTTEST_LIBRARY} )
 
 
 ENDIF ()

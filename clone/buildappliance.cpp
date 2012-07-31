@@ -31,6 +31,7 @@
 #include <QObject>
 #include <QProcess>
 #include <QStudio>
+#include <QTest>
 
 BuildAppliance::BuildAppliance( const QString& sc, const QString& prod, const QString& arch ) : KueueThread()
 {
@@ -97,7 +98,15 @@ void BuildAppliance::run()
     
     int build = studio->startApplianceBuild( id );
     
-    qDebug() << build;
+    BuildStatus bs = studio->getBuildStatus( build );
+    qDebug() << bs.state << bs.percent;
+    
+    while ( bs.state == "queued" || bs.state == "running" )
+    {
+        bs = studio->getBuildStatus( build );
+        qDebug() << bs.state << bs.percent;
+        QTest::qSleep( 10000 );
+    }
     
     delete studio;
 }

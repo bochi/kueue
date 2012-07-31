@@ -25,6 +25,7 @@
 
 #ifndef DATACLASSES_H
 #define DATACLASSES_H
+#include <qvarlengtharray.h>
 
 
 class Template
@@ -68,6 +69,16 @@ class RPM
         QString size;
         bool archive;
         QString basesystem;
+};
+
+class BuildStatus
+{
+    public:
+        int id;
+        int percent;
+        int time_elapsed;
+        QString state;
+        QString message;
 };
 
 #endif

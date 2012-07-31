@@ -332,24 +332,30 @@ Appliance QStudio::cloneAppliance( int id, const QString& name, const QString& a
 RPM QStudio::uploadRPM( const QString& basesystem, const QString& filename )
 {
     RPM rpm;
+    
+    QByteArray f;
+    
     QFile file( filename );
-    QByteArray a;
-    
-    QString boundary = "---------------------------193971182219750";
- 
-    QByteArray datas(QString("--" + boundary + "\r\n").toAscii());
-    datas += "Content-Disposition: form-data; filename=\"" + QFileInfo( filename ).fileName() + "\"\r\n";
-    datas += "Content-Type: application/x-rpm\r\n\r\n";
-    
-    datas += file.readAll();
-    datas += "\r\n";
-    datas += QString("--" + boundary + "\r\n").toAscii();
-    datas += "Content-Disposition: form-data; name=\"upload\"\r\n\r\n";
-    datas += "Uploader\r\n";
-    datas += QString("--" + boundary + "--\r\n").toAscii();
-    
+    if ( file.open(QIODevice::ReadOnly) )
+    {
+        f = file.readAll();
+    }
+    else
+    {
+        return rpm;
+    }
+
+    QString boundary = "----------------------------81c4238448f2";
+                        
+    QByteArray filearray;
+    filearray += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n";
+    filearray += boundary + "\r";
+    filearray += "Content-Disposition: form-data; name=\"file\"; filename=\"" + QFileInfo( filename ).fileName() + "\"\r";
+    filearray += "Content-Type: application/octet-stream\r\n";
+    filearray += f;
+    filearray += "--" + boundary + "--\r\n";    
        
-    QString xml = postRequest( "/user/rpms?base_system=" + basesystem, datas );
+    QString xml = postRequest( "/user/rpms?base_system=" + basesystem, filearray );
     
     QDomDocument doc;
     doc.setContent( xml );
@@ -394,6 +400,7 @@ RPM QStudio::uploadRPM( const QString& basesystem, const QString& filename )
     }
     
     log( "uploadRPM - BASESYSTEM: " + basesystem + " - FILENAME: " + filename, xml );
+    log( "uploadRPM - BASESYSTEM: " + basesystem + " - FILENAME: " + filename, filearray );
     
     return rpm;
 }
@@ -419,6 +426,53 @@ bool QStudio::addUserRepository( int id )
     QString xml = postRequest( "/user/appliances/" + QString::number( id )  + "/cmd/add_user_repository", empty );
     
     log( "addUserRepository - ID: " + QString::number( id ), xml );
+}
+
+BuildStatus QStudio::getBuildStatus( int id )
+{
+	qDebug() << "getBuildStatus";
+    QString xml = getRequest( "/user/running_builds/" + QString::number( id ) );
+    
+    BuildStatus bs;
+    
+    QDomDocument doc;
+    doc.setContent( xml );
+    QDomElement docelement = doc.documentElement();
+    
+    QDomNode n = docelement.firstChild();
+    
+    while ( !n.isNull() )
+    {
+        QDomElement e = n.toElement();
+        
+        if ( e.tagName() == "id" )
+        {
+            bs.id = e.text().toInt();
+        }
+        else if ( e.tagName() == "state" )
+        {
+           bs.state = e.text();
+        }
+        else if ( e.tagName() == "percent" )
+        {
+           bs.percent = e.text().toInt();
+        }
+        else if ( e.tagName() == "time_elapsed" )
+        {
+           bs.time_elapsed = e.text().toInt();
+        }
+        else if ( e.tagName() == "message" )
+        {
+           bs.state = e.text();
+        }
+        
+        n = n.nextSibling();
+    }
+    
+    log( "getBuildStatus - ID: " + QString::number( id ), xml );
+    
+    qDebug() << bs.state << bs.percent;
+    return bs;
 }
 
 #include "qstudio.moc"

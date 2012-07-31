@@ -44,6 +44,7 @@ class QStudio : public QObject
         RPM uploadRPM( const QString&, const QString& );
         bool addUserRepository( int );
 	int startApplianceBuild( int );
+        BuildStatus getBuildStatus( int );
 
     private:
         bool mDebug;
