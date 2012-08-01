@@ -1,9 +1,7 @@
 /*
-           QStudio - Qt library to access SUSE Studio's API
-             (C) 2012 Stefan Bogner <sbogner@suse.com>
+                kueue - keep track of your SR queue
+          (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
 
-                    This file is part of kueue
-                    
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
@@ -87,7 +85,7 @@ QString QStudio::getRequest( const QString& req )
     QString result;
     
     QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
-    
+    request.setHeader( QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream" ) );
     QNetworkReply *reply = mNAM->get( request );
     reply->ignoreSslErrors(); 
     
@@ -111,6 +109,7 @@ QString QStudio::putRequest( const QString& req, const QByteArray& data )
     QString result;
     
     QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
+    request.setHeader( QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream" ) );
     QNetworkReply *reply = mNAM->put( request, data );
     
     QObject::connect( reply, SIGNAL( finished() ), 
@@ -133,7 +132,7 @@ QString QStudio::postRequest( const QString& req, const QByteArray& data )
     QString result;
     
     QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
-        
+    request.setHeader( QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream" ) );    
     QNetworkReply *reply = mNAM->post( request, data );
     
     QObject::connect( reply, SIGNAL( finished() ), 
@@ -195,6 +194,7 @@ QString QStudio::deleteRequest( const QString& req )
     QString result;
     
     QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
+    request.setHeader( QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream" ) );
     QNetworkReply *reply = mNAM->get( request );
      
     QObject::connect( reply, SIGNAL( finished() ), 
@@ -219,7 +219,7 @@ void QStudio::authenticate( QNetworkReply* reply, QAuthenticator* auth )
 
 void QStudio::networkError( QNetworkReply::NetworkError error )
 {
-    qDebug() << "NETWORK ERROR" << error;
+    qDebug() << "NETWORK ERROR" << error ;
 }
 
 QList<TemplateSet> QStudio::getTemplates()
@@ -426,6 +426,28 @@ RPM QStudio::uploadRPM( const QString& basesystem, const QString& filename )
     return rpm;
 }
 
+bool QStudio::addPackage( int id, const QString& package )
+{
+    QByteArray empty;
+    QString xml = postRequest( "/user/appliances/" + QString::number( id ) + "/cmd/add_package?name=" + package, empty );
+    
+    log( "addPackage - ID: " + QString::number( id ) + " NAME: " + package, xml );
+    
+    QDomDocument doc;
+    doc.setContent( xml );
+    QDomElement docelement = doc.documentElement();
+    
+    if ( docelement.tagName() == "success" )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
 int QStudio::startApplianceBuild( int id )
 {
     QByteArray empty;
@@ -502,5 +524,94 @@ BuildStatus QStudio::getBuildStatus( int id )
     
     return bs;
 }
+
+Testdrive QStudio::getTestdrive( int build )
+{
+/*      <testdrive>
+          <id>28</id>
+          <state>new</state>
+          <build_id>116</build_id>
+          <url>/testdrive/testdrive/start/5dfzvUZf6gF3TaHxUs61?lang=en</url>
+          <server>
+            <vnc>
+              <host>localhost</host>
+              <port>5901</port>
+              <password>5dfzvUZf6gF3TaHxUs61</password>
+            </vnc>
+          </server>
+        </testdrive> */
+    
+    QByteArray empty;
+    QString xml = postRequest( "/user/testdrives?build_id=" + QString::number( build ), empty );
+   
+    QDomDocument doc;
+    doc.setContent( xml );
+    
+    QDomElement docelement = doc.documentElement();
+    
+    QDomNode n = docelement.firstChild();
+    
+    Testdrive td;
+    
+    log( "getTestdrive - ID: " + QString::number( build ), xml );
+    
+    while ( !n.isNull() )
+    {
+        QDomElement e = n.toElement();
+        
+        if ( e.tagName() == "url" )
+        {
+            td.url = e.text();
+        }
+        else if ( e.tagName() == "server" )
+        {
+            QDomNode no = n.firstChild();
+        
+            while ( !no.isNull() )
+            {
+                QDomElement te = no.toElement();
+                  
+                if ( te.tagName() == "vnc" )
+                {
+                    QDomNode tn = no.firstChild();
+                
+                    while ( !tn.isNull() )
+                    {
+                        QDomElement ele = tn.toElement();
+                        
+                        if ( ele.tagName() == "host" )
+                        {
+                            if ( ele.text() == "localhost" )
+                            {
+                                td.vnchost = mServer;
+                            }
+                            else
+                            {
+                                td.vnchost = ele.text();
+                            }
+                        }            
+                        else if ( ele.tagName() == "port" )
+                        {
+                            td.vncport = ele.text();
+                        }            
+                        else if ( ele.tagName() == "password" )
+                        {
+                            td.vncpassword = ele.text();
+                        }            
+                        
+                        tn = tn.nextSibling();
+                    }
+                }
+            
+                no = no.nextSibling();
+            }
+        }
+        
+        n = n.nextSibling();
+    }
+
+    return td;
+}
+
 
 #include "qstudio.moc"

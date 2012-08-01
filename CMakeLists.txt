@@ -74,6 +74,7 @@ CONFIGURE_FILE( ${CMAKE_SOURCE_DIR}/config.h.cmake ${CMAKE_SOURCE_DIR}/config.h 
 ADD_SUBDIRECTORY( qtsingleapplication )
 ADD_SUBDIRECTORY( simplecrypt )
 ADD_SUBDIRECTORY( qstudio )
+ADD_SUBDIRECTORY( vnc )
 
 SET( QtSingleApp_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qtsingleapplication )
 SET( QT_SINGLEAPP_LIBRARY qtsingleapplication )
@@ -84,9 +85,13 @@ SET( SIMPLECRYPT_LIBRARY simplecrypt )
 SET( QStudio_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qstudio )
 SET( QT_STUDIO_LIBRARY qstudio )
 
+SET( QVNC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vnc )
+SET( QVNC_LIBRARY qvnc )
+
 INCLUDE_DIRECTORIES( ${QtSingleApp_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${ArchiveExtract_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${QStudio_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES( ${QVNC_INCLUDE_DIR} )
 
 #
 # Define the source files
@@ -246,7 +251,8 @@ IF ( QT_HAS_DBUS AND NOT APPLE )
                                  ${QT_SINGLEAPP_LIBRARY} 
 				 ${SIMPLECRYPT_LIBRARY} 
                                  ${QT_STUDIO_LIBRARY}
-                                 ${QT_QTTEST_LIBRARY} ) 
+                                 ${QT_QTTEST_LIBRARY}
+                                 ${QVNC_LIBRARY} ) 
 ELSEIF ( APPLE )
 
     TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
@@ -260,7 +266,8 @@ ELSEIF ( APPLE )
                                  ${QT_SINGLEAPP_LIBRARY}
 				 ${SIMPLECRYPT_LIBRARY} 
                                  ${QT_STUDIO_LIBRARY}
-                                 ${QT_QTTEST_LIBRARY} ) 
+                                 ${QT_QTTEST_LIBRARY} 
+                                 ${QVNC_LIBRARY} )
 
 ELSE ()
 
@@ -276,7 +283,8 @@ ELSE ()
                                  ${QT_SINGLEAPP_LIBRARY} 
 				 ${SIMPLECRYPT_LIBRARY} 
                                  ${QT_STUDIO_LIBRARY} 
-                                 ${QT_QTTEST_LIBRARY} )
+                                 ${QT_QTTEST_LIBRARY} 
+                                 ${QVNC_LIBRARY} ) 
 
 
 ENDIF ()

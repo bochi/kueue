@@ -51,7 +51,7 @@ void BuildAppliance::run()
 {
     QStudio* studio = new QStudio( Settings::studioServer(), Settings::studioUser(), Settings::studioApiKey(), true );
     
-    emit threadStarted( "Building Appliance...", 0 );
+    emit threadStarted( "Preparing Appliance...", 0 );
     
     QList<TemplateSet> tl = studio->getTemplates();
     int id;
@@ -61,6 +61,9 @@ void BuildAppliance::run()
     {   
         TemplateSet tset = tl.at( i );
         QList<Template> tls = tset.templates;
+        
+        // For SLES11, we use the JeOS template
+        // For SLES10 there is no JeOS, so we use the "Server" template.
         
         for ( int x = 0; x < tls.size(); ++x ) 
         {   
@@ -81,7 +84,7 @@ void BuildAppliance::run()
         }       
     }
     
-    Appliance a = studio->cloneAppliance( id, "BochiClone", mArch );
+    Appliance a = studio->cloneAppliance( id, "Clone", mArch );
     
     id = a.id;
     
@@ -92,8 +95,12 @@ void BuildAppliance::run()
     for ( int i = 0; i < filelist.size(); ++i ) 
     { 
         RPM r = studio->uploadRPM( base, mScDir + "/rpms/" + filelist.at( i ) );
-        qDebug() << "Uploaded" << r.filename;
+        qDebug() << "[BUILDAPPLIANCE] Uploaded" << r.filename;
     }
+    
+    bool ap = studio->addPackage( id, "clone" );
+    
+    if ( !ap ) return;
     
     bool aur = studio->addUserRepository( id );
     
@@ -104,17 +111,26 @@ void BuildAppliance::run()
         build = studio->startApplianceBuild( id );
     }
     
-    BuildStatus bs = studio->getBuildStatus( build );
-    qDebug() << bs.state << bs.percent;
+    qDebug() << "[BUILDAPPLIANCE] The build id is" << build;
     
-    while ( bs.state == "queued" || bs.state == "running" )
+    emit threadStarted( "Building Appliance...", 100 );
+    
+    BuildStatus bs = studio->getBuildStatus( build );
+    
+    do
     {
         bs = studio->getBuildStatus( build );
-        qDebug() << bs.state << bs.percent;
-        QTest::qSleep( 10000 );
+        emit threadProgress( bs.percent );
+        QTest::qSleep( 5000 );
     }
+    while ( bs.percent < 100 );
+    
+    Testdrive td = studio->getTestdrive( build );
+    
+    qDebug() << td.vnchost << td.vncport << td.vncpassword;
     
     delete studio;
+    emit threadFinished( this );
 }
 
 #include "buildappliance.moc"
