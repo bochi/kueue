@@ -33,6 +33,7 @@
 #include "browsers/unitybrowser.h"
 #include "data/datathread.h"
 #include "clone/clone.h"
+#include "vnc/vncview.h"
 
 #include <QGridLayout> 
 #include <QMenu>
@@ -970,6 +971,17 @@ void TabWidget::cloneSystem()
 {
     QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
     Clone* c = new Clone( filename );
+    
+    connect( c, SIGNAL( vnc( QUrl ) ), 
+             this, SLOT( openVncWidget( QUrl ) ) );
 }
+
+void TabWidget::openVncWidget( const QUrl& url )
+{
+    VncView* vnc = new VncView( this, url );
+    vnc->show();
+    vnc->start();
+}
+
 
 #include "tabwidget.moc"

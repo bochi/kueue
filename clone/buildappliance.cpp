@@ -127,6 +127,9 @@ void BuildAppliance::run()
     
     Testdrive td = studio->getTestdrive( build );
     
+    QUrl url = "vnc://:" + td.vncpassword + "@" + td.vnchost + ":" + td.vncport;
+    emit vnc( url );
+    
     qDebug() << td.vnchost << td.vncport << td.vncpassword;
     
     delete studio;

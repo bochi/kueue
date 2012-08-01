@@ -160,6 +160,7 @@ class TabWidget : public QTabWidget
         void showSearch();
         void makeNsaReport();
         void cloneSystem();
+        void openVncWidget( const QUrl& );
         
     signals:
         void unityTabMiddleClicked( int );

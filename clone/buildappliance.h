@@ -48,6 +48,7 @@ class BuildAppliance : public KueueThread
     signals:
         void success( const QString&, const QString& );
         void failed( const QString& );
+        void vnc( QUrl );
 };
 
 #endif

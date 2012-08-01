@@ -55,7 +55,8 @@ class Clone : public QObject
         void failed( const QString& );
         
     signals:
-        void buildFinished();    
+        void buildFinished();  
+        void vnc( QUrl );
 };
 
 

@@ -23,14 +23,18 @@
 
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
+set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
+
 FIND_PACKAGE( Qt4 REQUIRED )
 FIND_PACKAGE( LibVNCServer REQUIRED )
+FIND_PACKAGE( JPEG REQUIRED )
 
 INCLUDE( ${QT_USE_FILE} )
 
 INCLUDE_DIRECTORIES(  ${QT_INCLUDES} 
                       ${CMAKE_CURRENT_BINARY_DIR} 
-                      ${CMAKE_CURRENT_SOURCE_DIR} )
+                      ${CMAKE_CURRENT_SOURCE_DIR} 
+		      ${LIBVNCCLIENT_INCLUDE_DIR} )
 
 ADD_DEFINITIONS( ${QT_DEFINITIONS} )
 
@@ -43,6 +47,9 @@ QT4_AUTOMOC( ${qvnc_CPP} )
 ADD_LIBRARY( qvnc STATIC ${qvnc_CPP} )
 
 TARGET_LINK_LIBRARIES( qvnc ${QT_LIBRARIES} 
-                            ${LIBVNCSERVER_LIBRARIES} ) 
+                            ${LIBVNCSERVER_LIBRARIES}
+                            ${LIBVNCCLIENT_LIBRARIES}
+			    ${JPEG_LIBRARIES}
+                            vncserver ) 
 
 
