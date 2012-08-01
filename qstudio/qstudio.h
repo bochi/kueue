@@ -1,7 +1,9 @@
 /*
-                kueue - keep track of your SR queue
-          (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
+           QStudio - Qt library to access SUSE Studio's API
+             (C) 2012 Stefan Bogner <sbogner@suse.com>
 
+                    This file is part of kueue
+                    
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation; either version 2 of the License, or
