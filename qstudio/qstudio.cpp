@@ -527,20 +527,6 @@ BuildStatus QStudio::getBuildStatus( int id )
 
 Testdrive QStudio::getTestdrive( int build )
 {
-/*      <testdrive>
-          <id>28</id>
-          <state>new</state>
-          <build_id>116</build_id>
-          <url>/testdrive/testdrive/start/5dfzvUZf6gF3TaHxUs61?lang=en</url>
-          <server>
-            <vnc>
-              <host>localhost</host>
-              <port>5901</port>
-              <password>5dfzvUZf6gF3TaHxUs61</password>
-            </vnc>
-          </server>
-        </testdrive> */
-    
     QByteArray empty;
     QString xml = postRequest( "/user/testdrives?build_id=" + QString::number( build ), empty );
    
