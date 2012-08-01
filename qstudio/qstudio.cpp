@@ -61,7 +61,7 @@ void QStudio::log( const QString& f, const QString& x )
         
         if ( !file.open( QIODevice::Append | QIODevice::WriteOnly | QIODevice::Text ) )
         {
-            qDebug() << "Logfile not open";
+            qDebug() << "[QSTUDIO] Logfile not open";
             return;
         }
         
@@ -86,10 +86,9 @@ QString QStudio::getRequest( const QString& req )
     
     QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
     
-    qDebug() << request.url();
     QNetworkReply *reply = mNAM->get( request );
     reply->ignoreSslErrors(); 
-    qDebug() << request.url();
+    
     QObject::connect( reply, SIGNAL( finished() ), 
                       &loop, SLOT( quit() ) );
      
@@ -111,7 +110,7 @@ QString QStudio::putRequest( const QString& req, const QByteArray& data )
     
     QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
     QNetworkReply *reply = mNAM->put( request, data );
-    qDebug() << request.url(); 
+    
     QObject::connect( reply, SIGNAL( finished() ), 
                       &loop, SLOT( quit() ) );
      
@@ -459,7 +458,6 @@ bool QStudio::addUserRepository( int id )
 
 BuildStatus QStudio::getBuildStatus( int id )
 {
-	qDebug() << "getBuildStatus";
     QString xml = getRequest( "/user/running_builds/" + QString::number( id ) );
     
     BuildStatus bs;
@@ -500,7 +498,6 @@ BuildStatus QStudio::getBuildStatus( int id )
     
     log( "getBuildStatus - ID: " + QString::number( id ), xml );
     
-    qDebug() << bs.state << bs.percent;
     return bs;
 }
 
