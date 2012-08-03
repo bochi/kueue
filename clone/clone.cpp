@@ -105,7 +105,6 @@ void Clone::buildAppliance( const QString& prod, const QString& arch, const QStr
 {
     CloneResult* res = new CloneResult( this, result );
     int reply = res->exec();
-    qDebug() << reply;
 
     if ( reply == QDialog::Accepted )
     {
