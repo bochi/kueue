@@ -61,10 +61,33 @@ void BuildRPM::run()
     QString out = p.readAllStandardOutput(); 
     qDebug() << "[BUILDRPM]" << out;
     
+    QFile res( mScDir + "/clone-result" );
+    qDebug() << res.fileName();
+    QStringList reslist;
+    
+    if ( !res.open( QFile::ReadOnly ) )
+    {
+        qDebug() << "[BUILDRPM] Could not open results file";
+    }
+    else
+    {
+        QTextStream stream( &res );
+        
+        while ( !stream.atEnd() )
+        {
+            QString line = stream.readLine();
+            
+            if ( !line.startsWith( "NAME VERS" ) )
+            {
+                reslist.append( line );
+            }
+        }
+    }
+    
     if ( out.startsWith( "SUCCESS" ) )
     {
         QStringList l = out.split( "/" );
-        emit success( l.at( 1 ), l.at( 2 ) );
+        emit success( l.at( 1 ), l.at( 2 ), reslist );
     }
     else if ( out.startsWith( "FAILED" ) )
     {

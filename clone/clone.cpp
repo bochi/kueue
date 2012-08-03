@@ -30,6 +30,7 @@
 #include "kueue.h"
 #include "kueuethreads.h"
 #include "archivers/archiveextract.h"
+#include "ui/cloneresult.h"
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -91,8 +92,8 @@ void Clone::scriptDownloadDone()
    
     BuildRPM* build = new BuildRPM( mScDir.absolutePath() );
     
-    connect( build, SIGNAL( success( QString, QString ) ), 
-             this, SLOT( buildAppliance( QString, QString ) ) );
+    connect( build, SIGNAL( success( QString, QString, QStringList ) ), 
+             this, SLOT( buildAppliance( QString, QString, QStringList ) ) );
     
     connect( build, SIGNAL( failed( QString ) ), 
              this, SLOT( failed( QString ) ) );
@@ -100,15 +101,21 @@ void Clone::scriptDownloadDone()
     KueueThreads::enqueue( build );
 }
 
-void Clone::buildAppliance( const QString& prod, const QString& arch )
+void Clone::buildAppliance( const QString& prod, const QString& arch, const QStringList& result )
 {
-    qDebug() << "BUILDAPPLIANCE" << prod.trimmed() << arch.trimmed();
-    BuildAppliance* build = new BuildAppliance( mScDir.absolutePath(), prod.trimmed(), arch.trimmed() );
-    
-    connect( build, SIGNAL( vnc( QUrl ) ), 
-             this, SIGNAL( vnc( QUrl ) ) );
-    
-    KueueThreads::enqueue( build );
+    CloneResult* res = new CloneResult( this, result );
+    int reply = res->exec();
+    qDebug() << reply;
+
+    if ( reply == QDialog::Accepted )
+    {
+        BuildAppliance* build = new BuildAppliance( mScDir.absolutePath(), prod.trimmed(), arch.trimmed() );
+        
+        connect( build, SIGNAL( vnc( QUrl ) ), 
+                this, SIGNAL( vnc( QUrl ) ) );
+        
+        KueueThreads::enqueue( build );
+    }
 }
 
 void Clone::cloneDone()

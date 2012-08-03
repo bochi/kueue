@@ -1,6 +1,6 @@
 /*
                 kueue - keep track of your SR queue
-          (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
+         (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,41 +23,19 @@
 
 */
 
-#ifndef CLONE_H
-#define CLONE_H
-
-#include <QDir>
-#include <QFile>
-
-#include "kueuethreads.h"
-
-class KueueThreads;
-
-class Clone : public QObject
+#ifndef CLONERESULT_H
+#define CLONERESULT_H
+ 
+#include "ui_cloneresult.h"
+ 
+class CloneResult : public QDialog, private Ui::CloneResult
 {
     Q_OBJECT
 
-    public: 
-        Clone( const QString& );
-        ~Clone();
-        
-    private:
-        QDir mTmpDir;
-        QDir mScDir;
-        QString mSupportConfig;
-        KueueThreads* mThreads;
-        
-    private slots:
-        void downloadScript( const QString&, const QString& );
-        void scriptDownloadDone();
-        void buildAppliance( const QString&, const QString&, const QStringList& );
-        void cloneDone();
-        void failed( const QString& );
-        
-    signals:
-        void buildFinished();  
-        void vnc( QUrl );
+    public:
+        CloneResult( QObject* parent = 0L, const QStringList& = QStringList() );
+         ~CloneResult();
+         
 };
-
-
+ 
 #endif

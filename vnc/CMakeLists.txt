@@ -47,9 +47,7 @@ QT4_AUTOMOC( ${qvnc_CPP} )
 ADD_LIBRARY( qvnc STATIC ${qvnc_CPP} )
 
 TARGET_LINK_LIBRARIES( qvnc ${QT_LIBRARIES} 
-                            ${LIBVNCSERVER_LIBRARIES}
                             ${LIBVNCCLIENT_LIBRARIES}
-			    ${JPEG_LIBRARIES}
-                            vncserver ) 
+			    ${JPEG_LIBRARIES} ) 
 
 

@@ -43,7 +43,7 @@ class BuildRPM : public KueueThread
         void run();
         
     signals:
-        void success( const QString&, const QString& );
+        void success( const QString&, const QString&, const QStringList& );
         void failed( const QString& );
 };
 

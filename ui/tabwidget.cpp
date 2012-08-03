@@ -333,10 +333,7 @@ void TabWidget::removeUnityBrowser( int tab )
     
     for ( int i = 0; i < mUnityWidgetList.count(); ++i )
     {
-        QWidget* tw = qobject_cast< QWidget* >( mUnityWidgetList.at(i) );
-
-        mUnityWidgetList.at( i )->setTabId( indexOf( tw ) );
-        mUnityBrowserMap[ indexOf( tw ) ] = mUnityWidgetList.at( i )->browser();
+        QWidget* tw = qobject_cast< QWidget* >( mUnityWidgetList.at( i ) );
     }
 }
 
@@ -978,9 +975,14 @@ void TabWidget::cloneSystem()
 
 void TabWidget::openVncWidget( const QUrl& url )
 {
-    VncView* vnc = new VncView( this, url );
+    QWidget* w = new QWidget;
+    QGridLayout* l = new QGridLayout( w );
+    w->setLayout( l );
+    VncView* vnc = new VncView( w, url );
+    l->addWidget(vnc);
     vnc->show();
     vnc->start();
+    w->show();
 }
 
 
