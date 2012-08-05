@@ -35,6 +35,7 @@
 #include "ui/statusbar.h"
 #include "ui/browsers/search/webviewsearch.h"
 #include "ui/busywidget.h"
+#include "vnc/vncview.h"
 
 #include <QTabWidget>
 #include <QToolButton>
@@ -80,6 +81,8 @@ class TabWidget : public QTabWidget
         KueueWindow* mKueueWindow;
         QList<UnityWidget*> mUnityWidgetList;
         QMap<int, UnityBrowser*> mUnityBrowserMap; 
+        QList<VncWidget*> mVncWidgetList;
+        QMap<int, VncView*> mVncViewerMap;
         StatusBar* mStatusBar;
         WebViewSearch* webViewSearch( int );
         QMenu* kueueMainMenu();
@@ -113,6 +116,9 @@ class TabWidget : public QTabWidget
         void addUnityBrowser();
         void addUnityBrowserWithSR( QString = QString::Null() );
         void removeUnityBrowser( int );
+        void removeVncTab( int );
+        void rebuildMaps();
+        void addVncTab( const QUrl& );
         void showMonitorTab( bool );
         void showStatsTab( bool );
         void showPersonalTab( bool );
@@ -135,7 +141,9 @@ class TabWidget : public QTabWidget
         void toggleTodo( bool );
         void unityTabMenu( int tab, const QPoint& p );
         void permanentUnityTabMenu( const QPoint& p );
+        void vncTabMenu( int tab, const QPoint& p );
         void closeActionTriggered();
+        void vncCloseActionTriggered();
         void clipboardActionTriggered();
         void closeAllOtherActionTriggered();
         void permClipboardActionTriggered();
@@ -160,7 +168,6 @@ class TabWidget : public QTabWidget
         void showSearch();
         void makeNsaReport();
         void cloneSystem();
-        void openVncWidget( const QUrl& );
         
     signals:
         void unityTabMiddleClicked( int );

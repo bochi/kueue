@@ -107,9 +107,9 @@ rfbBool VncClientThread::newclient(rfbClient *cl)
 
     switch (t->quality()) {
     case RemoteView::High:
-        cl->appData.encodingsString = "copyrect zlib hextile raw";
-        cl->appData.compressLevel = 0;
-        cl->appData.qualityLevel = 9;
+        cl->appData.encodingsString = "hextile zlib copyrect";
+        cl->appData.compressLevel = 5;
+        cl->appData.qualityLevel = 7;
         break;
     case RemoteView::Medium:
         cl->appData.encodingsString = "copyrect tight zrle ultra zlib hextile corre rre raw";

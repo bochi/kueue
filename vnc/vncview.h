@@ -56,10 +56,12 @@ public:
     bool start();
     bool supportsScaling() const;
     bool supportsLocalCursor() const;
-
+    int tabID() { return mTabID; }
+    
     void setViewOnly(bool viewOnly);
     void showDotCursor(DotCursorState state);
     void enableScaling(bool scale);
+    void setTabID( int );
     
     virtual void updateConfiguration();
 
@@ -87,6 +89,7 @@ private:
     qreal m_verticalFactor;
     QImage m_frame;
     bool m_forceLocalCursor;
+    int mTabID;
 
     void keyEventHandler(QKeyEvent *e);
     void unpressModifiers();
@@ -99,6 +102,25 @@ private slots:
     void requestPassword();
     void outputErrorMessage(const QString &message);
     void clipboardDataChanged();
+};
+
+class VncWidget : public QWidget
+{
+    Q_OBJECT
+
+    public:
+        explicit VncWidget( const QUrl&, QObject* parent = 0L );
+        ~VncWidget();
+        
+        VncView* vnc() { return mVncView; }
+        int tabId() { return mTabId; }
+        
+    private:
+        VncView* mVncView;
+        int mTabId;
+        
+    public slots:
+        void setTabId( int );        
 };
 
 #endif

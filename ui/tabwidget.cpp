@@ -210,6 +210,10 @@ void TabWidget::tabRightClicked( int id, QPoint point )
     {
         unityTabMenu( id, point );
     }
+    else if ( mVncViewerMap.keys().contains( id ) )
+    {
+        vncTabMenu( id, point );
+    }
     else if ( indexOf( mUnityTab ) == id )
     {
         permanentUnityTabMenu( point );
@@ -314,10 +318,6 @@ void TabWidget::removeUnityBrowser( int tab )
     
     delete mUnityBrowserMap[ tab ];
     
-    // clear the browser map...
-    
-    mUnityBrowserMap.clear();
-    
     // ...remove the tab widget from the widget list...
     
     for ( int i = 0; i < mUnityWidgetList.count(); ++i )
@@ -329,11 +329,64 @@ void TabWidget::removeUnityBrowser( int tab )
         }
     }
     
-    // ...and rebuild the map with the correct tab ids
+    rebuildMaps();
+}
+
+void TabWidget::addVncTab( const QUrl& url )
+{
+    VncWidget* w = new VncWidget( url, this );
+    int tab = addTab( w, QIcon( ":/icons/conf/studio.png" ), "Testdrive" );
+    
+    // set the tabId for the widget for tab handling 
+    
+    w->setTabId( tab );
+    
+    // append the widget to a list to build the map from when a tab is closed
+    // and set the id + browser in the map for identification
+    
+    mVncWidgetList.append( w );
+    mVncViewerMap[ tab ] = w->vnc();
+}
+
+void TabWidget::removeVncTab( int tab )
+{
+    removeTab( tab );
+    
+    delete mVncViewerMap[ tab ];
+    
+    for ( int i = 0; i < mVncWidgetList.count(); ++i )
+    {
+        if ( mVncWidgetList.at( i )->tabId() == tab )
+        {
+            delete mVncWidgetList.at( i );
+            mVncWidgetList.removeAt( i );
+        }
+    }
+    
+    rebuildMaps();
+}
+
+
+void TabWidget::rebuildMaps()
+{
+    mUnityBrowserMap.clear();
     
     for ( int i = 0; i < mUnityWidgetList.count(); ++i )
     {
         QWidget* tw = qobject_cast< QWidget* >( mUnityWidgetList.at( i ) );
+        
+        mUnityWidgetList.at( i )->setTabId( indexOf( tw ) );
+        mUnityBrowserMap[ indexOf( tw ) ] = mUnityWidgetList.at( i )->browser();
+    }
+    
+    mVncViewerMap.clear();
+    
+    for ( int i = 0; i < mVncWidgetList.count(); ++i )
+    {
+        QWidget* vw = qobject_cast< QWidget* >( mVncWidgetList.at( i ) );
+        
+        mVncWidgetList.at( i )->setTabId( indexOf( vw ) );
+        mVncViewerMap[ indexOf( vw ) ] = mVncWidgetList.at( i )->vnc();
     }
 }
 
@@ -666,6 +719,26 @@ void TabWidget::permanentUnityTabMenu( const QPoint& p )
     menu->exec( p );
 }
 
+void TabWidget::vncTabMenu( int tab, const QPoint& p )
+{
+    QMap<int, QString> map;
+    
+    QMenu* menu = new QMenu( this );
+
+    QAction* closeTab = new QAction( "Close tab", menu );
+
+    connect( closeTab, SIGNAL( triggered() ),
+             this, SLOT( closeActionTriggered() ) );
+
+    closeTab->setData( tab );
+    
+    closeTab->setIcon( QIcon( ":/icons/menus/quit.png" ) );
+    
+    menu->addAction( closeTab );
+    
+    menu->exec( p );
+}
+
 void TabWidget::openInUnityImp( const QString& sr )
 {
     if ( Kueue::isSrNr( sr ) )
@@ -679,6 +752,12 @@ void TabWidget::closeActionTriggered()
 {
     QAction* action = qobject_cast<QAction*>( QObject::sender() );
     removeUnityBrowser( action->data().toInt() );
+}
+
+void TabWidget::vncCloseActionTriggered()
+{
+    QAction* action = qobject_cast<QAction*>( QObject::sender() );
+    removeVncTab( action->data().toInt() );
 }
 
 void TabWidget::clipboardActionTriggered()
@@ -881,6 +960,21 @@ WebViewSearch* TabWidget::webViewSearch( int index )
     return webViewWithSearch->m_webViewSearch;
 }
 
+void TabWidget::makeNsaReport()
+{
+    QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
+    NSA* n = new NSA( filename ); 
+}
+
+void TabWidget::cloneSystem()
+{
+    QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
+    Clone* c = new Clone( filename );
+    
+    connect( c, SIGNAL( vnc( QUrl ) ), 
+             this, SLOT( addVncTab( QUrl ) ) );
+}
+
 /* 
  * 
  *       TabBar class
@@ -957,33 +1051,5 @@ void TabButton::mousePressEvent( QMouseEvent* e )
     
     QToolButton::mousePressEvent( e );
 }
-
-void TabWidget::makeNsaReport()
-{
-    QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
-    NSA* n = new NSA( filename ); 
-}
-
-void TabWidget::cloneSystem()
-{
-    QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
-    Clone* c = new Clone( filename );
-    
-    connect( c, SIGNAL( vnc( QUrl ) ), 
-             this, SLOT( openVncWidget( QUrl ) ) );
-}
-
-void TabWidget::openVncWidget( const QUrl& url )
-{
-    QWidget* w = new QWidget;
-    QGridLayout* l = new QGridLayout( w );
-    w->setLayout( l );
-    VncView* vnc = new VncView( w, url );
-    l->addWidget(vnc);
-    vnc->show();
-    vnc->start();
-    w->show();
-}
-
 
 #include "tabwidget.moc"

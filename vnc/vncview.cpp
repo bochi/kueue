@@ -24,6 +24,7 @@
 #include "vncview.h"
 
 #include <QMessageBox>
+#include <QGridLayout>
 #include <QInputDialog>
 #define KMessageBox QMessageBox
 //#define error(parent, message, caption) \
@@ -104,6 +105,11 @@ QSize VncView::minimumSizeHint() const
     return size();
 }
 
+void VncView::setTabID( int id )
+{
+    mTabID = id;
+}
+
 void VncView::scaleResize(int w, int h)
 {
     RemoteView::scaleResize(w, h);
@@ -172,7 +178,10 @@ bool VncView::start()
 
     quality = (RemoteView::Quality)((QCoreApplication::arguments().count() > 2) ?
         QCoreApplication::arguments().at(2).toInt() : 2);
-
+    
+    qDebug() << quality;
+    quality = RemoteView::Quality(RemoteView::High);
+qDebug() << quality;
     vncThread.setQuality(quality);
 
     // set local cursor on by default because low quality mostly means slow internet connection
@@ -237,7 +246,7 @@ void VncView::outputErrorMessage(const QString &message)
 
 void VncView::updateImage(int x, int y, int w, int h)
 {
-//     kDebug(5011) << "got update" << width() << height();
+    //kDebug(5011) << "got update" << width() << height();
 
     m_x = x;
     m_y = y;
@@ -275,13 +284,13 @@ void VncView::updateImage(int x, int y, int w, int h)
     }
 
     if ((y == 0 && x == 0) && (m_frame.size() != size())) {
-        kDebug(5011) << "Updating framebuffer size";
+        //kDebug(5011) << "Updating framebuffer size";
         if (m_scale) {
             setMaximumSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
             if (parentWidget())
                 scaleResize(parentWidget()->width(), parentWidget()->height());
         } else {
-            kDebug(5011) << "Resizing: " << m_frame.width() << m_frame.height();
+            //kDebug(5011) << "Resizing: " << m_frame.width() << m_frame.height();
             resize(m_frame.width(), m_frame.height());
             setMaximumSize(m_frame.width(), m_frame.height()); //This is a hack to force Qt to center the view in the scroll area
             setMinimumSize(m_frame.width(), m_frame.height());
@@ -353,17 +362,17 @@ void VncView::paintEvent(QPaintEvent *event)
     QPainter painter(this);
 
     if (m_repaint) {
-//         kDebug(5011) << "normal repaint";
+        kDebug(5011) << "normal repaint";
         painter.drawImage(QRect(qRound(m_x*m_horizontalFactor), qRound(m_y*m_verticalFactor),
                                 qRound(m_w*m_horizontalFactor), qRound(m_h*m_verticalFactor)), 
                           m_frame.copy(m_x, m_y, m_w, m_h).scaled(qRound(m_w*m_horizontalFactor), 
                                                                   qRound(m_h*m_verticalFactor),
                                                                   Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     } else {
-//         kDebug(5011) << "resize repaint";
+       kDebug(5011) << "resize repaint";
         QRect rect = event->rect();
         if (rect.width() != width() || rect.height() != height()) {
-//             kDebug(5011) << "Partial repaint";
+            kDebug(5011) << "Partial repaint";
             const int sx = rect.x()/m_horizontalFactor;
             const int sy = rect.y()/m_verticalFactor;
             const int sw = rect.width()/m_horizontalFactor;
@@ -372,7 +381,7 @@ void VncView::paintEvent(QPaintEvent *event)
                               m_frame.copy(sx, sy, sw, sh).scaled(rect.width(), rect.height(),
                                                                   Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         } else {
-//             kDebug(5011) << "Full repaint" << width() << height() << m_frame.width() << m_frame.height();
+             kDebug(5011) << "Full repaint" << width() << height() << m_frame.width() << m_frame.height();
             painter.drawImage(QRect(0, 0, width(), height()), 
                               m_frame.scaled(m_frame.width() * m_horizontalFactor, m_frame.height() * m_verticalFactor,
                                              Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
@@ -511,6 +520,31 @@ void VncView::clipboardDataChanged()
     const QString text = m_clipboard->text(QClipboard::Clipboard);
 
     vncThread.clientCut(text);
+}
+
+VncWidget::VncWidget( const QUrl& url, QObject* parent )
+{
+    qDebug() << "[VNCWIDGET] Constructing";
+    
+    QGridLayout* l = new QGridLayout( this );
+    setLayout( l );
+    
+    VncView* vnc = new VncView( this, url );
+    l->addWidget(vnc);
+    vnc->show();
+    vnc->start();
+    
+    show();
+}
+
+VncWidget::~VncWidget()
+{
+    qDebug() << "[VNCWIDGET] Destroying id" << mTabId;
+}
+
+void VncWidget::setTabId( int id )
+{
+    mTabId = id;
 }
 
 #include "vncview.moc"
