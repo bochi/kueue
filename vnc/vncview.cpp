@@ -114,7 +114,7 @@ void VncView::scaleResize(int w, int h)
 {
     RemoteView::scaleResize(w, h);
     
-    kDebug(5011) << w << h;
+    //kDebug(5011) << w << h;
     if (m_scale) {
         m_verticalFactor = (qreal) h / m_frame.height();
         m_horizontalFactor = (qreal) w / m_frame.width();
@@ -138,7 +138,7 @@ void VncView::updateConfiguration()
 
 void VncView::startQuitting()
 {
-    kDebug(5011) << "about to quit";
+    //kDebug(5011) << "about to quit";
 
     setStatus(Disconnecting);
 
@@ -207,7 +207,7 @@ bool VncView::supportsLocalCursor() const
 
 void VncView::requestPassword()
 {
-    kDebug(5011) << "request password";
+    //kDebug(5011) << "request password";
 
     setStatus(Authenticating);
 
@@ -231,7 +231,7 @@ void VncView::requestPassword()
 
 void VncView::outputErrorMessage(const QString &message)
 {
-    kDebug(5011) << message;
+    //kDebug(5011) << message;
 
     if (message == "INTERNAL:APPLE_VNC_COMPATIBILTY") {
         setCursor(localDotCursor());
@@ -362,17 +362,17 @@ void VncView::paintEvent(QPaintEvent *event)
     QPainter painter(this);
 
     if (m_repaint) {
-        kDebug(5011) << "normal repaint";
+        //kDebug(5011) << "normal repaint";
         painter.drawImage(QRect(qRound(m_x*m_horizontalFactor), qRound(m_y*m_verticalFactor),
                                 qRound(m_w*m_horizontalFactor), qRound(m_h*m_verticalFactor)), 
                           m_frame.copy(m_x, m_y, m_w, m_h).scaled(qRound(m_w*m_horizontalFactor), 
                                                                   qRound(m_h*m_verticalFactor),
                                                                   Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     } else {
-       kDebug(5011) << "resize repaint";
+       //kDebug(5011) << "resize repaint";
         QRect rect = event->rect();
         if (rect.width() != width() || rect.height() != height()) {
-            kDebug(5011) << "Partial repaint";
+            //kDebug(5011) << "Partial repaint";
             const int sx = rect.x()/m_horizontalFactor;
             const int sy = rect.y()/m_verticalFactor;
             const int sw = rect.width()/m_horizontalFactor;
@@ -381,7 +381,7 @@ void VncView::paintEvent(QPaintEvent *event)
                               m_frame.copy(sx, sy, sw, sh).scaled(rect.width(), rect.height(),
                                                                   Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         } else {
-             kDebug(5011) << "Full repaint" << width() << height() << m_frame.width() << m_frame.height();
+             //kDebug(5011) << "Full repaint" << width() << height() << m_frame.width() << m_frame.height();
             painter.drawImage(QRect(0, 0, width(), height()), 
                               m_frame.scaled(m_frame.width() * m_horizontalFactor, m_frame.height() * m_verticalFactor,
                                              Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
@@ -509,7 +509,7 @@ void VncView::unpressModifiers()
 
 void VncView::clipboardDataChanged()
 {
-    kDebug(5011);
+    //kDebug(5011);
 
     if (m_status != Connected)
         return;
@@ -529,11 +529,10 @@ VncWidget::VncWidget( const QUrl& url, QObject* parent )
     QGridLayout* l = new QGridLayout( this );
     setLayout( l );
     
-    VncView* vnc = new VncView( this, url );
-    l->addWidget(vnc);
-    vnc->show();
-    vnc->start();
-    
+    mVncView = new VncView( this, url );
+    l->addWidget( mVncView );
+    mVncView->show();
+    mVncView->start();
     show();
 }
 
@@ -544,6 +543,7 @@ VncWidget::~VncWidget()
 
 void VncWidget::setTabId( int id )
 {
+    qDebug() << "tab" << id;
     mTabId = id;
 }
 

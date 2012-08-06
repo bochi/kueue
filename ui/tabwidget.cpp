@@ -352,6 +352,8 @@ void TabWidget::removeVncTab( int tab )
 {
     removeTab( tab );
     
+    mVncViewerMap[ tab ]->startQuitting();
+    
     delete mVncViewerMap[ tab ];
     
     for ( int i = 0; i < mVncWidgetList.count(); ++i )
@@ -365,7 +367,6 @@ void TabWidget::removeVncTab( int tab )
     
     rebuildMaps();
 }
-
 
 void TabWidget::rebuildMaps()
 {
@@ -728,7 +729,7 @@ void TabWidget::vncTabMenu( int tab, const QPoint& p )
     QAction* closeTab = new QAction( "Close tab", menu );
 
     connect( closeTab, SIGNAL( triggered() ),
-             this, SLOT( closeActionTriggered() ) );
+             this, SLOT( vncCloseActionTriggered() ) );
 
     closeTab->setData( tab );
     

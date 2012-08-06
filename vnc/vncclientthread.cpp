@@ -92,7 +92,7 @@ rfbBool VncClientThread::newclient(rfbClient *cl)
 
     //8bit color hack for Intel(r) AMT KVM "classic vnc" = vnc server built in in Intel Vpro chipsets.
     if (INTEL_AMT_KVM_STRING == cl->desktopName) {
-        kDebug(5011) << "Intel(R) AMT KVM: switching to 8 bit color depth (workaround, recent libvncserver needed)";
+        //kDebug(5011) << "Intel(R) AMT KVM: switching to 8 bit color depth (workaround, recent libvncserver needed)";
         t->setColorDepth(bpp8);
     }
     setClientColorDepth(cl, t->colorDepth());
@@ -108,8 +108,8 @@ rfbBool VncClientThread::newclient(rfbClient *cl)
     switch (t->quality()) {
     case RemoteView::High:
         cl->appData.encodingsString = "hextile zlib copyrect";
-        cl->appData.compressLevel = 5;
-        cl->appData.qualityLevel = 7;
+        cl->appData.compressLevel = 1;
+        cl->appData.qualityLevel = 9;
         break;
     case RemoteView::Medium:
         cl->appData.encodingsString = "copyrect tight zrle ultra zlib hextile corre rre raw";
@@ -125,13 +125,13 @@ rfbBool VncClientThread::newclient(rfbClient *cl)
     }
 
     SetFormatAndEncodings(cl);
-    kDebug(5011) << "Client created";
+    //kDebug(5011) << "Client created";
     return true;
 }
 
 void VncClientThread::updatefb(rfbClient* cl, int x, int y, int w, int h)
 {
-//     kDebug(5011) << "updated client: x: " << x << ", y: " << y << ", w: " << w << ", h: " << h;
+//     //kDebug(5011) << "updated client: x: " << x << ", y: " << y << ", w: " << w << ", h: " << h;
     VncClientThread *t = (VncClientThread*)rfbClientGetClientData(cl, 0);
     Q_ASSERT(t);
 
@@ -151,7 +151,7 @@ void VncClientThread::updatefb(rfbClient* cl, int x, int y, int w, int h)
     }
 
     if (img.isNull()) {
-        kDebug(5011) << "image not loaded";
+        //kDebug(5011) << "image not loaded";
     }
 
     t->setImage(img);
@@ -162,7 +162,7 @@ void VncClientThread::updatefb(rfbClient* cl, int x, int y, int w, int h)
 void VncClientThread::cuttext(rfbClient* cl, const char *text, int textlen)
 {
     const QString cutText = QString::fromUtf8(text, textlen);
-    kDebug(5011) << cutText;
+    //kDebug(5011) << cutText;
 
     if (!cutText.isEmpty()) {
         VncClientThread *t = (VncClientThread*)rfbClientGetClientData(cl, 0);
@@ -174,7 +174,7 @@ void VncClientThread::cuttext(rfbClient* cl, const char *text, int textlen)
 
 char *VncClientThread::passwdHandler(rfbClient *cl)
 {
-    kDebug(5011) << "password request" << kBacktrace();
+    //kDebug(5011) << "password request" << kBacktrace();
 
     VncClientThread *t = (VncClientThread*)rfbClientGetClientData(cl, 0);
     Q_ASSERT(t);
@@ -197,7 +197,7 @@ void VncClientThread::outputHandler(const char *format, ...)
 
     message = message.trimmed();
 
-    kDebug(5011) << message;
+    //kDebug(5011) << message;
 
     if ((message.contains("Couldn't convert ")) ||
             (message.contains("Unable to connect to VNC server")))
@@ -238,7 +238,7 @@ VncClientThread::~VncClientThread()
         stop();
         terminate();
         const bool quitSuccess = wait(1000);
-        kDebug(5011) << "Attempting to stop in deconstructor, will crash if this fails:" << quitSuccess;
+        //kDebug(5011) << "Attempting to stop in deconstructor, will crash if this fails:" << quitSuccess;
     }
 
     if (cl) {
@@ -252,7 +252,7 @@ VncClientThread::~VncClientThread()
 void VncClientThread::checkOutputErrorMessage()
 {
     if (!outputErrorMessageString.isEmpty()) {
-        kDebug(5011) << outputErrorMessageString;
+        //kDebug(5011) << outputErrorMessageString;
         QString errorMessage = outputErrorMessageString;
         outputErrorMessageString.clear();
         // show authentication failure error only after the 3rd unsuccessful try
@@ -282,7 +282,7 @@ void VncClientThread::setQuality(RemoteView::Quality quality)
         setColorDepth(bpp8);
         break;
     case RemoteView::High:
-        setColorDepth(bpp32);
+        setColorDepth(bpp16);
         break;
     case RemoteView::Medium:
     default:
@@ -369,7 +369,7 @@ void VncClientThread::run()
         cl->serverPort = m_port;
         locker.unlock();
 
-        kDebug(5011) << "--------------------- trying init ---------------------";
+        //kDebug(5011) << "--------------------- trying init ---------------------";
 
         if (rfbInitClient(cl, 0, 0))
             break;
@@ -384,7 +384,7 @@ void VncClientThread::run()
     }
 
     locker.relock();
-    kDebug(5011) << "--------------------- Starting main VNC event loop ---------------------";
+    //kDebug(5011) << "--------------------- Starting main VNC event loop ---------------------";
     while (!m_stopped) {
         locker.unlock();
         const int i = WaitForMessage(cl, 500);
