@@ -159,7 +159,7 @@ void VncView::startQuitting()
     bool passwordRequestDisconnect = disconnect(&vncThread, SIGNAL(passwordRequest()), this, SLOT(requestPassword()));
     bool outputErrorMessageDisconnect = disconnect(&vncThread, SIGNAL(outputErrorMessage(QString)), this, SLOT(outputErrorMessage(QString)));
 
-    kDebug(5011) << "Signals disconnected: imageUpdated: " << imageUpdatedDisconnect << "gotCut: " << gotCutDisconnect << "passwordRequest: " << passwordRequestDisconnect << "outputErrorMessage: " << outputErrorMessageDisconnect;
+    //kDebug(5011) << "Signals disconnected: imageUpdated: " << imageUpdatedDisconnect << "gotCut: " << gotCutDisconnect << "passwordRequest: " << passwordRequestDisconnect << "outputErrorMessage: " << outputErrorMessageDisconnect;
 
     vncThread.quit();
 

@@ -99,14 +99,6 @@ void Clone::scriptDownloadDone()
              this, SLOT( failed( QString ) ) );
     
     KueueThreads::enqueue( build );
-    /*const QString& a = "SLES11SP2";
-    const QString& b = "x86_64";
-    QStringList c;
-    c.append( "lala" );
-    
-    
-    
-    buildAppliance( a, b, c );*/
 }
 
 void Clone::buildAppliance( const QString& prod, const QString& arch, const QStringList& result )
