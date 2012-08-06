@@ -1,25 +1,30 @@
-/****************************************************************************
-**
-** Copyright (C) 2007-2012 Urs Wolfer <uwolfer @ kde.org>
-**
-** This file is part of KDE.
-**
-** This program is free software; you can redistribute it and/or modify
-** it under the terms of the GNU General Public License as published by
-** the Free Software Foundation; either version 2 of the License, or
-** (at your option) any later version.
-**
-** This program is distributed in the hope that it will be useful,
-** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-** GNU General Public License for more details.
-**
-** You should have received a copy of the GNU General Public License
-** along with this program; see the file COPYING. If not, write to
-** the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-** Boston, MA 02110-1301, USA.
-**
-****************************************************************************/
+/*
+                kueue - keep track of your SR queue
+          (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
+          
+                   This code was taken from krdc
+         Copyright (C) 2007-2012 Urs Wolfer <uwolfer@kde.org>
+          
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the
+
+    Free Software Foundation, Inc.
+    59 Temple Place - Suite 330
+    Boston, MA  02111-1307, USA
+
+    Have a lot of fun :-)
+
+*/
 
 #include "vncview.h"
 
@@ -162,7 +167,7 @@ void VncView::startQuitting()
 
     kDebug(5011) << "Quit VNC thread success:" << quitSuccess;
 
-    setStatus(Disconnected);
+    setStatus( Disconnected );
 }
 
 bool VncView::isQuitting()
@@ -178,10 +183,8 @@ bool VncView::start()
 
     quality = (RemoteView::Quality)((QCoreApplication::arguments().count() > 2) ?
         QCoreApplication::arguments().at(2).toInt() : 2);
-    
-    qDebug() << quality;
+
     quality = RemoteView::Quality(RemoteView::High);
-qDebug() << quality;
     vncThread.setQuality(quality);
 
     // set local cursor on by default because low quality mostly means slow internet connection
@@ -543,7 +546,6 @@ VncWidget::~VncWidget()
 
 void VncWidget::setTabId( int id )
 {
-    qDebug() << "tab" << id;
     mTabId = id;
 }
 
