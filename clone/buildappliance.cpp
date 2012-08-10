@@ -33,13 +33,14 @@
 #include <QStudio>
 #include <QTest>
 
-BuildAppliance::BuildAppliance( const QString& sc, const QString& prod, const QString& arch ) : KueueThread()
+BuildAppliance::BuildAppliance( const QString& sc, const QString& prod, const QString& arch, const QString& hostname ) : KueueThread()
 {
     qDebug() << "[BUILDAPPLIANCE] Constructing";
 
     mScDir = sc;
     mProduct = prod;
     mArch = arch;
+    mHostName = hostname;
 }
 
 BuildAppliance::~BuildAppliance()
@@ -84,7 +85,7 @@ void BuildAppliance::run()
         }       
     }
     
-    Appliance a = studio->cloneAppliance( id, "Clone", mArch );
+    Appliance a = studio->cloneAppliance( id, mHostName + " - Clone", mArch );
     
     id = a.id;
     
@@ -100,7 +101,8 @@ void BuildAppliance::run()
     
     bool ap = studio->addPackage( id, "clone" );
     
-    if ( !ap ) return;
+    if ( !ap ) 
+    return;
     
     bool aur = studio->addUserRepository( id );
     
@@ -113,9 +115,28 @@ void BuildAppliance::run()
     
     qDebug() << "[BUILDAPPLIANCE] The build id is" << build;
     
-    emit threadStarted( "Building Appliance...", 100 );
+    if ( build == 0 )
+    {
+        emit failed( "Failed to start build..." );
+        emit threadFinished( this );
+        return;
+    }
     
     BuildStatus bs = studio->getBuildStatus( build );
+    
+    if ( bs.state == "queued" )
+    {
+        emit threadStarted( "Waiting for build slot...", 0 );
+        
+        do
+        {
+            bs = studio->getBuildStatus( build );
+            QTest::qSleep( 5000 );
+        }
+        while ( bs.state == "queued" );
+    }
+
+    emit threadStarted( "Building Appliance...", 100 );
     
     do
     {
@@ -123,17 +144,24 @@ void BuildAppliance::run()
         emit threadProgress( bs.percent );
         QTest::qSleep( 5000 );
     }
-    while ( bs.percent < 100 );
+    while ( ( bs.percent < 100 ) && ( bs.state != "failed" ) );
     
-    Testdrive td = studio->getTestdrive( build );
+    if ( bs.state != "failed" )
+    {
+        Testdrive td = studio->getTestdrive( build );
     
-    QUrl url = "vnc://:" + td.vncpassword + "@" + td.vnchost + ":" + td.vncport;
-    emit vnc( url );
-    
-    qDebug() << td.vnchost << td.vncport << td.vncpassword;
+        QUrl url = "vnc://:" + td.vncpassword + "@" + td.vnchost + ":" + td.vncport;
+
+        emit vnc( url );
+        emit finished();
+        qDebug() << "[BUILDAPPLIANCE] Got Testdrive details:" << td.vnchost << td.vncport << td.vncpassword;
+    }
+    else
+    {
+        emit failed( bs.message );
+    }
     
     delete studio;
-    emit threadFinished( this );
 }
 
 #include "buildappliance.moc"

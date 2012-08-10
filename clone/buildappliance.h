@@ -34,19 +34,20 @@ class BuildAppliance : public KueueThread
     Q_OBJECT
 
     public: 
-        BuildAppliance( const QString&, const QString&, const QString& );
+        BuildAppliance( const QString&, const QString&, const QString&, const QString& );
         ~BuildAppliance();
         
     private:
         QString mScDir;
         QString mProduct;
         QString mArch;
+        QString mHostName;
         
     protected: 
         void run();
         
     signals:
-        void success( const QString&, const QString& );
+        void finished();
         void failed( const QString& );
         void vnc( QUrl );
 };

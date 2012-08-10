@@ -33,8 +33,14 @@ class CloneResult : public QDialog, private Ui::CloneResult
     Q_OBJECT
 
     public:
-        CloneResult( QObject* parent = 0L, const QStringList& = QStringList() );
+        CloneResult( QObject* parent = 0L, const QStringList& = QStringList(), const QString& = QString::Null() );
          ~CloneResult();
+         
+    private:
+        QString mScDir;
+        
+    private slots:
+        void addPackages();
          
 };
  

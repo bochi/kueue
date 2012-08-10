@@ -275,7 +275,7 @@ void Data::queueUpdateFinished()
                     {
                         if ( srIsClosed( sr ) )
                         {
-                            deleteList.append( sr );
+                            deleteList.append( Settings::downloadDirectory() + "/" + sr );
                         }
                         else
                         {
@@ -287,7 +287,7 @@ void Data::queueUpdateFinished()
                         if ( Database::getGoneDays( sr, mDB ) > 3 )
                         {
                             Database::delGoneSR( sr, mDB );
-                            deleteList.append( sr );
+                            deleteList.append( Settings::downloadDirectory() + "/" + sr );
                         }
                     }
                 }

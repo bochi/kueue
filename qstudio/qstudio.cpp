@@ -451,6 +451,9 @@ bool QStudio::addPackage( int id, const QString& package )
 int QStudio::startApplianceBuild( int id )
 {
     QByteArray empty;
+    
+    // Building type "vmx" here, as build status doesn't seem to work reliably for XEN.
+    
     QString xml = postRequest( "/user/running_builds?appliance_id=" + QString::number( id ) + "&image_type=vmx", empty );
     
     log( "startApplianceBuild - ID: " + QString::number( id ), xml );
@@ -458,9 +461,16 @@ int QStudio::startApplianceBuild( int id )
     QDomDocument doc;
     doc.setContent( xml );
     QDomElement docelement = doc.documentElement();
-    QDomNode n = docelement.firstChildElement( "id" );
-
-    return n.toElement().text().toInt();
+    
+    if ( docelement.tagName() == "error" )
+    {
+        return 0;
+    }
+    else
+    {
+        QDomNode n = docelement.firstChildElement( "id" );
+        return n.toElement().text().toInt();
+    }
 }
 
 bool QStudio::addUserRepository( int id )

@@ -165,7 +165,7 @@ void VncView::startQuitting()
 
     const bool quitSuccess = vncThread.wait(1000);
 
-    kDebug(5011) << "Quit VNC thread success:" << quitSuccess;
+    //kDebug(5011) << "Quit VNC thread success:" << quitSuccess;
 
     setStatus( Disconnected );
 }

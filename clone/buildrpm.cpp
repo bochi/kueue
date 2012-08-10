@@ -58,11 +58,11 @@ void BuildRPM::run()
         return;
     }
     
-    QString out = p.readAllStandardOutput(); 
-    qDebug() << "[BUILDRPM]" << out;
+    QString out = p.readAllStandardOutput().trimmed(); 
+    qDebug() << "[BUILDRPM] Script output:" << out;
     
     QFile res( mScDir + "/clone-result" );
-    qDebug() << res.fileName();
+    
     QStringList reslist;
     
     if ( !res.open( QFile::ReadOnly ) )
@@ -87,7 +87,7 @@ void BuildRPM::run()
     if ( out.startsWith( "SUCCESS" ) )
     {
         QStringList l = out.split( "/" );
-        emit success( l.at( 1 ), l.at( 2 ), reslist );
+        emit success( l.at( 1 ), l.at( 2 ), reslist, l.at( 3 ) );
     }
     else if ( out.startsWith( "FAILED" ) )
     {

@@ -31,6 +31,7 @@
 #include "kueuethreads.h"
 #include "archivers/archiveextract.h"
 #include "ui/cloneresult.h"
+#include "data/dircleaner.h"
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -41,7 +42,7 @@
 
 Clone::Clone( const QString& sc )
 {
-    qDebug() << "[STUDIO] Constructing";
+    qDebug() << "[CLONE] Constructing";
     
     mSupportConfig = sc;
     QDir tmpdir = QDesktopServices::storageLocation( QDesktopServices::TempLocation ) + "/kueue-studio";
@@ -61,7 +62,7 @@ Clone::Clone( const QString& sc )
 
 Clone::~Clone()
 {
-    qDebug() << "[STUDIO] Destroying";
+    qDebug() << "[CLONE] Destroying";
 }
 
 void Clone::downloadScript( const QString& archive, const QString& dir )
@@ -92,8 +93,8 @@ void Clone::scriptDownloadDone()
    
     BuildRPM* build = new BuildRPM( mScDir.absolutePath() );
     
-    connect( build, SIGNAL( success( QString, QString, QStringList ) ), 
-             this, SLOT( buildAppliance( QString, QString, QStringList ) ) );
+    connect( build, SIGNAL( success( QString, QString, QStringList, QString ) ), 
+             this, SLOT( buildAppliance( QString, QString, QStringList, QString ) ) );
     
     connect( build, SIGNAL( failed( QString ) ), 
              this, SLOT( failed( QString ) ) );
@@ -101,17 +102,22 @@ void Clone::scriptDownloadDone()
     KueueThreads::enqueue( build );
 }
 
-void Clone::buildAppliance( const QString& prod, const QString& arch, const QStringList& result )
+void Clone::buildAppliance( const QString& prod, const QString& arch, const QStringList& result, const QString& hostname )
 {
-    CloneResult* res = new CloneResult( this, result );
+    CloneResult* res = new CloneResult( this, result, mScDir.absolutePath() );
     int reply = res->exec();
+    
+    delete res;
 
     if ( reply == QDialog::Accepted )
     {
-        BuildAppliance* build = new BuildAppliance( mScDir.absolutePath(), prod.trimmed(), arch.trimmed() );
+        BuildAppliance* build = new BuildAppliance( mScDir.absolutePath(), prod.trimmed(), arch.trimmed(), hostname.trimmed() );
         
         connect( build, SIGNAL( vnc( QUrl ) ), 
                 this, SIGNAL( vnc( QUrl ) ) );
+        
+        connect( build, SIGNAL( finished() ), 
+                 this, SLOT( cloneDone() ) );
         
         KueueThreads::enqueue( build );
     }
@@ -119,6 +125,10 @@ void Clone::buildAppliance( const QString& prod, const QString& arch, const QStr
 
 void Clone::cloneDone()
 {
+    QStringList dirs; 
+    dirs.append( mScDir.absolutePath() );
+    DirCleaner* c = new DirCleaner( dirs );
+    KueueThreads::enqueue( c );
 }
 
 void Clone::failed( const QString& msg )

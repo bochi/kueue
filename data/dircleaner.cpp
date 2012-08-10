@@ -41,13 +41,13 @@ DirCleaner::~DirCleaner()
 
 void DirCleaner::run()
 {         
-    emit threadStarted( "Cleaning up download directory...", mDirs.size() );
+    emit threadStarted( "Cleaning up...", mDirs.size() );
     
     for ( int i = 0; i < mDirs.size(); ++i ) 
     {
-        qDebug() << "[DIRCLEANER] Deleting download directory for" << mDirs.at( i );
+        qDebug() << "[DIRCLEANER] Deleting directory" << mDirs.at( i );
         
-        QDir dir( Settings::downloadDirectory() + "/" + mDirs.at( i ) );
+        QDir dir( mDirs.at( i ) );
         
     #ifndef IS_WIN32
         QProcess p;

@@ -27,14 +27,19 @@
 
 #include <QDebug>
 #include <QApplication>
+#include <QFileDialog>
 
 
-CloneResult::CloneResult( QObject* parent, const QStringList& resultlist )
+CloneResult::CloneResult( QObject* parent, const QStringList& resultlist, const QString& dir )
 {
     qDebug() << "[CLONERESULT] Constructing";
     
     setupUi( this ); 
     packageList->setRowCount( resultlist.size() );
+    mScDir = dir;
+    
+    connect( addButton, SIGNAL( clicked() ), 
+             this, SLOT( addPackages() ) );
     
     for ( int i = 0; i < resultlist.size(); ++i ) 
     {   
@@ -55,6 +60,15 @@ CloneResult::CloneResult( QObject* parent, const QStringList& resultlist )
 CloneResult::~CloneResult()
 {
     qDebug() << "[CLONERESULT] Destroying";
+}
+
+void CloneResult::addPackages()
+{
+    QString filename = QFileDialog::getOpenFileName( this, "Select package", QDir::homePath(), "RPM Packages (*.rpm)" );
+    QFile file( filename );
+    QString f = QFileInfo( filename ).fileName();
+    
+    file.copy( mScDir + "/rpms/" + f );
 }
 
 
