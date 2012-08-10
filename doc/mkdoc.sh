@@ -16,6 +16,6 @@ echo ";" >> html/susebooks.css
 echo "display: none;" >> html/susebooks.css
 echo "}" >> html/susebooks.css
 
-scp -r html/* root@data.kueue.tk:/srv/www/htdocs/doc
-scp -r images root@data.kueue.tk:/srv/www/htdocs/doc
-scp -r scripts root@data.kueue.tk:/srv/www/htdocs/doc
+scp -r html/* root@kueue.hwlab.suse.de:/srv/www/htdocs/doc
+scp -r images root@kueue.hwlab.suse.de:/srv/www/htdocs/doc
+scp -r scripts root@kueue.hwlab.suse.de:/srv/www/htdocs/doc
