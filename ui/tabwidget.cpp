@@ -460,7 +460,12 @@ QMenu* TabWidget::kueueMainMenu()
     }
     
     kueue->addAction( mActionNSA );    
-    kueue->addAction( mActionClone );
+    
+    if ( Settings::studioEnabled() )
+    {
+        kueue->addAction( mActionClone );
+    }
+    
     kueue->addAction( mActionQuit );
     
     QMenu* view = new QMenu( menu );
