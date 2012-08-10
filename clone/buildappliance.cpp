@@ -50,7 +50,7 @@ BuildAppliance::~BuildAppliance()
 
 void BuildAppliance::run()
 {
-    QStudio* studio = new QStudio( Settings::studioServer(), Settings::studioUser(), Settings::studioApiKey(), true );
+    QStudio* studio = new QStudio( Settings::studioServer(), Settings::studioUser(), Settings::studioApiKey(), Settings::studioDebugEnabled() );
     
     emit threadStarted( "Preparing Appliance...", 0 );
     

@@ -773,16 +773,16 @@ void Settings::setStudioEnabled( const bool& b )
     settings.sync();
 }
 
-bool Settings::studioLogEnabled()
+bool Settings::studioDebugEnabled()
 {
     QSettings settings;
-    return settings.value( "studioLogEnabled", true ).toBool();
+    return settings.value( "studioDebugEnabled", false ).toBool();
 }
 
-void Settings::setStudioLogEnabled( const bool& b )
+void Settings::setStudioDebugEnabled( const bool& b )
 {
     QSettings settings;
-    settings.setValue( "studioLogEnabled", b );
+    settings.setValue( "studioDebugEnabled", b );
     settings.sync();
 }
 

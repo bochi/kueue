@@ -219,7 +219,7 @@ void QStudio::authenticate( QNetworkReply* reply, QAuthenticator* auth )
 
 void QStudio::networkError( QNetworkReply::NetworkError error )
 {
-    qDebug() << "NETWORK ERROR" << error ;
+    qDebug() << "[QSTUDIO] Network Error" << error ;
 }
 
 QList<TemplateSet> QStudio::getTemplates()
