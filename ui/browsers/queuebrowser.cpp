@@ -248,7 +248,7 @@ void QueueBrowser::mousePressEvent( QMouseEvent* event )
         }
     }
     
-    //return QWebView::mousePressEvent( event );
+    return QWebView::mousePressEvent( event );
 }
 
 void QueueBrowser::contextMenu( QMouseEvent* event, const QString& id )
