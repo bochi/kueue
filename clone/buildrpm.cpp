@@ -45,22 +45,57 @@ BuildRPM::~BuildRPM()
 
 void BuildRPM::run()
 {
-    QProcess p;
+    QProcess* p = new QProcess;
     
     emit threadStarted( "Building RPM...", 0 );
     
-    p.setWorkingDirectory( mScDir );
+    connect( p, SIGNAL( readyReadStandardOutput() ), 
+             this, SLOT( scriptOutput() ) );
     
-    p.start( "bash", QStringList() << "clone.sh" );
+    p->setWorkingDirectory( mScDir );
     
-    if (  !p.waitForFinished ( -1 ) )
+    p->start( "bash", QStringList() << "clone.sh" );
+    
+    if (  !p->waitForFinished ( -1 ) )
     {
         return;
     }
     
-    QString out = p.readAllStandardOutput().trimmed(); 
+    QString out = p->readAllStandardOutput().trimmed(); 
     qDebug() << "[BUILDRPM] Script output:" << out;
     
+    
+}
+
+void BuildRPM::scriptOutput()
+{
+    QProcess* p = qobject_cast< QProcess* >( sender() );
+    QString out = p->readAllStandardOutput().trimmed();
+    
+    if ( out.startsWith( "TOTAL" ) )
+    {
+        int t = out.remove( "TOTAL " ).toInt();
+        emit threadStarted( "Building RPM...", t );
+    }
+    else if ( out.startsWith( "PROG" ) )
+    {
+        int p = out.remove( "PROG " ).toInt();
+        emit threadProgress( p );
+    }
+    else if ( out.startsWith( "SUCCESS" ) )
+    {
+        QStringList l = out.split( "/" );
+        scriptSuccess( l.at( 1 ), l.at( 2 ), l.at( 3 ) );
+    }
+    else if ( out.startsWith( "FAILED" ) )
+    {
+        emit failed( out.remove( "FAILED/" ) );
+    }
+
+}
+
+void BuildRPM::scriptSuccess( const QString& prod, const QString& arch, const QString& host )
+{
     QFile res( mScDir + "/clone-result" );
     
     QStringList reslist;
@@ -83,16 +118,8 @@ void BuildRPM::run()
             }
         }
     }
-    
-    if ( out.startsWith( "SUCCESS" ) )
-    {
-        QStringList l = out.split( "/" );
-        emit success( l.at( 1 ), l.at( 2 ), reslist, l.at( 3 ) );
-    }
-    else if ( out.startsWith( "FAILED" ) )
-    {
-        emit failed( out.remove( "FAILED/" ) );
-    }
+
+    emit success( prod, arch, reslist, host );
 }
 
 #include "buildrpm.moc"

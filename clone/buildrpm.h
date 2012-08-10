@@ -39,6 +39,10 @@ class BuildRPM : public KueueThread
     private:
         QString mScDir;
         
+    private slots: 
+        void scriptOutput();
+        void scriptSuccess( const QString&, const QString&, const QString& );
+        
     protected: 
         void run();
         
