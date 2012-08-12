@@ -103,6 +103,10 @@ void BuildAppliance::run()
     
     qDebug() << "[BUILDAPPLIANCE] Uploaded supportconfig.";
     
+    bool logo = studio->setLogo( id, ":/icons/app/kueue128.png" );
+    
+    qDebug() << "LOGO" << logo;
+    
     bool ap = studio->addPackage( id, "clone" );
     
     if ( !ap ) 

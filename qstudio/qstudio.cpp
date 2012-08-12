@@ -188,6 +188,45 @@ QString QStudio::postFile( const QString& req, const QString& fn )
     return result;
 }
 
+QString QStudio::putFile( const QString& req, const QString& fn )
+{
+    QEventLoop loop;
+    QString result;
+    
+    QHttpMultiPart* mp = new QHttpMultiPart( QHttpMultiPart::FormDataType );
+    QHttpPart fp;
+    QString h = "form-data; name=\"file\"; filename=\"" + QFileInfo( fn ).fileName() + "\"\n";
+
+    fp.setHeader( QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream" ) );
+    fp.setHeader( QNetworkRequest::ContentDispositionHeader, QVariant( h ) );
+    
+    QFile* file = new QFile( fn );
+    file->open( QIODevice::ReadOnly );
+    fp.setBodyDevice( file );
+    file->setParent( mp );
+
+    mp->append( fp );
+    
+    QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
+        
+    QNetworkReply* reply = mNAM->put( request, mp );
+    
+    mp->setParent( reply ); 
+    
+    QObject::connect( reply, SIGNAL( finished() ), 
+                      &loop, SLOT( quit() ) );
+     
+    connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
+             this, SLOT( networkError( QNetworkReply::NetworkError ) ) );
+                                    
+    loop.exec();
+    
+    result = reply->readAll();
+    reply->deleteLater();
+    
+    return result;
+}
+
 QString QStudio::deleteRequest( const QString& req )
 {
     QEventLoop loop;
@@ -533,6 +572,17 @@ bool QStudio::addPackage( int id, const QString& package )
     }
 }
 
+bool QStudio::setLogo( int appliance, const QString& file )
+{
+    QString xml = putFile( "/user/appliances/" + QString::number( appliance ) + "/configuration/logo", file );
+    
+    if ( xml.contains( "<success>" ) )
+    {
+        return true;
+    }
+    
+    return false;
+}
 
 int QStudio::startApplianceBuild( int id )
 {

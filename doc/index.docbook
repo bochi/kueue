@@ -287,6 +287,28 @@
      
 </chapter>
 
+<chapter id="studio">
+<title>SUSE Studio</title>
+
+    <para>kueue can clone customer systems using SUSE Studio.</para>
+    <para>To use this feature, a SUSE Studio Onsite server with TestDrive capabilities is required.</para>
+    <para>Please set the server, username and API key in the SUSE Studio configuration module.</para>
+    
+    <para>
+      <screenshot><screeninfo>NSA</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="studio.png" width="50%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+    
+    <para>In the kueue menu, select "Clone system from supportconfig" as shown in the screenshot.</para>
+    <para>After the system has been built, a VNC Testdrive Tab will appear in kueue.</para>
+    <para>The root password is "linux".</para>
+    <para>You can find a copy of the supportconfig the system has been built from under /root/supportconfig</para>
+    <para>Additionally, one can find configuration files (ie. /etc) under /root/supportconfig/system</para>
+    
+</chapter>
+
 <chapter id="unity">
 <title>Unity integration</title>
   

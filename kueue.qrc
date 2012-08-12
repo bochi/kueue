@@ -5,6 +5,7 @@
     <file alias="app/kueue32.png">ui/icons/app/kueue32.png</file>
     <file alias="app/kueue-animated.mng">ui/icons/app/kueue32_ani.mng</file>
     <file alias="app/kueue64.png">ui/icons/app/kueue64.png</file>
+    <file alias="app/kueue128.png">ui/icons/app/kueue128.png</file>
     <file alias="conf/general.png">ui/icons/conf/general.png</file>
     <file alias="conf/monitor.png">ui/icons/conf/monitor.png</file>
     <file alias="conf/notifications.png">ui/icons/conf/notifications.png</file>

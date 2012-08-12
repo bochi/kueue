@@ -49,6 +49,7 @@ class QStudio : public QObject
         Testdrive getTestdrive( int );
         QList<UserTestDrive> getUserTestdrives();
         OverlayFile addOverlayFile( int, const QString&, const QString&, const QString& = QString::Null(), const QString& = QString::Null(), const QString& = QString::Null() );
+        bool setLogo( int, const QString& );
 
     private:
         bool mDebug;
@@ -60,6 +61,7 @@ class QStudio : public QObject
         QString putRequest( const QString&, const QByteArray& );
         QString postRequest( const QString&, const QByteArray& );
         QString postFile( const QString&, const QString& );
+        QString putFile( const QString&, const QString& );
         QString deleteRequest( const QString& );
         
     private slots:
