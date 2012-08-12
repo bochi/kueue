@@ -426,6 +426,73 @@ RPM QStudio::uploadRPM( const QString& basesystem, const QString& filename )
     return rpm;
 }
 
+OverlayFile QStudio::addOverlayFile( int appliance, const QString& filename, const QString& path )
+{
+    OverlayFile of;
+       
+    QFileInfo info( filename );
+    
+    QString xml = postFile( "/user/files?appliance_id=" + QString::number( appliance ) + "&filename=" + info.fileName() + "&path=" + path, filename );
+    
+    QDomDocument doc;
+    doc.setContent( xml );
+    
+    QDomElement docelement = doc.documentElement();
+    
+    QDomNode n = docelement.firstChild();
+    
+    while ( !n.isNull() )
+    {
+        QDomElement e = n.toElement();
+        
+        if ( e.tagName() == "id" )
+        {
+            of.id = e.text().toInt();
+        }
+        else if ( e.tagName() == "filename" )
+        {
+            of.filename = e.text();
+        }
+        else if ( e.tagName() == "path" )
+        {
+            of.path = e.text();
+        }
+        else if ( e.tagName() == "enabled" )
+        {
+            if ( e.text() == "true" )
+            {
+                of.enabled = true;
+            }
+            else
+            {
+                of.enabled = false;
+            }
+        }
+        else if ( e.tagName() == "download_url" )
+        {
+            of.downloadurl = e.text();
+        }
+        else if ( e.tagName() == "owner" )
+        {
+            of.owner = e.text();
+        }
+        else if ( e.tagName() == "group" )
+        {
+            of.group = e.text();
+        }
+        else if ( e.tagName() == "permissions" )
+        {
+            of.permissions = e.text();
+        }
+        
+        n = n.nextSibling();
+    }
+    
+    log( "addOverlayFile " + path + " - FILENAME: " + filename, xml );
+        
+    return of;
+}
+
 bool QStudio::addPackage( int id, const QString& package )
 {
     QByteArray empty;

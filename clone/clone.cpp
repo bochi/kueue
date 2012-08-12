@@ -33,6 +33,7 @@
 #include "ui/cloneresult.h"
 #include "data/dircleaner.h"
 #include "testdrive.h"
+#include "supportconfig.h"
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -56,7 +57,7 @@ Clone::Clone( const QString& sc )
     ArchiveExtract* x = new ArchiveExtract( mSupportConfig, tmpdir.absolutePath() );
     
     connect( x, SIGNAL( extracted( QString, QString ) ),
-             this, SLOT( downloadScript( QString, QString ) ) );
+             this, SLOT( prepareSupportconfig(QString,QString) ) );
     
     KueueThreads::enqueue( x );
 }
@@ -66,7 +67,17 @@ Clone::~Clone()
     qDebug() << "[CLONE] Destroying";
 }
 
-void Clone::downloadScript( const QString& archive, const QString& dir )
+void Clone::prepareSupportconfig( const QString& archive, const QString& dir )
+{
+    SupportConfig* sc = new SupportConfig( dir );
+    
+    connect( sc, SIGNAL( supportconfigPrepared( QString ) ),
+             this, SLOT( downloadScript( QString ) ) );
+    
+    KueueThreads::enqueue( sc );
+}
+
+void Clone::downloadScript( const QString& dir )
 {
     mScDir = dir;
     QEventLoop loop;

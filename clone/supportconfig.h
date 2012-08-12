@@ -23,42 +23,29 @@
 
 */
 
-#ifndef CLONE_H
-#define CLONE_H
-
-#include <QDir>
-#include <QFile>
+#ifndef SUPPORTCONFIG_H
+#define SUPPORTCONFIG_H
 
 #include "kueuethreads.h"
 
-class KueueThreads;
-
-class Clone : public QObject
+class SupportConfig : public KueueThread
 {
     Q_OBJECT
 
     public: 
-        Clone( const QString& );
-        ~Clone();
+        SupportConfig( const QString& );
+        ~SupportConfig();
         
     private:
-        QDir mTmpDir;
-        QDir mScDir;
-        QString mSupportConfig;
-        KueueThreads* mThreads;
-        
-    private slots:
-        void prepareSupportconfig( const QString&, const QString& );
-        void downloadScript( const QString& );
-        void scriptDownloadDone();
-        void buildAppliance( const QString&, const QString&, const QStringList&, const QString& );
-        void cloneDone( int, const QString& );
-        void failed( const QString& );
+        QString mScDir;
+        QString mCurrentFile;
+        bool firstLine;
+       
+    protected: 
+        void run();
         
     signals:
-        void buildFinished( int, QString );  
-        void vnc( QUrl );
+        void supportconfigPrepared( QString );
 };
-
 
 #endif

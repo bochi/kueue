@@ -100,4 +100,17 @@ class UserTestDrive
         QString state;
 };
 
+class OverlayFile
+{
+    public:
+        int id;
+        QString filename;
+        QString path;
+        QString owner;
+        QString group;
+        QString permissions;
+        bool enabled;
+        QString downloadurl;
+};
+
 #endif

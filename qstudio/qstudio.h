@@ -48,6 +48,7 @@ class QStudio : public QObject
         BuildStatus getBuildStatus( int );
         Testdrive getTestdrive( int );
         QList<UserTestDrive> getUserTestdrives();
+        OverlayFile addOverlayFile( int, const QString&, const QString& );
 
     private:
         bool mDebug;
