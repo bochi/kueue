@@ -31,11 +31,13 @@
 #include <QObject>
 #include <QProcess>
 
-SupportConfig::SupportConfig( const QString& sc ) : KueueThread()
+SupportConfig::SupportConfig( const QString& sc, bool create ) : KueueThread()
 {
     qDebug() << "[SUPPORTCONFIG] Constructing";
 
     mScDir = sc;
+    mCreateArchive = create;
+    
     start();
 }
 
@@ -152,19 +154,22 @@ void SupportConfig::run()
 
     dir.rmdir( dir.path() + "/files" );
     
-    QProcess p;
-    QStringList args;
-    
-    args.append( "cjfv" );
-    args.append( "supportconfig.tar.bz2" );
-    args.append( "." );
-    
-    p.setWorkingDirectory( mScDir );
-    p.start( "tar", args );
-
-    if ( !p.waitForFinished ( -1 ) )
+    if ( mCreateArchive )
     {
-        return;
+        QProcess p;
+        QStringList args;
+        
+        args.append( "cjfv" );
+        args.append( "supportconfig.tar.bz2" );
+        args.append( "." );
+        
+        p.setWorkingDirectory( mScDir );
+        p.start( "tar", args );
+
+        if ( !p.waitForFinished ( -1 ) )
+        {
+            return;
+        }
     }
 
     emit supportconfigPrepared( mScDir );

@@ -133,7 +133,6 @@ void TestDriveWorker::work()
 {
     getTestdriveForBuild();
     mTimer->start( 10000 );
-    QTimer::singleShot(100000, this, SLOT(newTestdriveRequested()) );
 }
 
 void TestDriveWorker::getTestdriveForBuild()
@@ -151,7 +150,7 @@ void TestDriveWorker::checkTestdrive()
     
     for ( int i = 0; i < tdl.size(); ++i )
     {
-        if ( tdl.at(i).testdriveid == mTestDriveId )
+        if ( tdl.at( i ).testdriveid == mTestDriveId )
         {
             ok = true;
         }

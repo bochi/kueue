@@ -154,6 +154,20 @@
     </para>
 
   </sect1>
+  
+  <sect1 id="studioconf">
+  <title>SUSE Studio</title>
+   
+    <para>This section includes the SUSE Studio Settings</para>
+   
+    <para>
+      <screenshot><screeninfo>Studio</screeninfo>
+      <mediaobject><imageobject>
+          <imagedata fileref="config_studio.png" width="95%" format="PNG"/>
+      </imageobject></mediaobject></screenshot>
+    </para>
+
+  </sect1>
 
   <sect1 id="notifications">
   <title>Notifications</title>

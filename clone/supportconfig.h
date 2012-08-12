@@ -33,13 +33,13 @@ class SupportConfig : public KueueThread
     Q_OBJECT
 
     public: 
-        SupportConfig( const QString& );
+        SupportConfig( const QString&, bool = true );
         ~SupportConfig();
         
     private:
         QString mScDir;
         QString mCurrentFile;
-        bool firstLine;
+        bool mCreateArchive;
        
     protected: 
         void run();

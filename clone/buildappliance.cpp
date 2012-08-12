@@ -100,17 +100,34 @@ void BuildAppliance::run()
     }
     
     OverlayFile of = studio->addOverlayFile( id, mScDir + "/supportconfig.tar.bz2", "/root/supportconfig" );
+
+    if ( of.filename == "supportconfig.tar.bz2" )
+    {
+        qDebug() << "[BUILDAPPLIANCE] Uploaded supportconfig";     
+    }
+    else
+    {
+        qDebug() << "[BUILDAPPLIANCE] supportconfig upload failed";     
+    }
     
-    qDebug() << "[BUILDAPPLIANCE] Uploaded supportconfig.";
+    // use the kueue logo as appliance logo :-)
     
     bool logo = studio->setLogo( id, ":/icons/app/kueue128.png" );
     
-    qDebug() << "LOGO" << logo;
-    
+    if ( logo )
+    {
+        qDebug() << "[BUILDAPPLIANCE] Uploaded kueue logo";     
+    }
+    else
+    {
+        qDebug() << "[BUILDAPPLIANCE] kueue logo upload failed";     
+    }
+
     bool ap = studio->addPackage( id, "clone" );
     
     if ( !ap ) 
     {
+        qDebug() << "[BUILDAPPLIANCE] Failed to add the clone package to the appliance - exiting";
         return;     
     }
     
@@ -121,13 +138,13 @@ void BuildAppliance::run()
     if ( aur )
     {
         build = studio->startApplianceBuild( id );
+        qDebug() << "[BUILDAPPLIANCE] The build id is" << build;
     }
-    
-    qDebug() << "[BUILDAPPLIANCE] The build id is" << build;
     
     if ( build == 0 )
     {
         emit failed( "Failed to start build..." );
+        qDebug() << "[BUILDAPPLIANCE] Failed to start build - exiting." << build;
         emit threadFinished( this );
         return;
     }
@@ -159,7 +176,6 @@ void BuildAppliance::run()
     if ( bs.state != "failed" )
     {
         emit finished( build, mHostName );
-
     }
     else
     {
