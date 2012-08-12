@@ -99,14 +99,16 @@ void BuildAppliance::run()
         qDebug() << "[BUILDAPPLIANCE] Uploaded" << r.filename;
     }
     
-    OverlayFile of = studio->addOverlayFile( id, mScDir + "/supportconfig.tar.bz2", "/tmp/supportconfig" );
+    OverlayFile of = studio->addOverlayFile( id, mScDir + "/supportconfig.tar.bz2", "/root/supportconfig" );
     
-    qDebug() << "OF" << "Uploaded" << of.filename << of.path;
+    qDebug() << "[BUILDAPPLIANCE] Uploaded supportconfig.";
     
     bool ap = studio->addPackage( id, "clone" );
     
     if ( !ap ) 
-    return;
+    {
+        return;     
+    }
     
     bool aur = studio->addUserRepository( id );
     

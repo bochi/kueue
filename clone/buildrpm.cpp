@@ -69,7 +69,6 @@ void BuildRPM::scriptOutput()
     QString out = p->readAllStandardOutput();
     QStringList lines;
 
-    qDebug() << out;
     if( out.contains( "\n" ) )
     {
         lines = out.split( "\n" );

@@ -426,13 +426,32 @@ RPM QStudio::uploadRPM( const QString& basesystem, const QString& filename )
     return rpm;
 }
 
-OverlayFile QStudio::addOverlayFile( int appliance, const QString& filename, const QString& path )
+OverlayFile QStudio::addOverlayFile( int appliance, const QString& filename, const QString& path, const QString& owner, const QString& group, const QString& permissions )
 {
     OverlayFile of;
        
     QFileInfo info( filename );
     
-    QString xml = postFile( "/user/files?appliance_id=" + QString::number( appliance ) + "&filename=" + info.fileName() + "&path=" + path, filename );
+    QString urltmp;
+    
+    urltmp += "appliance_id=" + QString::number( appliance ) + "&filename=" + info.fileName() + "&path=" + path;
+    
+    if ( !owner.isNull() )
+    {
+        urltmp += "&owner=" + owner;
+    }
+    
+    if ( !group.isNull() )
+    {
+        urltmp += "&group=" + group;
+    }
+    
+    if ( !permissions.isNull() )
+    {
+        urltmp += "&permissions=" + permissions;
+    }
+    
+    QString xml = postFile( "/user/files?" + urltmp, filename );
     
     QDomDocument doc;
     doc.setContent( xml );
