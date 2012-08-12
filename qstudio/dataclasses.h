@@ -26,6 +26,7 @@
 #ifndef DATACLASSES_H
 #define DATACLASSES_H
 #include <qvarlengtharray.h>
+#include <rfb/rfbproto.h>
 
 
 class Template
@@ -84,10 +85,19 @@ class BuildStatus
 class Testdrive
 {
     public:
+        int id;
         QString url;
         QString vnchost;
         QString vncport;
         QString vncpassword;
+};
+
+class UserTestDrive
+{
+    public:
+        int buildid;
+        int testdriveid;
+        QString state;
 };
 
 #endif

@@ -33,23 +33,24 @@
 
 BuildRPM::BuildRPM( const QString& sc ) : KueueThread()
 {
-    qDebug() << "[BUILD] Constructing";
+    qDebug() << "[BUILDRPM] Constructing";
 
     mScDir = sc;
+    start();
 }
 
 BuildRPM::~BuildRPM()
 {
-    qDebug() << "[BUILD] Destroying";
+    qDebug() << "[BUILDRPM] Destroying";
 }
 
 void BuildRPM::run()
 {
     QProcess* p = new QProcess;
     
-    emit threadStarted( "Building RPM...", 0 );
+    emit threadStarted( "Preparing RPM...", 0 );
     
-    connect( p, SIGNAL( readyReadStandardOutput() ), 
+    connect( p, SIGNAL( readyRead() ), 
              this, SLOT( scriptOutput() ) );
     
     p->setWorkingDirectory( mScDir );
@@ -60,38 +61,49 @@ void BuildRPM::run()
     {
         return;
     }
-    
-    QString out = p->readAllStandardOutput().trimmed(); 
-    qDebug() << "[BUILDRPM] Script output:" << out;
-    
-    
 }
 
 void BuildRPM::scriptOutput()
 {
     QProcess* p = qobject_cast< QProcess* >( sender() );
-    QString out = p->readAllStandardOutput().trimmed();
-    
-    if ( out.startsWith( "TOTAL" ) )
-    {
-        int t = out.remove( "TOTAL " ).toInt();
-        emit threadStarted( "Building RPM...", t );
-    }
-    else if ( out.startsWith( "PROG" ) )
-    {
-        int p = out.remove( "PROG " ).toInt();
-        emit threadProgress( p );
-    }
-    else if ( out.startsWith( "SUCCESS" ) )
-    {
-        QStringList l = out.split( "/" );
-        scriptSuccess( l.at( 1 ), l.at( 2 ), l.at( 3 ) );
-    }
-    else if ( out.startsWith( "FAILED" ) )
-    {
-        emit failed( out.remove( "FAILED/" ) );
-    }
+    QString out = p->readAllStandardOutput();
+    QStringList lines;
 
+    qDebug() << out;
+    if( out.contains( "\n" ) )
+    {
+        lines = out.split( "\n" );
+    }
+    else
+    {
+        lines.append( out );
+    }
+    
+    for ( int i = 0; i < lines.size(); ++i )
+    {
+        QString o = lines.at( i );
+        
+        if ( o.startsWith( "TOTAL" ) )
+        {
+            int t = o.remove( "TOTAL " ).toInt();
+            emit threadStarted( "Building RPM...", t );
+        }
+        else if ( o.startsWith( "PROG" ) )
+        {
+            int p = o.remove( "PROG " ).toInt();
+            emit threadProgress( p );
+        }
+        else if ( o.startsWith( "SUCCESS" ) )
+        {
+            QStringList l = o.split( "/" );
+            scriptSuccess( l.at( 1 ), l.at( 2 ), l.at( 3 ) );
+        }
+        else if ( o.startsWith( "FAILED" ) )
+        {
+            emit failed( o.remove( "FAILED/" ) );
+            emit threadFinished( this );
+        }
+    }
 }
 
 void BuildRPM::scriptSuccess( const QString& prod, const QString& arch, const QString& host )
@@ -120,6 +132,7 @@ void BuildRPM::scriptSuccess( const QString& prod, const QString& arch, const QS
     }
 
     emit success( prod, arch, reslist, host );
+    emit threadFinished( this );
 }
 
 #include "buildrpm.moc"

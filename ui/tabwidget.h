@@ -68,6 +68,7 @@ class TabWidget : public QTabWidget
         TabWidget(QWidget *parent = 0L);
         ~TabWidget();
         
+        int mGrabbedWidget;
         TabBar* mBar;
         TabButton* mMenuButton;
         QWidget* mPersonalTab;
@@ -82,7 +83,7 @@ class TabWidget : public QTabWidget
         QList<UnityWidget*> mUnityWidgetList;
         QMap<int, UnityBrowser*> mUnityBrowserMap; 
         QList<VncWidget*> mVncWidgetList;
-        QMap<int, VncView*> mVncViewerMap;
+        QMap<int, VncWidget*> mVncViewerMap;
         StatusBar* mStatusBar;
         WebViewSearch* webViewSearch( int );
         QMenu* kueueMainMenu();
@@ -117,8 +118,10 @@ class TabWidget : public QTabWidget
         void addUnityBrowserWithSR( QString = QString::Null() );
         void removeUnityBrowser( int );
         void removeVncTab( int );
+        void testdriveClosed( int );
         void rebuildMaps();
-        void addVncTab( const QUrl& );
+        void addVncTab( int, const QString& );
+        void somethingWentWrong();
         void showMonitorTab( bool );
         void showStatsTab( bool );
         void showPersonalTab( bool );
@@ -168,11 +171,11 @@ class TabWidget : public QTabWidget
         void showSearch();
         void makeNsaReport();
         void cloneSystem();
-        
+        void tabChanged( int );
+
     signals:
         void unityTabMiddleClicked( int );
         void openConfig();
-
 };
 
 class TabBar : public QTabBar

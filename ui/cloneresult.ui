@@ -84,6 +84,11 @@ Build Appliance anyway?</string>
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>addButton</tabstop>
+  <tabstop>packageList</tabstop>
+ </tabstops>
  <resources>
   <include location="../kueue.qrc"/>
  </resources>

@@ -32,6 +32,7 @@
 #include "archivers/archiveextract.h"
 #include "ui/cloneresult.h"
 #include "data/dircleaner.h"
+#include "testdrive.h"
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -111,20 +112,26 @@ void Clone::buildAppliance( const QString& prod, const QString& arch, const QStr
 
     if ( reply == QDialog::Accepted )
     {
-        BuildAppliance* build = new BuildAppliance( mScDir.absolutePath(), prod.trimmed(), arch.trimmed(), hostname.trimmed() );
-        
-        connect( build, SIGNAL( vnc( QUrl ) ), 
-                this, SIGNAL( vnc( QUrl ) ) );
-        
-        connect( build, SIGNAL( finished() ), 
-                 this, SLOT( cloneDone() ) );
-        
-        KueueThreads::enqueue( build );
+        if ( !Settings::testdriveDebugEnabled() )
+        {
+            BuildAppliance* build = new BuildAppliance( mScDir.absolutePath(), prod.trimmed(), arch.trimmed(), hostname.trimmed() );
+            
+            connect( build, SIGNAL( finished( int, QString ) ), 
+                    this, SLOT( cloneDone( int, QString ) ) );
+            
+            KueueThreads::enqueue( build );
+        }
+        else
+        {
+            cloneDone( 198, hostname );
+        }
     }
 }
 
-void Clone::cloneDone()
+void Clone::cloneDone( int build, const QString& hostname )
 {
+    emit buildFinished( build, hostname );
+    
     QStringList dirs; 
     dirs.append( mScDir.absolutePath() );
     DirCleaner* c = new DirCleaner( dirs );

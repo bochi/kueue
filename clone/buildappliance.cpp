@@ -148,13 +148,8 @@ void BuildAppliance::run()
     
     if ( bs.state != "failed" )
     {
-        Testdrive td = studio->getTestdrive( build );
-    
-        QUrl url = "vnc://:" + td.vncpassword + "@" + td.vnchost + ":" + td.vncport;
+        emit finished( build, mHostName );
 
-        emit vnc( url );
-        emit finished();
-        qDebug() << "[BUILDAPPLIANCE] Got Testdrive details:" << td.vnchost << td.vncport << td.vncpassword;
     }
     else
     {

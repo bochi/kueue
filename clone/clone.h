@@ -51,11 +51,11 @@ class Clone : public QObject
         void downloadScript( const QString&, const QString& );
         void scriptDownloadDone();
         void buildAppliance( const QString&, const QString&, const QStringList&, const QString& );
-        void cloneDone();
+        void cloneDone( int, const QString& );
         void failed( const QString& );
         
     signals:
-        void buildFinished();  
+        void buildFinished( int, QString );  
         void vnc( QUrl );
 };
 

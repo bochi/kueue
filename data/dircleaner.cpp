@@ -32,11 +32,13 @@
 
 DirCleaner::DirCleaner( const QStringList& dirs ) : KueueThread()
 {
+    qDebug() << "[DIRCLEANER] Constructing" << currentThreadId();
     mDirs = dirs;
 }
 
 DirCleaner::~DirCleaner()
 {
+    qDebug() << "[DIRCLEANER] Destroying";
 }
 
 void DirCleaner::run()

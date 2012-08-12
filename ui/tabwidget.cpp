@@ -34,6 +34,7 @@
 #include "data/datathread.h"
 #include "clone/clone.h"
 #include "vnc/vncview.h"
+#include "clone/testdrive.h"
 
 #include <QGridLayout> 
 #include <QMenu>
@@ -67,6 +68,11 @@ TabWidget::TabWidget( QWidget* parent )
 {
     qDebug() << "[TABWIDGET] Constructing";
 
+    mGrabbedWidget = 0;
+    
+    connect( this, SIGNAL( currentChanged( int ) ),
+             this, SLOT( tabChanged( int ) ) );
+    
     // set the tab position 
     
     setTabsPosition();
@@ -332,35 +338,62 @@ void TabWidget::removeUnityBrowser( int tab )
     rebuildMaps();
 }
 
-void TabWidget::addVncTab( const QUrl& url )
+void TabWidget::addVncTab( int build, const QString& hostname )
 {
+    TestDrive* td = new TestDrive( build );
+    int tab = addTab( td->widget(), QIcon( ":/icons/conf/studio.png" ), "Testdrive - " + hostname );
+    
+    mVncWidgetList.append( td->widget() );
+    mVncViewerMap[ tab ] = td->widget();
+    
+    td->widget()->setTabId( tab );
+    
+    connect( td, SIGNAL( tabClosed( int ) ),
+             this, SLOT( removeVncTab(int) ) );
+    
+    /*TestDrive* td = qobject_cast< TestDrive* >( sender() );
+    
+    connect( td, SIGNAL( removeTab( int ) ),
+             this, SLOT( removeVncTab( int ) ) );
+    
     VncWidget* w = new VncWidget( url, this );
+    
+    connect( w, SIGNAL( somethingWentWrong() ), 
+             this, SLOT( somethingWentWrong() ) );
+    
     int tab = addTab( w, QIcon( ":/icons/conf/studio.png" ), "Testdrive" );
     
     // set the tabId for the widget for tab handling 
     
     w->setTabId( tab );
+    td->setVncTabId( tab );
     
     // append the widget to a list to build the map from when a tab is closed
     // and set the id + browser in the map for identification
     
     mVncWidgetList.append( w );
-    mVncViewerMap[ tab ] = w->vnc();
+    mVncViewerMap[ tab ] = w->vnc();*/
 }
+
+void TabWidget::somethingWentWrong()
+{
+    qDebug() << "SMTH WENT WRONG";
+    //VncWidget* w = qobject_cast< VncWidget* >( sender() );
+    
+    //QUrl url = w->url();
+    //removeVncTab( w->tabId() );
+    //addVncTab( url );
+}
+
 
 void TabWidget::removeVncTab( int tab )
 {
     removeTab( tab );
     
-    mVncViewerMap[ tab ]->startQuitting();
-    
-    delete mVncViewerMap[ tab ];
-    
     for ( int i = 0; i < mVncWidgetList.count(); ++i )
     {
         if ( mVncWidgetList.at( i )->tabId() == tab )
         {
-            delete mVncWidgetList.at( i );
             mVncWidgetList.removeAt( i );
         }
     }
@@ -368,6 +401,14 @@ void TabWidget::removeVncTab( int tab )
     rebuildMaps();
 }
 
+void TabWidget::testdriveClosed( int tab )
+{
+    TestDrive* td = qobject_cast< TestDrive* >( sender() );
+    
+    td->quitTestdrive();
+    delete td;
+}
+    
 void TabWidget::rebuildMaps()
 {
     mUnityBrowserMap.clear();
@@ -387,7 +428,7 @@ void TabWidget::rebuildMaps()
         QWidget* vw = qobject_cast< QWidget* >( mVncWidgetList.at( i ) );
         
         mVncWidgetList.at( i )->setTabId( indexOf( vw ) );
-        mVncViewerMap[ indexOf( vw ) ] = mVncWidgetList.at( i )->vnc();
+        mVncViewerMap[ indexOf( vw ) ] = mVncWidgetList.at( i );
     }
 }
 
@@ -763,7 +804,7 @@ void TabWidget::closeActionTriggered()
 void TabWidget::vncCloseActionTriggered()
 {
     QAction* action = qobject_cast<QAction*>( QObject::sender() );
-    removeVncTab( action->data().toInt() );
+    testdriveClosed( action->data().toInt() );
 }
 
 void TabWidget::clipboardActionTriggered()
@@ -977,8 +1018,22 @@ void TabWidget::cloneSystem()
     QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
     Clone* c = new Clone( filename );
     
-    connect( c, SIGNAL( vnc( QUrl ) ), 
-             this, SLOT( addVncTab( QUrl ) ) );
+    connect( c, SIGNAL( buildFinished(int, QString) ), 
+             this, SLOT( addVncTab(int, QString) ) );
+}
+
+void TabWidget::tabChanged( int tab )
+{
+    if (  ( mVncViewerMap.keys().contains( tab ) ) && ( mGrabbedWidget == 0 ) )
+    {
+        mVncViewerMap[ tab ]->getFocus( true );
+        mGrabbedWidget = tab;
+    }
+    else if ( mGrabbedWidget != 0 )
+    {
+        mVncViewerMap[ mGrabbedWidget ]->getFocus( false );
+        mGrabbedWidget = 0;
+    }
 }
 
 /* 

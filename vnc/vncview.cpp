@@ -355,8 +355,9 @@ void VncView::paintEvent(QPaintEvent *event)
 {
 //     kDebug(5011) << "paint event: x: " << m_x << ", y: " << m_y << ", w: " << m_w << ", h: " << m_h;
     if (m_frame.isNull() || m_frame.format() == QImage::Format_Invalid) {
-        kDebug(5011) << "no valid image to paint";
+        kDebug(5011) << "[VNCVIEW] No valid image to paint.";
         RemoteView::paintEvent(event);
+        emit somethingWentWrong();
         return;
     }
 
@@ -525,28 +526,75 @@ void VncView::clipboardDataChanged()
     vncThread.clientCut(text);
 }
 
-VncWidget::VncWidget( const QUrl& url, QObject* parent )
+VncWidget::VncWidget( QObject* parent )
 {
     qDebug() << "[VNCWIDGET] Constructing";
     
-    QGridLayout* l = new QGridLayout( this );
-    setLayout( l );
+    mVncView = 0;
+    mLayout = new QGridLayout( this );
+    setLayout( mLayout );
     
-    mVncView = new VncView( this, url );
-    l->addWidget( mVncView );
-    mVncView->show();
-    mVncView->start();
     show();
 }
 
 VncWidget::~VncWidget()
 {
+    emit widgetClosed( mTabId );
     qDebug() << "[VNCWIDGET] Destroying id" << mTabId;
+}
+
+void VncWidget::createVncView( const QUrl& url )
+{
+    if ( mVncView != 0 )
+    {
+        mLayout->removeWidget( mVncView );
+        mVncView->startQuitting();
+        delete mVncView;
+        mVncView = 0;
+    }
+    
+    mVncView = new VncView( this, url );
+    
+    connect( mVncView, SIGNAL( somethingWentWrong() ), 
+             this, SIGNAL( somethingWentWrong() ) );
+    
+    mLayout->addWidget( mVncView );
+    mVncView->show();
+    mVncView->start();
 }
 
 void VncWidget::setTabId( int id )
 {
     mTabId = id;
+}
+
+void VncWidget::getFocus( bool b )
+{
+    if ( mVncView != 0 )
+    {
+        if ( b )
+        {
+            mVncView->grabKeyboard();
+        }
+        else
+        {
+            mVncView->releaseKeyboard();
+        }
+    }
+}
+
+bool VncWidget::event( QEvent* e )
+{
+    if ( e->type() == QEvent::WindowDeactivate )
+    {
+        getFocus( false );
+    }
+    else if ( e->type() == QEvent::Enter )
+    {
+        getFocus( true );
+    }
+    
+    QWidget::event( e );
 }
 
 #include "vncview.moc"

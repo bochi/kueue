@@ -559,6 +559,10 @@ Testdrive QStudio::getTestdrive( int build )
         {
             td.url = e.text();
         }
+        else if ( e.tagName() == "id" )
+        {
+            td.id = e.text().toInt();
+        }
         else if ( e.tagName() == "server" )
         {
             QDomNode no = n.firstChild();
@@ -608,6 +612,58 @@ Testdrive QStudio::getTestdrive( int build )
 
     return td;
 }
+
+QList< UserTestDrive > QStudio::getUserTestdrives()
+{
+    QString xml = getRequest( "/user/testdrives" );
+    
+    QList<UserTestDrive> tdl;
+    
+    QDomDocument doc;
+    doc.setContent( xml );
+    QDomElement docelement = doc.documentElement();
+    
+    QDomNode n = docelement.firstChild();
+    
+    while ( !n.isNull() )
+    {
+        QDomElement e = n.toElement();
+        
+        if ( e.tagName() == "testdrive" )
+        {
+            UserTestDrive t;
+            QDomNode no = n.firstChild();
+        
+            while ( !no.isNull() )
+            {
+                QDomElement te = no.toElement();
+                  
+                if ( te.tagName() == "id" )
+                {
+                    t.testdriveid = te.text().toInt();
+                }
+                else if ( te.tagName() == "build_id" )
+                {
+                    t.buildid = te.text().toInt();
+                }
+                else if ( te.tagName() == "state" )
+                {
+                    t.state = te.text();
+                }
+            
+                no = no.nextSibling();
+            }
+            
+            tdl.append( t );
+            n = n.nextSibling();
+        }
+    }
+    
+    log( "getUserTestdrives ", xml );
+    
+    return tdl;
+}
+
 
 
 #include "qstudio.moc"

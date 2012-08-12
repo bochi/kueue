@@ -47,7 +47,7 @@ class BuildAppliance : public KueueThread
         void run();
         
     signals:
-        void finished();
+        void finished( int, QString );
         void failed( const QString& );
         void vnc( QUrl );
 };

@@ -47,6 +47,7 @@ class QStudio : public QObject
 	int startApplianceBuild( int );
         BuildStatus getBuildStatus( int );
         Testdrive getTestdrive( int );
+        QList<UserTestDrive> getUserTestdrives();
 
     private:
         bool mDebug;

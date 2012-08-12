@@ -35,6 +35,7 @@
 class KConfigGroup{};
 
 #include <QClipboard>
+#include <QGridLayout>
 
 extern "C" {
 #include <rfb/rfbclient.h>
@@ -102,6 +103,9 @@ private slots:
     void requestPassword();
     void outputErrorMessage(const QString &message);
     void clipboardDataChanged();
+    
+signals:
+    void somethingWentWrong();
 };
 
 class VncWidget : public QWidget
@@ -109,18 +113,30 @@ class VncWidget : public QWidget
     Q_OBJECT
 
     public:
-        explicit VncWidget( const QUrl&, QObject* parent = 0L );
+        explicit VncWidget( QObject* parent = 0L );
         ~VncWidget();
         
         VncView* vnc() { return mVncView; }
         int tabId() { return mTabId; }
+        //QUrl url() { return mUrl; }
         
     private:
         VncView* mVncView;
+        QUrl mUrl;
         int mTabId;
+        QGridLayout* mLayout;
+        
+    protected:
+        bool event( QEvent* );
         
     public slots:
-        void setTabId( int );        
+        void setTabId( int );    
+        void createVncView( const QUrl& );
+        void getFocus( bool );
+        
+    signals:
+        void somethingWentWrong();
+        void widgetClosed( int );
 };
 
 #endif

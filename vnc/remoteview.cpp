@@ -29,6 +29,7 @@
 #include "remoteview.h"
 
 #include <QBitmap>
+#include <QDebug>
 
 RemoteView::RemoteView(QWidget *parent)
         : QWidget(parent),

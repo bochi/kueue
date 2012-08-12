@@ -786,6 +786,12 @@ void Settings::setStudioDebugEnabled( const bool& b )
     settings.sync();
 }
 
+bool Settings::testdriveDebugEnabled()
+{
+    QSettings settings;
+    return settings.value( "testdriveDebugEnabled", false ).toBool();
+}
+
 QString Settings::studioServer()
 {
     QSettings settings;

@@ -218,6 +218,8 @@ class Settings
         static bool studioDebugEnabled();
         static void setStudioDebugEnabled( const bool& );
         
+        static bool testdriveDebugEnabled();
+        
         static QString studioScriptVersion();
         static void setStudioScriptVersion( const QString& );
         

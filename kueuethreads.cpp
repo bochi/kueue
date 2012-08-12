@@ -120,7 +120,6 @@ KueueThread::KueueThread( QObject* parent ): QThread( parent )
 
 KueueThread::~KueueThread()
 {
-    qDebug() << "[KUEUETHREAD] Destroying";
 }
 
 #include "kueuethreads.moc"
