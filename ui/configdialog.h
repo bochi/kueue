@@ -40,6 +40,7 @@ class ConfigDialog : public QDialog, private Ui_ConfigDialog
     public:
         ConfigDialog( QWidget *parent = 0 );
             ~ConfigDialog();
+    void cfg_splitSC();
             
     private:
         QNetworkReply* mQueueReply;

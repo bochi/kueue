@@ -362,6 +362,8 @@ void TabWidget::removeVncTab( int tab )
 {
     removeTab( tab );
     
+    qDebug() << "rt" << tab;
+    
     for ( int i = 0; i < mVncWidgetList.count(); ++i )
     {
         if ( mVncWidgetList.at( i )->tabId() == tab )
@@ -381,7 +383,7 @@ void TabWidget::closeTestdrive( int tab )
 void TabWidget::testdriveClosed( int tab )
 {
     TestDrive* td = qobject_cast< TestDrive* >( sender() );
-    
+    qDebug() << "TDC" << tab;
     removeVncTab( tab );
     delete td;
 }
@@ -392,7 +394,7 @@ void TabWidget::rebuildMaps()
     
     for ( int i = 0; i < mUnityWidgetList.count(); ++i )
     {
-        QWidget* tw = qobject_cast< QWidget* >( mUnityWidgetList.at( i ) );
+        QWidget* tw = qobject_cast< UnityWidget* >( mUnityWidgetList.at( i ) );
         
         mUnityWidgetList.at( i )->setTabId( indexOf( tw ) );
         mUnityBrowserMap[ indexOf( tw ) ] = mUnityWidgetList.at( i )->browser();
@@ -402,7 +404,7 @@ void TabWidget::rebuildMaps()
     
     for ( int i = 0; i < mVncWidgetList.count(); ++i )
     {
-        QWidget* vw = qobject_cast< QWidget* >( mVncWidgetList.at( i ) );
+        QWidget* vw = qobject_cast< VncWidget* >( mVncWidgetList.at( i ) );
         
         mVncWidgetList.at( i )->setTabId( indexOf( vw ) );
         mVncViewerMap[ indexOf( vw ) ] = mVncWidgetList.at( i );

@@ -357,6 +357,19 @@ void Settings::setAutoExtract( const bool& b )
     settings.sync();
 }
 
+bool Settings::splitSC()
+{
+    QSettings settings;
+    return settings.value( "splitSC", false ).toBool();
+}
+
+void Settings::setSplitSC( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "splitSC", b );
+    settings.sync();
+}
+
 bool Settings::cleanupDownloadDirectory()
 {
     QSettings settings;

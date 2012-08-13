@@ -107,7 +107,10 @@ class Settings
         static void setUseSrDirectory( const bool& );
                 
         static bool autoExtract();
-        static void setAutoExtract( const bool& );        
+        static void setAutoExtract( const bool& );    
+        
+        static bool splitSC();
+        static void setSplitSC( const bool& );
         
         static bool cleanupDownloadDirectory();
         static void setCleanupDownloadDirectory( const bool& );

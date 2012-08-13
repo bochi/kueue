@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>715</width>
-    <height>512</height>
+    <height>537</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -982,6 +982,13 @@
            <widget class="QCheckBox" name="cfg_cleanupDownloadDirectory">
             <property name="text">
              <string>Keep download directory clean</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QCheckBox" name="cfg_splitSupportconfig">
+            <property name="text">
+             <string>Create &quot;system&quot; directory in supportconfig directory (split config files)</string>
             </property>
            </widget>
           </item>

@@ -1013,6 +1013,7 @@ void UnityWidget::deactivateProgressWidget()
 
 void UnityWidget::setTabId( int id )
 {
+    qDebug() << "TABID" << id;
     mTabId = id;
 }
 
