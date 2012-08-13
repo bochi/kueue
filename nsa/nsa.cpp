@@ -43,7 +43,7 @@ NSA::NSA( const QString& sc )
     mSupportConfig = sc;
     
     mNsaDir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "/nsa" );
-    mTmpDir = QDesktopServices::storageLocation( QDesktopServices::TempLocation ) + "/nsa";
+    mTmpDir = QDesktopServices::storageLocation( QDesktopServices::TempLocation ) + "/kueue/nsa";
     
     if ( !mNsaDir.exists() )
     {

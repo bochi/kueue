@@ -87,24 +87,11 @@ KueueApp::~KueueApp()
 
 void KueueApp::cleanupTemp()
 {
-    QDir dir( QDesktopServices::storageLocation( QDesktopServices::TempLocation ) + "/nsa" );
-    QDirIterator dirWalker( dir.path(), QDir::Files | QDir::Dirs | QDir::NoSymLinks, QDirIterator::Subdirectories );
+    QStringList dirs;
+    dirs.append( QDesktopServices::storageLocation( QDesktopServices::TempLocation ) + "/kueue" );
     
-    while( dirWalker.hasNext() )
-    {
-        dirWalker.next();
-        QFileInfo info( dirWalker.filePath() );
-        
-        if ( info.isDir() )
-        {
-            QDir d( dirWalker.filePath() );
-            dir.rmpath( dirWalker.filePath() );
-        }
-        else
-        {
-            QFile::remove( dirWalker.filePath() );
-        }
-    }
+    DirCleaner* dc = new DirCleaner( dirs );
+    KueueThreads::enqueue( dc );
 }
 
 void KueueApp::deleteDirs( QStringList dirs )

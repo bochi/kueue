@@ -539,7 +539,6 @@ VncWidget::VncWidget( QObject* parent )
 
 VncWidget::~VncWidget()
 {
-    emit widgetClosed( mTabId );
     qDebug() << "[VNCWIDGET] Destroying id" << mTabId;
 }
 
@@ -595,6 +594,11 @@ bool VncWidget::event( QEvent* e )
     }
     
     QWidget::event( e );
+}
+
+void VncWidget::closeWidget()
+{
+    emit widgetClosed( mTabId );
 }
 
 #include "vncview.moc"

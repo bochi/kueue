@@ -101,7 +101,7 @@ void ArchiveExtract::run()
             final = line.trimmed().split( "/" ).at( 0 );
         }
         
-        emit threadProgress( mExtFilesCnt );
+        emit threadProgress( mExtFilesCnt, QString::Null() );
     }
     
     if ( !final.isEmpty() )
@@ -114,7 +114,7 @@ void ArchiveExtract::run()
         emit extracted( mArchivePath, mDestination + "/" + final );
     }
     
-    emit threadProgress( mFilesCnt );
+    emit threadProgress( mFilesCnt, QString::Null() );
     emit threadFinished( this );
 }
 

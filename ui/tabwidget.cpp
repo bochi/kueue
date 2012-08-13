@@ -341,50 +341,22 @@ void TabWidget::removeUnityBrowser( int tab )
 void TabWidget::addVncTab( int build, const QString& hostname )
 {
     TestDrive* td = new TestDrive( build );
+
+    connect( td, SIGNAL( testdriveClosed( int ) ),
+             this, SLOT( testdriveClosed( int ) ) );
+    
     int tab = addTab( td->widget(), QIcon( ":/icons/conf/studio.png" ), "Testdrive - " + hostname );
     
     mVncWidgetList.append( td->widget() );
     mVncViewerMap[ tab ] = td->widget();
     
     td->widget()->setTabId( tab );
-    
-    connect( td, SIGNAL( tabClosed( int ) ),
-             this, SLOT( removeVncTab(int) ) );
-    
-    /*TestDrive* td = qobject_cast< TestDrive* >( sender() );
-    
-    connect( td, SIGNAL( removeTab( int ) ),
-             this, SLOT( removeVncTab( int ) ) );
-    
-    VncWidget* w = new VncWidget( url, this );
-    
-    connect( w, SIGNAL( somethingWentWrong() ), 
-             this, SLOT( somethingWentWrong() ) );
-    
-    int tab = addTab( w, QIcon( ":/icons/conf/studio.png" ), "Testdrive" );
-    
-    // set the tabId for the widget for tab handling 
-    
-    w->setTabId( tab );
-    td->setVncTabId( tab );
-    
-    // append the widget to a list to build the map from when a tab is closed
-    // and set the id + browser in the map for identification
-    
-    mVncWidgetList.append( w );
-    mVncViewerMap[ tab ] = w->vnc();*/
 }
 
 void TabWidget::somethingWentWrong()
 {
     qDebug() << "SMTH WENT WRONG";
-    //VncWidget* w = qobject_cast< VncWidget* >( sender() );
-    
-    //QUrl url = w->url();
-    //removeVncTab( w->tabId() );
-    //addVncTab( url );
 }
-
 
 void TabWidget::removeVncTab( int tab )
 {
@@ -401,14 +373,19 @@ void TabWidget::removeVncTab( int tab )
     rebuildMaps();
 }
 
+void TabWidget::closeTestdrive( int tab )
+{
+    mVncViewerMap[ tab ]->closeWidget();
+}
+
 void TabWidget::testdriveClosed( int tab )
 {
     TestDrive* td = qobject_cast< TestDrive* >( sender() );
     
-    td->quitTestdrive();
+    removeVncTab( tab );
     delete td;
 }
-    
+
 void TabWidget::rebuildMaps()
 {
     mUnityBrowserMap.clear();
@@ -804,7 +781,7 @@ void TabWidget::closeActionTriggered()
 void TabWidget::vncCloseActionTriggered()
 {
     QAction* action = qobject_cast<QAction*>( QObject::sender() );
-    testdriveClosed( action->data().toInt() );
+    closeTestdrive( action->data().toInt() );
 }
 
 void TabWidget::clipboardActionTriggered()

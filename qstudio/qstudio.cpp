@@ -660,7 +660,7 @@ BuildStatus QStudio::getBuildStatus( int id )
         }
         else if ( e.tagName() == "message" )
         {
-           bs.state = e.text();
+           bs.message = e.text();
         }
         
         n = n.nextSibling();

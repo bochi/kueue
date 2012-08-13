@@ -163,7 +163,7 @@ void NSAJob::run()
             return;
         }
         
-        emit threadProgress( i );
+        emit threadProgress( i, QString::Null() );
     
         QString meta = p.readAllStandardOutput(); 
         QString pat;

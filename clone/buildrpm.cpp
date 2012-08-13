@@ -85,12 +85,13 @@ void BuildRPM::scriptOutput()
         if ( o.startsWith( "TOTAL" ) )
         {
             int t = o.remove( "TOTAL " ).toInt();
-            emit threadStarted( "Building RPM...", t );
+            emit threadNewMaximum( t );
+            emit threadProgress( t, "Building RPM..." );
         }
         else if ( o.startsWith( "PROG" ) )
         {
             int p = o.remove( "PROG " ).toInt();
-            emit threadProgress( p );
+            emit threadProgress( p, QString::Null() );
         }
         else if ( o.startsWith( "SUCCESS" ) )
         {

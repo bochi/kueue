@@ -792,6 +792,12 @@ bool Settings::testdriveDebugEnabled()
     return settings.value( "testdriveDebugEnabled", false ).toBool();
 }
 
+int Settings::testdriveDebugBuildID()
+{
+    QSettings settings;
+    return settings.value( "testdriveDebugBuildID", 0 ).toInt();
+}
+
 QString Settings::studioServer()
 {
     QSettings settings;

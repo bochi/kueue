@@ -25,6 +25,7 @@
 
 #include "statusbar.h"
 #include "settings.h"
+#include "kueuethreads.h"
 
 StatusBar* StatusBar::instance = 0;
 
@@ -54,10 +55,17 @@ StatusBar::StatusBar()
     mDownloadButton->setGeometry( 0, 0, 20, 20 );
     mDownloadButton->setIcon( QIcon(":/icons/menus/download.png"));
     
+    mThreadButton = new QToolButton( this );
+    mThreadButton->setGeometry( 0, 0, 20, 20 );
+    mThreadButton->setIcon( QIcon(":/icons/menus/up.png"));
+    
     mDownloadManager = new DownloadManager( window() );
 
     connect( mDownloadButton, SIGNAL( clicked(bool) ), 
              this, SLOT( toggleDownloadManager()) );
+    
+    connect( mThreadButton, SIGNAL( clicked( bool ) ),
+             this, SLOT( toggleThreadWidget() ) );
     
     connect( mDownloadManager, SIGNAL( downloadFinished() ),
              this, SLOT( popupDownloadManager() ) );
@@ -77,11 +85,14 @@ StatusBar::StatusBar()
     mLabel->setFont( font );
     mLabel->setText( "" );
 
-    addPermanentWidget( mLabel );
-    addPermanentWidget( mProgress );
+    addWidget( mThreadButton, 0 );
+    addWidget( mProgress, 1 );
+    addWidget( mLabel, 2 );
+        
     addPermanentWidget( mDownloadButton );
     
     mProgress->hide();   
+    mThreadButton->hide();
 }
 
 StatusBar::~StatusBar()
@@ -97,6 +108,20 @@ void StatusBar::toggleDownloadManager()
     else
     {
         mDownloadManager->hide();
+    }
+}
+
+void StatusBar::toggleThreadWidget()
+{
+    QWidget* tw = KueueThreads::threadWidget();
+    
+    if ( tw->isHidden() )
+    {
+        showThreadWidget();
+    }
+    else
+    {
+        tw->hide();
     }
 }
 
@@ -116,6 +141,19 @@ void StatusBar::showDownloadManager()
     
     mDownloadManager->show();   
 }
+
+void StatusBar::showThreadWidget()
+{
+    QWidget* tw = KueueThreads::threadWidget();
+    
+    //tw->setGeometry( window()->x() + window()->width() - mDownloadManager->width(), window()->y() + window()->height() - mDownloadManager->height(), 
+     //                               ( window()->width() / 3 ), ( window()->height() / 4 * 3 ) );
+    
+    tw->move( window()->x() + 5, window()->y() + window()->height() - tw->height() );
+    
+    tw->show();   
+}
+
 
 void StatusBar::hideDownloadManagerImpl()
 {
@@ -156,11 +194,17 @@ void StatusBar::showMessageImpl( QString message, int timeout )
 void StatusBar::resetStatusBarImpl()
 {
     mProgress->hide();
+    mThreadButton->hide();
     mLabel->setText( "" );
 }
 
-void StatusBar::updateProgressImpl( int p )
+void StatusBar::updateProgressImpl( int p, const QString& text )
 {
+    if ( !text.isNull() )
+    {
+        mLabel->setText( text );
+    }
+
     mProgress->setValue( p );
 }
 
@@ -170,6 +214,7 @@ void StatusBar::undefinedDownload()
     mProgress->setMinimum( 0 );
     mProgress->setMaximum( 0 );
     mProgress->show();
+    mThreadButton->show();
 }
 
 void StatusBar::startJobStatusImpl( const QString& status, int total )
@@ -178,6 +223,7 @@ void StatusBar::startJobStatusImpl( const QString& status, int total )
     mProgress->setMinimum( 0 );
     mProgress->setMaximum( total );
     mProgress->show();
+    mThreadButton->show();
 }
 
 #include "statusbar.moc"

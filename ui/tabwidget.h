@@ -119,6 +119,7 @@ class TabWidget : public QTabWidget
         void removeUnityBrowser( int );
         void removeVncTab( int );
         void testdriveClosed( int );
+        void closeTestdrive( int );
         void rebuildMaps();
         void addVncTab( int, const QString& );
         void somethingWentWrong();

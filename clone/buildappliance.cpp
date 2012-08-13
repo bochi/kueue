@@ -163,12 +163,13 @@ void BuildAppliance::run()
         while ( bs.state == "queued" );
     }
 
-    emit threadStarted( "Building Appliance...", 100 );
+    emit threadNewMaximum( 100 );
+    emit threadProgress( 0, "Building Appliance..." );
     
     do
     {
         bs = studio->getBuildStatus( build );
-        emit threadProgress( bs.percent );
+        emit threadProgress( bs.percent, "Building Appliance... (" + bs.message + ")" );
         QTest::qSleep( 5000 );
     }
     while ( ( bs.percent < 100 ) && ( bs.state != "failed" ) );

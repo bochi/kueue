@@ -26,6 +26,7 @@
 #include "kueuethreads.h"
 #include "nsa/nsajob.h"
 #include "archivers/archiveextract.h"
+#include "ui/threadprogress.h"
 
 KueueThreads* KueueThreads::instance = 0;
 
@@ -54,7 +55,12 @@ KueueThreads::KueueThreads( QObject* parent )
     qDebug() << "[KUEUETHREADS] Constructing";
     
     mStatusBar = &mStatusBar->getInstance();
-    mCurrentThread = 0;    
+    mCurrentThread = 0;   
+    
+    mThreadWidget = new QWidget;
+    QVBoxLayout* l = new QVBoxLayout( mThreadWidget );
+    mThreadWidget->setLayout( l );
+    mThreadWidget->setWindowFlags( Qt::Popup );
 }
 
 KueueThreads::~KueueThreads()
@@ -69,17 +75,13 @@ void KueueThreads::enqueueThread( KueueThread* thread )
     connect( thread, SIGNAL( threadStarted( QString, int ) ),
             this, SLOT( startThread( const QString&, int ) ) );
     
-    connect( thread, SIGNAL( threadProgress( int ) ),
-            this, SLOT( updateThreadProgress( int ) ) );
+    connect( thread, SIGNAL( threadProgress( int, QString ) ),
+            this, SLOT( updateThreadProgress( int, QString ) ) );
             
     connect( thread, SIGNAL( finished() ),
              this, SLOT( endThread() ) );
 
-    if ( mThreadList.size() == 1 )
-    {
-        mCurrentThread = thread;
-        mCurrentThread->start();
-    }
+    thread->start();
 }
 
 void KueueThreads::next()
@@ -93,29 +95,63 @@ void KueueThreads::next()
 
 void KueueThreads::startThread( const QString& text, int total )
 {
+    KueueThread* t = qobject_cast< KueueThread* >( sender() );
+    ThreadProgress* p = new ThreadProgress( this, text, total );
+    
+    addThreadWidget( p );
+    
+    connect( t, SIGNAL( threadProgress( int, QString ) ), 
+             p, SLOT( updateProgress( int, QString ) ) );
+    
+    connect( t, SIGNAL( threadNewMaximum( int ) ), 
+             p, SLOT( setMaximum( int ) ) );
+    
+    connect( t, SIGNAL( finished() ),
+             p, SLOT( close() ) );
+    
+    connect( p, SIGNAL( closed( QWidget* ) ), 
+             this, SLOT( removeThreadWidget( QWidget* ) ) );
+   
     mStatusBar->startJobStatus( text, total );
 }
 
-void KueueThreads::updateThreadProgress( int p )
+QWidget* KueueThreads::getThreadWidget()
 {
-    mStatusBar->updateProgress( p );
+    return mThreadWidget;
+}
+
+void KueueThreads::addThreadWidget( QWidget* w )
+{
+    mThreadWidgetList.append( w );
+    mThreadWidget->layout()->addWidget( w );
+}
+
+void KueueThreads::removeThreadWidget( QWidget* w )
+{
+    mThreadWidget->layout()->removeWidget( w );
+    mThreadWidget->resize( mThreadWidget->layout()->sizeHint() );
+    delete w;
+}
+
+void KueueThreads::updateThreadProgress( int p, const QString& text )
+{
+    mStatusBar->updateProgress( p, text );
 }
 
 void KueueThreads::endThread()
 {
-    KueueThread* t = mCurrentThread;
+    KueueThread* t = qobject_cast< KueueThread* >( sender() );
     
-    mStatusBar->resetStatusBar();
+    //mStatusBar->resetStatusBar();
     mThreadList.removeAt( mThreadList.indexOf( t ) );
     t->quit();
     t->wait();
     delete t;
-    next();
+    //next();
 }
 
-KueueThread::KueueThread( QObject* parent ): QThread( parent )
+KueueThread::KueueThread( QObject* parent ) : QThread( parent )
 {
-    qDebug() << "[KUEUETHREAD] Construcing" << currentThreadId();
 }
 
 KueueThread::~KueueThread()

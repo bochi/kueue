@@ -128,6 +128,7 @@ SET( kueue_CPP  main.cpp
 		ui/qprogressindicator.cpp
 		ui/busywidget.cpp
                 ui/cloneresult.cpp
+		ui/threadprogress.cpp
 
                 ui/browsers/unitybrowser.cpp 
                 ui/browsers/qmonbrowser.cpp
@@ -173,7 +174,8 @@ SET( kueue_UI   ui/detailwindow.ui
 		ui/updatedialog.ui 
                 ui/notedialog.ui
                 ui/closedialog.ui
-	        ui/cloneresult.ui )
+	        ui/cloneresult.ui 
+		ui/threadprogress.ui )
 
 #
 # Default Qt stuff...

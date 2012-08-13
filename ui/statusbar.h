@@ -54,6 +54,7 @@ class StatusBar : public QStatusBar
         
         DownloadManager* mDownloadManager;
         QToolButton* mDownloadButton;
+        QToolButton* mThreadButton;
         
     public:
         static StatusBar& getInstance();
@@ -74,9 +75,9 @@ class StatusBar : public QStatusBar
         {
             instance->resetStatusBarImpl();
         }
-        static void updateProgress( int p )
+        static void updateProgress( int p, const QString& text )
         {
-            instance->updateProgressImpl( p );
+            instance->updateProgressImpl( p, text );
         }
         static void startJobStatus( const QString& text, int total )
         {
@@ -91,11 +92,13 @@ class StatusBar : public QStatusBar
         void showMessageImpl( QString, int = 15000 );
         
     private slots:
-        void updateProgressImpl( int );
+        void updateProgressImpl( int, const QString& );
         void undefinedDownload();
         void resetStatusBarImpl();
         void toggleDownloadManager();
+        void toggleThreadWidget();
         void showDownloadManager();
+        void showThreadWidget();
         void hideDownloadManagerImpl();
         void popupDownloadManager();
         void mousePressEvent( QMouseEvent* );

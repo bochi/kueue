@@ -90,7 +90,7 @@ void DirCleaner::run()
             }
 
             dir.rmdir( dir.path() );
-            emit threadProgress( i );
+            emit threadProgress( i, QString::Null() );
         }
     }
     

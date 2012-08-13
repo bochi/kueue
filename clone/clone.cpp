@@ -47,7 +47,7 @@ Clone::Clone( const QString& sc )
     qDebug() << "[CLONE] Constructing";
     
     mSupportConfig = sc;
-    QDir tmpdir = QDesktopServices::storageLocation( QDesktopServices::TempLocation ) + "/kueue-studio";
+    QDir tmpdir = QDesktopServices::storageLocation( QDesktopServices::TempLocation ) + "/kueue/studio";
     
     if ( !tmpdir.exists() )
     {
@@ -134,7 +134,7 @@ void Clone::buildAppliance( const QString& prod, const QString& arch, const QStr
         }
         else
         {
-            cloneDone( 198, hostname );
+            cloneDone( Settings::testdriveDebugBuildID(), hostname );
         }
     }
 }

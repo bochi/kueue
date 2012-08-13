@@ -133,6 +133,7 @@ class VncWidget : public QWidget
         void setTabId( int );    
         void createVncView( const QUrl& );
         void getFocus( bool );
+        void closeWidget();
         
     signals:
         void somethingWentWrong();

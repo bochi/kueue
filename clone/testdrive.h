@@ -45,16 +45,14 @@ class TestDrive : public QObject
         VncWidget* widget() { return mVncWidget; }
         
     public slots:
-        void quitTestdrive();
+        void quitTestdrive( int );
         
     private:
         VncWidget* mVncWidget;
         TestDriveThread* mThread;
         
     signals:
-        void tabClosed( int );
-        
-    
+        void testdriveClosed( int );
 };
 
 class TestDriveThread : public QThread
@@ -67,7 +65,6 @@ class TestDriveThread : public QThread
         
     public slots:
         void requestNewTestdrive();
-        void setVncTabId( int );
         void deleteWorker();
         
     private:
@@ -81,9 +78,6 @@ class TestDriveThread : public QThread
         void vnc( QUrl );
         void newTestdriveRequested();
         void timedOut( int );
-        void gotVncTabId( int );
-        void removeTab( int );
-
 };
 
 class TestDriveWorker : public QObject
@@ -97,7 +91,6 @@ class TestDriveWorker : public QObject
     private:
         int mBuildId;
         int mTestDriveId;
-        int mVncTabId;
         QTimer* mTimer;
         QStudio* mStudio;
         QUrl mUrl;
@@ -105,7 +98,6 @@ class TestDriveWorker : public QObject
     public slots:
         void work();
         void newTestdriveRequested();
-        void setVncTabId( int );
         
     private slots:
         void getTestdriveForBuild();
@@ -114,8 +106,6 @@ class TestDriveWorker : public QObject
     signals:
         void vnc( QUrl );
         void timedOut( int );
-        void removeTab( int );
-
 };
 
 #endif
