@@ -67,41 +67,37 @@ class StatusBar : public QStatusBar
         {
             instance->addDownloadJobImpl( r, s, a );
         }
-        static void showMessage( QString msg, int timeout = 15000 )
-        {   
-            return instance->showMessageImpl( msg, timeout );
-        }
-        static void resetStatusBar()
-        {
-            instance->resetStatusBarImpl();
-        }
-        static void updateProgress( int p, const QString& text )
-        {
-            instance->updateProgressImpl( p, text );
-        }
-        static void startJobStatus( const QString& text, int total )
-        {
-            instance->startJobStatusImpl( text, total );
-        }
         static void hideDownloadManager()
         {
             instance->hideDownloadManagerImpl();
         }
         
-    public slots:
-        void showMessageImpl( QString, int = 15000 );
+        static void addThreadWidget( QWidget* w )
+        {
+            instance->addWidgetImpl( w );
+        }
+        
+        static void removeThreadWidget( QWidget* w )
+        {
+            instance->removeWidgetImpl( w );
+        }
+        
+        static void showMessage( const QString& msg, int timeout = 15000 )
+        {
+            instance->showMessageImpl( msg, timeout );
+        }
         
     private slots:
-        void updateProgressImpl( int, const QString& );
         void undefinedDownload();
-        void resetStatusBarImpl();
         void toggleDownloadManager();
-        void toggleThreadWidget();
         void showDownloadManager();
-        void showThreadWidget();
         void hideDownloadManagerImpl();
         void popupDownloadManager();
         void mousePressEvent( QMouseEvent* );
+        void addWidgetImpl( QWidget* );
+        void removeWidgetImpl( QWidget* );
+        void showMessageImpl( const QString&, int = 15000 );
+        void resetStatusbar();
     
 };
 

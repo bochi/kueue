@@ -55,44 +55,26 @@ StatusBar::StatusBar()
     mDownloadButton->setGeometry( 0, 0, 20, 20 );
     mDownloadButton->setIcon( QIcon(":/icons/menus/download.png"));
     
-    mThreadButton = new QToolButton( this );
-    mThreadButton->setGeometry( 0, 0, 20, 20 );
-    mThreadButton->setIcon( QIcon(":/icons/menus/up.png"));
-    
     mDownloadManager = new DownloadManager( window() );
 
     connect( mDownloadButton, SIGNAL( clicked(bool) ), 
              this, SLOT( toggleDownloadManager()) );
     
-    connect( mThreadButton, SIGNAL( clicked( bool ) ),
-             this, SLOT( toggleThreadWidget() ) );
-    
     connect( mDownloadManager, SIGNAL( downloadFinished() ),
              this, SLOT( popupDownloadManager() ) );
     
-    setMaximumHeight( 20 );
-    
+    setFixedHeight( 21 );
+        
+    mLabel = new QLabel( this );
     QFont font;
     font.setPixelSize( 12 );
     
-    mProgress = new QProgressBar( this );
-    mProgress->setMaximumHeight( 20 );
-    mProgress->setMaximumWidth( 100 );
-    mProgress->setFont( font );
-    
-    mLabel = new QLabel( this );
-    mLabel->setMaximumHeight( 20 );
     mLabel->setFont( font );
-    mLabel->setText( "" );
-
-    addWidget( mThreadButton, 0 );
-    addWidget( mProgress, 1 );
-    addWidget( mLabel, 2 );
-        
-    addPermanentWidget( mDownloadButton );
+    mLabel->setMaximumHeight( 20 );
     
-    mProgress->hide();   
-    mThreadButton->hide();
+    addPermanentWidget( mDownloadButton );
+    addPermanentWidget( mLabel );
+    mLabel->setText( "" );
 }
 
 StatusBar::~StatusBar()
@@ -108,20 +90,6 @@ void StatusBar::toggleDownloadManager()
     else
     {
         mDownloadManager->hide();
-    }
-}
-
-void StatusBar::toggleThreadWidget()
-{
-    QWidget* tw = KueueThreads::threadWidget();
-    
-    if ( tw->isHidden() )
-    {
-        showThreadWidget();
-    }
-    else
-    {
-        tw->hide();
     }
 }
 
@@ -141,19 +109,6 @@ void StatusBar::showDownloadManager()
     
     mDownloadManager->show();   
 }
-
-void StatusBar::showThreadWidget()
-{
-    QWidget* tw = KueueThreads::threadWidget();
-    
-    //tw->setGeometry( window()->x() + window()->width() - mDownloadManager->width(), window()->y() + window()->height() - mDownloadManager->height(), 
-     //                               ( window()->width() / 3 ), ( window()->height() / 4 * 3 ) );
-    
-    tw->move( window()->x() + 5, window()->y() + window()->height() - tw->height() );
-    
-    tw->show();   
-}
-
 
 void StatusBar::hideDownloadManagerImpl()
 {
@@ -178,34 +133,16 @@ void StatusBar::addDownloadJobImpl( QNetworkRequest req, QNetworkAccessManager* 
     mDownloadManager->download( req, nam, dir, ask );  
 }
 
-void StatusBar::showMessageImpl( QString message, int timeout )
+void StatusBar::addWidgetImpl( QWidget* w )
 {
-    QTimer* t = new QTimer; 
-    t->setInterval( timeout );
-    t->setSingleShot( true );
-    
-    connect( t, SIGNAL( timeout() ), 
-             this, SLOT( resetStatusBarImpl() ) );
-    
-    mLabel->setText( message );
-    t->start();
+    addWidget( w );
+    w->show();
 }
 
-void StatusBar::resetStatusBarImpl()
+void StatusBar::removeWidgetImpl( QWidget* w )
 {
-    mProgress->hide();
-    mThreadButton->hide();
-    mLabel->setText( "" );
-}
-
-void StatusBar::updateProgressImpl( int p, const QString& text )
-{
-    if ( !text.isNull() )
-    {
-        mLabel->setText( text );
-    }
-
-    mProgress->setValue( p );
+    removeWidget( w );
+    delete w;
 }
 
 void StatusBar::undefinedDownload()
@@ -217,13 +154,15 @@ void StatusBar::undefinedDownload()
     mThreadButton->show();
 }
 
-void StatusBar::startJobStatusImpl( const QString& status, int total )
+void StatusBar::showMessageImpl( const QString& msg, int timeout )
 {
-    mLabel->setText( status );
-    mProgress->setMinimum( 0 );
-    mProgress->setMaximum( total );
-    mProgress->show();
-    mThreadButton->show();
+    mLabel->setText( msg );
+    QTimer::singleShot( timeout, this, SLOT( resetStatusbar() ) );
+}
+
+void StatusBar::resetStatusbar()
+{
+    mLabel->setText( "" );
 }
 
 #include "statusbar.moc"

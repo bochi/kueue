@@ -28,15 +28,39 @@
 #include <QDebug>
 #include <QApplication>
 #include <QFileDialog>
+#include <QLayout>
 
 
 ThreadProgress::ThreadProgress( QObject* parent, const QString& text, int total )
 {
     qDebug() << "[THREADPROGRESS] Constructing";
     
-    setupUi( this ); 
-    threadText->setText( text );
-    threadProgress->setMaximum( total );
+    setFixedHeight( 21 );
+    setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+    
+    QHBoxLayout* l = new QHBoxLayout( this );
+    l->setContentsMargins( 0, 0, 0, 0 );
+    l->setAlignment( Qt::AlignLeft | Qt::AlignCenter );
+    setLayout( l );
+    
+    mLabel = new QLabel( this );
+    mProgress = new QProgressBar( this );
+    
+    QFont font;
+    font.setPixelSize( 12 );
+    
+    mLabel->setFont( font );
+    mLabel->setMaximumHeight( 20 );
+    
+    mProgress->setMaximumHeight( 20 );
+    mProgress->setMaximumWidth( 75 );
+    mProgress->setFont( font );
+    
+    l->addWidget( mProgress, 0, Qt::AlignLeft );
+    l->addWidget( mLabel );
+    
+    mLabel->setText( text );
+    mProgress->setMaximum( total );
 }
 
 ThreadProgress::~ThreadProgress()
@@ -46,23 +70,17 @@ ThreadProgress::~ThreadProgress()
 
 void ThreadProgress::setMaximum( int max )
 {
-    threadProgress->setMaximum( max );
+    mProgress->setMaximum( max );
 }
 
 void ThreadProgress::updateProgress( int p, const QString& text )
 {
     if ( !text.isNull() )
     {
-        threadText->setText( text );
+        mLabel->setText( text );
     }
     
-    threadProgress->setValue( p );
-}
-
-void ThreadProgress::closeEvent( QCloseEvent* event )
-{
-    emit closed( this );
-    QWidget::closeEvent( event );
+    mProgress->setValue( p );
 }
 
 #include "threadprogress.moc"

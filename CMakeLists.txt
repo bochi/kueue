@@ -174,8 +174,7 @@ SET( kueue_UI   ui/detailwindow.ui
 		ui/updatedialog.ui 
                 ui/notedialog.ui
                 ui/closedialog.ui
-	        ui/cloneresult.ui 
-		ui/threadprogress.ui )
+	        ui/cloneresult.ui )
 
 #
 # Default Qt stuff...

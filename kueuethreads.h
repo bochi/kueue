@@ -48,29 +48,17 @@ class KueueThreads : public QObject
             getInstance().enqueueThread( thread );
         }
         
-        static QWidget* threadWidget()
-        { 
-            return getInstance().getThreadWidget();
-        }
-        
     private:
         static KueueThreads* instance;
         KueueThreads( QObject* parent = 0 );
         ~KueueThreads();
-        KueueThread* mCurrentThread;
-        QList<QWidget*> mThreadWidgetList;
-        QWidget* getThreadWidget();
-        QWidget* mThreadWidget;
         
     protected:
-        QList<KueueThread*> mThreadList;
         StatusBar* mStatusBar;
         void enqueueThread( KueueThread* );
         
     private slots:
-        void next();
         void startThread( const QString&, int );
-        void updateThreadProgress( int, const QString& );
         void endThread();
         void addThreadWidget( QWidget* );
         void removeThreadWidget( QWidget* );
