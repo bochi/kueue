@@ -41,8 +41,8 @@ TestDrive::TestDrive( int build ) : QObject()
     connect( mThread, SIGNAL( vnc( QUrl ) ),
              mVncWidget, SLOT( createVncView( QUrl ) ) );
     
-    connect( mVncWidget, SIGNAL( somethingWentWrong() ), 
-             mThread, SLOT( requestNewTestdrive() ) );
+    //connect( mVncWidget, SIGNAL( somethingWentWrong() ), 
+    //         mThread, SLOT( requestNewTestdrive() ) );
     
     connect( mVncWidget, SIGNAL( widgetClosed( int ) ), 
              this, SLOT( quitTestdrive( int ) ) );
