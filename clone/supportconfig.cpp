@@ -37,8 +37,6 @@ SupportConfig::SupportConfig( const QString& sc, bool create ) : KueueThread()
 
     mScDir = sc;
     mCreateArchive = create;
-    
-    start();
 }
 
 SupportConfig::~SupportConfig()
@@ -48,7 +46,7 @@ SupportConfig::~SupportConfig()
 
 void SupportConfig::run()
 {
-    emit threadStarted( "Preparing supportconfig...", 0 );
+    emit threadStarted( "Splitting supportconfig...", 0 );
     
     QDir dir( mScDir );
     dir.setFilter( QDir::Files | QDir::NoDotAndDotDot );
@@ -118,7 +116,7 @@ void SupportConfig::run()
              ( fn.startsWith( "# " ) ) )
         {
             QFileInfo info( fn.remove( "# " ).trimmed() );
-            QDir sysdir( dir.path() + "/system" + info.dir().path() );
+            QDir sysdir( dir.path() + "/system/" + info.dir().path() );
             
             if ( !sysdir.exists() )
             {

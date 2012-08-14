@@ -370,6 +370,19 @@ void Settings::setSplitSC( const bool& b )
     settings.sync();
 }
 
+bool Settings::autoNSA()
+{
+    QSettings settings;
+    return settings.value( "autoNSA", false ).toBool();
+}
+
+void Settings::setAutoNSA( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "autoNSA", b );
+    settings.sync();
+}
+
 bool Settings::cleanupDownloadDirectory()
 {
     QSettings settings;
@@ -847,6 +860,45 @@ void Settings::setStudioApiKey( const QString& s )
 {
     QSettings settings;
     settings.setValue( "studioApiKey", s );
+    settings.sync();
+}
+
+QString Settings::applianceDownloadDirectory()
+{
+    QSettings settings;
+    return settings.value( "applianceDownloadDirectory" ).toString();
+}
+ 
+void Settings::setApplianceDownloadDirectory( const QString& s )
+{
+    QSettings settings;
+    settings.setValue( "applianceDownloadDirectory", s );
+    settings.sync();
+}
+        
+bool Settings::autoOpenAppliances()
+{
+    QSettings settings;
+    return settings.value( "autoOpenAppliances", false ).toBool();
+}
+ 
+void Settings::setAutoOpenAppliances( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "autoOpenAppliances", b );
+    settings.sync();   
+}
+        
+int Settings::autoOpenAppliancesIn()
+{
+    QSettings settings;
+    return settings.value( "autoOpenAppliancesIn", 1 ).toInt();
+}
+
+void Settings::setAutoOpenAppliancesIn( int i )
+{
+    QSettings settings;
+    settings.setValue( "autoOpenAppliancesIn", i );
     settings.sync();
 }
 

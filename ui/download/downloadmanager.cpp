@@ -36,6 +36,7 @@
 #include "kueue.h"
 #include "kueuethreads.h"
 #include "nsa/nsa.h"
+#include "clone/supportconfig.h"
 
 #include <math.h>
 
@@ -520,6 +521,10 @@ void DownloadItem::finished()
          ( QFileInfo( mOutput.fileName() ).suffix() == "tbz" ) ) )
     {
         ArchiveExtract* x = new ArchiveExtract( mOutput.fileName(), QFileInfo( mOutput.fileName() ).dir().absolutePath() );
+        
+        connect( x, SIGNAL( extracted( QString, QString ) ),
+                 this, SLOT( checkIfSupportconfig( QString, QString ) ) );
+        
         KueueThreads::enqueue( x );
     }
     
@@ -544,6 +549,25 @@ void DownloadItem::generateNsaReport()
 void DownloadItem::nsaFinished()
 {
     nsaButton->setEnabled( true );
+}
+
+void DownloadItem::checkIfSupportconfig( const QString& scfile, const QString& scdir )
+{
+    QDir dir( scdir );
+    
+    if ( dir.entryList().contains( "supportconfig.txt" ) )
+    {
+        if ( Settings::autoNSA() )
+        {
+            NSA* n = new NSA( scdir, scdir + "/nsa.html" );
+        }
+        
+        if ( Settings::splitSC() )
+        {
+            SupportConfig* sc = new SupportConfig( scdir, false );
+            KueueThreads::enqueue( sc );
+        }
+    }
 }
 
 /*!
@@ -672,6 +696,7 @@ void DownloadManager::handleUnsupportedContent(QNetworkReply *reply, QString dir
     qDebug() << "DownloadManager::" << __FUNCTION__ << reply->url() << "requestFileName" << requestFileName;
 
     DownloadItem *item = new DownloadItem( reply, requestFileName, dir, this );
+    
     addItem( item );
 
     if (item->mCanceledFileSelect)

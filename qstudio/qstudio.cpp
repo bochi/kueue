@@ -258,7 +258,9 @@ void QStudio::authenticate( QNetworkReply* reply, QAuthenticator* auth )
 
 void QStudio::networkError( QNetworkReply::NetworkError error )
 {
-    qDebug() << "[QSTUDIO] Network Error" << error ;
+    QNetworkReply* r = qobject_cast< QNetworkReply* >( sender() );
+    
+    qDebug() << "[QSTUDIO] Network Error" << r->url() << r->errorString();
 }
 
 QList<TemplateSet> QStudio::getTemplates()
@@ -800,6 +802,37 @@ QList< UserTestDrive > QStudio::getUserTestdrives()
     return tdl;
 }
 
-
+QString QStudio::getDownloadUrlForBuild( int build )
+{
+    QString xml = getRequest( "/user/builds/" + QString::number( build ) );
+    QString url;
+    
+    log( "getDownloadUrlForBuild ", xml );
+    
+    QDomDocument doc;
+    doc.setContent( xml );
+    QDomElement docelement = doc.documentElement();
+    
+    QDomNode n = docelement.firstChild();
+    
+    while ( !n.isNull() )
+    {
+        QDomElement e = n.toElement();
+        
+        if ( e.tagName() == "download_url" )
+        {
+            url = e.toElement().text();
+        }
+        
+        n = n.nextSibling();
+    }
+    
+    if ( url.startsWith( "/download" ) )
+    {
+        url = "http://" + mServer + url;
+    }
+        
+    return url;
+}
 
 #include "qstudio.moc"

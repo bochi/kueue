@@ -44,7 +44,7 @@ class NSA : public QObject
     Q_OBJECT
 
     public: 
-        NSA( const QString& );
+        NSA( const QString&, const QString& = QString::Null() );
         ~NSA();
         
     private:
@@ -58,8 +58,10 @@ class NSA : public QObject
         QString mCritical;
         QString mWarning;
         QString mRecommended;
+        QString mSaveLocation;
         KueueThreads* mThreads;
-        
+        bool mIsArchive;
+      
     private slots:
         void updateNsaData();
         void updateDownloadDone();

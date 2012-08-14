@@ -36,7 +36,6 @@ BuildRPM::BuildRPM( const QString& sc ) : KueueThread()
     qDebug() << "[BUILDRPM] Constructing";
 
     mScDir = sc;
-    start();
 }
 
 BuildRPM::~BuildRPM()

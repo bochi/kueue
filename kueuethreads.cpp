@@ -64,55 +64,18 @@ KueueThreads::~KueueThreads()
 
 void KueueThreads::enqueueThread( KueueThread* thread )
 {   
-    connect( thread, SIGNAL( threadStarted( QString, int ) ),
-            this, SLOT( startThread( const QString&, int ) ) );
+    ThreadProgress* p = new ThreadProgress( thread );
     
-    connect( thread, SIGNAL( finished() ),
-             this, SLOT( endThread() ) );
-
-    thread->start();
-}
-
-void KueueThreads::startThread( const QString& text, int total )
-{
-    KueueThread* t = qobject_cast< KueueThread* >( sender() );
-    ThreadProgress* p = new ThreadProgress( mStatusBar, text, total );
-    
-    addThreadWidget( p );
-    
-    connect( t, SIGNAL( threadProgress( int, QString ) ), 
-             p, SLOT( updateProgress( int, QString ) ) );
-    
-    connect( t, SIGNAL( threadNewMaximum( int ) ), 
-             p, SLOT( setMaximum( int ) ) );
-    
-    connect( t, SIGNAL( finished() ),
-             p, SLOT( close() ) );
-    
-    connect( p, SIGNAL( closed( QWidget* ) ), 
+    connect( p, SIGNAL( done( QWidget* ) ), 
              this, SLOT( removeThreadWidget( QWidget* ) ) );
-}
-
-void KueueThreads::addThreadWidget( QWidget* w )
-{
-    mStatusBar->addThreadWidget( w );
-    //mThreadWidget->layout()->addWidget( w );
+    
+    mStatusBar->addThreadWidget( p );
 }
 
 void KueueThreads::removeThreadWidget( QWidget* w )
 {
     mStatusBar->removeThreadWidget( w );
-}
-
-void KueueThreads::endThread()
-{
-    KueueThread* t = qobject_cast< KueueThread* >( sender() );
-    
-    //mStatusBar->resetStatusBar();
-    t->quit();
-    t->wait();
-    delete t;
-    //next();
+    delete w;
 }
 
 KueueThread::KueueThread( QObject* parent ) : QThread( parent )

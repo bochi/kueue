@@ -69,6 +69,7 @@ class ConfigDialog : public QDialog, private Ui_ConfigDialog
         void toggleUnity( const bool& );
         void toggleUnityEditor( const bool& );
         void toggleUnityTimeout( const bool& );
+        void toggleApplianceStart( const bool& );
         void getDownloadDirectory();
         
         void getGeneralNotificationSoundFile();
@@ -98,6 +99,7 @@ class ConfigDialog : public QDialog, private Ui_ConfigDialog
         void getExternalEditorFile();
         void getEditorSaveLocation();
         void getFilemanagerCommand();
+        void getApplianceDownloadDirectory();
         
     signals:
         void settingsChanged();  

@@ -50,7 +50,8 @@ class QStudio : public QObject
         QList<UserTestDrive> getUserTestdrives();
         OverlayFile addOverlayFile( int, const QString&, const QString&, const QString& = QString::Null(), const QString& = QString::Null(), const QString& = QString::Null() );
         bool setLogo( int, const QString& );
-
+        QString getDownloadUrlForBuild( int );
+        
     private:
         bool mDebug;
         QString mUser;

@@ -130,6 +130,9 @@ void Clone::buildAppliance( const QString& prod, const QString& arch, const QStr
             connect( build, SIGNAL( finished( int, QString ) ), 
                     this, SLOT( cloneDone( int, QString ) ) );
             
+            connect( build, SIGNAL( failed( QString ) ),
+                     this, SLOT( buildFailed( QString ) ) );
+            
             KueueThreads::enqueue( build );
         }
         else
@@ -147,6 +150,18 @@ void Clone::cloneDone( int build, const QString& hostname )
     dirs.append( mScDir.absolutePath() );
     DirCleaner* c = new DirCleaner( dirs );
     KueueThreads::enqueue( c );
+}
+
+void Clone::buildFailed( const QString& msg )
+{
+    QMessageBox* box = new QMessageBox;
+    box->setText( msg );
+    box->setWindowTitle( "Build failed" );
+    box->setIcon( QMessageBox::Critical );
+
+    box->exec();
+
+    delete box;
 }
 
 void Clone::failed( const QString& msg )

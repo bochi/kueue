@@ -58,9 +58,6 @@ class KueueThreads : public QObject
         void enqueueThread( KueueThread* );
         
     private slots:
-        void startThread( const QString&, int );
-        void endThread();
-        void addThreadWidget( QWidget* );
         void removeThreadWidget( QWidget* );
 };
 

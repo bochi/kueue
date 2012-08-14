@@ -175,6 +175,12 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     connect( cfg_highNotificationSound, SIGNAL( toggled( bool ) ), 
              highNotificationPlayButton, SLOT( setEnabled( bool ) ) );
     
+    connect( applianceDownloadDirectoryButton, SIGNAL( pressed() ),
+             this, SLOT( getApplianceDownloadDirectory() ) );
+    
+    connect( cfg_autoOpenAppliances, SIGNAL( toggled( bool ) ), 
+             this, SLOT( toggleApplianceStart( bool ) ) );
+    
     cfg_dBServer->setText( Settings::dBServer() );
     cfg_engineer->setText( Settings::engineer() );
     
@@ -217,12 +223,16 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_useSrDirectory->setChecked( Settings::useSrDirectory() );
     cfg_autoExtract->setChecked( Settings::autoExtract() );
     cfg_splitSupportconfig->setChecked( Settings::splitSC() );
+    cfg_autoNSA->setChecked( Settings::autoNSA() );
     cfg_cleanupDownloadDirectory->setChecked( Settings::cleanupDownloadDirectory() );
-    
+        
     cfg_studioEnabled->setChecked( Settings::studioEnabled() );
     cfg_studioServer->setText( Settings::studioServer() );
     cfg_studioUser->setText( Settings::studioUser() );
     cfg_studioApiKey->setText( Settings::studioApiKey() );
+    cfg_applianceDownloadDir->setText( Settings::applianceDownloadDirectory() );
+    cfg_autoOpenAppliances->setChecked( Settings::autoOpenAppliances() );
+    cfg_autoOpenAppliancesIn->setCurrentIndex( Settings::autoOpenAppliancesIn() );
     
     cfg_notificationsDisabled->setChecked( Settings::notificationsDisabled() );
 
@@ -296,6 +306,8 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     toggleNotifications( Settings::notificationsDisabled() );
     toggleUnity( Settings::unityEnabled() );
     toggleStudio( Settings::studioEnabled() );
+    toggleApplianceStart( Settings::autoOpenAppliances() );
+    
     
     #ifndef QT_HAS_DBUS
     
@@ -393,6 +405,7 @@ void ConfigDialog::writeSettings()
     Settings::setRightMouseButton( cfg_rightMouseButton->currentIndex() );
     Settings::setAutoExtract( cfg_autoExtract->isChecked() );
     Settings::setSplitSC( cfg_splitSupportconfig->isChecked() );
+    Settings::setAutoNSA( cfg_autoNSA->isChecked() );
     Settings::setCleanupDownloadDirectory( cfg_cleanupDownloadDirectory->isChecked() );
     Settings::setUseSrDirectory( cfg_useSrDirectory->isChecked() );
     Settings::setMonitorEnabled( cfg_monitorEnabled->isChecked() );
@@ -417,6 +430,9 @@ void ConfigDialog::writeSettings()
     Settings::setStudioServer( cfg_studioServer->text() );
     Settings::setStudioUser( cfg_studioUser->text() );
     Settings::setStudioApiKey( cfg_studioApiKey->text() );
+    Settings::setApplianceDownloadDirectory( cfg_applianceDownloadDir->text() );
+    Settings::setAutoOpenAppliances( cfg_autoOpenAppliances->isChecked() );
+    Settings::setAutoOpenAppliancesIn( cfg_autoOpenAppliancesIn->currentIndex() );
     
     QStringList el;
     
@@ -617,6 +633,11 @@ void ConfigDialog::toggleUnityTimeout( const bool& b )
     idleTimeoutLabel->setEnabled( b );
 }
 
+void ConfigDialog::toggleApplianceStart( const bool& b )
+{
+    cfg_autoOpenAppliancesIn->setEnabled( b );
+}
+
 void ConfigDialog::getGeneralNotificationSoundFile()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Sound File"), QDir::homePath(), "Sound Files (*.wav *.mp3 *.ogg)" );
@@ -721,6 +742,12 @@ void ConfigDialog::getDownloadDirectory()
 {
     QString fileName = QFileDialog::getExistingDirectory( this, tr("Select location"), QDir::homePath() );
     cfg_downloadDirectory->setText( fileName );
+}
+
+void ConfigDialog::getApplianceDownloadDirectory()
+{
+    QString fileName = QFileDialog::getExistingDirectory( this, tr("Select location"), QDir::homePath() );
+    cfg_applianceDownloadDir->setText( fileName );
 }
 
 void ConfigDialog::getFilemanagerCommand()

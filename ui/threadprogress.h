@@ -26,17 +26,19 @@
 #ifndef THREADPROGRESS_H
 #define THREADPROGRESS_H
  
-//#include "ui_threadprogress.h"
+#include "kueuethreads.h"
+ 
 #include <QFrame>
 #include <QLabel>
 #include <QProgressBar>
- 
+
+
 class ThreadProgress : public QFrame
 {
     Q_OBJECT
 
     public:
-        ThreadProgress( QObject* parent, const QString&, int );
+        ThreadProgress( KueueThread* );
          ~ThreadProgress();
          
     private:
@@ -44,12 +46,13 @@ class ThreadProgress : public QFrame
         QProgressBar* mProgress;
         
     public slots:    
+        void threadStarted( const QString&, int );
         void setMaximum( int );
         void updateProgress( int, const QString& );
-       
+        void threadDone();
         
     signals:
-        void closed( QWidget* );
+        void done( QWidget* );
 };
  
 #endif

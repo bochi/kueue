@@ -31,9 +31,11 @@
 #include <QLayout>
 
 
-ThreadProgress::ThreadProgress( QObject* parent, const QString& text, int total )
+ThreadProgress::ThreadProgress( KueueThread* thread )
 {
     qDebug() << "[THREADPROGRESS] Constructing";
+    
+    hide();
     
     setFixedHeight( 21 );
     setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
@@ -58,9 +60,20 @@ ThreadProgress::ThreadProgress( QObject* parent, const QString& text, int total 
     
     l->addWidget( mProgress, 0, Qt::AlignLeft );
     l->addWidget( mLabel );
+
+    connect( thread, SIGNAL( threadStarted( QString, int ) ),
+             this, SLOT( threadStarted( QString, int ) ) );
+        
+    connect( thread, SIGNAL( threadProgress( int, QString ) ), 
+             this, SLOT( updateProgress( int, QString ) ) );
     
-    mLabel->setText( text );
-    mProgress->setMaximum( total );
+    connect( thread, SIGNAL( threadNewMaximum( int ) ), 
+             this, SLOT( setMaximum( int ) ) );
+    
+    connect( thread, SIGNAL( finished() ),
+             this, SLOT( threadDone() ) );
+    
+    thread->start();
 }
 
 ThreadProgress::~ThreadProgress()
@@ -68,9 +81,28 @@ ThreadProgress::~ThreadProgress()
     qDebug() << "[THREADPROGRESS] Destroying";
 }
 
+void ThreadProgress::threadStarted( const QString& text, int total )
+{
+    show();
+    mLabel->setText( text );
+    mProgress->setMaximum( total );
+}
+
 void ThreadProgress::setMaximum( int max )
 {
     mProgress->setMaximum( max );
+}
+
+void ThreadProgress::threadDone()
+{
+    KueueThread* t = qobject_cast< KueueThread* >( sender() );
+
+    t->quit();
+    t->wait();
+    
+    delete t;
+    
+    emit done( this );
 }
 
 void ThreadProgress::updateProgress( int p, const QString& text )

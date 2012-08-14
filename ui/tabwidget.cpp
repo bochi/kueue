@@ -362,8 +362,6 @@ void TabWidget::removeVncTab( int tab )
 {
     removeTab( tab );
     
-    qDebug() << "rt" << tab;
-    
     for ( int i = 0; i < mVncWidgetList.count(); ++i )
     {
         if ( mVncWidgetList.at( i )->tabId() == tab )
@@ -383,7 +381,7 @@ void TabWidget::closeTestdrive( int tab )
 void TabWidget::testdriveClosed( int tab )
 {
     TestDrive* td = qobject_cast< TestDrive* >( sender() );
-    qDebug() << "TDC" << tab;
+
     removeVncTab( tab );
     delete td;
 }

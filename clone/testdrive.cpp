@@ -46,6 +46,9 @@ TestDrive::TestDrive( int build ) : QObject()
     
     connect( mVncWidget, SIGNAL( widgetClosed( int ) ), 
              this, SLOT( quitTestdrive( int ) ) );
+    
+    connect( mVncWidget, SIGNAL( downloadRequested() ), 
+             mThread, SLOT( downloadAppliance() ) );
 }
 
 TestDrive::~TestDrive()
@@ -95,6 +98,9 @@ void TestDriveThread::run()
     connect( mWorker, SIGNAL( timedOut( int ) ), 
              this, SIGNAL( timedOut( int ) ) );
     
+    connect( this, SIGNAL( downloadApplianceRequested() ), 
+             mWorker, SLOT( downloadAppliance() ) );
+    
     mWorker->work();
     
     exec();
@@ -103,6 +109,11 @@ void TestDriveThread::run()
 void TestDriveThread::requestNewTestdrive()
 {
     emit newTestdriveRequested();
+}
+
+void TestDriveThread::downloadAppliance()
+{
+    emit downloadApplianceRequested();
 }
 
 // TESTDRIVE WORKER
@@ -185,6 +196,20 @@ void TestDriveWorker::newTestdriveRequested()
     {
         qDebug() << "[TESTDRIVEWORKER] Testdrive for this build exists.";
         emit vnc( mUrl );
+    }
+}
+
+void TestDriveWorker::downloadAppliance()
+{
+    QString url = mStudio->getDownloadUrlForBuild( mBuildId );
+    
+    if ( url.isEmpty() )
+    {
+        qDebug() << "No URL yet, please try again.";
+    }
+    else
+    {
+        qDebug() << url;
     }
 }
 

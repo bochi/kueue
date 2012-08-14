@@ -36,20 +36,31 @@
 #include <QDebug>
 #include <QtXml>
 
-NSA::NSA( const QString& sc )
+NSA::NSA( const QString& sc, const QString& save )
 {
     qDebug() << "[NSA] Constructing";
     
     mSupportConfig = sc;
+    mSaveLocation = save;
+    
+    if ( mSupportConfig.endsWith( ".tbz" ) || mSupportConfig.endsWith( ".bz2" ) )
+    {
+        mIsArchive = true;
+    }
+    else
+    {
+        mIsArchive = false;
+    }
     
     mNsaDir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "/nsa" );
-    mTmpDir = QDesktopServices::storageLocation( QDesktopServices::TempLocation ) + "/kueue/nsa";
     
     if ( !mNsaDir.exists() )
     {
         mNsaDir.mkpath( mNsaDir.absolutePath() );
         Settings::setNsaVersion( "new" );
     }
+    
+    mTmpDir = QDesktopServices::storageLocation( QDesktopServices::TempLocation ) + "/kueue/nsa";
     
     if ( !mTmpDir.exists() )
     {
@@ -66,8 +77,8 @@ NSA::~NSA()
 
 void NSA::updateNsaData()
 {
-    QNetworkReply* r = Network::getExt( QUrl( "http://nsa.lab.novell.com/updateDir/updateManager.xml" ) );
-    
+    QNetworkReply* r = Network::getExt( QUrl( "http://" + Settings::dBServer() + "/nsa/current.txt" ) );
+        
     connect( r, SIGNAL( finished() ), 
              this, SLOT( updateDownloadDone() ) );
 }
@@ -75,16 +86,15 @@ void NSA::updateNsaData()
 void NSA::updateDownloadDone()
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>( QObject::sender() );
-    QString out = reply->readAll();
-    QDomDocument xmldoc;
-    xmldoc.setContent(out);
-    QDomNodeList list = xmldoc.elementsByTagName( "sdppackage" );
-    QString date = list.item(0).toElement().text();
-
-    if ( Settings::nsaVersion() != date )
+    QString date = reply->readAll();
+    
+    if ( Settings::nsaVersion() != date.trimmed() )
     {
-        QNetworkReply* r = Network::getExt( QUrl( "http://nsa.lab.novell.com/updateDir/resources/resources_" + date + ".tgz" ) );
-        Settings::setNsaVersion( date );
+        qDebug() << "[NSA] New patterns available, downloading.";
+        
+        QNetworkReply* r = Network::getExt( QUrl( "http://" + Settings::dBServer() + "/nsa/current.tgz" ) );
+        
+        Settings::setNsaVersion( date.trimmed() );
         
         connect( r, SIGNAL( finished() ), 
                  this, SLOT( fileDownloadDone() ) );   
@@ -119,12 +129,19 @@ void NSA::fileDownloadDone()
 
 void NSA::startReport()
 {
-    ArchiveExtract* x = new ArchiveExtract( mSupportConfig, mTmpDir.absolutePath() );
-    
-    connect( x, SIGNAL( extracted( QString, QString ) ),
-             this, SLOT( runPS( QString, QString ) ) );
-    
-    KueueThreads::enqueue( x );
+    if ( mIsArchive )
+    {
+        ArchiveExtract* x = new ArchiveExtract( mSupportConfig, mTmpDir.absolutePath() );
+        
+        connect( x, SIGNAL( extracted( QString, QString ) ),
+                this, SLOT( runPS( QString, QString ) ) );
+        
+        KueueThreads::enqueue( x );
+    }
+    else
+    {
+        runPS( mSupportConfig, mSupportConfig );
+    }
 }
 
 void NSA::runPS( const QString& scfile, const QString& scdir )
@@ -140,12 +157,28 @@ void NSA::runPS( const QString& scfile, const QString& scdir )
 void NSA::ranPS( const QString& html )
 {
     emit nsaReportFinished();
-    NSAWindow* win = new NSAWindow( QFileInfo( mSupportConfig ).fileName(), html );
     
-    connect( win, SIGNAL( done( NSAWindow* ) ),
-             this, SLOT( winClosed( NSAWindow* ) ) );
+    if ( mSaveLocation.isNull() )
+    {
+        NSAWindow* win = new NSAWindow( QFileInfo( mSupportConfig ).fileName(), html );
+        
+        connect( win, SIGNAL( done( NSAWindow* ) ),
+                this, SLOT( winClosed( NSAWindow* ) ) );
+        
+        win->show();
+    }
+    else
+    {
+        QFile file( mSaveLocation );
     
-    win->show();
+        if ( !file.open( QIODevice::WriteOnly ) )
+        {
+            return;
+        }
+    
+        file.write( html.toUtf8() );
+        file.close();
+    }
 }
 
 void NSA::winClosed( NSAWindow* win )

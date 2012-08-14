@@ -138,6 +138,7 @@ class VncWidget : public QWidget
     signals:
         void somethingWentWrong();
         void widgetClosed( int );
+        void downloadRequested();
 };
 
 #endif

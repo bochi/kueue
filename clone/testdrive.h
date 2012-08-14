@@ -66,6 +66,7 @@ class TestDriveThread : public QThread
     public slots:
         void requestNewTestdrive();
         void deleteWorker();
+        void downloadAppliance();
         
     private:
         int mBuildId;
@@ -78,6 +79,7 @@ class TestDriveThread : public QThread
         void vnc( QUrl );
         void newTestdriveRequested();
         void timedOut( int );
+        void downloadApplianceRequested();
 };
 
 class TestDriveWorker : public QObject
@@ -98,6 +100,7 @@ class TestDriveWorker : public QObject
     public slots:
         void work();
         void newTestdriveRequested();
+        void downloadAppliance();
         
     private slots:
         void getTestdriveForBuild();

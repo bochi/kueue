@@ -55,7 +55,7 @@ void BuildAppliance::run()
     emit threadStarted( "Preparing Appliance...", 0 );
     
     QList<TemplateSet> tl = studio->getTemplates();
-    int id;
+    int id = 0;
     QString base;
     
     for ( int i = 0; i < tl.size(); ++i ) 
@@ -83,6 +83,12 @@ void BuildAppliance::run()
                 base = tls.at( x ).basesystem;
             }
         }       
+    }
+    
+    if ( id == 0 )
+    {
+        emit failed( "Failed to get a template to clone - exiting" );
+        return;
     }
     
     Appliance a = studio->cloneAppliance( id, mHostName + " - Clone", mArch );
@@ -128,6 +134,7 @@ void BuildAppliance::run()
     if ( !ap ) 
     {
         qDebug() << "[BUILDAPPLIANCE] Failed to add the clone package to the appliance - exiting";
+        emit failed( "Failed to add the clone RPM - exiting" );
         return;     
     }
     
@@ -143,8 +150,7 @@ void BuildAppliance::run()
     
     if ( build == 0 )
     {
-        emit failed( "Failed to start build..." );
-        qDebug() << "[BUILDAPPLIANCE] Failed to start build - exiting." << build;
+        emit failed( "Failed to get build slot..." );
         emit threadFinished( this );
         return;
     }
@@ -172,7 +178,8 @@ void BuildAppliance::run()
         emit threadProgress( bs.percent, QString::Null() );
         QTest::qSleep( 5000 );
     }
-    while ( ( bs.percent < 100 ) && ( bs.state != "failed" ) );
+    while ( ( bs.percent < 100 ) && 
+            ( bs.state != "failed" ) );
     
     if ( bs.state != "failed" )
     {

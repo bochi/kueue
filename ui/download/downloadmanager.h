@@ -75,6 +75,7 @@ private slots:
     void error(QNetworkReply::NetworkError code);
     void downloadProgress(qint64 bytesReceived, qint64 bytesTotal);
     void metaDataChanged();
+    void checkIfSupportconfig( const QString&, const QString& );
     void generateNsaReport();
     void nsaFinished();
     void finished();

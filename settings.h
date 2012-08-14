@@ -112,6 +112,9 @@ class Settings
         static bool splitSC();
         static void setSplitSC( const bool& );
         
+        static bool autoNSA();
+        static void setAutoNSA( const bool& );
+        
         static bool cleanupDownloadDirectory();
         static void setCleanupDownloadDirectory( const bool& );
         
@@ -235,6 +238,15 @@ class Settings
         
         static QString studioApiKey();
         static void setStudioApiKey( const QString& );
+        
+        static QString applianceDownloadDirectory();
+        static void setApplianceDownloadDirectory( const QString& );
+        
+        static bool autoOpenAppliances();
+        static void setAutoOpenAppliances( const bool& );
+        
+        static int autoOpenAppliancesIn();
+        static void setAutoOpenAppliancesIn( int );
         
         /* Notifications Group */
         

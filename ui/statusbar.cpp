@@ -136,13 +136,11 @@ void StatusBar::addDownloadJobImpl( QNetworkRequest req, QNetworkAccessManager* 
 void StatusBar::addWidgetImpl( QWidget* w )
 {
     addWidget( w );
-    w->show();
 }
 
 void StatusBar::removeWidgetImpl( QWidget* w )
 {
     removeWidget( w );
-    delete w;
 }
 
 void StatusBar::undefinedDownload()

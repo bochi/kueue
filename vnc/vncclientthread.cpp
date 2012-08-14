@@ -323,12 +323,12 @@ const QImage VncClientThread::image(int x, int y, int w, int h)
 
 void VncClientThread::emitUpdated(int x, int y, int w, int h)
 {
-    emit imageUpdated(x, y, w, h);
+    emit imageUpdated( x, y, w, h );
 }
 
 void VncClientThread::emitGotCut(const QString &text)
 {
-    emit gotCut(text);
+    emit gotCut( text );
 }
 
 void VncClientThread::stop()
