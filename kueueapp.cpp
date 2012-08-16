@@ -34,6 +34,7 @@
 #include "nsa/nsa.h"
 #include "data/dircleaner.h"
 #include "data/datathread.h"
+#include "qvirt/qvirt.h"
 
 #include "ui/busywidget.h"
 
@@ -55,6 +56,9 @@ KueueApp::KueueApp()
     putenv( path.toAscii() );
 #endif
 
+    QVirt* v = new QVirt( this );
+    v->connectVmwareEsx( "esrom.hwlab.suse.de", "root", "di3gut3n" );
+    
     mFailedMessageDisplayed = false;
     
     if ( !Settings::settingsOK() )

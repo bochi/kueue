@@ -74,6 +74,7 @@ ADD_SUBDIRECTORY( qtsingleapplication )
 ADD_SUBDIRECTORY( simplecrypt )
 ADD_SUBDIRECTORY( qstudio )
 ADD_SUBDIRECTORY( vnc )
+ADD_SUBDIRECTORY( qvirt )
 
 SET( QtSingleApp_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qtsingleapplication )
 SET( QT_SINGLEAPP_LIBRARY qtsingleapplication )
@@ -87,10 +88,14 @@ SET( QT_STUDIO_LIBRARY qstudio )
 SET( QVNC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vnc )
 SET( QVNC_LIBRARY qvnc )
 
+SET( QVIRT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qvirt )
+SET( QVIRT_LIBRARY qvirt )
+
 INCLUDE_DIRECTORIES( ${QtSingleApp_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${ArchiveExtract_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${QStudio_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${QVNC_INCLUDE_DIR} )
+INCLUDE_DIRECTORIES( ${QVIRT_INCLUDE_DIR} )
 
 #
 # Define the source files
@@ -258,7 +263,8 @@ IF ( QT_HAS_DBUS AND NOT APPLE )
 				 ${SIMPLECRYPT_LIBRARY} 
                                  ${QT_STUDIO_LIBRARY}
                                  ${QT_QTTEST_LIBRARY}
-                                 ${QVNC_LIBRARY} ) 
+                                 ${QVNC_LIBRARY}
+				 ${QVIRT_LIBRARY} ) 
 ELSEIF ( APPLE )
 
     TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
