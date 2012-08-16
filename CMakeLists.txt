@@ -129,6 +129,8 @@ SET( kueue_CPP  main.cpp
 		ui/busywidget.cpp
                 ui/cloneresult.cpp
 		ui/threadprogress.cpp
+		ui/vncwidget.cpp
+                ui/waitwidget.cpp
 
                 ui/browsers/unitybrowser.cpp 
                 ui/browsers/qmonbrowser.cpp

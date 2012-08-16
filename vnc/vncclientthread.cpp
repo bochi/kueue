@@ -3,7 +3,7 @@
           (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
           
                   This code was taken from krdc
-         Copyright (C) 2007-2012 Urs Wolfer <uwolfer@kde.org>
+        Copyright (C) 2007-2012 Urs Wolfer <uwolfer@kde.org>
           
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -106,9 +106,14 @@ rfbBool VncClientThread::newclient(rfbClient *cl)
     memset(cl->frameBuffer, '\0', size);
 
     switch (t->quality()) {
+    case RemoteView::TestDrive:
+	cl->appData.encodingsString = "hextile zlib copyrect";;
+	cl->appData.compressLevel = 1;
+	cl->appData.qualityLevel = 9;
+	break;
     case RemoteView::High:
-        cl->appData.encodingsString = "hextile zlib copyrect";
-        cl->appData.compressLevel = 1;
+        cl->appData.encodingsString = "copyrect zlib hextile raw";
+        cl->appData.compressLevel = 0;
         cl->appData.qualityLevel = 9;
         break;
     case RemoteView::Medium:
@@ -131,7 +136,7 @@ rfbBool VncClientThread::newclient(rfbClient *cl)
 
 void VncClientThread::updatefb(rfbClient* cl, int x, int y, int w, int h)
 {
-//     //kDebug(5011) << "updated client: x: " << x << ", y: " << y << ", w: " << w << ", h: " << h;
+//     kDebug(5011) << "updated client: x: " << x << ", y: " << y << ", w: " << w << ", h: " << h;
     VncClientThread *t = (VncClientThread*)rfbClientGetClientData(cl, 0);
     Q_ASSERT(t);
 
@@ -282,7 +287,7 @@ void VncClientThread::setQuality(RemoteView::Quality quality)
         setColorDepth(bpp8);
         break;
     case RemoteView::High:
-        setColorDepth(bpp16);
+        setColorDepth(bpp32);
         break;
     case RemoteView::Medium:
     default:
@@ -323,12 +328,12 @@ const QImage VncClientThread::image(int x, int y, int w, int h)
 
 void VncClientThread::emitUpdated(int x, int y, int w, int h)
 {
-    emit imageUpdated( x, y, w, h );
+    emit imageUpdated(x, y, w, h);
 }
 
 void VncClientThread::emitGotCut(const QString &text)
 {
-    emit gotCut( text );
+    emit gotCut(text);
 }
 
 void VncClientThread::stop()

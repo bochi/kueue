@@ -3,7 +3,7 @@
           (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
           
                   This code was taken from krdc
-         Copyright (C) 2007-2012 Urs Wolfer <uwolfer@kde.org>
+        Copyright (C) 2007-2012 Urs Wolfer <uwolfer@kde.org>
           
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
     Have a lot of fun :-)
 
 */
+
 
 #ifndef REMOTEVIEW_H
 #define REMOTEVIEW_H
@@ -63,6 +64,7 @@ public:
     Q_ENUMS(Quality)
 
     enum Quality {
+	TestDrive,
         Unknown,
         High,
         Medium,

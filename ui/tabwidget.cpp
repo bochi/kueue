@@ -41,6 +41,7 @@
 #include <QDesktopServices>
 #include <QShortcut>
 #include <QFileDialog>
+#include <QtNetwork>
 
 TabWidget* TabWidget::instance = 0;
 
@@ -345,6 +346,9 @@ void TabWidget::addVncTab( int build, const QString& hostname )
     connect( td, SIGNAL( testdriveClosed( int ) ),
              this, SLOT( testdriveClosed( int ) ) );
     
+    connect( td, SIGNAL( downloadRequested( QNetworkReply*, QString, bool ) ), 
+             this, SLOT( addDownloadJob(QNetworkReply*,QString,bool)) );
+    
     int tab = addTab( td->widget(), QIcon( ":/icons/conf/studio.png" ), "Testdrive - " + hostname );
     
     mVncWidgetList.append( td->widget() );
@@ -356,6 +360,11 @@ void TabWidget::addVncTab( int build, const QString& hostname )
 void TabWidget::somethingWentWrong()
 {
     qDebug() << "SMTH WENT WRONG";
+}
+
+void TabWidget::addDownloadJob( QNetworkReply* r, QString s, bool ask )
+{
+    mStatusBar->addDownloadJob( r, s, ask );
 }
 
 void TabWidget::removeVncTab( int tab )
@@ -1003,13 +1012,8 @@ void TabWidget::tabChanged( int tab )
 {
     if (  ( mVncViewerMap.keys().contains( tab ) ) && ( mGrabbedWidget == 0 ) )
     {
-        mVncViewerMap[ tab ]->getFocus( true );
+        mVncViewerMap[ tab ]->getFocus();
         mGrabbedWidget = tab;
-    }
-    else if ( mGrabbedWidget != 0 )
-    {
-        mVncViewerMap[ mGrabbedWidget ]->getFocus( false );
-        mGrabbedWidget = 0;
     }
 }
 

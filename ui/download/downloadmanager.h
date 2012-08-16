@@ -51,7 +51,7 @@ signals:
     void downloadFinished();
 
 public:
-    DownloadItem( QNetworkReply *reply = 0, bool requestFileName = false, QString dir = "bla", QWidget *parent = 0);
+    DownloadItem( QNetworkReply *reply = 0, bool requestFileName = false, QString dir = "bla", QWidget *parent = 0, bool extract = true );
     bool downloading() const;
     bool downloadedSuccessfully() const;
 
@@ -90,6 +90,7 @@ private:
     bool mRequestFilename;
     qint64 mBytesReceived;
     QTime mDownloadTime;
+    bool mExtract;
     bool mStartedSaving;
     bool mFinishedDownloading;
     bool mGettingFilename;
@@ -138,7 +139,7 @@ public slots:
     void download(const QNetworkRequest &request, QNetworkAccessManager* nam, QString dir, bool requestFileName = false);
     inline void download(const QUrl &url, QNetworkAccessManager* nam, QString dir, bool requestFileName = false)
         { download(QNetworkRequest(url), nam, dir, requestFileName); }
-    void handleUnsupportedContent(QNetworkReply *reply, QString dir, bool requestFileName = false);
+    void handleUnsupportedContent(QNetworkReply *reply, QString dir, bool requestFileName = false, bool extract = true );
     void cleanup();
 
 private slots:

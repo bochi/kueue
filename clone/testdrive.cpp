@@ -26,7 +26,10 @@
 #include "testdrive.h"
 #include "config.h"
 #include "settings.h"
+#include "network.h"
 #include "qstudio.h"
+#include "kueuethreads.h"
+#include "archivers/archiveextract.h"
 
 #include <QDebug>
 #include <QObject>
@@ -35,7 +38,8 @@ TestDrive::TestDrive( int build ) : QObject()
 {
     qDebug() << "[TESTDRIVE] Constructing";
     
-    mVncWidget = new VncWidget( this );
+    mDoNotQuit = false;
+    mVncWidget = new VncWidget( this, RemoteView::TestDrive );
     mThread = new TestDriveThread( build );
     
     connect( mThread, SIGNAL( vnc( QUrl ) ),
@@ -49,6 +53,9 @@ TestDrive::TestDrive( int build ) : QObject()
     
     connect( mVncWidget, SIGNAL( downloadRequested() ), 
              mThread, SLOT( downloadAppliance() ) );
+    
+    connect( mThread, SIGNAL( downloadRequested(QString)), 
+             this, SLOT( addDownload(QString)) );
 }
 
 TestDrive::~TestDrive()
@@ -56,8 +63,60 @@ TestDrive::~TestDrive()
     qDebug() << "[TESTDRIVE] Destroying";
 }
 
+void TestDrive::addDownload( const QString& url )
+{
+    mDoNotQuit = true;
+    QNetworkReply* reply = Network::getExt( url );
+    
+    connect( reply, SIGNAL( finished() ),
+             this, SLOT( downloadFinished() ) );
+    
+    StatusBar::addDownloadJob( reply, Settings::applianceDownloadDirectory(), false, false );
+}
+
+void TestDrive::downloadFinished()
+{
+    QNetworkReply* reply = qobject_cast<QNetworkReply*>( sender() );
+    QUrl u = reply->url();
+    
+    QString filename = reply->objectName();
+    
+    ArchiveExtract* x = new ArchiveExtract( filename, QFileInfo( filename ).dir().path() );
+
+    connect( x, SIGNAL( extracted( QString, QString ) ),
+             this, SLOT( extractFinished( QString, QString ) ) );
+
+    KueueThreads::enqueue( x );
+
+}
+
+void TestDrive::extractFinished( const QString& filename, const QString& dir )
+{
+    QFile::remove( filename );
+    QDir directory( dir );
+    const QStringList& list = directory.entryList( QDir::Files );
+    QString vmx;
+    
+    for ( int i = 0; i < list.size(); ++i )
+    {
+        if ( list.at( i ).endsWith( ".vmx" ) )
+        {
+            vmx = list.at( i );
+        }
+    }
+    
+    QProcess::startDetached( "vmware", list, directory.path() );
+    
+    mDoNotQuit = false;
+}
+
 void TestDrive::quitTestdrive( int id )
 {
+    while ( mDoNotQuit )
+    {
+        qDebug() << "Can't quit yet - waiting";
+    }
+    
     mThread->deleteWorker();
     mThread->quit();
     mThread->wait();
@@ -97,6 +156,9 @@ void TestDriveThread::run()
     
     connect( mWorker, SIGNAL( timedOut( int ) ), 
              this, SIGNAL( timedOut( int ) ) );
+    
+    connect( mWorker, SIGNAL( downloadRequested( QString ) ),
+             this, SIGNAL( downloadRequested( QString ) ) );
     
     connect( this, SIGNAL( downloadApplianceRequested() ), 
              mWorker, SLOT( downloadAppliance() ) );
@@ -201,7 +263,22 @@ void TestDriveWorker::newTestdriveRequested()
 
 void TestDriveWorker::downloadAppliance()
 {
+    //QNetworkAccessManager* nam = new QNetworkAccessManager( this );
+    
     QString url = mStudio->getDownloadUrlForBuild( mBuildId );
+    //const QUrl& u( url );
+    
+    //QNetworkRequest request( u );
+    //QString filename = QFileInfo( u.path() ).completeBaseName() + "." + QFileInfo( u.path() ).suffix();
+    
+    //QNetworkReply* reply = nam->get( request );
+    emit downloadRequested( url );
+    
+    //connect( reply, SIGNAL( finished() ), 
+      //       this, SLOT( downloadDone() ) );
+    
+    /*connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ),
+             this, SLOT( downloadProgress( qint64, qint64 ) ) );*/
     
     if ( url.isEmpty() )
     {
@@ -212,5 +289,36 @@ void TestDriveWorker::downloadAppliance()
         qDebug() << url;
     }
 }
+
+void TestDriveWorker::downloadProgress( qint64 r, qint64 t )
+{
+    int progress = 0;
+    
+    if ( t != 0 )
+    {
+        progress = r * 100 / t;
+    }
+    qDebug() << "progress" << r << t << progress;
+}
+
+
+void TestDriveWorker::downloadDone()
+{
+    QNetworkReply* reply = qobject_cast< QNetworkReply* >( sender() );
+    
+
+    
+    //QFile file( Settings::applianceDownloadDirectory() + "/" + filename );
+    //qDebug() << "downloading to" << file.fileName() ;
+    
+    /*if ( !file.open( QIODevice::WriteOnly ) )
+    {
+        return;
+    }
+    
+    file.write( reply->readAll() );
+    file.close();*/
+}
+
 
 #include "testdrive.moc"

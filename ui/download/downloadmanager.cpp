@@ -62,7 +62,7 @@
     as update the information/progressbar and report errors.
  */
 
-DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString dir, QWidget* parent )
+DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString dir, QWidget* parent, bool extract )
     : QWidget( parent )
     , mReply( reply )
     , mRequestFilename( requestFileName )
@@ -72,6 +72,7 @@ DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString 
     , mGettingFilename( false )
     , mCanceledFileSelect( false )
     , mDownloadDir( dir + "/" )
+    , mExtract( extract )
 {
     setupUi( this );
     
@@ -110,7 +111,8 @@ void DownloadItem::init()
 
     // attach to the mReply
     mUrl = mReply->url();
-    mReply->setParent( this );
+    
+    mReply->setParent( this );  
     
     connect( mReply, SIGNAL( readyRead() ), 
              this, SLOT( downloadReadyRead() ) );
@@ -173,7 +175,7 @@ void DownloadItem::getFileName()
     }
 
     mOutput.setFileName( fileName );
-
+    mReply->setObjectName( mOutput.fileName() );
     // Check file path for saving.
     QDir saveDirPath = QFileInfo( mOutput.fileName() ).dir();
     
@@ -513,6 +515,7 @@ void DownloadItem::finished()
     mOutput.close();
     
     if ( ( !mOutput.fileName().isEmpty() ) && 
+         ( mExtract ) &&
          ( Settings::autoExtract() ) &&
          ( ( QFileInfo( mOutput.fileName() ).suffix() == "gz" ) ||
          ( QFileInfo( mOutput.fileName() ).suffix() == "bz2" ) ||
@@ -675,7 +678,7 @@ void DownloadManager::download(const QNetworkRequest &request, QNetworkAccessMan
     handleUnsupportedContent( nam->get(request), dir, requestFileName );
 }
 
-void DownloadManager::handleUnsupportedContent(QNetworkReply *reply, QString dir, bool requestFileName)
+void DownloadManager::handleUnsupportedContent(QNetworkReply *reply, QString dir, bool requestFileName, bool extract )
 {
     if (!reply || reply->url().isEmpty())
     {
@@ -695,7 +698,7 @@ void DownloadManager::handleUnsupportedContent(QNetworkReply *reply, QString dir
 
     qDebug() << "DownloadManager::" << __FUNCTION__ << reply->url() << "requestFileName" << requestFileName;
 
-    DownloadItem *item = new DownloadItem( reply, requestFileName, dir, this );
+    DownloadItem *item = new DownloadItem( reply, requestFileName, dir, this, extract );
     
     addItem( item );
 

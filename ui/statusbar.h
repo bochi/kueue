@@ -48,7 +48,7 @@ class StatusBar : public QStatusBar
         QProgressBar* mProgress;
         QLabel* mLabel;
         QWidget* mDownloadWidget;
-        void addDownloadJobImpl( QNetworkReply*, QString, bool );
+        void addDownloadJobImpl( QNetworkReply*, QString, bool, bool );
         void addDownloadJobImpl( QNetworkRequest, QNetworkAccessManager*, QString, bool );      
         void startJobStatusImpl( const QString&, int );
         
@@ -63,9 +63,9 @@ class StatusBar : public QStatusBar
         {
             instance->addDownloadJobImpl( r, m, s, a );
         }
-        static void addDownloadJob( QNetworkReply* r, QString s, bool a )
+        static void addDownloadJob( QNetworkReply* r, QString s, bool a, bool e = true )
         {
-            instance->addDownloadJobImpl( r, s, a );
+            instance->addDownloadJobImpl( r, s, a, e );
         }
         static void hideDownloadManager()
         {

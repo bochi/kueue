@@ -35,7 +35,7 @@
 #include "ui/statusbar.h"
 #include "ui/browsers/search/webviewsearch.h"
 #include "ui/busywidget.h"
-#include "vnc/vncview.h"
+#include "vncwidget.h"
 
 #include <QTabWidget>
 #include <QToolButton>
@@ -173,6 +173,7 @@ class TabWidget : public QTabWidget
         void makeNsaReport();
         void cloneSystem();
         void tabChanged( int );
+        void addDownloadJob( QNetworkReply*, QString, bool );
 
     signals:
         void unityTabMiddleClicked( int );

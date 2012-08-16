@@ -123,9 +123,9 @@ void StatusBar::popupDownloadManager()
     }
 }
 
-void StatusBar::addDownloadJobImpl( QNetworkReply* reply, QString dir, bool ask )
+void StatusBar::addDownloadJobImpl( QNetworkReply* reply, QString dir, bool ask, bool extract )
 {
-    mDownloadManager->handleUnsupportedContent( reply, dir, ask );
+    mDownloadManager->handleUnsupportedContent( reply, dir, ask, extract );
 }
 
 void StatusBar::addDownloadJobImpl( QNetworkRequest req, QNetworkAccessManager* nam, QString dir, bool ask )

@@ -3,7 +3,7 @@
           (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
           
                   This code was taken from krdc
-         Copyright (C) 2007-2012 Urs Wolfer <uwolfer@kde.org>
+        Copyright (C) 2007-2012 Urs Wolfer <uwolfer@kde.org>
           
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@
 #include "remoteview.h"
 
 #include <QBitmap>
-#include <QDebug>
 
 RemoteView::RemoteView(QWidget *parent)
         : QWidget(parent),
@@ -188,6 +187,7 @@ KUrl RemoteView::url()
 {
     return m_url;
 }
+
 
 QCursor RemoteView::localDotCursor() const
 {

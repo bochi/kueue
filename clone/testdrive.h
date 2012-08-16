@@ -30,6 +30,7 @@
 #include "dataclasses.h"
 #include "qstudio.h"
 #include "vncview.h"
+#include "ui/vncwidget.h"
 
 class TestDriveThread;
 class TestDriveWorker;
@@ -47,12 +48,20 @@ class TestDrive : public QObject
     public slots:
         void quitTestdrive( int );
         
+    private slots:
+        void addDownload( const QString& );
+        void downloadFinished();
+        void extractFinished( const QString&, const QString& );
+        
     private:
         VncWidget* mVncWidget;
         TestDriveThread* mThread;
+        bool mDoNotQuit;
         
     signals:
         void testdriveClosed( int );
+        void downloadRequested( QNetworkReply*, QString, bool );
+        
 };
 
 class TestDriveThread : public QThread
@@ -80,6 +89,7 @@ class TestDriveThread : public QThread
         void newTestdriveRequested();
         void timedOut( int );
         void downloadApplianceRequested();
+        void downloadRequested( QString );
 };
 
 class TestDriveWorker : public QObject
@@ -105,10 +115,13 @@ class TestDriveWorker : public QObject
     private slots:
         void getTestdriveForBuild();
         void checkTestdrive();
+        void downloadDone();
+        void downloadProgress ( qint64, qint64 );
         
     signals:
         void vnc( QUrl );
         void timedOut( int );
+        void downloadRequested( QString );
 };
 
 #endif

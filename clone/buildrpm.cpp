@@ -79,7 +79,7 @@ void BuildRPM::scriptOutput()
     
     for ( int i = 0; i < lines.size(); ++i )
     {
-        QString o = lines.at( i );
+        QString o = lines.at( i ).trimmed();
         
         if ( o.startsWith( "TOTAL" ) )
         {
@@ -94,11 +94,13 @@ void BuildRPM::scriptOutput()
         }
         else if ( o.startsWith( "SUCCESS" ) )
         {
+            qDebug() << "[BUILDRPM] Script succeeded, output:" << o;
             QStringList l = o.split( "/" );
             scriptSuccess( l.at( 1 ), l.at( 2 ), l.at( 3 ) );
         }
         else if ( o.startsWith( "FAILED" ) )
         {
+            qDebug() << "[BUILDRPM] Script failed, output:" << o;
             emit failed( o.remove( "FAILED/" ) );
             emit threadFinished( this );
         }

@@ -3,7 +3,7 @@
           (C) 2011 - 2012 Stefan Bogner <sbogner@suse.com>
           
                   This code was taken from krdc
-         Copyright (C) 2007-2012 Urs Wolfer <uwolfer@kde.org>
+        Copyright (C) 2007-2012 Urs Wolfer <uwolfer@kde.org>
           
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,16 +26,16 @@
 
 */
 
+
 #ifndef VNCVIEW_H
 #define VNCVIEW_H
 
 #include "remoteview.h"
 #include "vncclientthread.h"
 
-class KConfigGroup{};
+    class KConfigGroup{};
 
 #include <QClipboard>
-#include <QGridLayout>
 
 extern "C" {
 #include <rfb/rfbclient.h>
@@ -46,7 +46,7 @@ class VncView: public RemoteView
     Q_OBJECT
 
 public:
-    explicit VncView(QWidget *parent = 0, const KUrl &url = KUrl(), KConfigGroup configGroup = KConfigGroup());
+    explicit VncView(QWidget *parent = 0, const KUrl &url = KUrl(), RemoteView::Quality = RemoteView::High);
     ~VncView();
 
     QSize framebufferSize();
@@ -57,12 +57,10 @@ public:
     bool start();
     bool supportsScaling() const;
     bool supportsLocalCursor() const;
-    int tabID() { return mTabID; }
     
     void setViewOnly(bool viewOnly);
     void showDotCursor(DotCursorState state);
     void enableScaling(bool scale);
-    void setTabID( int );
     
     virtual void updateConfiguration();
 
@@ -78,6 +76,7 @@ protected:
 private:
     VncClientThread vncThread;
     QClipboard *m_clipboard;
+    RemoteView::Quality mQuality;
     bool m_initDone;
     int m_buttonMask;
     QMap<unsigned int, bool> m_mods;
@@ -86,11 +85,11 @@ private:
     bool m_quitFlag;
     bool m_firstPasswordTry;
     bool m_dontSendClipboard;
+    bool m_justStarted;
     qreal m_horizontalFactor;
     qreal m_verticalFactor;
     QImage m_frame;
     bool m_forceLocalCursor;
-    int mTabID;
 
     void keyEventHandler(QKeyEvent *e);
     void unpressModifiers();
@@ -105,40 +104,8 @@ private slots:
     void clipboardDataChanged();
     
 signals:
+    void repainted();
     void somethingWentWrong();
-};
-
-class VncWidget : public QWidget
-{
-    Q_OBJECT
-
-    public:
-        explicit VncWidget( QObject* parent = 0L );
-        ~VncWidget();
-        
-        VncView* vnc() { return mVncView; }
-        int tabId() { return mTabId; }
-        //QUrl url() { return mUrl; }
-        
-    private:
-        VncView* mVncView;
-        QUrl mUrl;
-        int mTabId;
-        QGridLayout* mLayout;
-        
-    protected:
-        bool event( QEvent* );
-        
-    public slots:
-        void setTabId( int );    
-        void createVncView( const QUrl& );
-        void getFocus( bool );
-        void closeWidget();
-        
-    signals:
-        void somethingWentWrong();
-        void widgetClosed( int );
-        void downloadRequested();
 };
 
 #endif
