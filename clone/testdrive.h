@@ -49,19 +49,13 @@ class TestDrive : public QObject
     public slots:
         void setTabId( int );
         
-    private slots:
-        void addDownload( const QString& );
-        void downloadFinished();
-        void extractFinished( const QString&, const QString& );
-        
     private:
         VncWidget* mVncWidget;
         TestDriveThread* mThread;
         int mTabId;
         
     signals:
-        void downloadRequested( QNetworkReply*, QString, bool );
-        
+        void downloadRequested( QString );
 };
 
 class TestDriveThread : public QThread

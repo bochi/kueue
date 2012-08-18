@@ -171,7 +171,9 @@ class TabWidget : public QTabWidget
         void makeNsaReport();
         void cloneSystem();
         void tabChanged( int );
-        void addDownloadJob( QNetworkReply*, QString, bool );
+        void addApplianceDownloadJob( const QString& );
+        void runApplianceRequested( const QString& );
+        void runAppliance( const QString&, const QString& );
 
     signals:
         void unityTabMiddleClicked( int );

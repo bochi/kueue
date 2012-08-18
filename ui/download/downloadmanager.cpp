@@ -62,7 +62,7 @@
     as update the information/progressbar and report errors.
  */
 
-DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString dir, QWidget* parent, bool extract )
+DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString dir, QWidget* parent, bool extract, bool isAppliance )
     : QWidget( parent )
     , mReply( reply )
     , mRequestFilename( requestFileName )
@@ -73,6 +73,7 @@ DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString 
     , mCanceledFileSelect( false )
     , mDownloadDir( dir + "/" )
     , mExtract( extract )
+    , mIsAppliance( isAppliance )
 {
     setupUi( this );
     
@@ -81,8 +82,9 @@ DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString 
     downloadInfoLabel->setPalette(p);
     
     nsaButton->setVisible( false );
+    runButton->setVisible( false );
     
-    progressBar->setMaximum(0);
+    progressBar->setMaximum( 0 );
     
     connect( stopButton, SIGNAL( clicked() ), 
              this, SLOT( stop() ) );
@@ -92,6 +94,9 @@ DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString 
 
     connect( nsaButton, SIGNAL( clicked() ),
              this, SLOT( generateNsaReport() ) );
+    
+    connect( runButton, SIGNAL( clicked() ),
+             this, SLOT( runAppliance() ) );
 
     init();
 }
@@ -511,11 +516,17 @@ void DownloadItem::finished()
     {  
         nsaButton->setVisible( true );
     }
+    
+    if ( mIsAppliance )
+    {
+        runButton->setVisible( true );
+    }
 
     mOutput.close();
     
     if ( ( !mOutput.fileName().isEmpty() ) && 
          ( mExtract ) &&
+         ( !mIsAppliance ) &&
          ( Settings::autoExtract() ) &&
          ( ( QFileInfo( mOutput.fileName() ).suffix() == "gz" ) ||
          ( QFileInfo( mOutput.fileName() ).suffix() == "bz2" ) ||
@@ -571,6 +582,11 @@ void DownloadItem::checkIfSupportconfig( const QString& scfile, const QString& s
             KueueThreads::enqueue( sc );
         }
     }
+}
+
+void DownloadItem::runAppliance()
+{
+    emit runApplianceRequested( mOutput.fileName() );
 }
 
 /*!
@@ -675,35 +691,39 @@ bool DownloadManager::externalDownload(const QUrl &url)
 
 void DownloadManager::download(const QNetworkRequest &request, QNetworkAccessManager* nam,  QString dir, bool requestFileName)
 {
-    handleUnsupportedContent( nam->get(request), dir, requestFileName );
+    handleUnsupportedContent( nam->get(request), dir, requestFileName, Settings::autoExtract(), false );
 }
 
-void DownloadManager::handleUnsupportedContent(QNetworkReply *reply, QString dir, bool requestFileName, bool extract )
+DownloadItem* DownloadManager::handleUnsupportedContent(QNetworkReply *reply, QString dir, bool requestFileName, bool extract, bool isApp )
 {
+    DownloadItem* item; 
+    
     if (!reply || reply->url().isEmpty())
     {
-        return;
+        return item;
     }
     
     if (externalDownload(reply->url()))
     {
-        return;
+        return item;
     }
 
     QVariant header = reply->header(QNetworkRequest::ContentLengthHeader);
     bool ok;
     int size = header.toInt(&ok);
     if (ok && size == 0)
-        return;
+        return item;
 
-    qDebug() << "DownloadManager::" << __FUNCTION__ << reply->url() << "requestFileName" << requestFileName;
+    qDebug() << "DownloadManager::" << __FUNCTION__ << reply->url() << requestFileName << extract << isApp;
 
-    DownloadItem *item = new DownloadItem( reply, requestFileName, dir, this, extract );
+    item = new DownloadItem( reply, requestFileName, dir, this, extract, isApp );
     
     addItem( item );
 
     if (item->mCanceledFileSelect)
-        return;
+        return item;
+    
+    return item;
 
     /*if (!isVisible())
         show();

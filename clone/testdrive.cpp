@@ -51,7 +51,7 @@ TestDrive::TestDrive( int build ) : QObject()
              mThread, SLOT( downloadAppliance() ) );
     
     connect( mThread, SIGNAL( downloadRequested( QString ) ), 
-             this, SLOT( addDownload( QString ) ) );
+             this, SIGNAL( downloadRequested( QString ) ) );
 }
 
 TestDrive::~TestDrive()
@@ -69,46 +69,6 @@ TestDrive::~TestDrive()
 void TestDrive::setTabId( int id )
 {
     mTabId = id;
-}
-
-void TestDrive::addDownload( const QString& url )
-{
-    mThread->setDoNotQuit( true );
-    
-    QNetworkReply* reply = Network::getExt( url );
-    
-    connect( reply, SIGNAL( finished() ),
-             this, SLOT( downloadFinished() ) );
-    
-    StatusBar::addDownloadJob( reply, Settings::applianceDownloadDirectory(), false, false );
-}
-
-void TestDrive::downloadFinished()
-{
-    QNetworkReply* reply = qobject_cast<QNetworkReply*>( sender() );
-    QUrl u = reply->url();
-    
-    QString filename = reply->objectName();
-    
-    ArchiveExtract* x = new ArchiveExtract( filename, QFileInfo( filename ).dir().path() );
-
-    connect( x, SIGNAL( extracted( QString, QString ) ),
-             this, SLOT( extractFinished( QString, QString ) ) );
-
-    KueueThreads::enqueue( x );
-}
-
-void TestDrive::extractFinished( const QString& filename, const QString& dir )
-{
-    QFile::remove( filename );
-    QDir directory( dir );
-    directory.setNameFilters( QStringList() << "*.vmdk" );
-    directory.setFilter( QDir::Files );
-    directory.setSorting( QDir::Name );
-    
-    QString vmdk = directory.entryList().first();
-    
-    mThread->setDoNotQuit( false );
 }
 
 // TestDriveThread

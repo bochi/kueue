@@ -35,6 +35,8 @@
 #include "clone/clone.h"
 #include "vnc/vncview.h"
 #include "clone/testdrive.h"
+#include "ui/download/downloadmanager.h"
+#include "archivers/archiveextract.h"
 
 #include <QGridLayout> 
 #include <QMenu>
@@ -343,8 +345,8 @@ void TabWidget::addTestdriveTab( int build, const QString& hostname )
 {
     TestDrive* td = new TestDrive( build );
     
-    connect( td, SIGNAL( downloadRequested( QNetworkReply*, QString, bool ) ), 
-             this, SLOT( addDownloadJob( QNetworkReply*, QString, bool ) ) );
+    connect( td, SIGNAL( downloadRequested( QString ) ), 
+             this, SLOT( addApplianceDownloadJob( QString ) ) );
     
     int tab = addTab( td->widget(), QIcon( ":/icons/conf/studio.png" ), "Testdrive - " + hostname );
     
@@ -359,10 +361,41 @@ void TabWidget::somethingWentWrong()
     qDebug() << "SMTH WENT WRONG";
 }
 
-void TabWidget::addDownloadJob( QNetworkReply* r, QString s, bool ask )
+void TabWidget::addApplianceDownloadJob( const QString& url )
 {
-    mStatusBar->addDownloadJob( r, s, ask );
+    QNetworkReply* reply = Network::getExt( url );
+    DownloadItem* i = mStatusBar->dm()->handleUnsupportedContent( reply, Settings::applianceDownloadDirectory(), false, false, true );
+    
+    connect( i, SIGNAL( runApplianceRequested(QString) ), 
+             this, SLOT( runApplianceRequested( QString ) ) );
 }
+
+void TabWidget::runApplianceRequested( const QString& archive )
+{
+    QFileInfo info( archive );
+
+    ArchiveExtract* x = new ArchiveExtract( archive, info.absolutePath() );
+
+    connect( x, SIGNAL( extracted( QString, QString ) ),
+             this, SLOT( runAppliance( QString, QString ) ) );
+
+    KueueThreads::enqueue( x );
+}
+
+void TabWidget::runAppliance( const QString& file, const QString& dir )
+{
+    QFile::remove( file );
+    
+    QDir directory( dir );
+    directory.setNameFilters( QStringList() << "*.vmdk" );
+    directory.setFilter( QDir::Files );
+    directory.setSorting( QDir::Name );
+    
+    QString vmdk = directory.entryList().first();
+    
+    QProcess::startDetached( "qemu-system-x86_64", QStringList() << dir + "/" + vmdk, dir );
+}
+
 
 void TabWidget::removeTestdriveTab( int tab )
 {
