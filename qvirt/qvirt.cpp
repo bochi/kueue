@@ -52,6 +52,54 @@ virConnectAuth QVirt::auth =
     NULL,
 };
 
+int QVirt::authCallback(virConnectCredentialPtr cred, unsigned int ncred, void *cbdata)
+{
+    int i;
+    AuthData *authData = static_cast< AuthData* >( cbdata );
+
+    for ( i = 0; i < ncred ; ++i ) 
+    {
+        switch ( cred[ i ].type ) 
+        {
+            case VIR_CRED_AUTHNAME:
+                cred[ i ].result = strdup( authData->username );
+
+                if (cred[i].result == NULL) 
+                {
+                    return -1;
+                }
+
+                cred[i].resultlen = strlen(cred[i].result);
+            break;
+
+            case VIR_CRED_PASSPHRASE:
+                cred[ i ].result = strdup( authData->password );
+
+                if (cred[ i ].result == NULL) 
+                {
+                    return -1;
+                }
+
+                cred[ i ].resultlen = strlen( cred[i].result );
+            break;
+
+            default:
+                return -1;
+        }
+    }
+
+    return 0;
+}
+
+char* QVirt::qstringToChar( const QString& string )
+{
+    char* cstr;
+    std::string str = string.toStdString();
+    cstr = new char[ str.size() + 1 ];
+    strcpy( cstr, str.c_str() );
+    return cstr;
+}
+
 bool QVirt::connectVmwareEsx( const QString& host, const QString& user, const QString& pass )
 {
     QString url = "esx://" + host + "/?no_verify=1";
@@ -72,6 +120,68 @@ bool QVirt::connectVmwareEsx( const QString& host, const QString& user, const QS
     return true;
 }
 
+bool QVirt::connectLocalQemu()
+{
+    QString url = "qemu:///session";
+    
+    /*mAuthData.username = qstringToChar( user );
+    mAuthData.password = qstringToChar( pass );
+    auth.cbdata = &mAuthData;*/
+    
+    mConnection = virConnectOpenAuth( url.toUtf8(), virConnectAuthPtrDefault, 0 );
+    
+    if ( mConnection == NULL )
+    {
+        qDebug() << "[VIRT] Connection to QEMU failed";
+        return false;
+    }
+    
+    qDebug() << "[VIRT] Connected to QEMU" << getHypervisorInfo();
+    return true;
+}
+
+
+QStringList QVirt::listActiveStoragePools()
+{
+    int numActivePools = 0;
+    char **poolNames = NULL;
+    
+    QStringList out;
+    
+    numActivePools = virConnectNumOfStoragePools( mConnection );
+    
+    if ( numActivePools < 0 ) 
+    {
+        qDebug() << "[QVIRT] Failed to list active storage pools";
+        return out;
+    }
+    
+    poolNames = static_cast<char**>( calloc( numActivePools, sizeof( *poolNames ) ) );
+    
+    if ( ( virConnectListStoragePools( mConnection, poolNames, numActivePools ) ) < 0 ) 
+    {
+        qDebug() << "[QVIRT] Failed to list active storage pool names";
+        free( poolNames );
+        return out;
+    }
+    
+    for ( int i = 0; i < numActivePools; i++ ) 
+    {
+        virStoragePoolPtr pool = virStoragePoolLookupByName( mConnection, poolNames[ i ] );
+        
+        if ( !pool ) 
+        {
+            free( poolNames[ i ] );
+            continue;
+        }
+        else
+        {
+            out.append( poolNames[ i ] );   
+        }
+    }
+    
+    return out;
+}
 
 
 QString QVirt::getHypervisorInfo()
@@ -101,67 +211,6 @@ QString QVirt::getHypervisorInfo()
 
     hv = QString( hvType ) + " " + QString::number( major ) + "." + QString::number( minor ) + "." + QString::number( release );
     return hv;
-}
-
-
-int QVirt::showDomains(virConnectPtr conn)
-{
-    int ret = 0, i, numNames, numInactiveDomains, numActiveDomains;
-    char **nameList = NULL;
-
-    numActiveDomains = virConnectNumOfDomains(conn);
-    if (numActiveDomains == -1) {
-        ret = 1;
-        printf("Failed to get number of active domains\n");
-        //showError(conn);
-        goto out;
-    }
-
-    numInactiveDomains = virConnectNumOfDefinedDomains(conn);
-    if (numInactiveDomains == -1) {
-        ret = 1;
-        printf("Failed to get number of inactive domains\n");
-        //showError(conn);
-        goto out;
-    }
-
-    printf("There are %d active and %d inactive domains\n",
-           numActiveDomains, numInactiveDomains);
-
-    nameList = static_cast<char**>( malloc(sizeof(*nameList) * numInactiveDomains) );
-
-    if (nameList == NULL) {
-        ret = 1;
-        printf("Could not allocate memory for list of inactive domains\n");
-        goto out;
-    }
-
-    numNames = virConnectListDefinedDomains(conn,
-                                            nameList,
-                                            numInactiveDomains);
-
-    if (numNames == -1) {
-        ret = 1;
-        printf("Could not get list of defined domains from hypervisor\n");
-        //showError(conn);
-        goto out;
-    }
-
-    if (numNames > 0) {
-        printf("Inactive domains:\n");
-    }
-
-    for (i = 0 ; i < numNames ; i++) {
-        printf("  %s\n", *(nameList + i));
-        /* The API documentation doesn't say so, but the names
-         * returned by virConnectListDefinedDomains are strdup'd and
-         * must be freed here.  */
-        free(*(nameList + i));
-    }
-
-out:
-    free(nameList);
-    return ret;
 }
 
 QStringList QVirt::getInactiveDomains()
@@ -245,48 +294,5 @@ QStringList QVirt::getActiveDomains()
 }
 
 
-int QVirt::authCallback(virConnectCredentialPtr cred, unsigned int ncred, void *cbdata)
-{
-    int i;
-    AuthData *authData = static_cast<AuthData*>( cbdata );
-
-    for (i = 0; i < ncred ; ++i) {
-        switch (cred[i].type) {
-        case VIR_CRED_AUTHNAME:
-            cred[i].result = strdup(authData->username);
-
-            if (cred[i].result == NULL) {
-                return -1;
-            }
-
-            cred[i].resultlen = strlen(cred[i].result);
-            break;
-
-        case VIR_CRED_PASSPHRASE:
-            cred[i].result = strdup(authData->password);
-
-            if (cred[i].result == NULL) {
-                return -1;
-            }
-
-            cred[i].resultlen = strlen(cred[i].result);
-            break;
-
-        default:
-            return -1;
-        }
-    }
-
-    return 0;
-}
-
-char* QVirt::qstringToChar( const QString& string )
-{
-    char* cstr;
-    std::string str = string.toStdString();
-    cstr = new char[ str.size()+1 ];
-    strcpy( cstr, str.c_str() );
-    return cstr;
-}
 
 #include "qvirt.moc"

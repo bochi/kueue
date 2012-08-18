@@ -49,7 +49,7 @@ class ThreadProgress : public QFrame
         void threadStarted( const QString&, int );
         void setMaximum( int );
         void updateProgress( int, const QString& );
-        void threadDone();
+        void threadDone( KueueThread* );
         
     signals:
         void done( QWidget* );

@@ -50,8 +50,11 @@ class QVirt : public QObject
         QVirt( QObject* parent = 0L );
          ~QVirt();
          
+         QStringList listActiveStoragePools();
+         
     public slots:
         bool connectVmwareEsx( const QString& host, const QString& user, const QString& pass );
+        bool connectLocalQemu();
          
     private: 
         virConnectPtr mConnection;
@@ -65,6 +68,7 @@ class QVirt : public QObject
         QString getHypervisorInfo();
         QStringList getInactiveDomains();
         QStringList getActiveDomains();
+        
 
 
     

@@ -37,9 +37,8 @@
 TestDrive::TestDrive( int build ) : QObject()
 {
     qDebug() << "[TESTDRIVE] Constructing";
-    
-    mDoNotQuit = false;
-    mVncWidget = new VncWidget( this, RemoteView::TestDrive );
+
+    mVncWidget = new VncWidget( RemoteView::TestDrive );
     mThread = new TestDriveThread( build );
     
     connect( mThread, SIGNAL( vnc( QUrl ) ),
@@ -47,25 +46,35 @@ TestDrive::TestDrive( int build ) : QObject()
     
     //connect( mVncWidget, SIGNAL( somethingWentWrong() ), 
     //         mThread, SLOT( requestNewTestdrive() ) );
-    
-    connect( mVncWidget, SIGNAL( widgetClosed( int ) ), 
-             this, SLOT( quitTestdrive( int ) ) );
-    
+        
     connect( mVncWidget, SIGNAL( downloadRequested() ), 
              mThread, SLOT( downloadAppliance() ) );
     
-    connect( mThread, SIGNAL( downloadRequested(QString)), 
-             this, SLOT( addDownload(QString)) );
+    connect( mThread, SIGNAL( downloadRequested( QString ) ), 
+             this, SLOT( addDownload( QString ) ) );
 }
 
 TestDrive::~TestDrive()
 {
     qDebug() << "[TESTDRIVE] Destroying";
+    
+    mThread->deleteWorker();
+    mThread->quit();
+    mThread->wait();
+    
+    delete mVncWidget;
+    delete mThread;
+}
+
+void TestDrive::setTabId( int id )
+{
+    mTabId = id;
 }
 
 void TestDrive::addDownload( const QString& url )
 {
-    mDoNotQuit = true;
+    mThread->setDoNotQuit( true );
+    
     QNetworkReply* reply = Network::getExt( url );
     
     connect( reply, SIGNAL( finished() ),
@@ -87,44 +96,19 @@ void TestDrive::downloadFinished()
              this, SLOT( extractFinished( QString, QString ) ) );
 
     KueueThreads::enqueue( x );
-
 }
 
 void TestDrive::extractFinished( const QString& filename, const QString& dir )
 {
     QFile::remove( filename );
     QDir directory( dir );
-    const QStringList& list = directory.entryList( QDir::Files );
-    QString vmx;
+    directory.setNameFilters( QStringList() << "*.vmdk" );
+    directory.setFilter( QDir::Files );
+    directory.setSorting( QDir::Name );
     
-    for ( int i = 0; i < list.size(); ++i )
-    {
-        if ( list.at( i ).endsWith( ".vmx" ) )
-        {
-            vmx = list.at( i );
-        }
-    }
+    QString vmdk = directory.entryList().first();
     
-    QProcess::startDetached( "vmware", list, directory.path() );
-    
-    mDoNotQuit = false;
-}
-
-void TestDrive::quitTestdrive( int id )
-{
-    while ( mDoNotQuit )
-    {
-        qDebug() << "Can't quit yet - waiting";
-    }
-    
-    mThread->deleteWorker();
-    mThread->quit();
-    mThread->wait();
-
-    delete mThread;
-    delete mVncWidget;
-    
-    emit testdriveClosed( id );
+    mThread->setDoNotQuit( false );
 }
 
 // TestDriveThread
@@ -141,7 +125,12 @@ TestDriveThread::~TestDriveThread()
 
 void TestDriveThread::deleteWorker()
 {
-    delete mWorker;
+    emit deleteWorkerSignal();
+}
+
+void TestDriveThread::setDoNotQuit( bool q )
+{
+    emit doNotQuit( q );
 }
 
 void TestDriveThread::run()
@@ -162,6 +151,12 @@ void TestDriveThread::run()
     
     connect( this, SIGNAL( downloadApplianceRequested() ), 
              mWorker, SLOT( downloadAppliance() ) );
+    
+    connect( this, SIGNAL( doNotQuit( bool ) ),
+             mWorker, SLOT( setDoNotQuit( bool ) ) );
+    
+    connect( this, SIGNAL( deleteWorkerSignal() ), 
+             mWorker, SLOT( killMe() ) );
     
     mWorker->work();
     
@@ -184,6 +179,7 @@ TestDriveWorker::TestDriveWorker( int build ) : QObject()
 {
     qDebug() << "[TESTDRIVEWORKER] Constructing" << this->thread()->currentThreadId();
     
+    mDoNotQuit = false;
     mBuildId = build;
     mStudio = new QStudio( Settings::studioServer(), Settings::studioUser(), Settings::studioApiKey(), Settings::studioDebugEnabled() );
     mTimer = new QTimer( this );
@@ -194,6 +190,11 @@ TestDriveWorker::TestDriveWorker( int build ) : QObject()
 
 TestDriveWorker::~TestDriveWorker()
 {
+    while ( mDoNotQuit ) 
+    {
+        qDebug() << "Waiting..";
+    }
+    
     delete mStudio;
     qDebug() << "[TESTDRIVEWORKER] Destroying";
 }
@@ -202,6 +203,16 @@ void TestDriveWorker::work()
 {
     getTestdriveForBuild();
     mTimer->start( 10000 );
+}
+
+void TestDriveWorker::killMe()
+{
+    delete this;
+}
+
+void TestDriveWorker::setDoNotQuit( bool q )
+{
+    mDoNotQuit = q;
 }
 
 void TestDriveWorker::getTestdriveForBuild()
@@ -263,62 +274,9 @@ void TestDriveWorker::newTestdriveRequested()
 
 void TestDriveWorker::downloadAppliance()
 {
-    //QNetworkAccessManager* nam = new QNetworkAccessManager( this );
-    
     QString url = mStudio->getDownloadUrlForBuild( mBuildId );
-    //const QUrl& u( url );
-    
-    //QNetworkRequest request( u );
-    //QString filename = QFileInfo( u.path() ).completeBaseName() + "." + QFileInfo( u.path() ).suffix();
-    
-    //QNetworkReply* reply = nam->get( request );
+
     emit downloadRequested( url );
-    
-    //connect( reply, SIGNAL( finished() ), 
-      //       this, SLOT( downloadDone() ) );
-    
-    /*connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ),
-             this, SLOT( downloadProgress( qint64, qint64 ) ) );*/
-    
-    if ( url.isEmpty() )
-    {
-        qDebug() << "No URL yet, please try again.";
-    }
-    else
-    {
-        qDebug() << url;
-    }
 }
-
-void TestDriveWorker::downloadProgress( qint64 r, qint64 t )
-{
-    int progress = 0;
-    
-    if ( t != 0 )
-    {
-        progress = r * 100 / t;
-    }
-    qDebug() << "progress" << r << t << progress;
-}
-
-
-void TestDriveWorker::downloadDone()
-{
-    QNetworkReply* reply = qobject_cast< QNetworkReply* >( sender() );
-    
-
-    
-    //QFile file( Settings::applianceDownloadDirectory() + "/" + filename );
-    //qDebug() << "downloading to" << file.fileName() ;
-    
-    /*if ( !file.open( QIODevice::WriteOnly ) )
-    {
-        return;
-    }
-    
-    file.write( reply->readAll() );
-    file.close();*/
-}
-
 
 #include "testdrive.moc"

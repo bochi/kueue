@@ -40,17 +40,15 @@ class VncWidget : public QWidget
     Q_OBJECT
 
     public:
-        explicit VncWidget( QObject* parent = 0L, RemoteView::Quality = RemoteView::High );
+        VncWidget( RemoteView::Quality = RemoteView::High );
         ~VncWidget();
         
         VncView* vnc() { return mVncView; }
-        int tabId() { return mTabId; }
-        
+
     private:
         VncView* mVncView;
         QWidget* mWidget;
         QUrl mUrl;
-        int mTabId;
         QGridLayout* mLayout;
         QGridLayout* mSubLayout;
         QStackedLayout* mOverlayLayout;
@@ -62,15 +60,14 @@ class VncWidget : public QWidget
     protected:
         bool event( QEvent* );
         
-    public slots:
-        void setTabId( int );    
+    public slots:   
         void createVncView( const QUrl& );
         void getFocus();
-        void closeWidget();
+        void wait( const QString& );
+        void stopWaiting();
         
     signals:
         void somethingWentWrong();
-        void widgetClosed( int );
         void downloadRequested();
 };
 

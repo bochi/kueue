@@ -44,9 +44,10 @@ class TestDrive : public QObject
         ~TestDrive();
         
         VncWidget* widget() { return mVncWidget; }
-        
+        int tabId() { return mTabId; }
+              
     public slots:
-        void quitTestdrive( int );
+        void setTabId( int );
         
     private slots:
         void addDownload( const QString& );
@@ -56,10 +57,9 @@ class TestDrive : public QObject
     private:
         VncWidget* mVncWidget;
         TestDriveThread* mThread;
-        bool mDoNotQuit;
+        int mTabId;
         
     signals:
-        void testdriveClosed( int );
         void downloadRequested( QNetworkReply*, QString, bool );
         
 };
@@ -76,7 +76,8 @@ class TestDriveThread : public QThread
         void requestNewTestdrive();
         void deleteWorker();
         void downloadAppliance();
-        
+        void setDoNotQuit( bool );
+
     private:
         int mBuildId;
         TestDriveWorker* mWorker;
@@ -88,8 +89,11 @@ class TestDriveThread : public QThread
         void vnc( QUrl );
         void newTestdriveRequested();
         void timedOut( int );
+        void threadKilled( int );
         void downloadApplianceRequested();
         void downloadRequested( QString );
+        void doNotQuit( bool );
+        void deleteWorkerSignal();
 };
 
 class TestDriveWorker : public QObject
@@ -106,17 +110,18 @@ class TestDriveWorker : public QObject
         QTimer* mTimer;
         QStudio* mStudio;
         QUrl mUrl;
+        bool mDoNotQuit;
         
     public slots:
         void work();
         void newTestdriveRequested();
         void downloadAppliance();
+        void setDoNotQuit( bool );
+        void killMe();
         
     private slots:
         void getTestdriveForBuild();
         void checkTestdrive();
-        void downloadDone();
-        void downloadProgress ( qint64, qint64 );
         
     signals:
         void vnc( QUrl );

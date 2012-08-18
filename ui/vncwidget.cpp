@@ -31,7 +31,7 @@
 #include <QPushButton>
 #include <QEvent>
 
-VncWidget::VncWidget( QObject* parent, RemoteView::Quality quality )
+VncWidget::VncWidget( RemoteView::Quality quality )
 {
     qDebug() << "[VNCWIDGET] Constructing";
 
@@ -65,7 +65,7 @@ VncWidget::VncWidget( QObject* parent, RemoteView::Quality quality )
 
 VncWidget::~VncWidget()
 {
-    qDebug() << "[VNCWIDGET] Destroying id" << mTabId;
+    qDebug() << "[VNCWIDGET] Destroying";
 }
 
 void VncWidget::createVncView( const QUrl& url )
@@ -106,11 +106,6 @@ void VncWidget::createVncView( const QUrl& url )
     mVncView->start();
 }
 
-void VncWidget::setTabId( int id )
-{
-    mTabId = id;
-}
-
 void VncWidget::getFocus()
 {
     if ( mVncView != 0 )
@@ -129,9 +124,14 @@ bool VncWidget::event( QEvent* e )
     QWidget::event( e );
 }
 
-void VncWidget::closeWidget()
+void VncWidget::wait( const QString& text )
 {
-    emit widgetClosed( mTabId );
+    mWaitWidget->activate( text );
+}
+
+void VncWidget::stopWaiting()
+{
+    mWaitWidget->deactivate();
 }
 
 #include "vncwidget.moc"

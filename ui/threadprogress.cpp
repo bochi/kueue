@@ -70,8 +70,8 @@ ThreadProgress::ThreadProgress( KueueThread* thread )
     connect( thread, SIGNAL( threadNewMaximum( int ) ), 
              this, SLOT( setMaximum( int ) ) );
     
-    connect( thread, SIGNAL( finished() ),
-             this, SLOT( threadDone() ) );
+    connect( thread, SIGNAL( threadFinished( KueueThread* ) ),
+             this, SLOT( threadDone( KueueThread* ) ) );
     
     thread->start();
 }
@@ -93,14 +93,15 @@ void ThreadProgress::setMaximum( int max )
     mProgress->setMaximum( max );
 }
 
-void ThreadProgress::threadDone()
+void ThreadProgress::threadDone( KueueThread* thread )
 {
-    KueueThread* t = qobject_cast< KueueThread* >( sender() );
-
-    t->quit();
-    t->wait();
+    if ( thread->isRunning() )
+    {
+        thread->quit();
+        thread->wait();
+    }
     
-    delete t;
+    delete thread;
     
     emit done( this );
 }

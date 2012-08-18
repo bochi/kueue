@@ -217,9 +217,9 @@ void TabWidget::tabRightClicked( int id, QPoint point )
     {
         unityTabMenu( id, point );
     }
-    else if ( mVncViewerMap.keys().contains( id ) )
+    else if ( mTestDriveMap.keys().contains( id ) )
     {
-        vncTabMenu( id, point );
+        testdriveTabMenu( id, point );
     }
     else if ( indexOf( mUnityTab ) == id )
     {
@@ -339,22 +339,19 @@ void TabWidget::removeUnityBrowser( int tab )
     rebuildMaps();
 }
 
-void TabWidget::addVncTab( int build, const QString& hostname )
+void TabWidget::addTestdriveTab( int build, const QString& hostname )
 {
     TestDrive* td = new TestDrive( build );
-
-    connect( td, SIGNAL( testdriveClosed( int ) ),
-             this, SLOT( testdriveClosed( int ) ) );
     
     connect( td, SIGNAL( downloadRequested( QNetworkReply*, QString, bool ) ), 
-             this, SLOT( addDownloadJob(QNetworkReply*,QString,bool)) );
+             this, SLOT( addDownloadJob( QNetworkReply*, QString, bool ) ) );
     
     int tab = addTab( td->widget(), QIcon( ":/icons/conf/studio.png" ), "Testdrive - " + hostname );
     
-    mVncWidgetList.append( td->widget() );
-    mVncViewerMap[ tab ] = td->widget();
+    mTestDriveList.append( td );
+    mTestDriveMap[ tab ] = td;
     
-    td->widget()->setTabId( tab );
+    td->setTabId( tab );
 }
 
 void TabWidget::somethingWentWrong()
@@ -367,32 +364,21 @@ void TabWidget::addDownloadJob( QNetworkReply* r, QString s, bool ask )
     mStatusBar->addDownloadJob( r, s, ask );
 }
 
-void TabWidget::removeVncTab( int tab )
+void TabWidget::removeTestdriveTab( int tab )
 {
     removeTab( tab );
     
-    for ( int i = 0; i < mVncWidgetList.count(); ++i )
+    for ( int i = 0; i < mTestDriveList.count(); ++i )
     {
-        if ( mVncWidgetList.at( i )->tabId() == tab )
+        if ( mTestDriveList.at( i )->tabId() == tab )
         {
-            mVncWidgetList.removeAt( i );
+            mTestDriveList.removeAt( i );
         }
     }
     
+    delete mTestDriveMap[ tab ];
+    
     rebuildMaps();
-}
-
-void TabWidget::closeTestdrive( int tab )
-{
-    mVncViewerMap[ tab ]->closeWidget();
-}
-
-void TabWidget::testdriveClosed( int tab )
-{
-    TestDrive* td = qobject_cast< TestDrive* >( sender() );
-
-    removeVncTab( tab );
-    delete td;
 }
 
 void TabWidget::rebuildMaps()
@@ -401,20 +387,20 @@ void TabWidget::rebuildMaps()
     
     for ( int i = 0; i < mUnityWidgetList.count(); ++i )
     {
-        QWidget* tw = qobject_cast< UnityWidget* >( mUnityWidgetList.at( i ) );
-        
+        UnityWidget* tw = mUnityWidgetList.at( i );
+
         mUnityWidgetList.at( i )->setTabId( indexOf( tw ) );
         mUnityBrowserMap[ indexOf( tw ) ] = mUnityWidgetList.at( i )->browser();
     }
     
-    mVncViewerMap.clear();
+    mTestDriveMap.clear();
     
-    for ( int i = 0; i < mVncWidgetList.count(); ++i )
+    for ( int i = 0; i < mTestDriveList.count(); ++i )
     {
-        QWidget* vw = qobject_cast< VncWidget* >( mVncWidgetList.at( i ) );
-        
-        mVncWidgetList.at( i )->setTabId( indexOf( vw ) );
-        mVncViewerMap[ indexOf( vw ) ] = mVncWidgetList.at( i );
+        TestDrive* t = mTestDriveList.at( i );
+
+        mTestDriveList.at( i )->setTabId( indexOf( t->widget() ) );
+        mTestDriveMap[ indexOf( t->widget() ) ] = mTestDriveList.at( i );
     }
 }
 
@@ -752,7 +738,7 @@ void TabWidget::permanentUnityTabMenu( const QPoint& p )
     menu->exec( p );
 }
 
-void TabWidget::vncTabMenu( int tab, const QPoint& p )
+void TabWidget::testdriveTabMenu( int tab, const QPoint& p )
 {
     QMap<int, QString> map;
     
@@ -761,7 +747,7 @@ void TabWidget::vncTabMenu( int tab, const QPoint& p )
     QAction* closeTab = new QAction( "Close tab", menu );
 
     connect( closeTab, SIGNAL( triggered() ),
-             this, SLOT( vncCloseActionTriggered() ) );
+             this, SLOT( testdriveCloseActionTriggered() ) );
 
     closeTab->setData( tab );
     
@@ -787,10 +773,10 @@ void TabWidget::closeActionTriggered()
     removeUnityBrowser( action->data().toInt() );
 }
 
-void TabWidget::vncCloseActionTriggered()
+void TabWidget::testdriveCloseActionTriggered()
 {
     QAction* action = qobject_cast<QAction*>( QObject::sender() );
-    closeTestdrive( action->data().toInt() );
+    removeTestdriveTab( action->data().toInt() );
 }
 
 void TabWidget::clipboardActionTriggered()
@@ -1004,15 +990,15 @@ void TabWidget::cloneSystem()
     QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
     Clone* c = new Clone( filename );
     
-    connect( c, SIGNAL( buildFinished(int, QString) ), 
-             this, SLOT( addVncTab(int, QString) ) );
+    connect( c, SIGNAL( buildFinished( int, QString ) ), 
+             this, SLOT( addTestdriveTab( int, QString ) ) );
 }
 
 void TabWidget::tabChanged( int tab )
 {
-    if (  ( mVncViewerMap.keys().contains( tab ) ) && ( mGrabbedWidget == 0 ) )
+    if (  ( mTestDriveMap.keys().contains( tab ) ) && ( mGrabbedWidget == 0 ) )
     {
-        mVncViewerMap[ tab ]->getFocus();
+        mTestDriveMap[ tab ]->widget()->getFocus();
         mGrabbedWidget = tab;
     }
 }

@@ -35,7 +35,7 @@
 #include "ui/statusbar.h"
 #include "ui/browsers/search/webviewsearch.h"
 #include "ui/busywidget.h"
-#include "vncwidget.h"
+#include "clone/testdrive.h"
 
 #include <QTabWidget>
 #include <QToolButton>
@@ -82,8 +82,8 @@ class TabWidget : public QTabWidget
         KueueWindow* mKueueWindow;
         QList<UnityWidget*> mUnityWidgetList;
         QMap<int, UnityBrowser*> mUnityBrowserMap; 
-        QList<VncWidget*> mVncWidgetList;
-        QMap<int, VncWidget*> mVncViewerMap;
+        QList<TestDrive*> mTestDriveList;
+        QMap<int, TestDrive*> mTestDriveMap;
         StatusBar* mStatusBar;
         WebViewSearch* webViewSearch( int );
         QMenu* kueueMainMenu();
@@ -117,11 +117,9 @@ class TabWidget : public QTabWidget
         void addUnityBrowser();
         void addUnityBrowserWithSR( QString = QString::Null() );
         void removeUnityBrowser( int );
-        void removeVncTab( int );
-        void testdriveClosed( int );
-        void closeTestdrive( int );
+        void removeTestdriveTab( int );
         void rebuildMaps();
-        void addVncTab( int, const QString& );
+        void addTestdriveTab( int, const QString& );
         void somethingWentWrong();
         void showMonitorTab( bool );
         void showStatsTab( bool );
@@ -145,9 +143,9 @@ class TabWidget : public QTabWidget
         void toggleTodo( bool );
         void unityTabMenu( int tab, const QPoint& p );
         void permanentUnityTabMenu( const QPoint& p );
-        void vncTabMenu( int tab, const QPoint& p );
+        void testdriveTabMenu( int tab, const QPoint& p );
         void closeActionTriggered();
-        void vncCloseActionTriggered();
+        void testdriveCloseActionTriggered();
         void clipboardActionTriggered();
         void closeAllOtherActionTriggered();
         void permClipboardActionTriggered();
