@@ -783,7 +783,18 @@ void DownloadManager::updateRow(DownloadItem *item)
         return;
     if (!mIconProvider)
         mIconProvider = new QFileIconProvider();
-    QIcon icon = mIconProvider->icon(item->mOutput.fileName());
+    
+    QIcon icon;
+    
+    if ( item->isAppliance() )
+    {
+        icon = QIcon( ":/icons/conf/studio.png" );
+    }
+    else
+    {
+        icon = mIconProvider->icon(item->mOutput.fileName());
+    }
+    
     if (icon.isNull())
         icon = style()->standardIcon(QStyle::SP_FileIcon);
     item->fileIcon->setPixmap(icon.pixmap(48, 48));

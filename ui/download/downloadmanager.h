@@ -66,6 +66,8 @@ public:
     QFile mOutput;
     QNetworkReply *mReply;
     
+    bool isAppliance() { return mIsAppliance; }
+    
 
 private slots:
     void stop();
