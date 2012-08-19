@@ -234,7 +234,7 @@ QString QStudio::deleteRequest( const QString& req )
     
     QNetworkRequest request( QUrl( "http://" + mServer + "/api/v2" + req ) );
     request.setHeader( QNetworkRequest::ContentTypeHeader, QVariant("application/octet-stream" ) );
-    QNetworkReply *reply = mNAM->get( request );
+    QNetworkReply *reply = mNAM->deleteResource( request );
      
     QObject::connect( reply, SIGNAL( finished() ), 
                       &loop, SLOT( quit() ) );
@@ -243,7 +243,7 @@ QString QStudio::deleteRequest( const QString& req )
              this, SLOT( networkError( QNetworkReply::NetworkError ) ) );
                                     
     loop.exec();
-    
+       
     result = reply->readAll();
     reply->deleteLater();
     
@@ -602,7 +602,7 @@ int QStudio::startApplianceBuild( int id )
     
     if ( docelement.tagName() == "error" )
     {
-        return 0;
+        return -1;
     }
     else
     {
@@ -833,6 +833,19 @@ QString QStudio::getDownloadUrlForBuild( int build )
     }
         
     return url;
+}
+
+bool QStudio::deleteBuild( int id )
+{
+    QString xml = deleteRequest( "/user/builds/" + QString::number( id ) );
+    log( "deleteBuild ", xml );
+    
+    if ( xml.contains( "<success" ) )
+    {
+        return true;
+    }
+    
+    return false;
 }
 
 #include "qstudio.moc"

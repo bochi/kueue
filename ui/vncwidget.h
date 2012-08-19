@@ -40,7 +40,7 @@ class VncWidget : public QWidget
     Q_OBJECT
 
     public:
-        VncWidget( RemoteView::Quality = RemoteView::High );
+        VncWidget( const QString&, RemoteView::Quality = RemoteView::High, bool = false );
         ~VncWidget();
         
         VncView* vnc() { return mVncView; }
@@ -48,12 +48,15 @@ class VncWidget : public QWidget
     private:
         VncView* mVncView;
         QWidget* mWidget;
+        bool mIsTestdrive;
         QUrl mUrl;
         QGridLayout* mLayout;
         QGridLayout* mSubLayout;
+        QVBoxLayout* mButtonLayout;
         QStackedLayout* mOverlayLayout;
         WaitWidget* mWaitWidget;
         QPushButton* mDlButton;
+        QPushButton* mCloseButton;
         QLabel* mLabel;
         RemoteView::Quality mQuality;
         
@@ -66,9 +69,13 @@ class VncWidget : public QWidget
         void wait( const QString& );
         void stopWaiting();
         
+    private slots:
+        void requestDownload();
+        
     signals:
         void somethingWentWrong();
         void downloadRequested();
+        void closeRequested();
 };
 
 #endif

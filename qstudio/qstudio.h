@@ -51,6 +51,7 @@ class QStudio : public QObject
         OverlayFile addOverlayFile( int, const QString&, const QString&, const QString& = QString::Null(), const QString& = QString::Null(), const QString& = QString::Null() );
         bool setLogo( int, const QString& );
         QString getDownloadUrlForBuild( int );
+        bool deleteBuild( int );
         
     private:
         bool mDebug;

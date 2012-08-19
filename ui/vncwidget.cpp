@@ -31,24 +31,44 @@
 #include <QPushButton>
 #include <QEvent>
 
-VncWidget::VncWidget( RemoteView::Quality quality )
+VncWidget::VncWidget( const QString& title, RemoteView::Quality quality, bool isTestdrive )
 {
     qDebug() << "[VNCWIDGET] Constructing";
 
+    mIsTestdrive = isTestdrive;
     mQuality = quality;
     mVncView = 0;
     
     mLayout = new QGridLayout( this );
     setLayout( mLayout );
-
+    
+    mButtonLayout = new QVBoxLayout();
+    
     mDlButton = new QPushButton( this );
     mDlButton->setText( "Download appliance..." );
+    mDlButton->setIcon( QIcon(":/icons/menus/download.png" ) );
+    
+    mCloseButton = new QPushButton( this );
+    
+    if ( mIsTestdrive )
+    {
+        mCloseButton->setText( "Close Testdrive" );
+    }
+    else
+    {
+        mCloseButton->setText( "Close viewer" );
+    }
+
+    mCloseButton->setIcon( QIcon(":/icons/menus/quit.png" ) );
+    
+    mButtonLayout->addWidget( mDlButton );
+    mButtonLayout->addWidget( mCloseButton );
     
     mLabel = new QLabel( this );
-    mLabel->setText( "Test" );
-
+    mLabel->setText( "<h3>" + title + "</h3>" );
+    
     mOverlayLayout = new QStackedLayout();
-    mOverlayLayout->setStackingMode(QStackedLayout::StackAll);
+    mOverlayLayout->setStackingMode( QStackedLayout::StackAll );
     
     mSubLayout = new QGridLayout();
         
@@ -58,7 +78,10 @@ VncWidget::VncWidget( RemoteView::Quality quality )
     mLayout->addLayout( mOverlayLayout, 2, 0, Qt::AlignCenter );
     
     connect( mDlButton, SIGNAL( clicked( bool ) ),
-             this, SIGNAL( downloadRequested() ) );
+             this, SLOT( requestDownload() ) );
+    
+    connect( mCloseButton, SIGNAL( clicked( bool ) ),
+             this, SIGNAL( closeRequested() ) );
 
     show();
 }
@@ -66,6 +89,15 @@ VncWidget::VncWidget( RemoteView::Quality quality )
 VncWidget::~VncWidget()
 {
     qDebug() << "[VNCWIDGET] Destroying";
+    
+    if ( mVncView != 0 )
+    {
+        delete mVncView;
+    }
+    
+    delete mSubLayout;
+    delete mOverlayLayout;
+    delete mButtonLayout;
 }
 
 void VncWidget::createVncView( const QUrl& url )
@@ -93,17 +125,30 @@ void VncWidget::createVncView( const QUrl& url )
     mOverlayLayout->addWidget( mWidget );
     
     mLayout->addWidget( mLabel, 0, 0, Qt::AlignLeft );
-    mLayout->addWidget( mDlButton, 4, 0, Qt::AlignRight );
+    
+    if ( !mIsTestdrive )
+    {
+        mDlButton->setVisible( false );
+    }
+        
+    mLayout->addLayout( mButtonLayout, 4, 0, Qt::AlignRight );
+    //Widget( mCloseButton, 4, 0, Qt::AlignRight );
     
     mLayout->setRowStretch(0,0);
     mLayout->setRowStretch(1,10);
     mLayout->setRowStretch(2,0);
     mLayout->setRowStretch(3,10);
-    mLayout->setRowStretch(4,0);
+    mLayout->setRowStretch(4,0);    
     
     mWaitWidget->activate( "Waiting for VNC connection..." );
     mVncView->show();
     mVncView->start();
+}
+
+void VncWidget::requestDownload()
+{
+    mDlButton->setEnabled( false );
+    emit downloadRequested();
 }
 
 void VncWidget::getFocus()

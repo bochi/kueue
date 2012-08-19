@@ -34,11 +34,11 @@
 #include <QDebug>
 #include <QObject>
 
-TestDrive::TestDrive( int build ) : QObject()
+TestDrive::TestDrive( int build, const QString& hostname ) : QObject()
 {
     qDebug() << "[TESTDRIVE] Constructing";
 
-    mVncWidget = new VncWidget( RemoteView::TestDrive );
+    mVncWidget = new VncWidget( "Testdrive - " + hostname, RemoteView::TestDrive, true );
     mThread = new TestDriveThread( build );
     
     connect( mThread, SIGNAL( vnc( QUrl ) ),
@@ -49,6 +49,9 @@ TestDrive::TestDrive( int build ) : QObject()
         
     connect( mVncWidget, SIGNAL( downloadRequested() ), 
              mThread, SLOT( downloadAppliance() ) );
+    
+    connect( mVncWidget, SIGNAL( closeRequested() ),
+             this, SLOT( closeTestdrive() ) );
     
     connect( mThread, SIGNAL( downloadRequested( QString ) ), 
              this, SIGNAL( downloadRequested( QString ) ) );
@@ -64,6 +67,11 @@ TestDrive::~TestDrive()
     
     delete mVncWidget;
     delete mThread;
+}
+
+void TestDrive::closeTestdrive()
+{
+    emit closeRequested( mTabId );
 }
 
 void TestDrive::setTabId( int id )
@@ -85,12 +93,7 @@ TestDriveThread::~TestDriveThread()
 
 void TestDriveThread::deleteWorker()
 {
-    emit deleteWorkerSignal();
-}
-
-void TestDriveThread::setDoNotQuit( bool q )
-{
-    emit doNotQuit( q );
+    delete mWorker;
 }
 
 void TestDriveThread::run()
@@ -111,12 +114,6 @@ void TestDriveThread::run()
     
     connect( this, SIGNAL( downloadApplianceRequested() ), 
              mWorker, SLOT( downloadAppliance() ) );
-    
-    connect( this, SIGNAL( doNotQuit( bool ) ),
-             mWorker, SLOT( setDoNotQuit( bool ) ) );
-    
-    connect( this, SIGNAL( deleteWorkerSignal() ), 
-             mWorker, SLOT( killMe() ) );
     
     mWorker->work();
     
@@ -139,7 +136,6 @@ TestDriveWorker::TestDriveWorker( int build ) : QObject()
 {
     qDebug() << "[TESTDRIVEWORKER] Constructing" << this->thread()->currentThreadId();
     
-    mDoNotQuit = false;
     mBuildId = build;
     mStudio = new QStudio( Settings::studioServer(), Settings::studioUser(), Settings::studioApiKey(), Settings::studioDebugEnabled() );
     mTimer = new QTimer( this );
@@ -150,12 +146,9 @@ TestDriveWorker::TestDriveWorker( int build ) : QObject()
 
 TestDriveWorker::~TestDriveWorker()
 {
-    while ( mDoNotQuit ) 
-    {
-        qDebug() << "Waiting..";
-    }
-    
+   
     delete mStudio;
+        
     qDebug() << "[TESTDRIVEWORKER] Destroying";
 }
 
@@ -163,16 +156,6 @@ void TestDriveWorker::work()
 {
     getTestdriveForBuild();
     mTimer->start( 10000 );
-}
-
-void TestDriveWorker::killMe()
-{
-    delete this;
-}
-
-void TestDriveWorker::setDoNotQuit( bool q )
-{
-    mDoNotQuit = q;
 }
 
 void TestDriveWorker::getTestdriveForBuild()

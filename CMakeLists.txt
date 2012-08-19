@@ -163,7 +163,8 @@ SET( kueue_CPP  main.cpp
 		clone/buildrpm.cpp 
 		clone/buildappliance.cpp 
 		clone/testdrive.cpp
-	        clone/supportconfig.cpp	) 
+	        clone/supportconfig.cpp
+	        clone/virtappliance.cpp	) 
                 
 SET( kueue_QRC  kueue.qrc )
 

@@ -23,102 +23,80 @@
 
 */
 
-#ifndef TESTDRIVE_H
-#define TESTDRIVE_H
+#ifndef VIRTAPPLIANCE_H
+#define VIRTAPPLIANCE_H
 
 #include "kueuethreads.h"
-#include "dataclasses.h"
-#include "qstudio.h"
-#include "vncview.h"
 #include "ui/vncwidget.h"
 
-class TestDriveThread;
-class TestDriveWorker;
+class KueueThreads;
+class VirtApplianceThread;
+class VirtApplianceWorker;
 
-class TestDrive : public QObject
+class VirtAppliance : public QObject
 {
     Q_OBJECT
-    
-    public: 
-        TestDrive( int, const QString& );
-        ~TestDrive();
-        
-        VncWidget* widget() { return mVncWidget; }
-        int tabId() { return mTabId; }
-              
-    public slots:
-        void setTabId( int );
 
-    private slots:
-        void closeTestdrive();
+    public: 
+        VirtAppliance( const QString& );
+        ~VirtAppliance();
+        
+        int tabId() { return mTabId; }
+        VncWidget* widget() { return mVncWidget; }
         
     private:
         VncWidget* mVncWidget;
-        TestDriveThread* mThread;
         int mTabId;
         
+    public slots:
+        void setTabId( int );
+        
+    private slots:
+        
     signals:
-        void downloadRequested( QString );
-        void closeRequested( int );
+    
 };
 
-class TestDriveThread : public QThread
+class VirtApplianceThread : public QThread
 {
     Q_OBJECT
 
     public: 
-        TestDriveThread( int );
-        ~TestDriveThread();
+        VirtApplianceThread( const QString& );
+        ~VirtApplianceThread();
         
     public slots:
-        void requestNewTestdrive();
         void deleteWorker();
-        void downloadAppliance();
 
     private:
-        int mBuildId;
-        TestDriveWorker* mWorker;
+        VirtApplianceWorker* mWorker;
+        QString mVmdk;
         
     protected: 
         void run();
         
     signals:
         void vnc( QUrl );
-        void newTestdriveRequested();
-        void timedOut( int );
-        void threadKilled( int );
-        void downloadApplianceRequested();
-        void downloadRequested( QString );
 };
 
-class TestDriveWorker : public QObject
+class VirtApplianceWorker : public QObject
 {
     Q_OBJECT
 
     public: 
-        TestDriveWorker( int );
-        ~TestDriveWorker();
+        VirtApplianceWorker( const QString& );
+        ~VirtApplianceWorker();
         
     private:
-        int mBuildId;
-        int mTestDriveId;
-        QTimer* mTimer;
-        QStudio* mStudio;
-        QUrl mUrl;
+        QString mVmdk;
         
     public slots:
         void work();
-        void newTestdriveRequested();
-        void downloadAppliance();
         
     private slots:
-        void getTestdriveForBuild();
-        void checkTestdrive();
         
     signals:
         void vnc( QUrl );
-        void timedOut( int );
-        void downloadRequested( QString );
 };
 
 #endif

@@ -343,10 +343,13 @@ void TabWidget::removeUnityBrowser( int tab )
 
 void TabWidget::addTestdriveTab( int build, const QString& hostname )
 {
-    TestDrive* td = new TestDrive( build );
+    TestDrive* td = new TestDrive( build, hostname );
     
     connect( td, SIGNAL( downloadRequested( QString ) ), 
              this, SLOT( addApplianceDownloadJob( QString ) ) );
+    
+    connect( td, SIGNAL( closeRequested( int ) ),
+             this, SLOT( removeTestdriveTab( int ) ) );
     
     int tab = addTab( td->widget(), QIcon( ":/icons/conf/studio.png" ), "Testdrive - " + hostname );
     
@@ -363,7 +366,7 @@ void TabWidget::somethingWentWrong()
 
 void TabWidget::addApplianceDownloadJob( const QString& url )
 {
-    QNetworkReply* reply = Network::getExt( url );
+    QNetworkReply* reply = Network::getExt( QUrl( "http://bochi/clone.tar.gz" ) );
     DownloadItem* i = mStatusBar->dm()->handleUnsupportedContent( reply, Settings::applianceDownloadDirectory(), false, false, true );
     
     connect( i, SIGNAL( runApplianceRequested(QString) ), 
@@ -393,9 +396,8 @@ void TabWidget::runAppliance( const QString& file, const QString& dir )
     
     QString vmdk = directory.entryList().first();
     
-    QProcess::startDetached( "qemu-system-x86_64", QStringList() << dir + "/" + vmdk, dir );
+    QProcess::startDetached( "qemu-system-x86_64", QStringList() << dir + "/" + vmdk  << "-vnc :1", dir );
 }
-
 
 void TabWidget::removeTestdriveTab( int tab )
 {

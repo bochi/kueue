@@ -150,16 +150,37 @@ void BuildAppliance::run()
     
     if ( build == 0 )
     {
-        emit failed( "Failed to get build slot..." );
+        int t = 0;
+        
+        do
+        {
+            t++;
+            emit threadProgress( 0, "Trying to get build slot (" + QString::number( t ) + "/5)" );
+            build = studio->startApplianceBuild( id );
+            QTest::qSleep( 5000 );
+        }
+        while ( ( t < 5 ) &&
+                ( build == 0 ) );
+        
+        if ( build == 0 )
+        {
+            emit failed( "Failed to get build slot..." );
+            delete studio;
+            emit threadFinished( this );
+        }
+    }
+    else if ( build == -1 )
+    {
+        emit failed( "Can't start build due to errors in appliance configuration" );
+        delete studio;
         emit threadFinished( this );
-        return;
     }
     
     BuildStatus bs = studio->getBuildStatus( build );
     
     if ( bs.state == "queued" )
     {
-        emit threadStarted( "Waiting for build slot...", 0 );
+        emit threadProgress( 0, "Waiting for build slot..." );
         
         do
         {
@@ -191,6 +212,7 @@ void BuildAppliance::run()
     }
     
     delete studio;
+    emit threadFinished( this );
 }
 
 #include "buildappliance.moc"
