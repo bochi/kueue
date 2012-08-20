@@ -29,6 +29,8 @@
 #include "kueuethreads.h"
 #include "ui/vncwidget.h"
 
+#include <QProcess>
+
 class KueueThreads;
 class VirtApplianceThread;
 class VirtApplianceWorker;
@@ -38,7 +40,7 @@ class VirtAppliance : public QObject
     Q_OBJECT
 
     public: 
-        VirtAppliance( const QString& );
+        VirtAppliance( const QString&, const QString& );
         ~VirtAppliance();
         
         int tabId() { return mTabId; }
@@ -46,6 +48,7 @@ class VirtAppliance : public QObject
         
     private:
         VncWidget* mVncWidget;
+        VirtApplianceThread* mThread;
         int mTabId;
         
     public slots:
@@ -62,7 +65,7 @@ class VirtApplianceThread : public QThread
     Q_OBJECT
 
     public: 
-        VirtApplianceThread( const QString& );
+        VirtApplianceThread( const QString&, const QString& );
         ~VirtApplianceThread();
         
     public slots:
@@ -71,6 +74,7 @@ class VirtApplianceThread : public QThread
     private:
         VirtApplianceWorker* mWorker;
         QString mVmdk;
+        QString mName;
         
     protected: 
         void run();
@@ -84,19 +88,21 @@ class VirtApplianceWorker : public QObject
     Q_OBJECT
 
     public: 
-        VirtApplianceWorker( const QString& );
+        VirtApplianceWorker( const QString&, const QString& );
         ~VirtApplianceWorker();
         
     private:
         QString mVmdk;
-        
-    public slots:
-        void work();
+        QString mName;
+        QString which( const QString& ); 
+        QString createQemuXML( const QString& );
         
     private slots:
+        void startSystemQemu();
         
     signals:
         void vnc( QUrl );
+        void terminated();
 };
 
 #endif

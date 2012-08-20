@@ -27,10 +27,33 @@
 #include "settings.h"
 
 #include <QDebug>
+#include <QFileInfo> 
+#include <QUuid>
 
-VirtAppliance::VirtAppliance( const QString& vmdk )
+VirtAppliance::VirtAppliance( const QString& vmdk, const QString& vmx )
 {
     qDebug() << "[VIRTAPPLIANCE] Constructing";
+    
+    QFile v( vmx );
+    QString name;
+    
+    v.open( QFile::ReadOnly );
+    
+    while ( !v.atEnd() )
+    {
+        QString line = v.readLine();
+        
+        if ( line.startsWith( "displayName" ) )
+        {
+            name = line.remove( "displayName = " ).remove( "\"" ).trimmed();
+        }
+    }
+    
+    mVncWidget = new VncWidget( "QEmu", RemoteView::High, false );
+    mThread = new VirtApplianceThread( vmdk, name );
+    
+    connect( mThread, SIGNAL( vnc( QUrl ) ),
+             mVncWidget, SLOT( createVncView( QUrl ) ) );
 }
 
 VirtAppliance::~VirtAppliance()
@@ -49,9 +72,11 @@ void VirtAppliance::setTabId( int id )
  * 
  */
 
-VirtApplianceThread::VirtApplianceThread( const QString& vmdk ) : QThread()
+VirtApplianceThread::VirtApplianceThread( const QString& vmdk, const QString& name ) : QThread()
 {
     mVmdk = vmdk;
+    mName = name;
+    
     start();
 }
 
@@ -66,8 +91,10 @@ void VirtApplianceThread::deleteWorker()
 
 void VirtApplianceThread::run()
 {
-    mWorker = new VirtApplianceWorker( mVmdk );
-    mWorker->work();
+    mWorker = new VirtApplianceWorker( mVmdk, mName );
+    
+    connect( mWorker, SIGNAL( vnc( QUrl ) ),
+             this, SIGNAL( vnc( QUrl ) ) );
     
     exec();
 }
@@ -78,11 +105,13 @@ void VirtApplianceThread::run()
  * 
  */
 
-VirtApplianceWorker::VirtApplianceWorker( const QString& vmdk ) : QObject()
+VirtApplianceWorker::VirtApplianceWorker( const QString& vmdk, const QString& name ) : QObject()
 {
     qDebug() << "[VIRTAPPLIANCEWORKER] Constructing" << this->thread()->currentThreadId();
     
     mVmdk = vmdk;
+    mName = name;
+    startSystemQemu();
 }
 
 VirtApplianceWorker::~VirtApplianceWorker()
@@ -90,9 +119,99 @@ VirtApplianceWorker::~VirtApplianceWorker()
    qDebug() << "[VIRTAPPLIANCEWORKER] Destroying";
 }
 
-void VirtApplianceWorker::work()
+void VirtApplianceWorker::startSystemQemu()
 {
-   
+    QString arch;
+    
+    if ( mVmdk.contains( "x86_64" ) )
+    {
+        arch = "x86_64";
+    }
+    else
+    {
+        arch = "i386";
+    }
+    
+    QFileInfo info( mVmdk );
+    
+    QFile xmlfile( info.absoluteFilePath() + "/" + mName + ".xml" );
+    
+    if ( !xmlfile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+        return;
+    }
+
+    QTextStream out( &xmlfile );
+    out << createQemuXML( arch );
+    xmlfile.close();
+}       
+
+QString VirtApplianceWorker::createQemuXML( const QString& arch )
+{
+    QString xml;
+    QString cmd = which( "qemu-system-" + arch );
+    
+    xml += "<domain type='qemu'>\n";
+    xml += "  <name>" + mName + "</name>\n";
+    xml += "  <uuid>" + QUuid::createUuid().toString().remove("}").remove("{") + "</uuid>\n";
+    xml += "  <memory>1048576</memory>\n";
+    xml += "  <currentMemory>1048576</currentMemory>\n";
+    xml += "  <vcpu>1</vcpu>\n";
+    xml += "  <os>\n";
+    xml += "    <type arch='" + arch + "'>hvm</type>\n";
+    xml += "  </os>\n";
+    xml += "  <clock offset='utc'/>\n";
+    xml += "  <on_poweroff>destroy</on_poweroff>\n";
+    xml += "  <on_reboot>restart</on_reboot>\n";
+    xml += "  <on_crash>destroy</on_crash>\n";
+    xml += "  <devices>\n";
+    xml += "    <emulator>" + cmd + "</emulator>\n";
+    xml += "    <disk type='file' device='disk'>\n";
+    xml += "      <driver name='qemu' type='vmdk'/>\n";
+    xml += "      <source file='" + mVmdk + "/>\n";
+    xml += "      <target dev='hda' bus='ide'/>\n";
+    xml += "      <address type='drive' controller='0' bus='0' unit='0'/>\n";
+    xml += "    </disk>\n";
+    xml += "    <controller type='ide' index='0'/>\n";
+    xml += "    <input type='mouse' bus='ps2'/>\n";
+    xml += "    <graphics type='vnc' autoport='yes'/>\n";
+    xml += "    <video>\n";
+    xml += "      <model type='cirrus' vram='9216' heads='1'/>\n";
+    xml += "    </video>\n";
+    xml += "    <memballoon model='virtio'/>\n";
+    xml += "    </devices>\n";
+    xml += "</domain>";
+    
+    return xml;
 }
+
+QString VirtApplianceWorker::which( const QString& command )
+{
+    const QString paths = QString( getenv( "PATH" ) );
+
+    #ifdef IS_WIN32
+    QStringList plist = paths.split(";");
+    plist.prepend(QCoreApplication::applicationDirPath());
+    #else
+    QStringList plist = paths.split(":");
+    #endif
+    
+    for ( QStringList::const_iterator it = plist.begin(); it != plist.end(); it++ )
+    {
+        #ifdef IS_WIN32
+        QFileInfo finfo(*it + "/" + command + ".exe");
+        #else
+        QFileInfo finfo(*it + "/" + command);
+        #endif
+        
+        if ( finfo.isExecutable() )
+        {
+            return finfo.absoluteFilePath();
+        }
+    }
+    
+    return QString::null;
+}
+
 
 #include "virtappliance.moc"

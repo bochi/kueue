@@ -37,6 +37,7 @@
 #include "clone/testdrive.h"
 #include "ui/download/downloadmanager.h"
 #include "archivers/archiveextract.h"
+#include "clone/virtappliance.h"
 
 #include <QGridLayout> 
 #include <QMenu>
@@ -390,13 +391,18 @@ void TabWidget::runAppliance( const QString& file, const QString& dir )
     QFile::remove( file );
     
     QDir directory( dir );
-    directory.setNameFilters( QStringList() << "*.vmdk" );
     directory.setFilter( QDir::Files );
     directory.setSorting( QDir::Name );
     
+    directory.setNameFilters( QStringList() << "*.vmdk" );
     QString vmdk = directory.entryList().first();
     
-    QProcess::startDetached( "qemu-system-x86_64", QStringList() << dir + "/" + vmdk  << "-vnc :1", dir );
+    directory.setNameFilters( QStringList() << "*.vmx" );
+    QString vmx = directory.entryList().first();
+    
+    VirtAppliance* a = new VirtAppliance( dir + "/" + vmdk, dir + "/" + vmx );
+    int tab = addTab( a->widget(), QIcon( ":/icons/conf/studio.png" ), "QEmu" );
+    a->setTabId( tab );
 }
 
 void TabWidget::removeTestdriveTab( int tab )

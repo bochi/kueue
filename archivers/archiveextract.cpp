@@ -44,7 +44,9 @@ ArchiveExtract::~ArchiveExtract()
 void ArchiveExtract::run()
 {
     QFileInfo fi( mArchivePath );
-        
+    
+    emit threadStarted( "Extracting...", 0 );
+    
     QProcess info;
     QProcess extract;
     
@@ -79,7 +81,8 @@ void ArchiveExtract::run()
     QStringList files = b.split( "\n" );
     mFilesCnt = files.size();
     
-    emit threadStarted( "Extracting...", mFilesCnt );
+    emit threadNewMaximum( mFilesCnt );
+    emit threadProgress( 0, "Extracting..." );
     
     mExtFilesCnt = 0;
     QString final;
