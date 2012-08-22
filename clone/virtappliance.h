@@ -28,6 +28,7 @@
 
 #include "kueuethreads.h"
 #include "ui/vncwidget.h"
+#include "qvirt/qvirt.h"
 
 #include <QProcess>
 
@@ -55,6 +56,7 @@ class VirtAppliance : public QObject
         void setTabId( int );
         
     private slots:
+        void domainExists( const QString& );
         
     signals:
     
@@ -70,6 +72,7 @@ class VirtApplianceThread : public QThread
         
     public slots:
         void deleteWorker();
+        void recreateDomain();
 
     private:
         VirtApplianceWorker* mWorker;
@@ -81,6 +84,8 @@ class VirtApplianceThread : public QThread
         
     signals:
         void vnc( QUrl );
+        void domainExists( QString );
+        void recreateDomainRequested( QString );
 };
 
 class VirtApplianceWorker : public QObject
@@ -92,16 +97,24 @@ class VirtApplianceWorker : public QObject
         ~VirtApplianceWorker();
         
     private:
+        QVirt* mVirt;
         QString mVmdk;
         QString mName;
         QString which( const QString& ); 
         QString createQemuXML( const QString& );
+        QString createVmwareXML( const QString& );
+        
+    public slots:
+        void recreateDomain( const QString& );
+        void startSystemQemu();
+        void startSystemVmwareWS();
         
     private slots:
-        void startSystemQemu();
+
         
     signals:
         void vnc( QUrl );
+        void domainExists( QString );
         void terminated();
 };
 

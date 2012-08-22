@@ -37,6 +37,7 @@
 #include "kueuethreads.h"
 #include "nsa/nsa.h"
 #include "clone/supportconfig.h"
+#include "ui/tabwidget.h"
 
 #include <math.h>
 
@@ -148,6 +149,17 @@ void DownloadItem::init()
     }
 }
 
+void DownloadItem::setAppliance( bool app )
+{
+    mIsAppliance = app;
+    
+    if ( app )
+    {
+        runButton->setVisible( true );
+    }
+}
+
+
 void DownloadItem::getFileName()
 {
     if ( mGettingFilename )
@@ -255,7 +267,7 @@ QString DownloadItem::saveFileName( const QString &directory ) const
         
         do 
         {
-            name = directory + baseName + QLatin1Char( '-' ) + QString::number( i++ ) + endName;
+            name = directory + QString::number( i++ ) + QLatin1Char( '-' ) + baseName + endName;
         } 
         while ( QFile::exists( name ) );
     }
@@ -586,7 +598,7 @@ void DownloadItem::checkIfSupportconfig( const QString& scfile, const QString& s
 
 void DownloadItem::runAppliance()
 {
-    emit runApplianceRequested( mOutput.fileName() );
+    TabWidget::applianceRunner( mOutput.fileName() );
 }
 
 /*!
@@ -846,6 +858,7 @@ void DownloadManager::save() const
         settings.setValue(key + QLatin1String("url"), mDownloads[i]->mUrl);
         settings.setValue(key + QLatin1String("location"), QFileInfo(mDownloads[i]->mOutput).filePath());
         settings.setValue(key + QLatin1String("done"), mDownloads[i]->downloadedSuccessfully());
+        settings.setValue(key + QLatin1String("isAppliance"), mDownloads[i]->isAppliance());
     }
     int i = mDownloads.count();
     QString key = QString(QLatin1String("download_%1_")).arg(i);
@@ -853,6 +866,7 @@ void DownloadManager::save() const
         settings.remove(key + QLatin1String("url"));
         settings.remove(key + QLatin1String("location"));
         settings.remove(key + QLatin1String("done"));
+        settings.remove(key + QLatin1String("isAppliance"));
         key = QString(QLatin1String("download_%1_")).arg(++i);
     }
 }
@@ -887,6 +901,10 @@ void DownloadManager::load()
             if ( QFileInfo( fileName ).suffix() == "tbz" )
             {
                 item->nsaButton->setVisible( true );
+            }
+            if ( settings.value(key + QLatin1String("isAppliance")).toBool() )
+            {
+                item->setAppliance( true );
             }
             addItem(item);
         }

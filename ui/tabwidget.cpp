@@ -367,10 +367,20 @@ void TabWidget::somethingWentWrong()
 
 void TabWidget::addApplianceDownloadJob( const QString& url )
 {
-    QNetworkReply* reply = Network::getExt( QUrl( "http://bochi/clone.tar.gz" ) );
+    QNetworkReply* reply;
+    
+    if ( Settings::testdriveDebugEnabled() )
+    {
+        reply = Network::getExt( QUrl( "http://bochi/clone.tar.gz" ) );
+    }
+    else
+    {
+        reply = Network::getExt( QUrl( url ) );
+    }
+    
     DownloadItem* i = mStatusBar->dm()->handleUnsupportedContent( reply, Settings::applianceDownloadDirectory(), false, false, true );
     
-    connect( i, SIGNAL( runApplianceRequested(QString) ), 
+    connect( i, SIGNAL( runApplianceRequested( QString ) ), 
              this, SLOT( runApplianceRequested( QString ) ) );
 }
 
@@ -388,8 +398,6 @@ void TabWidget::runApplianceRequested( const QString& archive )
 
 void TabWidget::runAppliance( const QString& file, const QString& dir )
 {
-    QFile::remove( file );
-    
     QDir directory( dir );
     directory.setFilter( QDir::Files );
     directory.setSorting( QDir::Name );

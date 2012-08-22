@@ -102,6 +102,8 @@ VncWidget::~VncWidget()
 
 void VncWidget::createVncView( const QUrl& url )
 {
+    qDebug() << "[VNCWIDGET] New VNC view requested, URL:" << url.toString();
+    
     if ( mVncView != 0 )
     {
         mOverlayLayout->removeWidget( mVncView );

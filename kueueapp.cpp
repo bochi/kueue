@@ -35,7 +35,6 @@
 #include "data/dircleaner.h"
 #include "data/datathread.h"
 #include "qvirt/qvirt.h"
-
 #include "ui/busywidget.h"
 
 #include <QProgressDialog>

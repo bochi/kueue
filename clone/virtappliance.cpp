@@ -25,14 +25,17 @@
 
 #include "virtappliance.h"
 #include "settings.h"
+#include "ui/vmexistsdialog.h"
 
 #include <QDebug>
 #include <QFileInfo> 
 #include <QUuid>
+#include <QMessageBox>
+#include <QSysInfo>
 
 VirtAppliance::VirtAppliance( const QString& vmdk, const QString& vmx )
 {
-    qDebug() << "[VIRTAPPLIANCE] Constructing";
+    qDebug() << "[VIRTAPPLIANCE] Constructing" << QSysInfo::WordSize;
     
     QFile v( vmx );
     QString name;
@@ -49,11 +52,16 @@ VirtAppliance::VirtAppliance( const QString& vmdk, const QString& vmx )
         }
     }
     
-    mVncWidget = new VncWidget( "QEmu", RemoteView::High, false );
+    mVncWidget = new VncWidget( "QEmu - " + name, RemoteView::High, false );
     mThread = new VirtApplianceThread( vmdk, name );
     
     connect( mThread, SIGNAL( vnc( QUrl ) ),
              mVncWidget, SLOT( createVncView( QUrl ) ) );
+    
+    connect( mThread, SIGNAL( domainExists( QString ) ),
+             this, SLOT( domainExists( QString ) ) );
+    
+    mThread->start();
 }
 
 VirtAppliance::~VirtAppliance()
@@ -66,6 +74,18 @@ void VirtAppliance::setTabId( int id )
     mTabId = id;
 }
 
+void VirtAppliance::domainExists( const QString& name )
+{
+    VmExistsDialog* d = new VmExistsDialog( name );
+    
+    connect( d, SIGNAL( recreate() ),
+             mThread, SLOT( recreateDomain() ) );
+    
+    d->exec();
+    
+    delete d;
+}
+
 /* 
  * 
  * VirtApplianceThread
@@ -76,8 +96,6 @@ VirtApplianceThread::VirtApplianceThread( const QString& vmdk, const QString& na
 {
     mVmdk = vmdk;
     mName = name;
-    
-    start();
 }
 
 VirtApplianceThread::~VirtApplianceThread()
@@ -96,7 +114,20 @@ void VirtApplianceThread::run()
     connect( mWorker, SIGNAL( vnc( QUrl ) ),
              this, SIGNAL( vnc( QUrl ) ) );
     
+    connect( this, SIGNAL( recreateDomainRequested( QString ) ),
+             mWorker, SLOT( recreateDomain( QString ) ) );
+    
+    connect( mWorker, SIGNAL( domainExists( QString ) ),
+             this, SIGNAL( domainExists( QString ) ) );
+    
+    mWorker->startSystemQemu();
+    
     exec();
+}
+
+void VirtApplianceThread::recreateDomain()
+{
+    emit recreateDomainRequested( mName );
 }
 
 /*
@@ -111,7 +142,8 @@ VirtApplianceWorker::VirtApplianceWorker( const QString& vmdk, const QString& na
     
     mVmdk = vmdk;
     mName = name;
-    startSystemQemu();
+    
+    mVirt = new QVirt( this, QVirt::QEmu );
 }
 
 VirtApplianceWorker::~VirtApplianceWorker()
@@ -131,20 +163,63 @@ void VirtApplianceWorker::startSystemQemu()
     {
         arch = "i386";
     }
+
+    int dom = -1;
     
+    if ( !mVirt->getDomains().contains( mName ) )
+    {
+        dom = mVirt->createDomain( createQemuXML( arch ) );
+    }
+    else
+    {
+        qDebug() << "[VIRTAPPLIANCE] Domain with name " + mName + " exists";
+        emit domainExists( mName );
+    }
+    
+    if ( dom != -1 )
+    {
+        int port = mVirt->getVncPort( dom );
+        emit vnc( QUrl( "vnc://127.0.0.1:" + QString::number( port ) ) );
+    }
+}       
+
+void VirtApplianceWorker::startSystemVmwareWS()
+{
+    QString arch;
     QFileInfo info( mVmdk );
     
-    QFile xmlfile( info.absoluteFilePath() + "/" + mName + ".xml" );
+    QDir directory( info.absolutePath() );
+    directory.setFilter( QDir::Files );
+    directory.setSorting( QDir::Name );
     
-    if ( !xmlfile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    directory.setNameFilters( QStringList() << "*.vmx" );
+    QStringList vl = directory.entryList();
+    
+    for ( int i = 0; i < vl.size(); ++i) 
     {
-        return;
+        QFile::rename( vl.at( i ), vl.at( i ) + ".orig" );
     }
+    
+    if ( mVmdk.contains( "x86_64" ) )
+    {
+        arch = "x86_64";
+    }
+    else
+    {
+        arch = "i386";
+    }
+        
+    int dom = mVirt->createDomain( createVmwareXML( arch ) );
+    qDebug() << mVirt->getVncPort( dom );
+}
 
-    QTextStream out( &xmlfile );
-    out << createQemuXML( arch );
-    xmlfile.close();
-}       
+void VirtApplianceWorker::recreateDomain( const QString& name )
+{
+    if ( mVirt->destroyDomain( name ) )
+    {
+        startSystemQemu();
+    }
+}
 
 QString VirtApplianceWorker::createQemuXML( const QString& arch )
 {
@@ -168,7 +243,7 @@ QString VirtApplianceWorker::createQemuXML( const QString& arch )
     xml += "    <emulator>" + cmd + "</emulator>\n";
     xml += "    <disk type='file' device='disk'>\n";
     xml += "      <driver name='qemu' type='vmdk'/>\n";
-    xml += "      <source file='" + mVmdk + "/>\n";
+    xml += "      <source file='" + mVmdk + "'/>\n";
     xml += "      <target dev='hda' bus='ide'/>\n";
     xml += "      <address type='drive' controller='0' bus='0' unit='0'/>\n";
     xml += "    </disk>\n";
@@ -180,6 +255,46 @@ QString VirtApplianceWorker::createQemuXML( const QString& arch )
     xml += "    </video>\n";
     xml += "    <memballoon model='virtio'/>\n";
     xml += "    </devices>\n";
+    xml += "</domain>";
+    
+    return xml;
+}
+
+QString VirtApplianceWorker::createVmwareXML( const QString& arch )
+{
+    QString xml;
+    
+    xml += "<domain type='vmware'>\n";
+    xml += "  <name>" + mName + "</name>\n";
+    xml += "  <uuid>" + QUuid::createUuid().toString().remove("}").remove("{") + "</uuid>\n";
+    xml += "  <memory>1048576</memory>\n";
+    xml += "<vcpu placement='static'>1</vcpu>\n";
+    xml += "<os>\n";
+    xml += "    <type arch='" + arch + "'>hvm</type>\n";
+    xml += "</os>\n";
+    xml += "<clock offset='utc'/>\n";
+    xml += "<on_poweroff>destroy</on_poweroff>\n";
+    xml += "<on_reboot>restart</on_reboot>\n";
+    xml += "<on_crash>destroy</on_crash>\n";
+    xml += "<devices>\n";
+    xml += "    <disk type='file' device='disk'>\n";
+    xml += "      <source file='" + mVmdk + "'/>\n";
+    xml += "    <target dev='sda' bus='scsi'/>\n";
+    xml += "    <address type='drive' controller='0' bus='0' target='0' unit='0'/>\n";
+    xml += "    </disk>\n";
+    xml += "    <controller type='scsi' index='0' model='lsilogic'/>\n";
+    //xml += "    <controller type='ide' index='0'/>\n";
+    xml += "    <interface type='bridge'>\n";
+    xml += " <source bridge=''/>\n";
+    //xml += "    <mac address='generated'/>\n";
+    //xml += "    <source bridge=''/>\n";
+    xml += "    <model type='e1000'/>\n";
+    xml += "    </interface>\n";
+    xml += "    <graphics type='vnc' port='5903'/>\n";
+    xml += "<video>\n";
+    xml += "    <model type='vmvga' vram='4096'/>\n";
+    xml += "</video>\n";
+    xml += "</devices>\n";
     xml += "</domain>";
     
     return xml;
@@ -212,6 +327,5 @@ QString VirtApplianceWorker::which( const QString& command )
     
     return QString::null;
 }
-
 
 #include "virtappliance.moc"

@@ -68,6 +68,9 @@ public:
     
     bool isAppliance() { return mIsAppliance; }
     
+    public slots:
+        void setAppliance( bool );
+    
 
 private slots:
     void stop();

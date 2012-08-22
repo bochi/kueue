@@ -47,15 +47,31 @@ class QVirt : public QObject
     typedef struct _AuthData AuthData;
     
     public:
-        QVirt( QObject* parent = 0L );
+        
+        enum VirtType
+        {
+            QEmu = 1,
+            VMwareWorkstation = 2,
+            VMwarePlayer = 3,
+            VmwareESX = 4,
+            VirtualBox = 5
+        };
+        
+        QVirt( QObject* parent, QVirt::VirtType );
          ~QVirt();
          
-         QStringList listActiveStoragePools();
-         
-    public slots:
+        QStringList listActiveStoragePools();
+
         bool connectVmwareEsx( const QString& host, const QString& user, const QString& pass );
         bool connectLocalQemu();
-         
+        bool connectVmwareWorkstation();
+        bool destroyDomain( const QString& );
+        int createDomain( const QString& );
+        int getVncPort( int );
+        QStringList getInactiveDomains();
+        QStringList getActiveDomains();
+        QStringList getDomains();
+        
     private: 
         virConnectPtr mConnection;
         AuthData mAuthData;
@@ -66,13 +82,7 @@ class QVirt : public QObject
         static int authCallback(virConnectCredentialPtr, unsigned int, void* );
         static int showDomains(virConnectPtr conn);
         QString getHypervisorInfo();
-        QStringList getInactiveDomains();
-        QStringList getActiveDomains();
-        
 
-
-    
-    
 };
  
 #endif

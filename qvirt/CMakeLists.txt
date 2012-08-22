@@ -37,13 +37,13 @@ INCLUDE_DIRECTORIES(  ${QT_INCLUDES}
 
 ADD_DEFINITIONS( ${QT_DEFINITIONS} )
 
-SET( qvirt_CPP  qvirt.cpp  )
+SET( qvirt_CPP  qvirt.cpp)
 
 QT4_AUTOMOC( ${qvirt_CPP} )
 
 ADD_LIBRARY( qvirt STATIC ${qvirt_CPP} )
 
 TARGET_LINK_LIBRARIES( qvirt ${QT_LIBRARIES} 
-                             ${LIBVIRT_LIBRARIES} )
+                             ${LIBVIRT_LIBRARIES} ) 
 
 

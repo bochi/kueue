@@ -33,6 +33,8 @@
 
 ArchiveExtract::ArchiveExtract( const QString& archive, const QString& dest )
 {
+    qDebug() << "[ARCHIVEEXTRACT] Extracting" << archive << "to" << dest;
+    
     mArchivePath = archive;
     mDestination = dest;
 }
@@ -62,13 +64,16 @@ void ArchiveExtract::run()
    
     if ( !fileinfo.isReadable() || extArgs.isEmpty() || listArgs.isEmpty() )
     {
-        return;
+        qDebug() << "[ARCHIVEEXTRACT] Exiting, fileinfo readable:" << fileinfo.isReadable() << "extargs:" << extArgs << "listargs:" << listArgs;
+        emit threadFinished( this );
     }
     
     const QString extprg = extArgs.takeFirst();
     const QString infprg = listArgs.takeFirst();
     
     extract.setWorkingDirectory( mDestination );
+    
+    qDebug() << "[ARCHIVEEXTRACT] Getting archive info:" << infprg << listArgs;
     
     info.start( infprg, listArgs );
     
@@ -86,6 +91,8 @@ void ArchiveExtract::run()
     
     mExtFilesCnt = 0;
     QString final;
+    
+    qDebug() << "[ARCHIVEEXTRACT] Extracting archive:" << extprg << extArgs;
     
     extract.start( extprg, extArgs );
     

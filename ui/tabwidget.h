@@ -63,6 +63,11 @@ class TabWidget : public QTabWidget
             TabWidget::tw().addUnityBrowserWithSR( id );
         }
         
+        static void applianceRunner( const QString& name )
+        {
+            TabWidget::tw().runApplianceRequested( name );
+        }
+        
     private:
         static TabWidget* instance;
         TabWidget(QWidget *parent = 0L);

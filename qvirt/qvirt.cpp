@@ -26,12 +26,29 @@
 #include "qvirt.h"
 
 #include <QDebug>
+#include <QtXml>
 #include <stdio.h>
 #include <stdlib.h>
 
-QVirt::QVirt( QObject* parent )
+QVirt::QVirt( QObject* parent, QVirt::VirtType type )
 {
-    qDebug() << "[VIRT] Constructing";
+    qDebug() << "[VIRT] Constructing, type:" << type;
+    bool c;
+    
+    if ( type == QVirt::QEmu )
+    {
+        while ( !connectLocalQemu() )
+        {
+            qDebug() << "[QVIRT] Connecting...";
+        }
+    }
+    else if ( type == QVirt::VMwareWorkstation )
+    {
+        while( !connectVmwareWorkstation() )
+        {
+            qDebug() << "[QVIRT] Connecting...";
+        }
+    }
 }
 
 QVirt::~QVirt()
@@ -112,11 +129,26 @@ bool QVirt::connectVmwareEsx( const QString& host, const QString& user, const QS
     
     if ( mConnection == NULL )
     {
-        qDebug() << "[VIRT] Connection to ESX Host" << host << "failed";
+        qDebug() << "[QVIRT] Connection to ESX Host" << host << "failed";
         return false;
     }
     
-    qDebug() << "[VIRT] Connected to" << host << getHypervisorInfo();
+    qDebug() << "[QVIRT] Connected to" << host << getHypervisorInfo();
+    return true;
+}
+
+bool QVirt::connectVmwareWorkstation()
+{
+    QString url = "vmwarews:///session";
+    mConnection = virConnectOpenAuth( url.toUtf8(), virConnectAuthPtrDefault, 0 );
+    
+    if ( mConnection == NULL )
+    {
+        qDebug() << "[QVIRT] Connection to VMware Workstation failed";
+        return false;
+    }
+    
+    qDebug() << "[QVIRT] Connected to VMware Workstation" << getHypervisorInfo();
     return true;
 }
 
@@ -132,11 +164,11 @@ bool QVirt::connectLocalQemu()
     
     if ( mConnection == NULL )
     {
-        qDebug() << "[VIRT] Connection to QEMU failed";
+        qDebug() << "[QVIRT] Connection to QEMU failed";
         return false;
     }
     
-    qDebug() << "[VIRT] Connected to QEMU" << getHypervisorInfo();
+    qDebug() << "[QVIRT] Connected to QEMU" << getHypervisorInfo();
     return true;
 }
 
@@ -293,6 +325,129 @@ QStringList QVirt::getActiveDomains()
     return out;
 }
 
+QStringList QVirt::getDomains()
+{
+    virDomainPtr *allDomains;
+    int numDomains;
+    int numActiveDomains, numInactiveDomains;
+    char **inactiveDomains;
+    int *activeDomains;
+    QStringList out;
+    
+    numActiveDomains = virConnectNumOfDomains( mConnection );        
+    numInactiveDomains = virConnectNumOfDefinedDomains( mConnection );
+
+    allDomains = static_cast<virDomain**>( malloc( sizeof( virDomainPtr ) * numActiveDomains + numInactiveDomains ) );
+    inactiveDomains = static_cast<char**>( malloc( sizeof( char * ) * numDomains ) );
+    activeDomains = static_cast<int*>( malloc( sizeof( int ) * numDomains ) );
+
+    numActiveDomains = virConnectListDomains( mConnection, activeDomains, numActiveDomains );
+    numInactiveDomains = virConnectListDefinedDomains( mConnection, inactiveDomains, numInactiveDomains );
+
+    for ( int i = 0 ; i < numActiveDomains ; i++) 
+    {
+        out.append( virDomainGetName( virDomainLookupByID( mConnection, activeDomains[i]) ) );
+        numDomains++;
+    }
+
+    for ( int i = 0 ; i < numInactiveDomains ; i++) 
+    {
+        out.append( virDomainGetName( virDomainLookupByName( mConnection, inactiveDomains[i] ) ) );
+        free( inactiveDomains[ i ] );
+        numDomains++;
+    }
+    
+    free( activeDomains );
+    free( inactiveDomains );
+    return out;
+}
+
+int QVirt::createDomain( const QString& xml )
+{
+    virDomainPtr dom;
+    const char *from = NULL;
+    char *buffer = qstringToChar( xml );
+    unsigned int flags = VIR_DOMAIN_NONE;
+    int id = -1;
+    
+    dom = virDomainCreateXML( mConnection, buffer, flags );
+    free( buffer );
+
+    if ( dom != NULL ) 
+    {
+        qDebug() << "[QVIRT] Created domain " + QString( virDomainGetName( dom ) ) + " with ID " + QString::number( virDomainGetID( dom ) );
+        id = virDomainGetID( dom );
+        virDomainFree( dom );
+    }
+    else 
+    {
+        qDebug() << "[QVIRT] Failed to create domain";
+    }
+    
+    return id;
+}
+
+int QVirt::getVncPort( int domain )
+{
+    virDomainPtr dom =  virDomainLookupByID( mConnection, domain );
+    int port = 0;
+    char* doc = NULL;
+    char* listen_addr = NULL;
+    bool ret = true;
+
+    /* Check if the domain is active and don't rely on -1 for this */
+    if ( !virDomainIsActive( dom ) )
+    {
+        qDebug() << "[QVIRT] Domain " + QString::number( domain ) + " is not active";
+        ret = false;
+        port = -1;
+    }
+
+    if ( !( doc = virDomainGetXMLDesc( dom, 0 ) ) )
+    {
+        qDebug() << "[QVIRT] Unable to get XML description for domain " + QString::number( domain );
+        ret = false;
+        port = -1;
+    }
+
+    if ( ret )
+    {
+        QString xml = doc;
+        QDomDocument xd;
+        xd.setContent( xml.trimmed() );
+        QDomElement docelement = xd.documentElement();
+        
+        port = docelement.firstChildElement( "devices" )
+                         .firstChildElement( "graphics" )
+                         .toElement().attribute( "port" ).toInt();
+    }
+    
+    free( doc );
+    free( listen_addr );
+    virDomainFree( dom );
+    return port;
+}
+
+bool QVirt::destroyDomain( const QString& d )
+{
+    virDomainPtr dom = virDomainLookupByName( mConnection, qstringToChar( d ) );
+    bool ret = true;
+    
+    int result = virDomainDestroy( dom );
+
+    if (result == 0) 
+    {
+        qDebug() << "[QVIRT] Destroyed domain" << d;
+    }
+    else 
+    {
+        qDebug() << "[QVIRT] Failed to destroy domain" << d;
+        ret = false;
+    }
+
+    virDomainFree( dom );
+    return ret;
+}
 
 
 #include "qvirt.moc"
