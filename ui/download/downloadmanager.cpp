@@ -598,6 +598,7 @@ void DownloadItem::checkIfSupportconfig( const QString& scfile, const QString& s
 
 void DownloadItem::runAppliance()
 {
+    runButton->setEnabled( false );
     TabWidget::applianceRunner( mOutput.fileName() );
 }
 
