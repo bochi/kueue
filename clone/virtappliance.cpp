@@ -67,6 +67,13 @@ VirtAppliance::VirtAppliance( const QString& vmdk, const QString& vmx )
 VirtAppliance::~VirtAppliance()
 {
     qDebug() << "[VIRTAPPLIANCE] Destroying";
+    
+    mThread->deleteWorker();
+    mThread->quit();
+    mThread->wait();
+    
+    delete mVncWidget;
+    delete mThread;
 }
 
 void VirtAppliance::setTabId( int id )
@@ -78,8 +85,11 @@ void VirtAppliance::domainExists( const QString& name )
 {
     VmExistsDialog* d = new VmExistsDialog( name );
     
-    connect( d, SIGNAL( recreate() ),
-             mThread, SLOT( recreateDomain() ) );
+    connect( d, SIGNAL( recreate(QString) ),
+             mThread, SLOT( recreateDomain(QString) ) );
+    
+    connect( d, SIGNAL( connectToInstance( QString ) ),
+             mThread, SLOT( connectToInstance( QString ) ) );
     
     d->exec();
     
@@ -120,14 +130,22 @@ void VirtApplianceThread::run()
     connect( mWorker, SIGNAL( domainExists( QString ) ),
              this, SIGNAL( domainExists( QString ) ) );
     
+    connect( this, SIGNAL( connectToInstanceRequested( QString ) ),
+             mWorker, SLOT( connectToInstance( QString ) ) );
+    
     mWorker->startSystemQemu();
     
     exec();
 }
 
-void VirtApplianceThread::recreateDomain()
+void VirtApplianceThread::recreateDomain( const QString& name )
 {
-    emit recreateDomainRequested( mName );
+    emit recreateDomainRequested( name );
+}
+
+void VirtApplianceThread::connectToInstance( const QString& name )
+{
+    emit connectToInstanceRequested( name );
 }
 
 /*
@@ -166,13 +184,14 @@ void VirtApplianceWorker::startSystemQemu()
 
     int dom = -1;
     
-    if ( !mVirt->getDomains().contains( mName ) )
+    if ( !mVirt->getDomains( true ).contains( mName ) )
     {
         dom = mVirt->createDomain( createQemuXML( arch ) );
     }
     else
     {
         qDebug() << "[VIRTAPPLIANCE] Domain with name " + mName + " exists";
+        //QString p = mVirt->getScreenshot( mName );
         emit domainExists( mName );
     }
     
@@ -326,6 +345,12 @@ QString VirtApplianceWorker::which( const QString& command )
     }
     
     return QString::null;
+}
+
+void VirtApplianceWorker::connectToInstance( const QString& name )
+{
+    int port = mVirt->getVncPort( -1, name );
+    emit vnc( QUrl( "vnc://127.0.0.1:" + QString::number( port ) ) );
 }
 
 #include "virtappliance.moc"

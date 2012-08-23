@@ -35,10 +35,17 @@ class VmExistsDialog : public QDialog, private Ui::VmExistsDialog
     public:
         VmExistsDialog( const QString&, QObject* parent = 0L );
          ~VmExistsDialog();
+         
+    private:
+        QString mName;
+        
+    private slots:
+        void recreateSlot();
+        void connectSlot();
 
     signals:
-        void recreate();
-        void connectToInstance();
+        void recreate( QString );
+        void connectToInstance( QString );
         void cancel();
 };
  

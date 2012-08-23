@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>675</width>
-    <height>171</height>
+    <width>520</width>
+    <height>131</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,11 +19,31 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QLabel" name="textLabel">
-     <property name="text">
-      <string>The virtual machine&lt;br&gt;&lt;b&gt;BLABLA&lt;/b&gt;&lt;br&gt;exists.&lt;br&gt;&lt;br&gt;Would you like to connect to the running instance instead, or recreate the virtual machine?</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="imgLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="../kueue.qrc">:/icons/app/kueue64.png</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="textLabel">
+       <property name="text">
+        <string>The virtual machine &lt;b&gt;BLABLA&lt;/b&gt; exists.&lt;br&gt;&lt;br&gt;Would you like to connect to the running instance instead&lt;br&gt;or recreate the virtual machine?</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item row="1" column="0">
     <spacer name="verticalSpacer">

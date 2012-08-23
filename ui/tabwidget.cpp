@@ -224,6 +224,10 @@ void TabWidget::tabRightClicked( int id, QPoint point )
     {
         testdriveTabMenu( id, point );
     }
+    else if ( mVirtApplianceMap.keys().contains( id ) )
+    {
+        virtApplianceTabMenu( id, point );
+    }
     else if ( indexOf( mUnityTab ) == id )
     {
         permanentUnityTabMenu( point );
@@ -356,7 +360,6 @@ void TabWidget::addTestdriveTab( int build, const QString& hostname )
     
     mTestDriveList.append( td );
     mTestDriveMap[ tab ] = td;
-    
     td->setTabId( tab );
 }
 
@@ -409,7 +412,12 @@ void TabWidget::runAppliance( const QString& file, const QString& dir )
     QString vmx = directory.entryList().first();
     
     VirtAppliance* a = new VirtAppliance( dir + "/" + vmdk, dir + "/" + vmx );
+    
     int tab = addTab( a->widget(), QIcon( ":/icons/conf/studio.png" ), "QEmu" );
+    
+    mVirtApplianceList.append( a );
+    mVirtApplianceMap[ tab ] = a;
+    
     a->setTabId( tab );
 }
 
@@ -426,6 +434,23 @@ void TabWidget::removeTestdriveTab( int tab )
     }
     
     delete mTestDriveMap[ tab ];
+    
+    rebuildMaps();
+}
+
+void TabWidget::removeVirtApplianceTab( int tab )
+{
+    removeTab( tab );
+    
+    for ( int i = 0; i < mVirtApplianceList.count(); ++i )
+    {
+        if ( mVirtApplianceList.at( i )->tabId() == tab )
+        {
+            mVirtApplianceList.removeAt( i );
+        }
+    }
+    
+    delete mVirtApplianceMap[ tab ];
     
     rebuildMaps();
 }
@@ -450,6 +475,16 @@ void TabWidget::rebuildMaps()
 
         mTestDriveList.at( i )->setTabId( indexOf( t->widget() ) );
         mTestDriveMap[ indexOf( t->widget() ) ] = mTestDriveList.at( i );
+    }
+    
+    mVirtApplianceMap.clear();
+    
+    for ( int i = 0; i < mVirtApplianceList.count(); ++i )
+    {
+        VirtAppliance* v = mVirtApplianceList.at( i );
+
+        mVirtApplianceList.at( i )->setTabId( indexOf( v->widget() ) );
+        mVirtApplianceMap[ indexOf( v->widget() ) ] = mVirtApplianceList.at( i );
     }
 }
 
@@ -807,6 +842,26 @@ void TabWidget::testdriveTabMenu( int tab, const QPoint& p )
     menu->exec( p );
 }
 
+void TabWidget::virtApplianceTabMenu( int tab, const QPoint& p )
+{
+    QMap<int, QString> map;
+    
+    QMenu* menu = new QMenu( this );
+
+    QAction* closeTab = new QAction( "Close tab", menu );
+
+    connect( closeTab, SIGNAL( triggered() ),
+             this, SLOT( virtApplianceCloseActionTriggered() ) );
+
+    closeTab->setData( tab );
+    
+    closeTab->setIcon( QIcon( ":/icons/menus/quit.png" ) );
+    
+    menu->addAction( closeTab );
+    
+    menu->exec( p );
+}
+
 void TabWidget::openInUnityImp( const QString& sr )
 {
     if ( Kueue::isSrNr( sr ) )
@@ -826,6 +881,12 @@ void TabWidget::testdriveCloseActionTriggered()
 {
     QAction* action = qobject_cast<QAction*>( QObject::sender() );
     removeTestdriveTab( action->data().toInt() );
+}
+
+void TabWidget::virtApplianceCloseActionTriggered()
+{
+    QAction* action = qobject_cast<QAction*>( QObject::sender() );
+    removeVirtApplianceTab( action->data().toInt() );
 }
 
 void TabWidget::clipboardActionTriggered()
@@ -1037,10 +1098,14 @@ void TabWidget::makeNsaReport()
 void TabWidget::cloneSystem()
 {
     QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
-    Clone* c = new Clone( filename );
     
-    connect( c, SIGNAL( buildFinished( int, QString ) ), 
-             this, SLOT( addTestdriveTab( int, QString ) ) );
+    if ( !filename.isEmpty() )
+    {
+        Clone* c = new Clone( filename );
+        
+        connect( c, SIGNAL( buildFinished( int, QString ) ), 
+                 this, SLOT( addTestdriveTab( int, QString ) ) );
+    }
 }
 
 void TabWidget::tabChanged( int tab )

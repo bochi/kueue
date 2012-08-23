@@ -28,6 +28,7 @@
 
 #include <QObject>
 #include <QStringList>
+#include <QPixmap>
 
 extern "C" 
 {
@@ -67,20 +68,26 @@ class QVirt : public QObject
         bool connectVmwareWorkstation();
         bool destroyDomain( const QString& );
         int createDomain( const QString& );
-        int getVncPort( int );
+        int getVncPort( int = -1, const QString& = QString::Null() );
         QStringList getInactiveDomains();
         QStringList getActiveDomains();
-        QStringList getDomains();
+        QStringList getDomains( bool = false );
+        QString getScreenshot( const QString& );
         
     private: 
         virConnectPtr mConnection;
         AuthData mAuthData;
         
-        char* qstringToChar( const QString& );
+        //char* qstringToChar( const QString& );
         static virConnectAuth auth;
         static int credTypes[];
         static int authCallback(virConnectCredentialPtr, unsigned int, void* );
         static int showDomains(virConnectPtr conn);
+        //static int vshStreamSink(virStreamPtr, const char *bytes, size_t nbytes, void *opaque);
+        //virStreamSinkFunc mysink(virStreamPtr st, const char *buf, int nbytes, void *opaque);
+        //static char genFileName( virDomainPtr dom, const char *mime )
+        //static ssize_t safewrite(int fd, const void *buf, size_t count);
+        //int mysink(virStreamPtr st, const char *buf, size_t nbytes, void *opaque) ;
         QString getHypervisorInfo();
 
 };

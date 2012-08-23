@@ -72,7 +72,8 @@ class VirtApplianceThread : public QThread
         
     public slots:
         void deleteWorker();
-        void recreateDomain();
+        void recreateDomain( const QString& );
+        void connectToInstance( const QString& );
 
     private:
         VirtApplianceWorker* mWorker;
@@ -86,6 +87,7 @@ class VirtApplianceThread : public QThread
         void vnc( QUrl );
         void domainExists( QString );
         void recreateDomainRequested( QString );
+        void connectToInstanceRequested( QString );
 };
 
 class VirtApplianceWorker : public QObject
@@ -108,6 +110,7 @@ class VirtApplianceWorker : public QObject
         void recreateDomain( const QString& );
         void startSystemQemu();
         void startSystemVmwareWS();
+        void connectToInstance( const QString& );
         
     private slots:
 

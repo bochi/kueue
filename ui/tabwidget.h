@@ -36,6 +36,7 @@
 #include "ui/browsers/search/webviewsearch.h"
 #include "ui/busywidget.h"
 #include "clone/testdrive.h"
+#include "clone/virtappliance.h"
 
 #include <QTabWidget>
 #include <QToolButton>
@@ -89,6 +90,8 @@ class TabWidget : public QTabWidget
         QMap<int, UnityBrowser*> mUnityBrowserMap; 
         QList<TestDrive*> mTestDriveList;
         QMap<int, TestDrive*> mTestDriveMap;
+        QList<VirtAppliance*> mVirtApplianceList;
+        QMap<int, VirtAppliance*> mVirtApplianceMap;
         StatusBar* mStatusBar;
         WebViewSearch* webViewSearch( int );
         QMenu* kueueMainMenu();
@@ -123,6 +126,7 @@ class TabWidget : public QTabWidget
         void addUnityBrowserWithSR( QString = QString::Null() );
         void removeUnityBrowser( int );
         void removeTestdriveTab( int );
+        void removeVirtApplianceTab( int );
         void rebuildMaps();
         void addTestdriveTab( int, const QString& );
         void somethingWentWrong();
@@ -149,8 +153,10 @@ class TabWidget : public QTabWidget
         void unityTabMenu( int tab, const QPoint& p );
         void permanentUnityTabMenu( const QPoint& p );
         void testdriveTabMenu( int tab, const QPoint& p );
+        void virtApplianceTabMenu( int tab, const QPoint& p );
         void closeActionTriggered();
         void testdriveCloseActionTriggered();
+        void virtApplianceCloseActionTriggered();
         void clipboardActionTriggered();
         void closeAllOtherActionTriggered();
         void permClipboardActionTriggered();

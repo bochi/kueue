@@ -26,30 +26,42 @@
 #include "vmexistsdialog.h"
 
 #include <QDebug>
-#include <QApplication>
 
 VmExistsDialog::VmExistsDialog( const QString& vm, QObject* parent )
 {
     qDebug() << "[VMEXISTSDIALOG] Constructing";
     
     setupUi( this ); 
-    
-    textLabel->setText( "The virtual machine<br><br><b>" + vm + "</b><br><br>exists.<br><br>Would you like to "
+    mName = vm;
+        
+    textLabel->setText( "The virtual machine <b>" + vm + "</b> exists.<br><br>Would you like to "
                         "connect to the running instance or recreate the virtual machine?" );
     
     connect( cancelButton, SIGNAL( pressed() ),
-             this, SIGNAL( cancel() ) );
+             this, SLOT( reject() ) );
     
     connect( connectButton, SIGNAL( pressed() ),
-             this, SIGNAL( connectToInstance() ) );
+             this, SLOT( connectSlot() ) );
     
     connect( recreateButton, SIGNAL( pressed() ),
-             this, SLOT( reject() ) );
+             this, SLOT( recreateSlot() ) );
 }
 
 VmExistsDialog::~VmExistsDialog()
 {
     qDebug() << "[VMEXISTSDIALOG] Destroying";
+}
+
+void VmExistsDialog::connectSlot()
+{
+    emit connectToInstance( mName );
+    accept();
+}
+
+void VmExistsDialog::recreateSlot()
+{
+    emit recreate( mName );
+    accept();
 }
 
 #include "vmexistsdialog.moc"

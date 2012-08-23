@@ -27,6 +27,8 @@
 
 #include <QDebug>
 #include <QtXml>
+#include <QDateTime>
+#include <QDesktopServices>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -108,7 +110,7 @@ int QVirt::authCallback(virConnectCredentialPtr cred, unsigned int ncred, void *
     return 0;
 }
 
-char* QVirt::qstringToChar( const QString& string )
+static char* qstringToChar( const QString& string )
 {
     char* cstr;
     std::string str = string.toStdString();
@@ -325,7 +327,7 @@ QStringList QVirt::getActiveDomains()
     return out;
 }
 
-QStringList QVirt::getDomains()
+QStringList QVirt::getDomains( bool active )
 {
     virDomainPtr *allDomains;
     int numDomains;
@@ -352,7 +354,10 @@ QStringList QVirt::getDomains()
 
     for ( int i = 0 ; i < numInactiveDomains ; i++) 
     {
-        out.append( virDomainGetName( virDomainLookupByName( mConnection, inactiveDomains[i] ) ) );
+        if ( !active )
+        {
+            out.append( virDomainGetName( virDomainLookupByName( mConnection, inactiveDomains[i] ) ) );
+        }
         free( inactiveDomains[ i ] );
         numDomains++;
     }
@@ -387,9 +392,19 @@ int QVirt::createDomain( const QString& xml )
     return id;
 }
 
-int QVirt::getVncPort( int domain )
+int QVirt::getVncPort( int domain, const QString& name )
 {
-    virDomainPtr dom =  virDomainLookupByID( mConnection, domain );
+    virDomainPtr dom;
+    
+    if ( domain != -1 )
+    {
+        dom = virDomainLookupByID( mConnection, domain );
+    }
+    else if ( !name.isNull() )
+    {
+        dom = virDomainLookupByName( mConnection, qstringToChar( name ) );
+    }
+    
     int port = 0;
     char* doc = NULL;
     char* listen_addr = NULL;
@@ -398,14 +413,14 @@ int QVirt::getVncPort( int domain )
     /* Check if the domain is active and don't rely on -1 for this */
     if ( !virDomainIsActive( dom ) )
     {
-        qDebug() << "[QVIRT] Domain " + QString::number( domain ) + " is not active";
+        qDebug() << "[QVIRT] Domain " + QString::number( virDomainGetID( dom ) ) + " is not active";
         ret = false;
         port = -1;
     }
 
     if ( !( doc = virDomainGetXMLDesc( dom, 0 ) ) )
     {
-        qDebug() << "[QVIRT] Unable to get XML description for domain " + QString::number( domain );
+        qDebug() << "[QVIRT] Unable to get XML description for domain " + QString::number( virDomainGetID( dom ) );
         ret = false;
         port = -1;
     }
@@ -449,5 +464,75 @@ bool QVirt::destroyDomain( const QString& d )
     return ret;
 }
 
+static int mysink(virStreamPtr st, const char *buf, size_t nbytes, void *opaque) 
+{ 
+    qDebug() << "sink";
+  //int *fd = static_cast<int*>(opaque);
+  QDataStream* s = static_cast<QDataStream*>(opaque);
+  return s->writeRawData( buf, nbytes );
+} 
+
+QString QVirt::getScreenshot( const QString& domain )
+{
+    qDebug() << "getscr";
+    virDomainPtr dom;
+    QString filename;
+    virStreamPtr st;
+    int ret = false;
+    QString mime;
+    QString ext;
+
+    dom = virDomainLookupByName( mConnection, qstringToChar( domain ) );
+
+    st = virStreamNew( mConnection, 0 );
+    qDebug() << st;
+
+    mime = virDomainScreenshot( dom, st, 0, 0 );
+    qDebug() << mime;
+    
+    if ( mime == "image/x-portable-pixmap" )
+    {
+        ext = ".ppm";
+    }
+    else if ( mime == "image/png" )
+    {
+        ext = ".png";
+    }
+    
+    QString d = QDateTime::currentDateTime().toString( "yyyyMMdd-hhmmss" );
+    QString f = virDomainGetName( dom ) + QString( "-" ) + d + ext;
+    QString dir = QDesktopServices::storageLocation( QDesktopServices::TempLocation ) + "/kueue" ;
+    filename = dir + "/" + f;
+    qDebug() << filename;
+    QFile file( filename );
+    
+    
+    if ( !file.open( QIODevice::WriteOnly ) )
+    {
+        qDebug() << "FNO";
+        return "bla";
+    }
+    
+    QDataStream stream( &file );
+
+    //int fd = file.handle();
+    qDebug() << "vsrcv";
+    qDebug() << virStreamRecvAll( st, mysink, &stream );
+    
+    qDebug() << "vsfin";
+    if ( virStreamFinish( st ) < 0 )
+    {
+        qDebug() << "ERR FINISH";
+    }   
+    
+    file.flush();
+    file.close();
+
+    
+    virDomainFree(dom);
+    virStreamFree(st);
+   
+    return filename;
+}
 
 #include "qvirt.moc"

@@ -175,44 +175,46 @@ void BuildAppliance::run()
         delete studio;
         emit threadFinished( this );
     }
-    
-    BuildStatus bs = studio->getBuildStatus( build );
-    
-    if ( bs.state == "queued" )
+    else
     {
-        emit threadProgress( 0, "Waiting for build slot..." );
+        BuildStatus bs = studio->getBuildStatus( build );
+        
+        if ( bs.state == "queued" )
+        {
+            emit threadProgress( 0, "Waiting for build slot..." );
+            
+            do
+            {
+                bs = studio->getBuildStatus( build );
+                QTest::qSleep( 5000 );
+            }
+            while ( bs.state == "queued" );
+        }
+
+        emit threadNewMaximum( 100 );
+        emit threadProgress( 0, "Building Appliance..." );
         
         do
         {
             bs = studio->getBuildStatus( build );
+            emit threadProgress( bs.percent, QString::Null() );
             QTest::qSleep( 5000 );
         }
-        while ( bs.state == "queued" );
+        while ( ( bs.percent < 100 ) && 
+                ( bs.state != "failed" ) );
+        
+        if ( bs.state != "failed" )
+        {
+            emit finished( build, mHostName );
+        }
+        else
+        {
+            emit failed( bs.message );
+        }
+        
+        delete studio;
+        emit threadFinished( this );
     }
-
-    emit threadNewMaximum( 100 );
-    emit threadProgress( 0, "Building Appliance..." );
-    
-    do
-    {
-        bs = studio->getBuildStatus( build );
-        emit threadProgress( bs.percent, QString::Null() );
-        QTest::qSleep( 5000 );
-    }
-    while ( ( bs.percent < 100 ) && 
-            ( bs.state != "failed" ) );
-    
-    if ( bs.state != "failed" )
-    {
-        emit finished( build, mHostName );
-    }
-    else
-    {
-        emit failed( bs.message );
-    }
-    
-    delete studio;
-    emit threadFinished( this );
 }
 
 #include "buildappliance.moc"
