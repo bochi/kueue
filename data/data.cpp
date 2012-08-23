@@ -132,7 +132,7 @@ void Data::getError( QNetworkReply::NetworkError error )
     reply->abort();
     reply->close();
     
-    Kueue::notify( "kueue-general", "Update failed", "Failed to update your data. Networking issues or no VPN connection?", "NONE" );
+    //Kueue::notify( "kueue-general", "Update failed", "Failed to update your data. Networking issues or no VPN connection?", "NONE" );
     
     qDebug() << "[DATA] Error getting" << reply->url();
     
