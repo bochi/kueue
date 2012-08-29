@@ -105,6 +105,7 @@ class VirtApplianceWorker : public QObject
         QString which( const QString& ); 
         QString createQemuXML( const QString& );
         QString createVmwareXML( const QString& );
+        QString createMotd();
         
     public slots:
         void recreateDomain( const QString& );

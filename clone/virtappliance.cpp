@@ -32,6 +32,7 @@
 #include <QUuid>
 #include <QMessageBox>
 #include <QSysInfo>
+#include <QProcess>
 
 VirtAppliance::VirtAppliance( const QString& vmdk, const QString& vmx )
 {
@@ -171,6 +172,8 @@ VirtApplianceWorker::~VirtApplianceWorker()
 
 void VirtApplianceWorker::startSystemQemu()
 {
+#ifndef WIN32
+
     QString arch;
     
     if ( mVmdk.contains( "x86_64" ) )
@@ -200,6 +203,23 @@ void VirtApplianceWorker::startSystemQemu()
         int port = mVirt->getVncPort( dom );
         emit vnc( QUrl( "vnc://127.0.0.1:" + QString::number( port ) ) );
     }
+
+#else
+
+    QString cmd;
+    
+    if ( mVmdk.contains( "x86_64" ) )
+    {
+        cmd = "qemu-system-x86_64";
+    }
+    else
+    {
+        cmd = "qemu-system";
+    }
+    
+    QProcess::startDetached( cmd, QStringList() << mVmdk );
+
+#endif
 }       
 
 void VirtApplianceWorker::startSystemVmwareWS()

@@ -848,4 +848,35 @@ bool QStudio::deleteBuild( int id )
     return false;
 }
 
+bool QStudio::addBuildScript( int appliance, const QString& script )
+{
+    QString xml = getRequest( "/user/appliances/" + QString::number( appliance ) + "/configuration" );
+    QDomDocument doc;
+    doc.setContent( xml );
+    qDebug() << doc.toString();
+    QByteArray data;
+    QTextStream stream( &data );
+    stream << script;
+    
+    QDomElement root = doc.documentElement();
+    qDebug() << "DOCELE" << root.toElement().tagName();
+    
+    QDomElement e = root.firstChildElement( "scripts" ).firstChildElement( "build" );
+    
+    QDomElement sc = e.firstChildElement( "script" );
+    
+    
+    QDomElement newele = doc.createElement( "script" );
+    QDomCDATASection cdata = doc.createCDATASection( script );
+    newele.appendChild( cdata );
+    
+    e.replaceChild( newele, sc );
+    
+    QString endxml = putRequest( "/user/appliances/" + QString::number( appliance ) + "/configuration", doc.toByteArray() );
+    qDebug() << endxml;
+    return true;
+    
+}
+
+
 #include "qstudio.moc"

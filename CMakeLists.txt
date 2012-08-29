@@ -32,6 +32,14 @@ FIND_PACKAGE( Qt4 REQUIRED )
 
 INCLUDE( ${QT_USE_FILE} )
 
+if ( WIN32 )                                                                                                                                                 
+    set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/qvirt/cmake/modules ${CMAKE_CURRENT_SOURCE_DIR}/vnc/cmake/modules )                               
+    FIND_PACKAGE( LibVirt REQUIRED )                                                                                                                     
+    FIND_PACKAGE( LibVNCServer REQUIRED )                                                                                                                
+    FIND_PACKAGE( JPEG REQUIRED )                                                                                                                        
+    set( EXTRA_INC ${LIBVNCCLIENT_INCLUDE_DIR} ${LIBVIRT_INCLUDE_DIR} )                                                                                  
+ENDIF(WIN32)  
+
 INCLUDE_DIRECTORIES(  ${QT_INCLUDES} 
                       ${CMAKE_CURRENT_BINARY_DIR} 
 		      ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -205,6 +213,7 @@ IF( WIN32 )
     ENABLE_LANGUAGE( RC )
     SET( CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>" )
     ADD_EXECUTABLE( kueue WIN32 ${RES_FILE} ${kueue_CPP} ${kueue_QRC_SRCS} ${kueue_UI_H} )
+    SET( WINDOWS_LINK ${QT_PHONON_LIBRARY} ${LIBVNCCLIENT_LIBRARIES} ${LIBVIRT_LIBRARIES} )
 ENDIF( WIN32 )
 
 #
@@ -224,6 +233,7 @@ IF( UNIX AND NOT APPLE )
     CONFIGURE_FILE( "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
                     "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake" IMMEDIATE @ONLY)
     ADD_CUSTOM_TARGET( uninstall "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
+    SET( LINUX_LINK ${QT_PHONON_LIBRARY} ${QT_QTDBUS_LIBRARY} )
 ENDIF( UNIX AND NOT APPLE )
 
 #
@@ -250,56 +260,19 @@ ENDIF( APPLE )
 # And finally, link kueue against a few Qt libraries
 #
 
-IF ( QT_HAS_DBUS AND NOT APPLE )
-
-    TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
-                                 ${QT_PHONON_LIBRARY} 
-                                 ${QT_QTCORE_LIBRARY} 
-                                 ${QT_QTWEBKIT_LIBRARY} 
-                                 ${QT_QTSQL_LIBRARIES} 
-                                 ${QT_QTUITOOLS_LIBRARY} 
-                                 ${QT_QTDBUS_LIBRARY}
-                                 ${QT_QTNETWORK_LIBRARY} 
-		                 ${QT_QTXML_LIBRARY}
-                                 ${QT_QTGUI_LIBRARY} 
-                                 ${QT_SINGLEAPP_LIBRARY} 
-				 ${SIMPLECRYPT_LIBRARY} 
-                                 ${QT_STUDIO_LIBRARY}
-                                 ${QT_QTTEST_LIBRARY}
-                                 ${QVNC_LIBRARY}
-				 ${QVIRT_LIBRARY} ) 
-ELSEIF ( APPLE )
-
-    TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
-                                 ${QT_QTCORE_LIBRARY} 
-                                 ${QT_QTWEBKIT_LIBRARY} 
-                                 ${QT_QTSQL_LIBRARIES} 
-                                 ${QT_QTUITOOLS_LIBRARY} 
-                                 ${QT_QTNETWORK_LIBRARY} 
-                                 ${QT_QTXML_LIBRARY}
-                                 ${QT_QTGUI_LIBRARY} 
-                                 ${QT_SINGLEAPP_LIBRARY}
-				 ${SIMPLECRYPT_LIBRARY} 
-                                 ${QT_STUDIO_LIBRARY}
-                                 ${QT_QTTEST_LIBRARY} 
-                                 ${QVNC_LIBRARY} )
-
-ELSE ()
-
-    TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
-                                 ${QT_PHONON_LIBRARY} 
-                                 ${QT_QTCORE_LIBRARY} 
-                                 ${QT_QTWEBKIT_LIBRARY} 
-                                 ${QT_QTSQL_LIBRARIES} 
-                                 ${QT_QTUITOOLS_LIBRARY} 
-				 ${QT_QTNETWORK_LIBRARY} 
-                                 ${QT_QTXML_LIBRARY}
-                                 ${QT_QTGUI_LIBRARY} 
-                                 ${QT_SINGLEAPP_LIBRARY} 
-				 ${SIMPLECRYPT_LIBRARY} 
-                                 ${QT_STUDIO_LIBRARY} 
-                                 ${QT_QTTEST_LIBRARY} 
-                                 ${QVNC_LIBRARY} ) 
-
-
-ENDIF ()
+TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES} 
+                             ${QT_QTCORE_LIBRARY} 
+                             ${QT_QTWEBKIT_LIBRARY} 
+                             ${QT_QTSQL_LIBRARIES} 
+                             ${QT_QTUITOOLS_LIBRARY} 
+                             ${QT_QTNETWORK_LIBRARY} 
+                             ${QT_QTXML_LIBRARY}
+                             ${QT_QTGUI_LIBRARY} 
+                             ${QT_SINGLEAPP_LIBRARY}
+                             ${SIMPLECRYPT_LIBRARY} 
+                             ${QT_STUDIO_LIBRARY}
+                             ${QT_QTTEST_LIBRARY} 
+                             ${QVNC_LIBRARY} 
+                             ${QVIRT_LIBRARY}
+                             ${LINUX_LINK}
+                             ${WINDOWS_LINK} )

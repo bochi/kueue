@@ -42,6 +42,7 @@ class BuildAppliance : public KueueThread
         QString mProduct;
         QString mArch;
         QString mHostName;
+        QString createBuildScript();
         
     protected: 
         void run();

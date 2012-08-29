@@ -25,9 +25,6 @@
 
 #ifndef DATACLASSES_H
 #define DATACLASSES_H
-#include <qvarlengtharray.h>
-#include <rfb/rfbproto.h>
-
 
 class Template
 {

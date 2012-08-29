@@ -44,6 +44,7 @@ QT4_AUTOMOC( ${qvirt_CPP} )
 ADD_LIBRARY( qvirt STATIC ${qvirt_CPP} )
 
 TARGET_LINK_LIBRARIES( qvirt ${QT_LIBRARIES} 
+                             ${QT_QTXML_LIBRARY}
                              ${LIBVIRT_LIBRARIES} ) 
 
 

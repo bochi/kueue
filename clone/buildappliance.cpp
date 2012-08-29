@@ -54,6 +54,19 @@ void BuildAppliance::run()
     
     emit threadStarted( "Preparing Appliance...", 0 );
     
+    QFile script( mScDir + "/script.sh" );
+    
+    if ( !script.open( QIODevice::WriteOnly ) )
+    {
+        qDebug() << "[BUILDAPPLIANCE]" << "Unable to open script file";
+    }
+            
+    QTextStream out( &script );
+    
+    out << createBuildScript();
+    
+    script.close();
+    
     QList<TemplateSet> tl = studio->getTemplates();
     int id = 0;
     QString base;
@@ -104,7 +117,7 @@ void BuildAppliance::run()
         RPM r = studio->uploadRPM( base, mScDir + "/rpms/" + filelist.at( i ) );
         qDebug() << "[BUILDAPPLIANCE] Uploaded" << r.filename;
     }
-    
+        
     OverlayFile of = studio->addOverlayFile( id, mScDir + "/supportconfig.tar.bz2", "/root/supportconfig" );
 
     if ( of.filename == "supportconfig.tar.bz2" )
@@ -114,6 +127,15 @@ void BuildAppliance::run()
     else
     {
         qDebug() << "[BUILDAPPLIANCE] supportconfig upload failed";     
+    }
+    
+    if ( studio->addBuildScript( id, createBuildScript() ) )
+    {
+        qDebug() << "[BUILDAPPLIANCE] Added custom build script";     
+    }
+    else
+    {
+        qDebug() << "[BUILDAPPLIANCE] Adding custom build script failed";     
     }
     
     // use the kueue logo as appliance logo :-)
@@ -215,6 +237,30 @@ void BuildAppliance::run()
         delete studio;
         emit threadFinished( this );
     }
+}
+
+QString BuildAppliance::createBuildScript()
+{
+    QString script( "#!/bin/bash\n"
+                    "\n"
+                    ". /studio/profile\n"
+                    ". /.kconfig\n"
+                    "echo > /etc/motd\n"
+                    "echo Welcome to your clone of " + mHostName + ">> /etc/motd\n"
+                    "echo >> /etc/motd\n"
+                    "echo You can find the supportconfig this system is based on under /root/supportconfig >> /etc/motd\n"
+                    "echo >> /etc/motd\n"
+                    "echo Also, there is a split version of the configuration files under >> /etc/motd\n"
+                    "echo /root/supportconfig/system  >> /etc/motd\n"
+                    "echo >> /etc/motd\n"
+                    "echo Have a lot of fun... >> /etc/motd\n"
+                    "echo >> /etc/motd\n"
+                    "echo echo \"Skipping EULA\" > /etc/init.d/suse_studio_firstboot\n"
+                    "echo rm /etc/init.d/suse_studio_firstboot >> /etc/init.d/suse_studio_firstboot\n"
+                    "chmod +x /etc/init.d/suse_studio_firstboot\n"
+                    "exit 0\n" );
+    
+    return script;
 }
 
 #include "buildappliance.moc"

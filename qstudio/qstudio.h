@@ -52,6 +52,7 @@ class QStudio : public QObject
         bool setLogo( int, const QString& );
         QString getDownloadUrlForBuild( int );
         bool deleteBuild( int );
+        bool addBuildScript( int, const QString& );
         
     private:
         bool mDebug;
