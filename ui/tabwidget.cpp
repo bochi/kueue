@@ -566,8 +566,8 @@ QMenu* TabWidget::kueueMainMenu()
     kueue->addAction( mActionQuit );
     
     QMenu* view = new QMenu( menu );
-    view->setIcon( QIcon( ":/icons/menus/sort.png" ) );
-    view->setTitle( "View" );
+    view->setIcon( QIcon( ":/icons/conf/targets.png" ) );
+    view->setTitle( "Personal queue" );
     
     QMenu* filter = new QMenu( menu );
     filter->setIcon( QIcon( ":/icons/menus/filter.png" ) );
@@ -663,6 +663,32 @@ QMenu* TabWidget::kueueMainMenu()
     
     view->addMenu( other );
     
+    QMenu* qmon = new QMenu( menu );
+    qmon->setIcon( QIcon( ":/icons/conf/monitor.png" ) );
+    qmon->setTitle( "Queue monitor" );
+        
+    QMenu* qmonfilter = new QMenu( qmon );
+    filter->setIcon( QIcon( ":/icons/menus/filter.png" ) );
+    filter->setTitle( "Filter" );
+
+    /*mActionQmonAwaitingCustomer = new QAction( qmonfilter );
+    mActionQmonAwaitingCustomer->setText( "Awaiting Customer" );
+    mActionQmonAwaitingCustomer->setCheckable( true );
+    
+    mActionQmonAwaitingSupport = new QAction( qmonfilter );
+    mActionQmonAwaitingSupport->setText( "Awaiting Support" );
+    mActionQmonAwaitingSupport->setCheckable( true );
+    
+    mActionQmonOthers = new QAction( qmonfilter );
+    mActionQmonOthers->setText( "Other" );
+    mActionQmonOthers->setCheckable( true );
+    
+    qmonfilter->addAction( mActionAwaitingCustomer );
+    qmonfilter->addAction( mActionAwaitingSupport );
+    qmonfilter->addAction( mActionOthers );*/
+    
+    qmon->addMenu( qmonfilter );
+        
     QMenu* help = new QMenu( menu );
     help->setIcon( QIcon( ":/icons/menus/help.png" ) );
     help->setTitle( "Help" );
@@ -690,6 +716,7 @@ QMenu* TabWidget::kueueMainMenu()
     
     menu->addMenu( kueue );
     menu->addMenu( view );
+    menu->addMenu( qmon );
     menu->addMenu( help );
     
     setMenus();

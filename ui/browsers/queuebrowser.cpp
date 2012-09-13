@@ -162,7 +162,7 @@ void QueueBrowser::urlHovered( const QString& url, const QString& title, const Q
 
 void QueueBrowser::update( const QString& html )
 {
-    qDebug() << "[QUEUEBROWSER] Updating";
+    //qDebug() << "[QUEUEBROWSER] Updating";
 
     QPoint pos = page()->currentFrame()->scrollPosition();
     page()->currentFrame()->setHtml( html );

@@ -108,6 +108,7 @@ class TabWidget : public QTabWidget
         QAction* mActionAwaitingCustomer;
         QAction* mActionAwaitingSupport;
         QAction* mActionOthers;
+        
         QAction* mActionExpandSrTables;
         QAction* mActionCloseSrTables;
         QAction* mActionAbout;

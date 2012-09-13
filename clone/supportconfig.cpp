@@ -73,7 +73,7 @@ void SupportConfig::run()
         
         for ( int x = 0; x < conffiles.size(); ++x ) 
         { 
-            QFile outfile( mScDir + "/" + fd + "/file" + QString::number( x ) + ".txt" );
+            QFile outfile( mScDir + "/" + fd + "/conffile" + QString::number( x ) + ".txt" );
             
             if ( !outfile.open( QIODevice::WriteOnly ) )
             {
@@ -84,11 +84,36 @@ void SupportConfig::run()
             
             if ( conffiles.at( x ).contains( "#==[" ) )
             {
-                out << conffiles.at( x ).split( "#==[" ).at( 0 );
+                out << conffiles.at( x ).split( "#==[" ).at( 0 ).trimmed();
             }
             else
             {
                 out << conffiles.at( x );
+            }
+            
+            outfile.close();
+        }
+        
+        QStringList logfiles = content.split( "#==[ Log File ]=====================================#\n" );
+        
+        for ( int x = 0; x < logfiles.size(); ++x ) 
+        { 
+            QFile outfile( mScDir + "/" + fd + "/logfile" + QString::number( x ) + ".txt" );
+            
+            if ( !outfile.open( QIODevice::WriteOnly ) )
+            {
+                return;
+            }
+            
+            QTextStream out( &outfile );
+            
+            if ( logfiles.at( x ).contains( "#==[" ) )
+            {
+                out << logfiles.at( x ).split( "#==[" ).at( 0 ).trimmed();
+            }
+            else
+            {
+                out << logfiles.at( x );
             }
             
             outfile.close();
@@ -111,9 +136,15 @@ void SupportConfig::run()
         
         QString fn = c.readLine();
         
+        if ( fn.contains( " - " ) )
+        {
+            fn = fn.split( " -" ).at( 0 );
+        }
+        
         if ( ( !fn.isEmpty() ) && 
              ( !fn.contains( "File not found" ) ) && 
-             ( fn.startsWith( "# " ) ) )
+             ( fn.startsWith( "# " ) ) &&
+            !( fn.startsWith( "grep" ) ) )
         {
             QFileInfo info( fn.remove( "# " ).trimmed() );
             QDir sysdir( dir.path() + "/system/" + info.dir().path() );
@@ -131,8 +162,13 @@ void SupportConfig::run()
             }
             
             QTextStream out( &of );
-            out << c.readAll();
+            out << c.readAll().trimmed();
             of.close();
+            
+            if ( of.size() == 0 )
+            {
+                of.remove();
+            }
         }
         
         QFile::remove( fileWalker.filePath() );

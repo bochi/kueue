@@ -70,6 +70,7 @@ class SsDialog : public QDialog, private Ui::SsDialog
          
          QString sr() { return mSr; }
          QString ssText() { return reasonLineEdit->text(); }
+         QString comboText() { return visibilityCombo->currentText(); }
         
     private: 
         QString mSr;

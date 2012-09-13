@@ -112,7 +112,7 @@ void UnityPage::setSSfirst()
             {
                 d.at(i).removeAttribute("selected");
                 
-                if ( d.at( i ).attribute( "value" ) == "Internal" )
+                if ( d.at( i ).attribute( "value" ) == mSsDialog->comboText() )
                 {
                     e = d.at( i );
                 }
