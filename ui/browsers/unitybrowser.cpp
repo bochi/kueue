@@ -537,6 +537,7 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     QMenu* oesmenu = new QMenu( "Open Enterprise Server", menu );
     
     oesmenu->addAction( "Open Enterprise Server 11 (OES 11)", this, SLOT( fillOutProduct() ) );
+    oesmenu->addAction( "Open Enterprise Server 11.1", this, SLOT( fillOutProduct() ) );
     
     oesmenu->addSeparator();
     
