@@ -29,6 +29,7 @@ SET( KUEUE_VERSION git )
 set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
 FIND_PACKAGE( Qt4 REQUIRED )
+FIND_PACKAGE( LibMagic REQUIRED )
 
 INCLUDE( ${QT_USE_FILE} )
 
@@ -160,9 +161,7 @@ SET( kueue_CPP  main.cpp
 		ui/browsers/search/searchbutton.cpp
                
 	        archivers/archiveextract.cpp	
-                archivers/ArchiverStrategy.cpp
                 archivers/Utility.cpp
-                archivers/ArchiversConfiguration.cpp
                 
                 nsa/nsa.cpp
 		nsa/nsawindow.cpp
@@ -274,5 +273,6 @@ TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES}
                              ${QT_QTTEST_LIBRARY} 
                              ${QVNC_LIBRARY} 
                              ${QVIRT_LIBRARY}
-                             ${LINUX_LINK}
+                             ${LibMagic_LIBRARY}
+			     ${LINUX_LINK}
                              ${WINDOWS_LINK} )

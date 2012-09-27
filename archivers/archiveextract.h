@@ -40,6 +40,9 @@ class ArchiveExtract: public KueueThread
         ArchiveExtract( const QString& file, const QString& dest );
         ~ArchiveExtract();
 
+    private:
+        QString getMimeType( const QString& );
+        
     protected:
         QString mArchivePath;
         QString mDestination;

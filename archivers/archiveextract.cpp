@@ -26,10 +26,14 @@
 */
 
 #include "archiveextract.h"
-#include "archivers/ArchiversConfiguration.h"
 #include "archivers/Utility.h"
 
 #include <QDebug>
+#include <QFile>
+#include <magic.h>
+#include <stdio.h>
+
+using Utility::which;
 
 ArchiveExtract::ArchiveExtract( const QString& archive, const QString& dest )
 {
@@ -55,76 +59,234 @@ void ArchiveExtract::run()
     info.setProcessChannelMode( QProcess::MergedChannels );
     extract.setProcessChannelMode( QProcess::MergedChannels );
 
+    QString app;
     QStringList extArgs;
     QStringList listArgs;
     
-    ArchiversConfiguration::instance().getExtractArguments( mArchivePath, extArgs, listArgs );
+    QString mime = getMimeType( mArchivePath );
+    
+    if ( mime == "application/x-bzip2" )
+    {
+        if ( which( "tar" ) != QString::null )
+        {
+            app = "tar";
+            #ifdef IS_WIN32
+            extArgs <<  "-xvjf" << mArchivePath;
+            #elif defined IS_OSX
+            extArgs <<  "xjfv" << mArchivePath;
+            #else
+            extArgs <<  "--overwrite" << "-xvjf" << mArchivePath;
+            #endif
+            listArgs << "tjf" << mArchivePath;
+        }
+    }
+    else if ( mime == "application/x-gzip" )
+    {
+        if ( ( mArchivePath.endsWith( ".gz" ) ) &&
+            !( mArchivePath.endsWith( ".tar.gz" ) ) &&
+             ( which( "gunzip" ) != QString::null ) )
+        {
+            app = "gunzip";
+            
+            extArgs <<  mArchivePath;
+            listArgs << "-l" << mArchivePath;
+        }
+        else if ( which( "tar" ) != QString::null )
+        {
+            app = "tar";
+            
+            #ifdef IS_WIN32
+            extArgs << "-xvzf" << mArchivePath;
+            #elif defined IS_OSX
+            extArgs << "xvzf" << mArchivePath;
+            #else
+            extArgs << "--overwrite" << "-xvzf" << mArchivePath;
+            #endif
+            listArgs << "tzf" << mArchivePath;
+        }
+    }
+    else if ( mime == "application/x-rar" )
+    {
+        if ( which( "rar" ) != QString::null )
+        {
+            app = "rar";
+            
+            extArgs << "-o+" << "x" + mArchivePath;
+            listArgs << "lb" << mArchivePath;
+        }
+        else if ( which( "unrar" ) != QString::null )
+        {
+            FILE* f;
+            bool nonfree_unrar;
+            
+            if ( ( f = popen( "unrar", "r" ) ) != NULL )
+            {
+                QRegExp regexp( "^UNRAR.+freeware" );
+                
+                for ( QTextStream s( f ); !s.atEnd(); )
+                {
+                    if ( regexp.indexIn( s.readLine() ) >= 0 )
+                    {
+                        nonfree_unrar = true;
+                        break;
+                    }
+                }
+                
+                pclose( f );
+                
+                if ( nonfree_unrar )
+                {
+                    app = "unrar";
+                    
+                    extArgs << "-o+" << "x" << mArchivePath;
+                    listArgs << "lb" << mArchivePath;
+                }
+                else
+                {
+                    extArgs << "-o+" << "-x" << mArchivePath;
+                    listArgs << "-t" << mArchivePath;
+                }
+            }
+        }
+        else if ( which( "unrar-free" ) != QString::null )
+        {
+            app = "unrar-free";
+            
+            extArgs <<  "-o+" << "-x" << mArchivePath;
+            listArgs << "-free" << "-t" << mArchivePath;
+        }
+    }
+    else if ( mime == "application/zip" )
+    {
+        if ( which( "unzip" ) != QString::null )
+        {
+            app = "unzip";
+            
+            extArgs <<  "-o" << mArchivePath;
+            listArgs << "-l" << mArchivePath;
+        }
+    }
+    else if ( mime == "application/x-7z-compressed" )
+    {
+        if ( which( "7z" ) != QString::null )
+        {
+            app = "7z";
+            
+            extArgs << "x" << mArchivePath;
+            listArgs << "l" << mArchivePath;
+        }
+        else if ( which( "7zr" ) != QString::null )
+        {   
+            app = "7zr";
+            
+            extArgs <<  "x" << mArchivePath;
+            listArgs << "l" << mArchivePath;
+        }
+    }
+    else if ( mime == "application/x-ace" )
+    {
+        if ( which( "unace" ) != QString::null )
+        {   
+            app = "unace";
+            
+            extArgs <<  "x" << "-y" << "-c-" << mArchivePath;
+            listArgs << "l" << "-y" << "-c-" << mArchivePath;
+        }
+    }
 
     const QFileInfo fileinfo( mArchivePath );
    
     if ( !fileinfo.isReadable() || extArgs.isEmpty() || listArgs.isEmpty() )
     {
-        qDebug() << "[ARCHIVEEXTRACT] Exiting, fileinfo readable:" << fileinfo.isReadable() << "extargs:" << extArgs << "listargs:" << listArgs;
+        qDebug() << "[ARCHIVEEXTRACT] Exiting, fileinfo readable:" << fileinfo.isReadable() << "app:" << app << "extargs:" << extArgs << "listargs:" << listArgs;
         emit threadFinished( this );
     }
-    
-    const QString extprg = extArgs.takeFirst();
-    const QString infprg = listArgs.takeFirst();
-    
-    extract.setWorkingDirectory( mDestination );
-    
-    qDebug() << "[ARCHIVEEXTRACT] Getting archive info:" << infprg << listArgs;
-    
-    info.start( infprg, listArgs );
-    
-    if ( !info.waitForFinished( -1 ) ) 
+    else
     {
-        return;
-    }
-    
-    QString b = info.readAllStandardOutput();
-    QStringList files = b.split( "\n" );
-    mFilesCnt = files.size();
-    
-    emit threadNewMaximum( mFilesCnt );
-    emit threadProgress( 0, "Extracting..." );
-    
-    mExtFilesCnt = 0;
-    QString final;
-    
-    qDebug() << "[ARCHIVEEXTRACT] Extracting archive:" << extprg << extArgs;
-    
-    extract.start( extprg, extArgs );
-    
-    while ( extract.waitForReadyRead() )
-    {
-        QString line = extract.readAllStandardOutput();
+        extract.setWorkingDirectory( mDestination );
         
-        if ( line.contains( "\n" ) ) 
+        qDebug() << "[ARCHIVEEXTRACT] Getting archive info:" << app << listArgs;
+        
+        info.start( app, listArgs );
+        
+        if ( !info.waitForFinished( -1 ) ) 
         {
-            ++mExtFilesCnt;
+            return;
         }
         
-        if ( ( final.isEmpty() ) && 
-             ( line.contains( "/" ) ) )
+        QString b = info.readAllStandardOutput();
+        QStringList files = b.split( "\n" );
+        mFilesCnt = files.size();
+        
+        emit threadNewMaximum( mFilesCnt );
+        emit threadProgress( 0, "Extracting..." );
+        
+        mExtFilesCnt = 0;
+        QString final;
+        
+        qDebug() << "[ARCHIVEEXTRACT] Extracting archive:" << app << extArgs;
+        
+        extract.start( app, extArgs );
+        
+        while ( extract.waitForReadyRead() )
         {
-            final = line.trimmed().split( "/" ).at( 0 );
+            QString line = extract.readAllStandardOutput();
+            
+            if ( line.contains( "\n" ) ) 
+            {
+                ++mExtFilesCnt;
+            }
+            
+            if ( ( final.isEmpty() ) && 
+                ( line.contains( "/" ) ) )
+            {
+                final = line.trimmed().split( "/" ).at( 0 );
+            }
+            
+            emit threadProgress( mExtFilesCnt, QString::Null() );
         }
         
-        emit threadProgress( mExtFilesCnt, QString::Null() );
-    }
-    
-    if ( !final.isEmpty() )
-    {
-        if ( final.contains( "x " ) )
+        if ( !final.isEmpty() )
         {
-            final = final.remove( "x " );
+            if ( final.contains( "x " ) )
+            {
+                final = final.remove( "x " );
+            }
+            
+            emit extracted( mArchivePath, mDestination + "/" + final );
         }
         
-        emit extracted( mArchivePath, mDestination + "/" + final );
+        emit threadFinished( this );
     }
-    
-    emit threadFinished( this );
 }
+
+QString ArchiveExtract::getMimeType( const QString& file )
+{
+    QString result( "application/octet-stream" );
+    magic_t mime = magic_open( MAGIC_MIME_TYPE );
+
+    if ( !mime )
+    {
+        qDebug() << "[ARCHIVEEXTRACT] Can't init libmagic";
+    }
+    else
+    {
+        if ( magic_load( mime, 0 ) ) 
+        { 
+            qDebug() << "[ARCHIVEEXTRACT] Unable to load magic DB: " + QString( magic_error( mime ) );      
+        }
+        else
+        {
+            result = magic_file( mime, file.toAscii().data() );
+        }
+        
+        magic_close( mime );
+    }
+
+    qDebug() << "libmagic: result mime type - " + result + "for file: " + file;
+
+    return result;
+}
+
 
 #include "archiveextract.moc"
