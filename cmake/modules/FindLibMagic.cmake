@@ -17,37 +17,18 @@
 #  LibMagic_LIBRARY            The libmagic library
 #  LibMagic_INCLUDE_DIR        The location of magic.h
 
-find_path(LibMagic_ROOT_DIR
-    NAMES include/magic.h
-)
+find_path(LIBMAGIC_INCLUDE_DIR magic.h)
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    # the static version of the library is preferred on OS X for the
-    # purposes of making packages (libmagic doesn't ship w/ OS X)
-    set(libmagic_names libmagic.a magic)
-else ()
-    set(libmagic_names magic)
-endif ()
-
-find_library(LibMagic_LIBRARY
-    NAMES ${libmagic_names}
-    HINTS ${LibMagic_ROOT_DIR}/lib
-)
-
-find_path(LibMagic_INCLUDE_DIR
-    NAMES magic.h
-    HINTS ${LibMagic_ROOT_DIR}/include
-)
+find_library(LIBMAGIC_LIBRARY NAMES libmagic magic)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(LibMagic DEFAULT_MSG
-    LibMagic_LIBRARY
-    LibMagic_INCLUDE_DIR
+    LIBMAGIC_LIBRARY
+    LIBMAGIC_INCLUDE_DIR
 )
 
 mark_as_advanced(
-    LibMagic_ROOT_DIR
-    LibMagic_LIBRARY
-    LibMagic_INCLUDE_DIR
+    LIBMAGIC_LIBRARY
+    LIBMAGIC_INCLUDE_DIR
 )
 

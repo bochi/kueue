@@ -273,6 +273,6 @@ TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES}
                              ${QT_QTTEST_LIBRARY} 
                              ${QVNC_LIBRARY} 
                              ${QVIRT_LIBRARY}
-                             ${LibMagic_LIBRARY}
+                             ${LIBMAGIC_LIBRARY}
 			     ${LINUX_LINK}
                              ${WINDOWS_LINK} )
