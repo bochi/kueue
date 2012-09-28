@@ -17,14 +17,27 @@
 # LibMagic_LIBRARY The libmagic library
 # LibMagic_INCLUDE_DIR The location of magic.h
 
-FIND_PATH(LibMagic_INCLUDE_DIR NAMES magic.h)
-MARK_AS_ADVANCED(LibMagic_INCLUDE_DIR)
+FIND_PATH(LIBMAGIC_INCLUDE_DIR magic.h)
 
-FIND_LIBRARY(LibMagic_LIBRARY NAMES magic libmagic)
-MARK_AS_ADVANCED(LibMagic_LIBRARY)
+FIND_LIBRARY(LIBMAGIC_LIBRARY NAMES magic)
 
-INCLUDE( FindPackageHandleStandardArgs )
-FIND_PACKAGE_HANDLE_STANDARD_ARGS( LibMagic DEFAULT_MSG LibMagic_LIBRARY LibMagic_INCLUDE_DIR )
+IF (LIBMAGIC_INCLUDE_DIR AND LIBMAGIC_LIBRARY)
+    SET(LIBMAGIC_FOUND TRUE)
+ENDIF (LIBMAGIC_INCLUDE_DIR AND LIBMAGIC_LIBRARY)
 
+IF (LIBMAGIC_FOUND)
+    IF (NOT LibMagic_FIND_QUIETLY)
+        MESSAGE(STATUS "Found libmagic: ${LIBMAGIC_LIBRARY}")
+        MESSAGE(STATUS "      includes: ${LIBMAGIC_INCLUDE_DIR}")
+    ENDIF (NOT LibMagic_FIND_QUIETLY)
+ELSE (LIBMAGIC_FOUND)
+    IF (LibMagic_FIND_REQUIRED)
+        MESSAGE(STATUS "")
+        MESSAGE(STATUS "libmagic development package cannot be found. Install it, please")
+        MESSAGE(STATUS "For example in (open)SUSE it's file-devel package")
+        MESSAGE(STATUS "")
+        MESSAGE(FATAL_ERROR "Could not find libmagic")
+    ENDIF (LibMagic_FIND_REQUIRED)
+ENDIF (LIBMAGIC_FOUND)
 
 
