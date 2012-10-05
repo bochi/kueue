@@ -277,7 +277,7 @@ QString ArchiveExtract::getMimeType( const QString& file )
         }
         else
         {
-            result = magic_file( mime, file.toAscii().data() );
+            result = magic_file( mime, file.toUtf8().data() );
         }
         
         magic_close( mime );
