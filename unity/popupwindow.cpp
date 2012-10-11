@@ -127,6 +127,19 @@ void PopupWindow::closeWindow()
     deleteLater();
 }
 
+void PopupWindow::moveEvent( QMoveEvent* event )
+{
+    QRect newGeometry( geometry() );
+
+    if ( ( newGeometry.x() != 0 ) && ( newGeometry.y() != 0 ) )
+    {
+        Settings::setPopupWindowX( newGeometry.x() );
+        Settings::setPopupWindowY( newGeometry.y() );
+    }
+        
+    QWidget::moveEvent( event );
+}
+
 /*
  * 
  *      PopupWindowWebView class

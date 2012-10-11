@@ -23,34 +23,23 @@
 
 */
 
-#ifndef STATSBROWSER_H
-#define STATSBROWSER_H
+#ifndef BROWSER_H
+#define BROWSER_H
 
 #include <QWebView>
-#include "browser.h"
+#include "ui/busywidget.h"
 
-class StatsBrowser : public Browser
+class Browser : public QWebView
 {
     Q_OBJECT
      
     public:
-        explicit StatsBrowser( QObject* parent = 0L );
-        ~StatsBrowser();
-        
-    private:
-        QUrl mUrl;
+        explicit Browser( QObject* parent = 0L );
+        ~Browser();
         
     public slots:
-        void update( const QString& );
-        void filter( const QString& );
-         
-    private slots:
-        void mousePressEvent( QMouseEvent* event );
-        void urlHovered( const QString&, const QString&, const QString& );
-        void contextMenu( QMouseEvent*, const QString& );
-        void contextMenuItemTriggered( QAction* );
-        void toggleSrTable( const QString& );
-        void contextMenuEvent( QContextMenuEvent* event );
+        virtual void update( const QString& ) = 0;
+        virtual void filter( const QString& ) = 0;
 };
- 
+
 #endif

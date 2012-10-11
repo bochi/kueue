@@ -29,6 +29,7 @@
 */
 
 #include "searchbar.h"
+#include "data/datathread.h"
 
 #include <qevent.h>
 #include <qtimeline.h>
@@ -36,11 +37,12 @@
 
 #include <qdebug.h>
 
-SearchBar::SearchBar(QWidget *parent)
+SearchBar::SearchBar(QWidget *parent, bool ibs)
     : QWidget(parent)
     , m_object(0)
     , m_widget(0)
     , m_timeLine(new QTimeLine(150, this))
+    , mIsBrowserSearch( ibs )
 {
     initializeSearchWidget();
 
@@ -50,19 +52,23 @@ SearchBar::SearchBar(QWidget *parent)
                           m_widget->width(), m_widget->height());
     hide();
 
-    connect(ui.nextButton, SIGNAL(clicked()),
-            this, SLOT(findNext()));
-    connect(ui.previousButton, SIGNAL(clicked()),
-            this, SLOT(findPrevious()));
-    connect(ui.searchLineEdit, SIGNAL(returnPressed()),
-            this, SLOT(findNext()));
-    connect(ui.searchLineEdit, SIGNAL(textEdited(const QString &)),
-            this, SLOT(findNext()));
+    if ( !mIsBrowserSearch )
+    {
+        connect(ui.nextButton, SIGNAL(clicked()),
+                this, SLOT(findNext()));
+        connect(ui.previousButton, SIGNAL(clicked()),
+                this, SLOT(findPrevious()));
+        connect(ui.searchLineEdit, SIGNAL(returnPressed()),
+                this, SLOT(findNext()));
+        connect(ui.searchLineEdit, SIGNAL(textEdited(const QString &)),
+                this, SLOT(findNext()));
+    }
+
     connect(ui.doneButton, SIGNAL(clicked()),
             this, SLOT(animateHide()));
     connect(m_timeLine, SIGNAL(frameChanged(int)),
             this, SLOT(frameChanged(int)));
-
+    
     new QShortcut(QKeySequence(Qt::Key_Escape), this, SLOT(animateHide()));
 }
 
@@ -79,6 +85,14 @@ void SearchBar::initializeSearchWidget()
     setMinimumWidth(m_widget->minimumWidth());
     setMaximumWidth(m_widget->maximumWidth());
     setMinimumHeight(m_widget->minimumHeight());
+    
+    if ( mIsBrowserSearch )
+    {
+        ui.previousButton->hide();
+        ui.nextButton->hide();
+        ui.highlightAllButton->hide();
+    }
+        
 }
 
 void SearchBar::setSearchObject(QObject *object)
@@ -132,6 +146,11 @@ void SearchBar::resizeEvent(QResizeEvent *event)
 
 void SearchBar::animateHide()
 {
+    if ( mIsBrowserSearch )
+    {
+        ui.searchLineEdit->clear();
+    }
+        
     m_timeLine->setDirection(QTimeLine::Backward);
     m_timeLine->start();
     connect(m_timeLine, SIGNAL(finished()), this, SLOT(hide()));
@@ -145,6 +164,16 @@ void SearchBar::frameChanged(int frame)
     int height = qMax(0, m_widget->y() + m_widget->height());
     setMinimumHeight(height);
     setMaximumHeight(height);
+}
+
+void SearchBar::findPrevious()
+{
+    SearchBar::findPrevious();
+}
+
+void SearchBar::findNext()
+{
+    SearchBar::findNext();
 }
 
 #include "searchbar.moc"

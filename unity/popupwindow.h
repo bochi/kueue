@@ -75,7 +75,9 @@ class PopupWindow : public QDialog
         
     private slots:
         void openWebInspector();
-
+        
+    protected:
+        void moveEvent( QMoveEvent* );
 };
 
 class PopupWindowWebPage : public QWebPage

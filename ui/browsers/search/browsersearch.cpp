@@ -28,47 +28,41 @@
     
 */
 
-#ifndef SEARCHBAR_H
-#define SEARCHBAR_H
+#include "browsersearch.h"
 
-#include <qwidget.h>
+#include <qevent.h>
+#include <qshortcut.h>
+#include <qtimeline.h>
 
-#include "ui_searchbanner.h"
+#include <qwebframe.h>
+#include <qwebview.h>
 
-QT_BEGIN_NAMESPACE
-class QTimeLine;
-QT_END_NAMESPACE
+#include <qdebug.h>
 
-class SearchBar : public QWidget
+BrowserSearch::BrowserSearch(Browser* browser, QWidget *parent)
+    : SearchBar(parent, true)
 {
-    Q_OBJECT
+    qDebug() << "[BROWSERSEARCH] Constructing";
+    
+    connect( ui.searchLineEdit, SIGNAL(textChanged(const QString &)),
+             browser, SLOT(filter( QString ) ) );
+    
+    
+}
 
-public:
-    SearchBar(QWidget *parent = 0, bool = false );
-    void setSearchObject(QObject *object);
-    QObject *searchObject() const;
+BrowserWithSearch::BrowserWithSearch( Browser* browser, QWidget *parent )
+    : QWidget(parent)
+    , mBrowser( browser )
+{
+    qDebug() << "[BROWSERWITHSEARCH] Constructing";
+    mBrowser->setParent(this);
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setSpacing(0);
+    layout->setContentsMargins(0, 0, 0, 0);
+    mBrowserSearch = new BrowserSearch( mBrowser, this );
+    layout->addWidget(mBrowserSearch);
+    layout->addWidget(mBrowser);
+    setLayout(layout);
+}
 
-public slots:
-    void animateHide();
-    void clear();
-    void showFind();
-    virtual void findNext();
-    virtual void findPrevious();
-
-protected:
-    void resizeEvent(QResizeEvent *event);
-    Ui_SearchBanner ui;
-
-private slots:
-    void frameChanged(int frame);
-
-private:
-    void initializeSearchWidget();
-    QObject *m_object;
-    QWidget *m_widget;
-    QTimeLine *m_timeLine;
-    bool mIsBrowserSearch;
-};
-
-#endif
-
+#include "browsersearch.moc"

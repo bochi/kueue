@@ -43,7 +43,7 @@
 #include <QDesktopServices>
 
 QueueBrowser::QueueBrowser( QObject *parent )
-        : QWebView( ( QWidget* ) 0 )
+        : Browser( ( QWidget* ) 0 )
 {
     qDebug() << "[QUEUEBROWSER] Constructing";
     
@@ -168,6 +168,12 @@ void QueueBrowser::update( const QString& html )
     page()->currentFrame()->setHtml( html );
     page()->currentFrame()->setScrollPosition( pos );
 }
+
+void QueueBrowser::filter( const QString& filter )
+{
+    DataThread::updateQueueBrowser( filter );
+}
+
 
 void QueueBrowser::mousePressEvent( QMouseEvent* event )
 {

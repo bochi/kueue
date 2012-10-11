@@ -34,6 +34,7 @@
 #include "ui/download/downloadmanager.h"
 #include "ui/statusbar.h"
 #include "ui/browsers/search/webviewsearch.h"
+#include "ui/browsers/search/browsersearch.h"
 #include "ui/busywidget.h"
 #include "clone/testdrive.h"
 #include "clone/virtappliance.h"
@@ -94,6 +95,7 @@ class TabWidget : public QTabWidget
         QMap<int, VirtAppliance*> mVirtApplianceMap;
         StatusBar* mStatusBar;
         WebViewSearch* webViewSearch( int );
+        BrowserSearch* browserSearch( int );
         QMenu* kueueMainMenu();
         QAction* mActionQuit;
         QAction* mActionConfig;

@@ -28,8 +28,9 @@
 
 #include <QWebView>
 #include "ui/busywidget.h"
+#include "browser.h"
 
-class QueueBrowser : public QWebView
+class QueueBrowser : public Browser
 {
     Q_OBJECT
      
@@ -44,6 +45,7 @@ class QueueBrowser : public QWebView
         
     public slots:
         void update( const QString& );
+        void filter( const QString& );
         
     private slots:
         void openWebInspector();

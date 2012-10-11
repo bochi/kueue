@@ -66,7 +66,7 @@ void DataThread::run()
 {
     createData();
     
-    emit updateQueueBrowserRequested();
+    emit updateQueueBrowserRequested( QString::Null() );
     
     if ( Settings::monitorEnabled() )
     {
@@ -91,8 +91,8 @@ void DataThread::createData()
     connect( mData, SIGNAL( dirsToDelete( QStringList ) ),
              this, SIGNAL( dirsToDelete( QStringList ) ) );
     
-    connect( this, SIGNAL( updateQueueBrowserRequested() ), 
-             mData, SLOT( updateQueueBrowser() ) );
+    connect( this, SIGNAL( updateQueueBrowserRequested( QString ) ), 
+             mData, SLOT( updateQueueBrowser( QString ) ) );
 
     connect( mData, SIGNAL( statsDataChanged( QString ) ), 
              this, SIGNAL( statsDataChanged( QString ) ) );
@@ -127,9 +127,9 @@ void DataThread::deleteData()
     #endif
 }
 
-void DataThread::updateQueueBrowserSlot()
+void DataThread::updateQueueBrowserSlot( const QString& filter )
 {
-    emit updateQueueBrowserRequested();
+    emit updateQueueBrowserRequested( filter );
 }
 
 void DataThread::updateQmonBrowserSlot()

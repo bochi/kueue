@@ -301,7 +301,7 @@ void Data::queueUpdateFinished()
             }
         }
         
-        updateQueueBrowser();
+        updateQueueBrowser( mCurrentQueueFilter );
     }
 
     r->deleteLater();
@@ -531,11 +531,13 @@ void Data::statsUpdateFinished()
     r->deleteLater();
 }
 
-void Data::updateQueueBrowser()
+void Data::updateQueueBrowser( const QString& filter )
 {
+    mCurrentQueueFilter = filter;
+    
     QString html;
     int age = 0;
-    QList<QueueSR> srlist = Database::getSrList( Settings::sortAge(), Settings::sortAsc(), mDB );
+    QList<QueueSR> srlist = Database::getSrList( Settings::sortAge(), Settings::sortAsc(), mDB, mCurrentQueueFilter );
         
     html += HTML::styleSheet();
     html += HTML::pageHeader( Settings::engineer(), srlist.size() );

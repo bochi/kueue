@@ -44,11 +44,12 @@ class Data : public QObject
         QNetworkReply* get( const QString& );
         QString mDB;
         QStringList mIPs;
+        QString mCurrentQueueFilter;
         bool srIsClosed( const QString& );
         bool mQueueUpdateRunning;
     
     public slots:
-        void updateQueueBrowser();
+        void updateQueueBrowser( const QString& filter = QString::Null() );
         void updateQmonBrowser();
         void updateQmon();
         void updateStatsBrowser();

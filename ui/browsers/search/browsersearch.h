@@ -28,47 +28,39 @@
     
 */
 
-#ifndef SEARCHBAR_H
-#define SEARCHBAR_H
+#ifndef BROWSERSEARCH_H
+#define BROWSERSEARCH_H
 
-#include <qwidget.h>
+#include "searchbar.h"
+#include "ui/browsers/browser.h"
 
-#include "ui_searchbanner.h"
+#include <qwebpage.h>
+#include <QWebView>
 
-QT_BEGIN_NAMESPACE
-class QTimeLine;
+/*QT_BEGIN_NAMESPACE
+class QWebView;
 QT_END_NAMESPACE
+*/
 
-class SearchBar : public QWidget
+class BrowserSearch : public SearchBar
 {
     Q_OBJECT
 
 public:
-    SearchBar(QWidget *parent = 0, bool = false );
-    void setSearchObject(QObject *object);
-    QObject *searchObject() const;
+    BrowserSearch(Browser* browser, QWidget *parent = 0);
 
-public slots:
-    void animateHide();
-    void clear();
-    void showFind();
-    virtual void findNext();
-    virtual void findPrevious();
-
-protected:
-    void resizeEvent(QResizeEvent *event);
-    Ui_SearchBanner ui;
-
-private slots:
-    void frameChanged(int frame);
-
-private:
-    void initializeSearchWidget();
-    QObject *m_object;
-    QWidget *m_widget;
-    QTimeLine *m_timeLine;
-    bool mIsBrowserSearch;
 };
 
-#endif
+class BrowserWithSearch : public QWidget
+{
+    Q_OBJECT
+
+public:
+    BrowserWithSearch(Browser* browser, QWidget *parent = 0);
+    Browser* mBrowser;
+    BrowserSearch* mBrowserSearch;
+};
+
+
+#endif // WEBVIEWSEARCH_H
 

@@ -122,7 +122,7 @@ TabWidget::TabWidget( QWidget* parent )
     
     mQueueBrowser = new QueueBrowser( this );
     
-    mPersonalTab = new WebViewWithSearch( mQueueBrowser, this );
+    mPersonalTab = new BrowserWithSearch( mQueueBrowser, this );
     
     connect( mQueueBrowser, SIGNAL( setMenus() ), 
              this, SLOT( setMenus() ) );
@@ -134,10 +134,10 @@ TabWidget::TabWidget( QWidget* parent )
              this, SLOT( closeAllTables() ) );
     
     mQmonBrowser = new QMonBrowser( this );
-    mMonitorTab = new WebViewWithSearch( mQmonBrowser, this );
+    mMonitorTab = new BrowserWithSearch( mQmonBrowser, this );
 
     mStatsBrowser = new StatsBrowser( this );
-    mStatsTab = new WebViewWithSearch( mStatsBrowser, this );
+    mStatsTab = new BrowserWithSearch( mStatsBrowser, this );
 
     if ( Settings::unityEnabled() )
     {
@@ -1096,24 +1096,26 @@ void TabWidget::updateUiData()
 
 void TabWidget::showSearch()
 {
-    webViewSearch( currentIndex() )->showFind();
+    if ( mUnityBrowserMap.keys().contains( currentIndex() ) || ( currentIndex() == indexOf( mUnityTab ) ) )
+    {
+        webViewSearch( currentIndex() )->showFind();
+    }
+    else
+    {
+        browserSearch( currentIndex() )->showFind();
+    }
 }
 
 WebViewSearch* TabWidget::webViewSearch( int index )
 {
-    WebViewWithSearch* webViewWithSearch;
+    UnityWidget* uw = qobject_cast<UnityWidget*>( this->widget( index ) );
+    return uw->webViewWithSearch()->m_webViewSearch;
+}
 
-    if ( mUnityBrowserMap.keys().contains( index ) || ( index == indexOf( mUnityTab ) ) )
-    {
-        UnityWidget* uw = qobject_cast<UnityWidget*>( this->widget( index ) );
-        webViewWithSearch = uw->webViewWithSearch();
-    }
-    else
-    {
-        webViewWithSearch = qobject_cast<WebViewWithSearch*>( this->widget( index ) );
-    }
-    
-    return webViewWithSearch->m_webViewSearch;
+BrowserSearch* TabWidget::browserSearch( int index )
+{
+    BrowserWithSearch* bs = qobject_cast<BrowserWithSearch*>( this->widget( index ) );
+    return bs->mBrowserSearch;
 }
 
 void TabWidget::makeNsaReport()

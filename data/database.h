@@ -55,7 +55,7 @@ class Database
         static void updateQueueSR( QueueSR, const QString& = "sqliteDB" );
         static void deleteQueueSR( const QString&, const QString& = "sqliteDB" );
         static QStringList getSrNrList( const QString& = "sqliteDB" );
-        static QList<QueueSR> getSrList( bool = true, bool = true, const QString& = "sqliteDB" );
+        static QList<QueueSR> getSrList( bool = true, bool = true, const QString& = "sqliteDB", const QString& = QString::Null() );
         static QueueSR getSrInfo( const QString&, const QString& = "sqliteDB" );
         static bool queueSrExists( const QString&, const QString& = "sqliteDB" );
         

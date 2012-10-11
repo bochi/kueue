@@ -152,8 +152,10 @@ SET( kueue_CPP  main.cpp
                 ui/browsers/queuebrowser.cpp
                 ui/browsers/statsbrowser.cpp 
 		ui/browsers/helpbrowser.cpp
-		
+		ui/browsers/browser.cpp
+
 		ui/browsers/search/webviewsearch.cpp 
+                ui/browsers/search/browsersearch.cpp
 		ui/browsers/search/searchbar.cpp 
 		ui/browsers/search/searchlineedit.cpp 
 		ui/browsers/search/lineedit.cpp 

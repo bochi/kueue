@@ -444,15 +444,26 @@ void Database::expandAllTables( const QString& dbname)
     }
 }
 
-QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname )
+QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname, const QString& filter )
 {
     QSqlDatabase db = QSqlDatabase::database( dbname );
     QStringList l;
+    QString f;
     QDateTime now = QDateTime::currentDateTime();
     QList<QueueSR> srlist;
 
     QSqlQuery query( db );
     
+    if ( !filter.isNull() )
+    {
+        f = " WHERE ( CUS_ACCOUNT LIKE '%" + filter + "%' )"
+            "OR ( ID LIKE '%" + filter + "%' )"
+            "OR ( CREATOR LIKE '%" + filter + "%' )"
+            "OR ( CUS_FIRSTNAME LIKE '%" + filter + "%' )"
+            "OR ( CUS_LASTNAME LIKE '%" + filter + "%' )"
+            "OR ( BDESC LIKE '%" + filter + "%' ) ";
+    }
+   
     db.transaction();
 
     if ( a )
@@ -461,13 +472,13 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname )
         {    
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
                             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + " ORDER BY CREATED ASC" );
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + f + " ORDER BY CREATED ASC" );
         }
         else 
         {   
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
                             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + " ORDER BY LASTUPDATE ASC" );
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + f + " ORDER BY LASTUPDATE ASC" );
         }
     }
     else
@@ -476,13 +487,13 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname )
         {    
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
                             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + " ORDER BY CREATED DESC" );
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + f + " ORDER BY CREATED DESC" );
         }
         else 
         {    
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
                             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + " ORDER BY LASTUPDATE DESC" );
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + f + " ORDER BY LASTUPDATE DESC" );
         }
     }
         

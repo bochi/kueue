@@ -46,7 +46,7 @@
 
 
 QMonBrowser::QMonBrowser( QObject *parent )
-            : QWebView( ( QWidget* ) 0 )
+            : Browser( ( QWidget* ) 0 )
 {
     qDebug() << "[QMONBROWSER] Constructing";
     
@@ -124,6 +124,10 @@ void QMonBrowser::update( const QString& html )
     QPoint pos = page()->currentFrame()->scrollPosition();
     page()->currentFrame()->setHtml( html );
     page()->currentFrame()->setScrollPosition( pos );
+}
+
+void QMonBrowser::filter( const QString& filter )
+{
 }
 
 void QMonBrowser::mousePressEvent( QMouseEvent* event )

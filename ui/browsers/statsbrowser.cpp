@@ -36,7 +36,7 @@
 #include <QWebFrame>
 
 StatsBrowser::StatsBrowser(QObject* parent)
-        : QWebView( (QWidget*)0 )
+        : Browser( ( QWidget* ) 0 )
 {
     qDebug() << "[STATSBROWSER] Constructing";
     
@@ -56,6 +56,10 @@ void StatsBrowser::update( const QString& html )
     QPoint pos = page()->currentFrame()->scrollPosition();
     page()->currentFrame()->setHtml( html );
     page()->currentFrame()->setScrollPosition( pos );
+}
+
+void StatsBrowser::filter( const QString& filter )
+{
 }
 
 void StatsBrowser::urlHovered( const QString& url, const QString& title, const QString& text )

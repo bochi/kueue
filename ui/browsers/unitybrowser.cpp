@@ -510,6 +510,8 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     
     manmenu->addAction( "SUSE Manager 1.2", this, SLOT( fillOutProduct() ) );
     manmenu->addAction( "SUSE Manager Proxy Server 1.2", this, SLOT( fillOutProduct() ) );
+    manmenu->addSeparator();
+    manmenu->addAction( "SUSE Manager 1.7 Server", this, SLOT( fillOutProduct() ) );
     
     QMenu* atkmenu = new QMenu( "SUSE Appliance Toolkit", menu );
     

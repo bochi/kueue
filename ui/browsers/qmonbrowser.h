@@ -28,8 +28,9 @@
 
 #include <QWebView>
 #include <QProgressDialog>
+#include "browser.h"
 
-class QMonBrowser : public QWebView
+class QMonBrowser : public Browser
 {
     Q_OBJECT
      
@@ -46,6 +47,7 @@ class QMonBrowser : public QWebView
         
     public slots:
         void update( const QString& );
+        void filter( const QString& );
         
     private slots:
         void openWebInspector();
