@@ -73,7 +73,7 @@ class Database
         static bool qmonSeverityChanged( QmonSR, const QString& = "sqliteDB" );
         static void deleteQmonSR( const QString&, const QString& = "sqliteDB" );
         static QStringList getQmonSrNrs( const QString& = "sqliteDB" );
-        static QList< QmonSR > getQmonQueue( const QString&, QString = QString::Null(), const QString& = "sqliteDB" );
+        static QList< QmonSR > getQmonQueue( const QString&, QString = QString::Null(), const QString& = "sqliteDB",  const QString& = QString::Null() );
         
         static void addGoneSR( const QString&, const QString& = "sqliteDB" );
         static void delGoneSR( const QString&, const QString& = "sqliteDB" );

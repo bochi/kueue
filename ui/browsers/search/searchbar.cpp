@@ -149,7 +149,7 @@ void SearchBar::animateHide()
     if ( mIsBrowserSearch )
     {
         ui.searchLineEdit->clear();
-    }
+    }   
         
     m_timeLine->setDirection(QTimeLine::Backward);
     m_timeLine->start();

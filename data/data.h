@@ -45,12 +45,13 @@ class Data : public QObject
         QString mDB;
         QStringList mIPs;
         QString mCurrentQueueFilter;
+        QString mCurrentQmonFilter;
         bool srIsClosed( const QString& );
         bool mQueueUpdateRunning;
     
     public slots:
         void updateQueueBrowser( const QString& filter = QString::Null() );
-        void updateQmonBrowser();
+        void updateQmonBrowser( const QString& filter = QString::Null() );
         void updateQmon();
         void updateStatsBrowser();
 

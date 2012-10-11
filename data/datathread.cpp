@@ -70,7 +70,7 @@ void DataThread::run()
     
     if ( Settings::monitorEnabled() )
     {
-        emit updateQmonBrowserRequested();
+        emit updateQmonBrowserRequested( QString::Null() );
     }
     
     if ( Settings::statsEnabled() )
@@ -103,8 +103,8 @@ void DataThread::createData()
     connect( mData, SIGNAL( qmonDataChanged( QString ) ), 
              this, SIGNAL( qmonDataChanged( QString ) ) );
     
-    connect( this, SIGNAL( updateQmonBrowserRequested() ), 
-             mData, SLOT( updateQmonBrowser() ) );
+    connect( this, SIGNAL( updateQmonBrowserRequested( QString ) ), 
+             mData, SLOT( updateQmonBrowser( QString ) ) );
     
     connect( this, SIGNAL( updateQmonRequested() ), 
              mData, SLOT( updateQmon() ) );
@@ -132,9 +132,9 @@ void DataThread::updateQueueBrowserSlot( const QString& filter )
     emit updateQueueBrowserRequested( filter );
 }
 
-void DataThread::updateQmonBrowserSlot()
+void DataThread::updateQmonBrowserSlot( const QString& filter )
 {
-    emit updateQmonBrowserRequested();
+    emit updateQmonBrowserRequested( filter );
 }
 
 void DataThread::updateQmonSlot()

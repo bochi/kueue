@@ -1246,10 +1246,21 @@ bool Database::qmonExists( const QString& id, const QString& dbname )
     }
 }
 
-QList< QmonSR > Database::getQmonQueue( const QString& queue, QString geo, const QString& dbname )
+QList< QmonSR > Database::getQmonQueue( const QString& queue, QString geo, const QString& dbname, const QString& filter )
 {
     QDateTime now = QDateTime::currentDateTime();
     QList< QmonSR > list;
+    QString f;
+    
+    if ( !filter.isNull() )
+    {
+        f = " AND ( CUS_ACCOUNT LIKE '%" + filter + "%' "
+            "OR ID LIKE '%" + filter + "%' "
+            "OR CREATOR LIKE '%" + filter + "%' "
+            "OR CUS_FIRSTNAME LIKE '%" + filter + "%' "
+            "OR CUS_LASTNAME LIKE '%" + filter + "%' "
+            "OR BDESC LIKE '%" + filter + "%' ) ";
+    }
     
     QSqlDatabase db = QSqlDatabase::database( dbname );
     QSqlQuery query(db);
@@ -1261,7 +1272,7 @@ QList< QmonSR > Database::getQmonQueue( const QString& queue, QString geo, const
         query.prepare( "SELECT ID, QUEUE, BOMGARQ, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, "
                        "       CUS_PHONE, CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, SOURCE, SUPPORT_PROGRAM, "
                        "       SUPPORT_PROGRAM_LONG, ROUTING_PRODUCT, SUPPORT_GROUP_ROUTING, INT_TYPE, SUBTYPE, SERVICE_LEVEL, CATEGORY, "
-                       "       RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM QMON WHERE ( GEO = :geo ) AND ( QUEUE = :queue )" );
+                       "       RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM QMON WHERE ( GEO = :geo ) AND ( QUEUE = :queue ) " + f );
 
         query.bindValue( ":geo", geo );
         query.bindValue( ":queue", queue );
@@ -1271,7 +1282,7 @@ QList< QmonSR > Database::getQmonQueue( const QString& queue, QString geo, const
         query.prepare( "SELECT ID, QUEUE, BOMGARQ, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, "
                        "       CUS_PHONE, CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, SOURCE, SUPPORT_PROGRAM, "
                        "       SUPPORT_PROGRAM_LONG, ROUTING_PRODUCT, SUPPORT_GROUP_ROUTING, INT_TYPE, SUBTYPE, SERVICE_LEVEL, CATEGORY, "
-                       "       RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM QMON WHERE ( QUEUE = :queue )" );
+                       "       RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM QMON WHERE ( QUEUE = :queue ) " + f  );
 
         query.bindValue( ":queue", queue );
     }

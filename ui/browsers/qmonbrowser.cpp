@@ -128,6 +128,7 @@ void QMonBrowser::update( const QString& html )
 
 void QMonBrowser::filter( const QString& filter )
 {
+    DataThread::updateQmonBrowser( filter );
 }
 
 void QMonBrowser::mousePressEvent( QMouseEvent* event )

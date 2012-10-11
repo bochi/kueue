@@ -174,7 +174,6 @@ void QueueBrowser::filter( const QString& filter )
     DataThread::updateQueueBrowser( filter );
 }
 
-
 void QueueBrowser::mousePressEvent( QMouseEvent* event )
 {
     StatusBar::hideDownloadManager();

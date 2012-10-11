@@ -392,7 +392,7 @@ void Data::qmonUpdateFinished()
             emit notify( nl.at( i ).type, nl.at( i ).title, nl.at( i ).body, nl.at( i ).sr );
         }
  
-        updateQmonBrowser();
+        updateQmonBrowser( mCurrentQmonFilter );
     }
     
     r->deleteLater();
@@ -574,8 +574,10 @@ void Data::updateQueueBrowser( const QString& filter )
     }
 }
 
-void Data::updateQmonBrowser()
+void Data::updateQmonBrowser( const QString& filter )
 {
+    mCurrentQmonFilter = filter;
+    
     QString html;
     int age = 0;
     
@@ -595,7 +597,7 @@ void Data::updateQmonBrowser()
             html += HTML::qmonTableHeader( list.at( i ).split( "|" ).at( 0 ) );
         }
         
-        QList< QmonSR > l( Database::getQmonQueue( list.at( i ).split( "|" ).at( 1 ), Settings::qmonFilter(), mDB ) );
+        QList< QmonSR > l( Database::getQmonQueue( list.at( i ).split( "|" ).at( 1 ), Settings::qmonFilter(), mDB, mCurrentQmonFilter ) );
     
         for ( int i = 0; i < l.size(); ++i ) 
         {

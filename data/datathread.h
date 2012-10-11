@@ -45,9 +45,9 @@ class DataThread : public QThread
             DataThread::thread().updateQueueBrowserSlot( filter );
         }
 
-        static void updateQmonBrowser()
+        static void updateQmonBrowser( const QString& filter = QString::Null() )
         {
-            DataThread::thread().updateQmonBrowserSlot();
+            DataThread::thread().updateQmonBrowserSlot( filter );
         }
         
         static void updateQmon()
@@ -72,7 +72,7 @@ class DataThread : public QThread
         
     public slots:
         void updateQueueBrowserSlot( const QString& filter );
-        void updateQmonBrowserSlot();
+        void updateQmonBrowserSlot( const QString& filter );
         void updateQmonSlot();
         void updateStatsBrowserSlot();
         
@@ -80,7 +80,7 @@ class DataThread : public QThread
         void notify( const QString&, QString, QString, const QString& );
         void dirsToDelete( QStringList );
         void updateQueueBrowserRequested( QString );
-        void updateQmonBrowserRequested();
+        void updateQmonBrowserRequested( QString );
         void updateQmonRequested();
         void updateStatsBrowserRequested();
         void queueDataChanged( QString );
