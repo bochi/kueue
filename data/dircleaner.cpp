@@ -77,7 +77,7 @@ void DirCleaner::run()
                 QFile::remove( fileWalker.filePath() );
             }
 
-            QDirIterator dirWalker( dir.path(), QDir::Dirs, QDirIterator::Subdirectories );
+            QDirIterator dirWalker( dir.path(), QDir::Dirs | QDir::Hidden , QDirIterator::Subdirectories );
 
             while( dirWalker.hasNext() )
             {
