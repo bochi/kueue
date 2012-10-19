@@ -98,11 +98,11 @@ void DirCleaner::run()
     
     for ( int i = 0; i < mDirs.size(); ++i ) 
     {
-        QDir d( Settings::downloadDirectory() + "/" + mDirs.at( i ) );
+        QDir d( mDirs.at( i ) );
         
         if ( d.exists() )
         {
-            failedList.append( Settings::downloadDirectory() + "/" + mDirs.at( i ) );
+            failedList.append( mDirs.at( i ) );
         }
     }
     
