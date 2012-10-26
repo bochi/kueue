@@ -198,13 +198,15 @@ void UnityPage::pageLoaded()
     {
         if ( mainFrame()->findFirstElement( "input#s_swepi_1" ).attribute( "id" ) != "" )
         {
+            //qDebug() << "1";
             loginToUnity();
         }
     }
 
-    else if ( ( mainFrame()->url().toString().contains( "SWECmd=Logoff&SWEService=SWE+Command+Manager" ) ) ||
+    else if ( ( mainFrame()->url().toString().contains( "Logoff" ) ) ||
               ( mainFrame()->findFirstElement( "body" ).attribute( "class" ) == "loginBody" ) )
     {
+        //qDebug() << "2";
         mLoggedIn = false;
         emit loggedIn( false );
         loggedOut();
@@ -212,6 +214,7 @@ void UnityPage::pageLoaded()
     
     else if ( mainFrame()->toHtml().contains( "The server you are trying to access is either busy" ) )
     {
+        //qDebug() << "3";
         emit pageErbertNed();
         mLoggedIn = false;
         emit loggedIn( false );
@@ -221,7 +224,7 @@ void UnityPage::pageLoaded()
     else if ( ( mViewFrame != 0 ) && ( mLoggedIn ) )
     {
         QString title = mViewFrame->findFirstElement( "title" ).toInnerXml();
-    
+   // qDebug() << "4";
         //qDebug() << "Title:" << title;
         
         if ( title.startsWith( "NSA Report -" ) )
@@ -236,6 +239,7 @@ void UnityPage::pageLoaded()
     }
     else if ( mainFrame()->url().toString() == "about:blank" )
     {
+      //  qDebug() << "Woo";
         mainFrame()->load( QUrl( Settings::unityURL() ) );
     }
     
@@ -423,7 +427,7 @@ void UnityPage::doQuery()
         }
     }
     
-    QWebElement sr = mViewFrame->findFirstElement( "input#s_2_2_95_0" );
+    QWebElement sr = mViewFrame->findFirstElement( "input#s_2_2_96_0" );
     sr.setAttribute( "value", mQuerySR );
     
     QWebElementCollection c = mViewFrame->findAllElements( "a" );   
@@ -470,7 +474,7 @@ void UnityPage::goToActivities()
     for ( int i = 0; i < fc.count(); ++i ) 
     {  
         if ( ( fc.at(i).attribute( "href" ).contains( "c_d" ) ) &&
-             ( fc.at(i).attribute( "id" ).contains( "s_2_2_95" ) ) )
+             ( fc.at(i).attribute( "id" ).contains( "s_2_2_96" ) ) )
         {
             QString js = fc.at(i).attribute( "href" ).remove( "Javascript:" );
             mViewFrame->evaluateJavaScript( js );
@@ -751,7 +755,7 @@ void UnityPage::getCurrentSR()
     else
     {
         bool keep = false;
-        QString srnr = mViewFrame->findFirstElement( "span#s_1_1_70_0" ).toInnerXml().trimmed();
+        QString srnr = mViewFrame->findFirstElement( "span#s_1_1_71_0" ).toInnerXml().trimmed();
         
         if ( !srnr.isEmpty() )
         {
@@ -811,7 +815,7 @@ void UnityPage::checkIfCR()
             
     for ( int i = 0; i < fc.count(); ++i ) 
     {  
-        if ( fc.at( i ).attribute( "id" ).contains( "s_1_1_71" ) ||
+        if ( fc.at( i ).attribute( "id" ).contains( "s_1_1_72" ) ||
             fc.at( i ).attribute( "tabindex" ).contains( "1002" ) )
         {
             

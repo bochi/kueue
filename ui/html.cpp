@@ -919,15 +919,24 @@ QString HTML::csatTable( Survey i )
         srtab += QString( "<td class='gadgetText'>No</td>" );
     }
     
-    srtab += QString ( "</tr>"
-                       "<tr>"
-                         "<td class='gadgetText'>SR Satisfaction</td>"
-                         "<td class='gadgetText'>" + QString::number( i.srsat ) + "</td>"
-                       "</tr>"
-                       "<tr>"
-                         "<td class='gadgetText'>Engineer Satisfaction</td>"
-                         "<td class='gadgetText'>" + QString::number( i.engsat ) + "</td>"
-                       "</tr>" );
+    srtab += QString( "</tr>" );
+    
+    if ( i.srsat != -1 )
+    {
+        srtab += QString ( 
+                           "<tr>"
+                             "<td class='gadgetText'>SR Satisfaction</td>"
+                             "<td class='gadgetText'>" + QString::number( i.srsat ) + "</td>"
+                           "</tr>" );
+    }
+    
+    if ( i.engsat != -1 )
+    {
+        srtab += QString ( "<tr>"
+                             "<td class='gadgetText'>Engineer Satisfaction</td>"
+                             "<td class='gadgetText'>" + QString::number( i.engsat ) + "</td>"
+                           "</tr>" );
+    }
 
     srtab +=( "</td></tr>" );
   

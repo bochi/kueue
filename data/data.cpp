@@ -405,11 +405,11 @@ void Data::statsUpdateFinished()
     
     if ( r->error() )
     {
-        qDebug() << "[DATA} Error downloading stats" << r->errorString();
+        qDebug() << "[DATA] Error downloading stats" << r->errorString();
     }
     else if ( !xml.endsWith( "</stats>\n" ) )
     {
-        qDebug() << "[DATA} Received incomplete stats xml";
+        qDebug() << "[DATA] Received incomplete stats xml";
     }
     else
     {
@@ -454,14 +454,21 @@ void Data::statsUpdateFinished()
                     for ( int i = 0; i < csatList.size(); ++i ) 
                     {   
                         Survey s;
-                
+                        bool ok;
                         s.id = csatList.at( i ).namedItem( "sr" ).toElement().text();
                         s.customer = csatList.at( i ).namedItem( "customer" ).toElement().text();
                         s.bdesc = csatList.at( i ).namedItem( "bdesc" ).toElement().text();
                         s.rts = csatList.at( i ).namedItem( "rts" ).toElement().text().toInt();
-                        s.engsat = csatList.at( i ).namedItem( "engsat" ).toElement().text().toInt();
-                        s.srsat = csatList.at( i ).namedItem( "srsat" ).toElement().text().toInt();
-                                    
+                        s.engsat = csatList.at( i ).namedItem( "engsat" ).toElement().text().toInt(&ok);
+                        if ( !ok )
+                        {
+                            s.engsat = -1;
+                        }
+                        s.srsat = csatList.at( i ).namedItem( "srsat" ).toElement().text().toInt(&ok);
+                        if ( !ok )
+                        {
+                            s.srsat = -1;
+                        }
                         statz.surveyList.append( s );
                     }
                 }

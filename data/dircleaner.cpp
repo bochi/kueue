@@ -77,16 +77,12 @@ void DirCleaner::run()
                 QFile::remove( fileWalker.filePath() );
             }
 
-            QDirIterator dirWalker( dir.path(), QDir::Dirs | QDir::Hidden , QDirIterator::Subdirectories );
+            QDirIterator dirWalker( dir.path(), QDir::Dirs | QDir::Hidden | QDir::System | QDir::NoDotAndDotDot, QDirIterator::Subdirectories );
 
             while( dirWalker.hasNext() )
             {
                 dirWalker.next();
-                
-                if ( dirWalker.fileName() != "." && dirWalker.fileName() != ".." )
-                {
-                    dir.rmpath( dirWalker.filePath() );
-                }
+                dir.rmpath( dirWalker.filePath() );
             }
 
             dir.rmdir( dir.path() );
