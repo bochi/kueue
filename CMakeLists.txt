@@ -169,15 +169,20 @@ SET( kueue_CPP  main.cpp
                 
                 nsa/nsa.cpp
 		nsa/nsawindow.cpp
-	        nsa/nsajob.cpp 
-		
-		clone/clone.cpp
-		clone/buildrpm.cpp 
-		clone/buildappliance.cpp 
-		clone/testdrive.cpp
-	        clone/supportconfig.cpp
-	        clone/virtappliance.cpp	) 
+	        nsa/nsajob.cpp ) 
+
+IF( NOT WIN32 )
+
+SET( kueue_CPP  ${kueue_CPP}
+                clone/clone.cpp
+                clone/buildrpm.cpp 
+                clone/buildappliance.cpp 
+                clone/testdrive.cpp
+                clone/supportconfig.cpp
+                clone/virtappliance.cpp )
                 
+ENDIF( NOT WIN32 )
+	        
 SET( kueue_QRC  kueue.qrc )
 
 SET( kueue_UI   ui/detailwindow.ui
