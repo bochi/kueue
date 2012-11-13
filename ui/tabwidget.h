@@ -92,10 +92,14 @@ class TabWidget : public QTabWidget
         KueueWindow* mKueueWindow;
         QList<UnityWidget*> mUnityWidgetList;
         QMap<int, UnityBrowser*> mUnityBrowserMap; 
+        
+        #ifndef IS_WIN32
         QList<TestDrive*> mTestDriveList;
         QMap<int, TestDrive*> mTestDriveMap;
         QList<VirtAppliance*> mVirtApplianceList;
         QMap<int, VirtAppliance*> mVirtApplianceMap;
+        #endif
+        
         StatusBar* mStatusBar;
         WebViewSearch* webViewSearch( int );
         BrowserSearch* browserSearch( int );
