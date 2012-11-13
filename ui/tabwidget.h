@@ -36,8 +36,10 @@
 #include "ui/browsers/search/webviewsearch.h"
 #include "ui/browsers/search/browsersearch.h"
 #include "ui/busywidget.h"
+#ifndef IS_WIN32
 #include "clone/testdrive.h"
 #include "clone/virtappliance.h"
+#endif
 
 #include <QTabWidget>
 #include <QToolButton>
