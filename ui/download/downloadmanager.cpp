@@ -36,7 +36,7 @@
 #include "kueue.h"
 #include "kueuethreads.h"
 #include "nsa/nsa.h"
-#include "clone/supportconfig.h"
+#include "supportconfig/supportconfig.h"
 #include "ui/tabwidget.h"
 
 #include <math.h>

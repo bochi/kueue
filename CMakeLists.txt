@@ -41,10 +41,10 @@ if ( WIN32 )
     set( EXTRA_INC ${LIBVNCCLIENT_INCLUDE_DIR} ${LIBVIRT_INCLUDE_DIR} )                                                                                  
 ENDIF(WIN32)  
 
-INCLUDE_DIRECTORIES(  ${QT_INCLUDES} 
+INCLUDE_DIRECTORIES(  ${LIBMAGIC_INCLUDE_DIR} 
+	              ${QT_INCLUDES} 
                       ${CMAKE_CURRENT_BINARY_DIR} 
-		      ${CMAKE_CURRENT_SOURCE_DIR}
-		      ${MAGIC_INCLUDE_DIR} )
+		      ${CMAKE_CURRENT_SOURCE_DIR})
 
 ADD_DEFINITIONS( ${QT_DEFINITIONS} )
 
@@ -92,10 +92,10 @@ SET( QT_SINGLEAPP_LIBRARY qtsingleapplication )
 SET( SimpleCrypt_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/simplecrypt )
 SET( SIMPLECRYPT_LIBRARY simplecrypt )
 
+IF( NOT WIN32 )
 SET( QStudio_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qstudio )
 SET( QT_STUDIO_LIBRARY qstudio )
 
-IF( NOT WIN32 )
 SET( QVNC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vnc )
 SET( QVNC_LIBRARY qvnc )
 
@@ -167,6 +167,8 @@ SET( kueue_CPP  main.cpp
 	        archivers/archiveextract.cpp	
                 archivers/Utility.cpp
                 
+		supportconfig/supportconfig.cpp
+
                 nsa/nsa.cpp
 		nsa/nsawindow.cpp
 	        nsa/nsajob.cpp ) 
@@ -179,7 +181,6 @@ SET( kueue_CPP  ${kueue_CPP}
                 clone/buildrpm.cpp 
                 clone/buildappliance.cpp 
                 clone/testdrive.cpp
-                clone/supportconfig.cpp
                 clone/virtappliance.cpp )
                 
 ENDIF( NOT WIN32 )

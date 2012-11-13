@@ -33,7 +33,7 @@
 #include "ui/cloneresult.h"
 #include "data/dircleaner.h"
 #include "testdrive.h"
-#include "supportconfig.h"
+#include "supportconfig/supportconfig.h"
 
 #include <QMessageBox>
 #include <QFileDialog>
