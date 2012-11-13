@@ -32,7 +32,6 @@ FIND_PACKAGE( JPEG REQUIRED )
 INCLUDE( ${QT_USE_FILE} )
 
 INCLUDE_DIRECTORIES(  ${QT_INCLUDES} 
-                      ${QT_QTXML_LIBRARY}
                       ${CMAKE_CURRENT_BINARY_DIR} 
                       ${CMAKE_CURRENT_SOURCE_DIR} 
 		      ${LIBVNCCLIENT_INCLUDE_DIR} )

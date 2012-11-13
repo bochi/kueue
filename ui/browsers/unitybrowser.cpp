@@ -543,9 +543,9 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     
     oesmenu->addSeparator();
     
-    oesmenu->addAction( "Open Enterprise Server 2.0.1 Support Pack 1", this, SLOT( fillOutProduct() ) );
-    oesmenu->addAction( "Open Enterprise Server 2.0.2 Support Pack 2", this, SLOT( fillOutProduct() ) );
-    oesmenu->addAction( "Open Enterprise Server 2.0.3 Support Pack 3", this, SLOT( fillOutProduct() ) );
+    oesmenu->addAction( "Open Enterprise Server 2.0.1", this, SLOT( fillOutProduct() ) );
+    oesmenu->addAction( "Open Enterprise Server 2.0.2", this, SLOT( fillOutProduct() ) );
+    oesmenu->addAction( "Open Enterprise Server 2.0.3", this, SLOT( fillOutProduct() ) );
     
     menu->addMenu( slesmenu );
     menu->addMenu( sledmenu );

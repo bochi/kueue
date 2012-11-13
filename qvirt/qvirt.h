@@ -72,7 +72,7 @@ class QVirt : public QObject
         QStringList getInactiveDomains();
         QStringList getActiveDomains();
         QStringList getDomains( bool = false );
-        QString getScreenshot( const QString& );
+        //QString getScreenshot( const QString& );
         
     private: 
         virConnectPtr mConnection;

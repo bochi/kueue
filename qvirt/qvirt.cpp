@@ -472,7 +472,7 @@ static int mysink(virStreamPtr st, const char *buf, size_t nbytes, void *opaque)
   return s->writeRawData( buf, nbytes );
 } 
 
-QString QVirt::getScreenshot( const QString& domain )
+/*QString QVirt::getScreenshot( const QString& domain )
 {
     qDebug() << "getscr";
     virDomainPtr dom;
@@ -533,6 +533,6 @@ QString QVirt::getScreenshot( const QString& domain )
     virStreamFree(st);
    
     return filename;
-}
+}*/
 
 #include "qvirt.moc"
