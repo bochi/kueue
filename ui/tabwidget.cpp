@@ -408,6 +408,7 @@ void TabWidget::runApplianceRequested( const QString& archive )
 
 void TabWidget::runAppliance( const QString& file, const QString& dir )
 {
+#ifndef IS_WIN32
     QDir directory( dir );
     directory.setFilter( QDir::Files );
     directory.setSorting( QDir::Name );
@@ -426,6 +427,7 @@ void TabWidget::runAppliance( const QString& file, const QString& dir )
     mVirtApplianceMap[ tab ] = a;
     
     a->setTabId( tab );
+#endif
 }
 
 void TabWidget::removeTestdriveTab( int tab )
