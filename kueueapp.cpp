@@ -34,7 +34,9 @@
 #include "nsa/nsa.h"
 #include "data/dircleaner.h"
 #include "data/datathread.h"
+#ifndef IS_WIN32
 #include "qvirt/qvirt.h"
+#endif
 #include "ui/busywidget.h"
 
 #include <QProgressDialog>
