@@ -32,12 +32,15 @@
 #include "browsers/helpbrowser.h"
 #include "browsers/unitybrowser.h"
 #include "data/datathread.h"
+#ifndef IS_WIN32
 #include "clone/clone.h"
 #include "vnc/vncview.h"
 #include "clone/testdrive.h"
+#include "clone/virtappliance.h"
+#endif
 #include "ui/download/downloadmanager.h"
 #include "archivers/archiveextract.h"
-#include "clone/virtappliance.h"
+
 
 #include <QGridLayout> 
 #include <QMenu>
@@ -348,6 +351,7 @@ void TabWidget::removeUnityBrowser( int tab )
 
 void TabWidget::addTestdriveTab( int build, const QString& hostname )
 {
+    #ifndef IS_WIN32
     TestDrive* td = new TestDrive( build, hostname );
     
     connect( td, SIGNAL( downloadRequested( QString ) ), 
@@ -361,6 +365,7 @@ void TabWidget::addTestdriveTab( int build, const QString& hostname )
     mTestDriveList.append( td );
     mTestDriveMap[ tab ] = td;
     td->setTabId( tab );
+    #endif
 }
 
 void TabWidget::somethingWentWrong()
@@ -534,9 +539,11 @@ QMenu* TabWidget::kueueMainMenu()
     mActionNSA->setText( "Generate NSA Report" );
     mActionNSA->setIcon( QIcon( ":/icons/menus/nsa.png" ) );
     
+#ifndef IS_WIN32
     mActionClone = new QAction( kueue );
     mActionClone->setText( "Clone system from supportconfig" );
     mActionClone->setIcon( QIcon( ":/icons/conf/studio.png" ) );
+#endif
     
     if ( Settings::unityEnabled() )
     {
@@ -557,10 +564,13 @@ QMenu* TabWidget::kueueMainMenu()
     }
     
     kueue->addAction( mActionNSA );    
+
     
     if ( Settings::studioEnabled() )
     {
+#ifndef IS_WIN32
         kueue->addAction( mActionClone );
+#endif
     }
     
     kueue->addAction( mActionQuit );
@@ -769,9 +779,11 @@ QMenu* TabWidget::kueueMainMenu()
     connect( mActionNSA, SIGNAL( activated() ), 
              this, SLOT( makeNsaReport() ) );
     
+#ifndef IS_WIN32
     connect( mActionClone, SIGNAL( activated() ),
              this, SLOT( cloneSystem() ) );
 
+#endif
     return menu;
 }
 
@@ -1126,6 +1138,7 @@ void TabWidget::makeNsaReport()
 
 void TabWidget::cloneSystem()
 {
+#ifndef IS_WIN32
     QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
     
     if ( !filename.isEmpty() )
@@ -1135,6 +1148,7 @@ void TabWidget::cloneSystem()
         connect( c, SIGNAL( buildFinished( int, QString ) ), 
                  this, SLOT( addTestdriveTab( int, QString ) ) );
     }
+#endif
 }
 
 void TabWidget::tabChanged( int tab )
