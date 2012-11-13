@@ -26,6 +26,7 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
+#include "config.h"
 #include "ui/browsers/qmonbrowser.h"
 #include "ui/browsers/unitybrowser.h"
 #include "ui/browsers/statsbrowser.h"
