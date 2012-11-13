@@ -145,7 +145,6 @@ SET( kueue_CPP  main.cpp
 		ui/busywidget.cpp
                 ui/cloneresult.cpp
 		ui/threadprogress.cpp
-		ui/vncwidget.cpp
                 ui/waitwidget.cpp
 		ui/vmexistsdialog.cpp
 
@@ -174,6 +173,7 @@ SET( kueue_CPP  main.cpp
 IF( NOT WIN32 )
 
 SET( kueue_CPP  ${kueue_CPP}
+                ui/vncwidget.cpp
                 clone/clone.cpp
                 clone/buildrpm.cpp 
                 clone/buildappliance.cpp 
