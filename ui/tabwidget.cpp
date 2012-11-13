@@ -223,6 +223,7 @@ void TabWidget::tabRightClicked( int id, QPoint point )
     {
         unityTabMenu( id, point );
     }
+#ifndef IS_WIN32
     else if ( mTestDriveMap.keys().contains( id ) )
     {
         testdriveTabMenu( id, point );
@@ -231,6 +232,7 @@ void TabWidget::tabRightClicked( int id, QPoint point )
     {
         virtApplianceTabMenu( id, point );
     }
+#endif
     else if ( indexOf( mUnityTab ) == id )
     {
         permanentUnityTabMenu( point );
@@ -428,6 +430,7 @@ void TabWidget::runAppliance( const QString& file, const QString& dir )
 
 void TabWidget::removeTestdriveTab( int tab )
 {
+#ifndef IS_WIN32
     removeTab( tab );
     
     for ( int i = 0; i < mTestDriveList.count(); ++i )
@@ -441,10 +444,12 @@ void TabWidget::removeTestdriveTab( int tab )
     delete mTestDriveMap[ tab ];
     
     rebuildMaps();
+#endif
 }
 
 void TabWidget::removeVirtApplianceTab( int tab )
 {
+#ifndef IS_WIN32
     removeTab( tab );
     
     for ( int i = 0; i < mVirtApplianceList.count(); ++i )
@@ -458,6 +463,7 @@ void TabWidget::removeVirtApplianceTab( int tab )
     delete mVirtApplianceMap[ tab ];
     
     rebuildMaps();
+#endif
 }
 
 void TabWidget::rebuildMaps()
@@ -471,7 +477,7 @@ void TabWidget::rebuildMaps()
         mUnityWidgetList.at( i )->setTabId( indexOf( tw ) );
         mUnityBrowserMap[ indexOf( tw ) ] = mUnityWidgetList.at( i )->browser();
     }
-    
+#ifndef IS_WIN32
     mTestDriveMap.clear();
     
     for ( int i = 0; i < mTestDriveList.count(); ++i )
@@ -491,6 +497,7 @@ void TabWidget::rebuildMaps()
         mVirtApplianceList.at( i )->setTabId( indexOf( v->widget() ) );
         mVirtApplianceMap[ indexOf( v->widget() ) ] = mVirtApplianceList.at( i );
     }
+#endif
 }
 
 void TabWidget::updateQmonBrowser( const QString& html )
@@ -1153,11 +1160,13 @@ void TabWidget::cloneSystem()
 
 void TabWidget::tabChanged( int tab )
 {
+    #ifndef IS_WIN32
     if (  ( mTestDriveMap.keys().contains( tab ) ) && ( mGrabbedWidget == 0 ) )
     {
         mTestDriveMap[ tab ]->widget()->getFocus();
         mGrabbedWidget = tab;
     }
+    #endif
 }
 
 /* 
