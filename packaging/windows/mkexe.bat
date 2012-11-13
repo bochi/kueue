@@ -37,6 +37,7 @@ xcopy /E "C:\Users\bogi\winbin\*" kueue
 copy "C:\Program Files\kueue\*.dll" kueue
 copy c:\dev\zlibwapi.dll kueue
 copy C:\OpenSSL\ssleay32.dll kueue
+copy C:\Dev\cygwin_dlls\* kueue
 
 copy %QTDIR%\plugins\codecs\qcncodecs4.dll kueue\codecs
 copy %QTDIR%\plugins\codecs\qjpcodecs4.dll kueue\codecs
