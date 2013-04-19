@@ -49,4 +49,10 @@ void UnityNetwork::clearCookieJar()
     setCookieJar( jar );
 }
 
+QNetworkReply* UnityNetwork::createRequest(Operation op, const QNetworkRequest & req, QIODevice * outgoingData  )
+{
+    QNetworkReply* reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
+    reply->ignoreSslErrors();
+    return reply;
+}
 #include "unitynetwork.moc"

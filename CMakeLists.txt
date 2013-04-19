@@ -173,7 +173,7 @@ SET( kueue_CPP  main.cpp
 		nsa/nsawindow.cpp
 	        nsa/nsajob.cpp ) 
 
-IF( NOT WIN32 )
+IF( NOT WIN32 AND NOT APPLE )
 
 SET( kueue_CPP  ${kueue_CPP}
                 ui/vncwidget.cpp
@@ -183,7 +183,7 @@ SET( kueue_CPP  ${kueue_CPP}
                 clone/testdrive.cpp
                 clone/virtappliance.cpp )
                 
-ENDIF( NOT WIN32 )
+ENDIF( NOT WIN32 AND NOT APPLE )
 	        
 SET( kueue_QRC  kueue.qrc )
 

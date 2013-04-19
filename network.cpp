@@ -111,7 +111,7 @@ QNetworkReply* Network::getImpl( const QString& u )
 
         //qDebug() << "[NETWORK] Downloading" << request.url();
     //}
-    
+    reply->ignoreSslErrors();
     return reply;
 }
 
@@ -123,11 +123,11 @@ QNetworkReply* Network::getExtImpl( const QUrl& url )
         request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
         
         QNetworkReply* reply = mNAM->get( request );
-        
+        reply->ignoreSslErrors();       
         connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
                 this, SLOT( error( QNetworkReply::NetworkError ) ) );
 
-        //qDebug() << "[NETWORK] Downloading" << request.url();
+        qDebug() << "[NETWORK] Downloading" << request.url();
         return reply;
     //}
 }

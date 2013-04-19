@@ -228,13 +228,13 @@ void UnityPage::addNoteThird()
     for ( int i = 0; i < rc.count(); ++i ) 
     {  
         if ( ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2014" ) ) ) ||
-             ( ( rc.at(i).attribute( "id" ).contains( "s_5_2_37" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "3997" ) ) ) )
+             ( ( rc.at(i).attribute( "id" ).contains( "s_5_2_38" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "3997" ) ) ) )
         {
             rc.at(i).setInnerXml( mNoteDialog->comment() );
         }
         
         if ( ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2005" ) ) ) ||
-             ( ( rc.at(i).attribute( "id" ).contains( "s_5_2_38" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "3997" ) ) ) )
+             ( ( rc.at(i).attribute( "id" ).contains( "s_5_2_37" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "3997" ) ) ) )
         {
             rc.at(i).setInnerXml( mNoteDialog->briefDesc() );
         }
