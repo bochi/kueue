@@ -11,7 +11,6 @@
     <file alias="conf/notifications.png">ui/icons/conf/notifications.png</file>
     <file alias="conf/qboss.png">ui/icons/conf/qboss.png</file>
     <file alias="conf/stats.png">ui/icons/conf/stats.png</file>
-    <file alias="conf/studio.png">ui/icons/conf/studio.png</file>
     <file alias="conf/targets.png">ui/icons/conf/targets.png</file>
     <file alias="menus/clipboard.png">ui/icons/menus/clipboard.png</file>
     <file alias="menus/configure.png">ui/icons/menus/configure.png</file>
@@ -48,8 +47,8 @@
     <file alias="toolbar/close_sr.png">ui/icons/toolbar/close_sr.png</file>
     <file alias="toolbar/save_sr.png">ui/icons/toolbar/save_sr.png</file>
     <file alias="toolbar/schedule_for_close.png">ui/icons/toolbar/schedule_for_close.png</file>
-    <file alias="toolbar/send_email.png">ui/icons/toolbar/send_email.png</file>
-    <file alias="toolbar/solution_suggested.png">ui/icons/toolbar/solution_suggested.png</file>
+    <file alias="toobar/send_email.png">ui/icons/toolbar/send_email.png</file>
+    <file alias="tooulbar/solution_suggested.png">ui/icons/toolbar/solution_suggested.png</file>
     <file alias="toolbar/filebrowser.png">ui/icons/toolbar/filebrowser.png</file>
     <file alias="toolbar/status.png">ui/icons/toolbar/status.png</file>
     <file alias="toolbar/home.png">ui/icons/toolbar/home.png</file>
