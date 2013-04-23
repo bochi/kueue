@@ -49,7 +49,7 @@ signals:
     void statusChanged();
     void progress(qint64 bytesReceived = 0, qint64 bytesTotal = 0);
     void downloadFinished();
-    void runApplianceRequested( QString );
+    //void runApplianceRequested( QString );
 
 public:
     DownloadItem( QNetworkReply *reply = 0, bool requestFileName = false, QString dir = "bla", QWidget *parent = 0, bool extract = true, bool isAppliance = false );
@@ -66,10 +66,10 @@ public:
     QFile mOutput;
     QNetworkReply *mReply;
     
-    bool isAppliance() { return mIsAppliance; }
+    //bool isAppliance() { return mIsAppliance; }
     
-    public slots:
-        void setAppliance( bool );
+    //public slots:
+    //    void setAppliance( bool );
     
 
 private slots:
@@ -85,7 +85,7 @@ private slots:
     void generateNsaReport();
     void nsaFinished();
     void finished();
-    void runAppliance();
+    //void runAppliance();
 
 private:
     void getFileName();
@@ -102,7 +102,7 @@ private:
     bool mFinishedDownloading;
     bool mGettingFilename;
     bool mCanceledFileSelect;
-    bool mIsAppliance;
+    //bool mIsAppliance;
     QTime mLastProgressTime;
     QString mDownloadDir;
     

@@ -74,7 +74,7 @@ DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString 
     , mCanceledFileSelect( false )
     , mDownloadDir( dir + "/" )
     , mExtract( extract )
-    , mIsAppliance( isAppliance )
+    //, mIsAppliance( isAppliance )
 {
     setupUi( this );
     
@@ -96,8 +96,8 @@ DownloadItem::DownloadItem( QNetworkReply *reply, bool requestFileName, QString 
     connect( nsaButton, SIGNAL( clicked() ),
              this, SLOT( generateNsaReport() ) );
     
-    connect( runButton, SIGNAL( clicked() ),
-             this, SLOT( runAppliance() ) );
+    //connect( runButton, SIGNAL( clicked() ),
+    //         this, SLOT( runAppliance() ) );
 
     init();
 }
@@ -149,7 +149,7 @@ void DownloadItem::init()
     }
 }
 
-void DownloadItem::setAppliance( bool app )
+/*void DownloadItem::setAppliance( bool app )
 {
     mIsAppliance = app;
     
@@ -157,7 +157,7 @@ void DownloadItem::setAppliance( bool app )
     {
         runButton->setVisible( true );
     }
-}
+}*/
 
 
 void DownloadItem::getFileName()
@@ -529,16 +529,16 @@ void DownloadItem::finished()
         nsaButton->setVisible( true );
     }
     
-    if ( mIsAppliance )
+    /*if ( mIsAppliance )
     {
         runButton->setVisible( true );
-    }
+    }*/
 
     mOutput.close();
     
     if ( ( !mOutput.fileName().isEmpty() ) && 
          ( mExtract ) &&
-         ( !mIsAppliance ) &&
+         //( !mIsAppliance ) &&
          ( Settings::autoExtract() ) &&
          ( ( QFileInfo( mOutput.fileName() ).suffix() == "gz" ) ||
          ( QFileInfo( mOutput.fileName() ).suffix() == "bz2" ) ||
@@ -596,11 +596,11 @@ void DownloadItem::checkIfSupportconfig( const QString& scfile, const QString& s
     }
 }
 
-void DownloadItem::runAppliance()
+/*void DownloadItem::runAppliance()
 {
     runButton->setEnabled( false );
     TabWidget::applianceRunner( mOutput.fileName() );
-}
+}*/
 
 /*!
     DownloadManager is a Dialog that contains a list of DownloadItems
@@ -799,14 +799,14 @@ void DownloadManager::updateRow(DownloadItem *item)
     
     QIcon icon;
     
-    if ( item->isAppliance() )
+    /*if ( item->isAppliance() )
     {
         icon = QIcon( ":/icons/conf/studio.png" );
     }
     else
-    {
+    {*/
         icon = mIconProvider->icon(item->mOutput.fileName());
-    }
+    //}
     
     if (icon.isNull())
         icon = style()->standardIcon(QStyle::SP_FileIcon);
@@ -859,7 +859,7 @@ void DownloadManager::save() const
         settings.setValue(key + QLatin1String("url"), mDownloads[i]->mUrl);
         settings.setValue(key + QLatin1String("location"), QFileInfo(mDownloads[i]->mOutput).filePath());
         settings.setValue(key + QLatin1String("done"), mDownloads[i]->downloadedSuccessfully());
-        settings.setValue(key + QLatin1String("isAppliance"), mDownloads[i]->isAppliance());
+        //settings.setValue(key + QLatin1String("isAppliance"), mDownloads[i]->isAppliance());
     }
     int i = mDownloads.count();
     QString key = QString(QLatin1String("download_%1_")).arg(i);
@@ -903,10 +903,10 @@ void DownloadManager::load()
             {
                 item->nsaButton->setVisible( true );
             }
-            if ( settings.value(key + QLatin1String("isAppliance")).toBool() )
+            /*if ( settings.value(key + QLatin1String("isAppliance")).toBool() )
             {
                 item->setAppliance( true );
-            }
+            }*/
             addItem(item);
         }
         key = QString(QLatin1String("download_%1_")).arg(++i);

@@ -32,12 +32,12 @@
 #include "browsers/helpbrowser.h"
 #include "browsers/unitybrowser.h"
 #include "data/datathread.h"
-#ifndef IS_WIN32
-#include "clone/clone.h"
-#include "vnc/vncview.h"
-#include "clone/testdrive.h"
-#include "clone/virtappliance.h"
-#endif
+//#ifndef IS_WIN32
+//#include "clone/clone.h"
+//#include "vnc/vncview.h"
+//#include "clone/testdrive.h"
+//#include "clone/virtappliance.h"
+//#endif
 #include "ui/download/downloadmanager.h"
 #include "archivers/archiveextract.h"
 
@@ -224,14 +224,14 @@ void TabWidget::tabRightClicked( int id, QPoint point )
         unityTabMenu( id, point );
     }
 #ifndef IS_WIN32
-    else if ( mTestDriveMap.keys().contains( id ) )
+    /*else if ( mTestDriveMap.keys().contains( id ) )
     {
         testdriveTabMenu( id, point );
     }
     else if ( mVirtApplianceMap.keys().contains( id ) )
     {
         virtApplianceTabMenu( id, point );
-    }
+    }*/
 #endif
     else if ( indexOf( mUnityTab ) == id )
     {
@@ -351,7 +351,7 @@ void TabWidget::removeUnityBrowser( int tab )
     rebuildMaps();
 }
 
-void TabWidget::addTestdriveTab( int build, const QString& hostname )
+/*void TabWidget::addTestdriveTab( int build, const QString& hostname )
 {
     #ifndef IS_WIN32
     TestDrive* td = new TestDrive( build, hostname );
@@ -466,7 +466,7 @@ void TabWidget::removeVirtApplianceTab( int tab )
     
     rebuildMaps();
 #endif
-}
+}*/
 
 void TabWidget::rebuildMaps()
 {
@@ -480,7 +480,7 @@ void TabWidget::rebuildMaps()
         mUnityBrowserMap[ indexOf( tw ) ] = mUnityWidgetList.at( i )->browser();
     }
 #ifndef IS_WIN32
-    mTestDriveMap.clear();
+    /*mTestDriveMap.clear();
     
     for ( int i = 0; i < mTestDriveList.count(); ++i )
     {
@@ -498,7 +498,7 @@ void TabWidget::rebuildMaps()
 
         mVirtApplianceList.at( i )->setTabId( indexOf( v->widget() ) );
         mVirtApplianceMap[ indexOf( v->widget() ) ] = mVirtApplianceList.at( i );
-    }
+    }*/
 #endif
 }
 
@@ -870,7 +870,7 @@ void TabWidget::permanentUnityTabMenu( const QPoint& p )
     menu->exec( p );
 }
 
-void TabWidget::testdriveTabMenu( int tab, const QPoint& p )
+/*void TabWidget::testdriveTabMenu( int tab, const QPoint& p )
 {
     QMap<int, QString> map;
     
@@ -908,7 +908,7 @@ void TabWidget::virtApplianceTabMenu( int tab, const QPoint& p )
     menu->addAction( closeTab );
     
     menu->exec( p );
-}
+}*/
 
 void TabWidget::openInUnityImp( const QString& sr )
 {
@@ -925,7 +925,7 @@ void TabWidget::closeActionTriggered()
     removeUnityBrowser( action->data().toInt() );
 }
 
-void TabWidget::testdriveCloseActionTriggered()
+/*void TabWidget::testdriveCloseActionTriggered()
 {
     QAction* action = qobject_cast<QAction*>( QObject::sender() );
     removeTestdriveTab( action->data().toInt() );
@@ -935,7 +935,7 @@ void TabWidget::virtApplianceCloseActionTriggered()
 {
     QAction* action = qobject_cast<QAction*>( QObject::sender() );
     removeVirtApplianceTab( action->data().toInt() );
-}
+}*/
 
 void TabWidget::clipboardActionTriggered()
 {
@@ -1145,7 +1145,7 @@ void TabWidget::makeNsaReport()
     NSA* n = new NSA( filename ); 
 }
 
-void TabWidget::cloneSystem()
+/*void TabWidget::cloneSystem()
 {
 #ifndef IS_WIN32
     QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
@@ -1169,7 +1169,7 @@ void TabWidget::tabChanged( int tab )
         mGrabbedWidget = tab;
     }
     #endif
-}
+}*/
 
 /* 
  * 

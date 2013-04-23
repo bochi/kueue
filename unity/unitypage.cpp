@@ -38,6 +38,7 @@
 #include <QWebElementCollection>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QTest>
 
 UnityPage::UnityPage( QObject *parent, QString sr )
         : QWebPage( ( QWidget* ) 0 )
@@ -105,7 +106,7 @@ UnityPage::UnityPage( QObject *parent, QString sr )
         Settings::setUnityURL( url );
         
         #ifndef IS_WIN32
-        sleep( 1 );
+        QTest::qSleep( 1000 );
         #endif
     }
     
