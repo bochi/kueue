@@ -249,11 +249,11 @@ QString HTML::SRTable( QueueSR sr )
                                         "<tr width='100%'>\n"
                                             "<td class='gadgetHead' valign='center' width='15%'><font" );
 
-    if ( sr.severity ==  "High" )
+    if ( sr.severity ==  "Critical" )
     {
         srtab += ( " color='DarkRed'" );
     }
-    else if ( sr.severity == "Urgent" )
+    else if ( sr.severity == "High" )
     {
         srtab += ( " color='DarkBlue'" );
     }
@@ -584,13 +584,13 @@ QString HTML::qmonSrInQueue( QmonSR sr )
     
     srtab += QString( "</p><b><font size='-1'><p style='line-height:0.6em;'>&nbsp;" + sr.geo + " (" + sr.hours + ") - " );
     
-    if ( sr.severity == "High" )
+    if ( sr.severity == "Critical" )
     {
-        srtab += QString( "<font color='DarkRed'>High</font>" );
+        srtab += QString( "<font color='DarkRed'>Critical</font>" );
     }
-    else if ( sr.severity == "Urgent" )
+    else if ( sr.severity == "High" )
     {
-        srtab += QString( "<font color='DarkBlue'>Urgent</font>" );
+        srtab += QString( "<font color='DarkBlue'>High</font>" );
     }
     else
     {
