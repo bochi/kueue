@@ -34,9 +34,6 @@
 #include "nsa/nsa.h"
 #include "data/dircleaner.h"
 #include "data/datathread.h"
-#ifndef IS_WIN32
-#include "qvirt/qvirt.h"
-#endif
 #include "ui/busywidget.h"
 
 #include <QProgressDialog>
@@ -249,7 +246,7 @@ void KueueApp::updateJobDone()
     if ( ( u != QApplication::applicationVersion() ) && 
          ( QApplication::applicationVersion() != "git" ) )
     {
-        Kueue::notify( "kueue-general", "Update available", "<b>New kueue version available!</b><br>Please update kueue.", "" );
+        //Kueue::notify( "kueue-general", "Update available", "<b>New kueue version available!</b><br>Please update kueue.", "" );
     }
 }
 

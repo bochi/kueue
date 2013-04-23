@@ -57,23 +57,6 @@ Network::Network()
 {
     qDebug() << "[NETWORK] Constructing";   
     
-    /*QHostInfo info = QHostInfo::fromName( Settings::dBServer() );
-    QList<QHostAddress> al = info.addresses();
-    
-    if ( info.error() )
-    {
-        Kueue::notify( "kueue-general", "Couldn't resolve hostname", "Unable to resolve hostname, please check your config", "NONE" );
-        BasicConfig* bc = new BasicConfig();
-        bc->exec();
-        delete bc;
-        destroy();
-    }
-    
-    for ( int i = 0; i < al.size(); ++i ) 
-    { 
-        mIPs.append( al.at( i ).toString() );
-    }*/
-    
     mNAM = new QNetworkAccessManager( this );
 }
 
@@ -86,57 +69,44 @@ QNetworkReply* Network::getImpl( const QString& u )
 {
     QNetworkReply* reply;
     
-    //if ( !mIPs.isEmpty() )
-    //{
-        //int r = qrand() % mIPs.size();
-
-        //QNetworkRequest request( QUrl( "http://" + mIPs.at(r) + ":8080/" + u ) );
-        QNetworkRequest request( QUrl( "http://" + Settings::dBServer() + ":8080/" + u ) );
-
-        QByteArray os;
+    QNetworkRequest request( QUrl( "http://" + Settings::dBServer() + ":8080/" + u ) );
+    QByteArray os;
     
 #ifdef IS_WIN32
-        os = "kueue " + QApplication::applicationVersion().toUtf8() + " (win)";
+    os = "kueue " + QApplication::applicationVersion().toUtf8() + " (win)";
 #elif defined IS_OSX
-        os = "kueue " + QApplication::applicationVersion().toUtf8() + " (osx)";
+    os = "kueue " + QApplication::applicationVersion().toUtf8() + " (osx)";
 #else
-        os = "kueue " + QApplication::applicationVersion().toUtf8() + " (linux)";
+    os = "kueue " + QApplication::applicationVersion().toUtf8() + " (linux)";
 #endif
-        request.setRawHeader( "User-Agent", os );
+    request.setRawHeader( "User-Agent", os );
         
-        reply = mNAM->get( request );
+    reply = mNAM->get( request );
         
-        connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
-                this, SLOT( error( QNetworkReply::NetworkError ) ) );
+    connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
+            this, SLOT( error( QNetworkReply::NetworkError ) ) );
 
-        //qDebug() << "[NETWORK] Downloading" << request.url();
-    //}
     reply->ignoreSslErrors();
     return reply;
 }
 
 QNetworkReply* Network::getExtImpl( const QUrl& url )
 {
-    //if ( !mIPs.isEmpty() )
-    //{
-        QNetworkRequest request( url );
-        request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
+    QNetworkRequest request( url );
+    request.setRawHeader( "User-Agent", QString( "kueue " + QApplication::applicationVersion() ).toUtf8() );
         
-        QNetworkReply* reply = mNAM->get( request );
-        reply->ignoreSslErrors();       
-        connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
-                this, SLOT( error( QNetworkReply::NetworkError ) ) );
+    QNetworkReply* reply = mNAM->get( request );
+    reply->ignoreSslErrors();       
+    connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
+             this, SLOT( error( QNetworkReply::NetworkError ) ) );
 
-        qDebug() << "[NETWORK] Downloading" << request.url();
-        return reply;
-    //}
+    qDebug() << "[NETWORK] Downloading" << request.url();
+    return reply;
 }
 
 void Network::error( QNetworkReply::NetworkError error )
 {
     QNetworkReply* reply = qobject_cast<QNetworkReply*>( QObject::sender() );
-    
-    //Kueue::notify( "kueue-general", "Update failed", "Failed to update your data. Networking issues or no VPN connection?", "NONE" );
     
     qDebug() << "[NETWORK] Error getting" << reply->url();
 }

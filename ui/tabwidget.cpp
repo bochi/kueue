@@ -32,12 +32,6 @@
 #include "browsers/helpbrowser.h"
 #include "browsers/unitybrowser.h"
 #include "data/datathread.h"
-//#ifndef IS_WIN32
-//#include "clone/clone.h"
-//#include "vnc/vncview.h"
-//#include "clone/testdrive.h"
-//#include "clone/virtappliance.h"
-//#endif
 #include "ui/download/downloadmanager.h"
 #include "archivers/archiveextract.h"
 
@@ -223,16 +217,6 @@ void TabWidget::tabRightClicked( int id, QPoint point )
     {
         unityTabMenu( id, point );
     }
-#ifndef IS_WIN32
-    /*else if ( mTestDriveMap.keys().contains( id ) )
-    {
-        testdriveTabMenu( id, point );
-    }
-    else if ( mVirtApplianceMap.keys().contains( id ) )
-    {
-        virtApplianceTabMenu( id, point );
-    }*/
-#endif
     else if ( indexOf( mUnityTab ) == id )
     {
         permanentUnityTabMenu( point );
@@ -351,123 +335,6 @@ void TabWidget::removeUnityBrowser( int tab )
     rebuildMaps();
 }
 
-/*void TabWidget::addTestdriveTab( int build, const QString& hostname )
-{
-    #ifndef IS_WIN32
-    TestDrive* td = new TestDrive( build, hostname );
-    
-    connect( td, SIGNAL( downloadRequested( QString ) ), 
-             this, SLOT( addApplianceDownloadJob( QString ) ) );
-    
-    connect( td, SIGNAL( closeRequested( int ) ),
-             this, SLOT( removeTestdriveTab( int ) ) );
-    
-    int tab = addTab( td->widget(), QIcon( ":/icons/conf/studio.png" ), "Testdrive - " + hostname );
-    
-    mTestDriveList.append( td );
-    mTestDriveMap[ tab ] = td;
-    td->setTabId( tab );
-    #endif
-}
-
-void TabWidget::somethingWentWrong()
-{
-    qDebug() << "SMTH WENT WRONG";
-}
-
-void TabWidget::addApplianceDownloadJob( const QString& url )
-{
-    QNetworkReply* reply;
-    
-    if ( Settings::testdriveDebugEnabled() )
-    {
-        reply = Network::getExt( QUrl( "http://bochi/clone.tar.gz" ) );
-    }
-    else
-    {
-        reply = Network::getExt( QUrl( url ) );
-    }
-    
-    DownloadItem* i = mStatusBar->dm()->handleUnsupportedContent( reply, Settings::applianceDownloadDirectory(), false, false, true );
-    
-    connect( i, SIGNAL( runApplianceRequested( QString ) ), 
-             this, SLOT( runApplianceRequested( QString ) ) );
-}
-
-void TabWidget::runApplianceRequested( const QString& archive )
-{
-    QFileInfo info( archive );
-
-    ArchiveExtract* x = new ArchiveExtract( archive, info.absolutePath() );
-
-    connect( x, SIGNAL( extracted( QString, QString ) ),
-             this, SLOT( runAppliance( QString, QString ) ) );
-
-    KueueThreads::enqueue( x );
-}
-
-void TabWidget::runAppliance( const QString& file, const QString& dir )
-{
-#ifndef IS_WIN32
-    QDir directory( dir );
-    directory.setFilter( QDir::Files );
-    directory.setSorting( QDir::Name );
-    
-    directory.setNameFilters( QStringList() << "*.vmdk" );
-    QString vmdk = directory.entryList().first();
-    
-    directory.setNameFilters( QStringList() << "*.vmx" );
-    QString vmx = directory.entryList().first();
-    
-    VirtAppliance* a = new VirtAppliance( dir + "/" + vmdk, dir + "/" + vmx );
-    
-    int tab = addTab( a->widget(), QIcon( ":/icons/conf/studio.png" ), "QEmu" );
-    
-    mVirtApplianceList.append( a );
-    mVirtApplianceMap[ tab ] = a;
-    
-    a->setTabId( tab );
-#endif
-}
-
-void TabWidget::removeTestdriveTab( int tab )
-{
-#ifndef IS_WIN32
-    removeTab( tab );
-    
-    for ( int i = 0; i < mTestDriveList.count(); ++i )
-    {
-        if ( mTestDriveList.at( i )->tabId() == tab )
-        {
-            mTestDriveList.removeAt( i );
-        }
-    }
-    
-    delete mTestDriveMap[ tab ];
-    
-    rebuildMaps();
-#endif
-}
-
-void TabWidget::removeVirtApplianceTab( int tab )
-{
-#ifndef IS_WIN32
-    removeTab( tab );
-    
-    for ( int i = 0; i < mVirtApplianceList.count(); ++i )
-    {
-        if ( mVirtApplianceList.at( i )->tabId() == tab )
-        {
-            mVirtApplianceList.removeAt( i );
-        }
-    }
-    
-    delete mVirtApplianceMap[ tab ];
-    
-    rebuildMaps();
-#endif
-}*/
-
 void TabWidget::rebuildMaps()
 {
     mUnityBrowserMap.clear();
@@ -479,27 +346,6 @@ void TabWidget::rebuildMaps()
         mUnityWidgetList.at( i )->setTabId( indexOf( tw ) );
         mUnityBrowserMap[ indexOf( tw ) ] = mUnityWidgetList.at( i )->browser();
     }
-#ifndef IS_WIN32
-    /*mTestDriveMap.clear();
-    
-    for ( int i = 0; i < mTestDriveList.count(); ++i )
-    {
-        TestDrive* t = mTestDriveList.at( i );
-
-        mTestDriveList.at( i )->setTabId( indexOf( t->widget() ) );
-        mTestDriveMap[ indexOf( t->widget() ) ] = mTestDriveList.at( i );
-    }
-    
-    mVirtApplianceMap.clear();
-    
-    for ( int i = 0; i < mVirtApplianceList.count(); ++i )
-    {
-        VirtAppliance* v = mVirtApplianceList.at( i );
-
-        mVirtApplianceList.at( i )->setTabId( indexOf( v->widget() ) );
-        mVirtApplianceMap[ indexOf( v->widget() ) ] = mVirtApplianceList.at( i );
-    }*/
-#endif
 }
 
 void TabWidget::updateQmonBrowser( const QString& html )
@@ -548,12 +394,6 @@ QMenu* TabWidget::kueueMainMenu()
     mActionNSA->setText( "Generate NSA Report" );
     mActionNSA->setIcon( QIcon( ":/icons/menus/nsa.png" ) );
     
-#ifndef IS_WIN32
-    mActionClone = new QAction( kueue );
-    mActionClone->setText( "Clone system from supportconfig" );
-    mActionClone->setIcon( QIcon( ":/icons/conf/studio.png" ) );
-#endif
-    
     if ( Settings::unityEnabled() )
     {
         mActionAddUnityTab = new QAction( kueue );
@@ -574,14 +414,6 @@ QMenu* TabWidget::kueueMainMenu()
     
     kueue->addAction( mActionNSA );    
 
-    
-    if ( Settings::studioEnabled() )
-    {
-#ifndef IS_WIN32
-        kueue->addAction( mActionClone );
-#endif
-    }
-    
     kueue->addAction( mActionQuit );
     
     QMenu* view = new QMenu( menu );
@@ -870,46 +702,6 @@ void TabWidget::permanentUnityTabMenu( const QPoint& p )
     menu->exec( p );
 }
 
-/*void TabWidget::testdriveTabMenu( int tab, const QPoint& p )
-{
-    QMap<int, QString> map;
-    
-    QMenu* menu = new QMenu( this );
-
-    QAction* closeTab = new QAction( "Close tab", menu );
-
-    connect( closeTab, SIGNAL( triggered() ),
-             this, SLOT( testdriveCloseActionTriggered() ) );
-
-    closeTab->setData( tab );
-    
-    closeTab->setIcon( QIcon( ":/icons/menus/quit.png" ) );
-    
-    menu->addAction( closeTab );
-    
-    menu->exec( p );
-}
-
-void TabWidget::virtApplianceTabMenu( int tab, const QPoint& p )
-{
-    QMap<int, QString> map;
-    
-    QMenu* menu = new QMenu( this );
-
-    QAction* closeTab = new QAction( "Close tab", menu );
-
-    connect( closeTab, SIGNAL( triggered() ),
-             this, SLOT( virtApplianceCloseActionTriggered() ) );
-
-    closeTab->setData( tab );
-    
-    closeTab->setIcon( QIcon( ":/icons/menus/quit.png" ) );
-    
-    menu->addAction( closeTab );
-    
-    menu->exec( p );
-}*/
-
 void TabWidget::openInUnityImp( const QString& sr )
 {
     if ( Kueue::isSrNr( sr ) )
@@ -924,18 +716,6 @@ void TabWidget::closeActionTriggered()
     QAction* action = qobject_cast<QAction*>( QObject::sender() );
     removeUnityBrowser( action->data().toInt() );
 }
-
-/*void TabWidget::testdriveCloseActionTriggered()
-{
-    QAction* action = qobject_cast<QAction*>( QObject::sender() );
-    removeTestdriveTab( action->data().toInt() );
-}
-
-void TabWidget::virtApplianceCloseActionTriggered()
-{
-    QAction* action = qobject_cast<QAction*>( QObject::sender() );
-    removeVirtApplianceTab( action->data().toInt() );
-}*/
 
 void TabWidget::clipboardActionTriggered()
 {
@@ -1144,32 +924,6 @@ void TabWidget::makeNsaReport()
     QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
     NSA* n = new NSA( filename ); 
 }
-
-/*void TabWidget::cloneSystem()
-{
-#ifndef IS_WIN32
-    QString filename = QFileDialog::getOpenFileName( this, "Select Supportconfig", QDir::homePath(), "Supportconfig archives (*.tbz)" );
-    
-    if ( !filename.isEmpty() )
-    {
-        Clone* c = new Clone( filename );
-        
-        connect( c, SIGNAL( buildFinished( int, QString ) ), 
-                 this, SLOT( addTestdriveTab( int, QString ) ) );
-    }
-#endif
-}
-
-void TabWidget::tabChanged( int tab )
-{
-    #ifndef IS_WIN32
-    if (  ( mTestDriveMap.keys().contains( tab ) ) && ( mGrabbedWidget == 0 ) )
-    {
-        mTestDriveMap[ tab ]->widget()->getFocus();
-        mGrabbedWidget = tab;
-    }
-    #endif
-}*/
 
 /* 
  * 

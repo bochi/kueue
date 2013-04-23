@@ -64,12 +64,10 @@ class ConfigDialog : public QDialog, private Ui_ConfigDialog
         void toggleSystemTray( const bool& );
         void toggleMonitor( const bool& );
         void toggleQboss( const bool& );
-        void toggleStudio( const bool& );
         void toggleNotifications( const bool& );
         void toggleUnity( const bool& );
         void toggleUnityEditor( const bool& );
         void toggleUnityTimeout( const bool& );
-        void toggleApplianceStart( const bool& );
         void getDownloadDirectory();
         
         void getGeneralNotificationSoundFile();
@@ -99,7 +97,6 @@ class ConfigDialog : public QDialog, private Ui_ConfigDialog
         void getExternalEditorFile();
         void getEditorSaveLocation();
         void getFilemanagerCommand();
-        void getApplianceDownloadDirectory();
         
     signals:
         void settingsChanged();  

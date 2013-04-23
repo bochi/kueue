@@ -114,8 +114,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
              this, SLOT( toggleMonitor( bool ) ) );
     connect( cfg_qbossFeatures, SIGNAL( toggled( bool ) ),
              this, SLOT( toggleQboss( bool ) ) );
-    connect( cfg_studioEnabled, SIGNAL( toggled( bool ) ),
-             this, SLOT( toggleStudio( bool ) ) );
     connect( cfg_notificationsDisabled, SIGNAL( toggled( bool ) ), 
              this, SLOT( toggleNotifications( bool ) ) );
     
@@ -178,9 +176,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     connect( applianceDownloadDirectoryButton, SIGNAL( pressed() ),
              this, SLOT( getApplianceDownloadDirectory() ) );
     
-    connect( cfg_autoOpenAppliances, SIGNAL( toggled( bool ) ), 
-             this, SLOT( toggleApplianceStart( bool ) ) );
-    
     cfg_dBServer->setText( Settings::dBServer() );
     cfg_engineer->setText( Settings::engineer() );
     
@@ -226,14 +221,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_autoNSA->setChecked( Settings::autoNSA() );
     cfg_cleanupDownloadDirectory->setChecked( Settings::cleanupDownloadDirectory() );
         
-    cfg_studioEnabled->setChecked( Settings::studioEnabled() );
-    cfg_studioServer->setText( Settings::studioServer() );
-    cfg_studioUser->setText( Settings::studioUser() );
-    cfg_studioApiKey->setText( Settings::studioApiKey() );
-    cfg_applianceDownloadDir->setText( Settings::applianceDownloadDirectory() );
-    cfg_autoOpenAppliances->setChecked( Settings::autoOpenAppliances() );
-    cfg_autoOpenAppliancesIn->setCurrentIndex( Settings::autoOpenAppliancesIn() );
-    
     cfg_notificationsDisabled->setChecked( Settings::notificationsDisabled() );
 
     cfg_generalNotificationPopup->setChecked( Settings::generalNotificationPopup() );
@@ -305,8 +292,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     toggleQboss( Settings::qbossFeatures() );
     toggleNotifications( Settings::notificationsDisabled() );
     toggleUnity( Settings::unityEnabled() );
-    toggleStudio( Settings::studioEnabled() );
-    toggleApplianceStart( Settings::autoOpenAppliances() );
     
     
     #ifndef QT_HAS_DBUS
@@ -425,14 +410,6 @@ void ConfigDialog::writeSettings()
     Settings::setQbossFeatures( cfg_qbossFeatures->isChecked() );
     Settings::setCheckKopete( cfg_checkKopete->isChecked() );
     Settings::setKopeteText( cfg_kopeteText->text() );
-    
-    Settings::setStudioEnabled( cfg_studioEnabled->isChecked() );
-    Settings::setStudioServer( cfg_studioServer->text() );
-    Settings::setStudioUser( cfg_studioUser->text() );
-    Settings::setStudioApiKey( cfg_studioApiKey->text() );
-    Settings::setApplianceDownloadDirectory( cfg_applianceDownloadDir->text() );
-    Settings::setAutoOpenAppliances( cfg_autoOpenAppliances->isChecked() );
-    Settings::setAutoOpenAppliancesIn( cfg_autoOpenAppliancesIn->currentIndex() );
     
     QStringList el;
     
@@ -610,11 +587,6 @@ void ConfigDialog::toggleUnity( const bool& b )
     cfg_useIdleTimeout->setEnabled( b );
 }
 
-void ConfigDialog::toggleStudio( const bool& b )
-{
-    pageListWidget->item( 4 )->setHidden( !b );
-}
-
 void ConfigDialog::toggleUnityEditor( const bool& b )
 {
     if ( !Settings::unityEnabled() )
@@ -631,11 +603,6 @@ void ConfigDialog::toggleUnityTimeout( const bool& b )
 {
     cfg_idleTimeoutMinutes->setEnabled( b );
     idleTimeoutLabel->setEnabled( b );
-}
-
-void ConfigDialog::toggleApplianceStart( const bool& b )
-{
-    cfg_autoOpenAppliancesIn->setEnabled( b );
 }
 
 void ConfigDialog::getGeneralNotificationSoundFile()
@@ -742,12 +709,6 @@ void ConfigDialog::getDownloadDirectory()
 {
     QString fileName = QFileDialog::getExistingDirectory( this, tr("Select location"), QDir::homePath() );
     cfg_downloadDirectory->setText( fileName );
-}
-
-void ConfigDialog::getApplianceDownloadDirectory()
-{
-    QString fileName = QFileDialog::getExistingDirectory( this, tr("Select location"), QDir::homePath() );
-    cfg_applianceDownloadDir->setText( fileName );
 }
 
 void ConfigDialog::getFilemanagerCommand()

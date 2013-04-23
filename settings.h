@@ -216,38 +216,6 @@ class Settings
         static bool statsEnabled();
         static void setStatsEnabled( const bool& );
         
-        /* Studio Group */
-        
-        static bool studioEnabled();
-        static void setStudioEnabled( const bool& );
-        
-        static bool studioDebugEnabled();
-        static void setStudioDebugEnabled( const bool& );
-        
-        static bool testdriveDebugEnabled();
-        static int testdriveDebugBuildID();
-        
-        static QString studioScriptVersion();
-        static void setStudioScriptVersion( const QString& );
-        
-        static QString studioServer();
-        static void setStudioServer( const QString& );
-        
-        static QString studioUser();
-        static void setStudioUser( const QString& );
-        
-        static QString studioApiKey();
-        static void setStudioApiKey( const QString& );
-        
-        static QString applianceDownloadDirectory();
-        static void setApplianceDownloadDirectory( const QString& );
-        
-        static bool autoOpenAppliances();
-        static void setAutoOpenAppliances( const bool& );
-        
-        static int autoOpenAppliancesIn();
-        static void setAutoOpenAppliancesIn( int );
-        
         /* Notifications Group */
         
         static bool notificationsDisabled();

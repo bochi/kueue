@@ -37,10 +37,6 @@
 #include "ui/browsers/search/webviewsearch.h"
 #include "ui/browsers/search/browsersearch.h"
 #include "ui/busywidget.h"
-//#ifndef IS_WIN32
-//#include "clone/testdrive.h"
-//#include "clone/virtappliance.h"
-//#endif
 
 #include <QTabWidget>
 #include <QToolButton>
@@ -68,11 +64,6 @@ class TabWidget : public QTabWidget
             TabWidget::tw().addUnityBrowserWithSR( id );
         }
         
-        /*static void applianceRunner( const QString& name )
-        {
-            TabWidget::tw().runApplianceRequested( name );
-        }*/
-        
     private:
         static TabWidget* instance;
         TabWidget(QWidget *parent = 0L);
@@ -92,13 +83,6 @@ class TabWidget : public QTabWidget
         KueueWindow* mKueueWindow;
         QList<UnityWidget*> mUnityWidgetList;
         QMap<int, UnityBrowser*> mUnityBrowserMap; 
-        
-        #ifndef IS_WIN32
-        //QList<TestDrive*> mTestDriveList;
-        //QMap<int, TestDrive*> mTestDriveMap;
-        //QList<VirtAppliance*> mVirtApplianceList;
-        //QMap<int, VirtAppliance*> mVirtApplianceMap;
-        #endif
         
         StatusBar* mStatusBar;
         WebViewSearch* webViewSearch( int );
@@ -135,11 +119,7 @@ class TabWidget : public QTabWidget
         void addUnityBrowser();
         void addUnityBrowserWithSR( QString = QString::Null() );
         void removeUnityBrowser( int );
-        //void removeTestdriveTab( int );
-        //void removeVirtApplianceTab( int );
         void rebuildMaps();
-        //void addTestdriveTab( int, const QString& );
-        //void somethingWentWrong();
         void showMonitorTab( bool );
         void showStatsTab( bool );
         void showPersonalTab( bool );
@@ -162,11 +142,7 @@ class TabWidget : public QTabWidget
         void toggleTodo( bool );
         void unityTabMenu( int tab, const QPoint& p );
         void permanentUnityTabMenu( const QPoint& p );
-        //void testdriveTabMenu( int tab, const QPoint& p );
-        //void virtApplianceTabMenu( int tab, const QPoint& p );
         void closeActionTriggered();
-        //void testdriveCloseActionTriggered();
-        //void virtApplianceCloseActionTriggered();
         void clipboardActionTriggered();
         void closeAllOtherActionTriggered();
         void permClipboardActionTriggered();
@@ -190,11 +166,6 @@ class TabWidget : public QTabWidget
         void openWebsite();
         void showSearch();
         void makeNsaReport();
-        //void cloneSystem();
-        //void tabChanged( int );
-        //void addApplianceDownloadJob( const QString& );
-        //void runApplianceRequested( const QString& );
-        //void runAppliance( const QString&, const QString& );
 
     signals:
         void unityTabMiddleClicked( int );

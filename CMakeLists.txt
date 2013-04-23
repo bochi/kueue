@@ -33,14 +33,6 @@ FIND_PACKAGE( LibMagic REQUIRED )
 
 INCLUDE( ${QT_USE_FILE} )
 
-#if ( WIN32 )                                                                                                                                                 
-    #set( CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/qvirt/cmake/modules ${CMAKE_CURRENT_SOURCE_DIR}/vnc/cmake/modules )                               
-    #FIND_PACKAGE( LibVirt REQUIRED )                                                                                                                     
-    #FIND_PACKAGE( LibVNCServer REQUIRED )                                                                                                                
-    #FIND_PACKAGE( JPEG REQUIRED )                                                                                                                        
-    #set( EXTRA_INC ${LIBVNCCLIENT_INCLUDE_DIR} ${LIBVIRT_INCLUDE_DIR} )                                                                                  
-#ENDIF(WIN32)  
-
 INCLUDE_DIRECTORIES(  ${LIBMAGIC_INCLUDE_DIR} 
 	              ${QT_INCLUDES} 
                       ${CMAKE_CURRENT_BINARY_DIR} 
@@ -82,9 +74,6 @@ CONFIGURE_FILE( ${CMAKE_SOURCE_DIR}/config.h.cmake ${CMAKE_SOURCE_DIR}/config.h 
 
 ADD_SUBDIRECTORY( qtsingleapplication )
 ADD_SUBDIRECTORY( simplecrypt )
-#ADD_SUBDIRECTORY( qstudio )
-#ADD_SUBDIRECTORY( vnc )
-#ADD_SUBDIRECTORY( qvirt )
 
 SET( QtSingleApp_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qtsingleapplication )
 SET( QT_SINGLEAPP_LIBRARY qtsingleapplication )
@@ -92,22 +81,8 @@ SET( QT_SINGLEAPP_LIBRARY qtsingleapplication )
 SET( SimpleCrypt_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/simplecrypt )
 SET( SIMPLECRYPT_LIBRARY simplecrypt )
 
-#IF( NOT WIN32 )
-#SET( QStudio_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qstudio )
-#SET( QT_STUDIO_LIBRARY qstudio )
-
-#SET( QVNC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/vnc )
-#SET( QVNC_LIBRARY qvnc )
-
-#SET( QVIRT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qvirt )
-#SET( QVIRT_LIBRARY qvirt )
-#ENDIF( NOT WIN32 )
-
 INCLUDE_DIRECTORIES( ${QtSingleApp_INCLUDE_DIR} )
 INCLUDE_DIRECTORIES( ${ArchiveExtract_INCLUDE_DIR} )
-#INCLUDE_DIRECTORIES( ${QStudio_INCLUDE_DIR} )
-#INCLUDE_DIRECTORIES( ${QVNC_INCLUDE_DIR} )
-#INCLUDE_DIRECTORIES( ${QVIRT_INCLUDE_DIR} )
 
 #
 # Define the source files
@@ -144,10 +119,8 @@ SET( kueue_CPP  main.cpp
 		ui/download/autosaver.cpp
 		ui/qprogressindicator.cpp
 		ui/busywidget.cpp
-                #ui/cloneresult.cpp
 		ui/threadprogress.cpp
                 ui/waitwidget.cpp
-		#ui/vmexistsdialog.cpp
 
                 ui/browsers/unitybrowser.cpp 
                 ui/browsers/qmonbrowser.cpp
@@ -173,18 +146,6 @@ SET( kueue_CPP  main.cpp
 		nsa/nsawindow.cpp
 	        nsa/nsajob.cpp ) 
 
-#IF( NOT WIN32 AND NOT APPLE )
-
-#SET( kueue_CPP  ${kueue_CPP}
-#                ui/vncwidget.cpp
-#                clone/clone.cpp
-#                clone/buildrpm.cpp 
-#                clone/buildappliance.cpp 
-#                clone/testdrive.cpp
-#                clone/virtappliance.cpp )
-                
-#ENDIF( NOT WIN32 AND NOT APPLE )
-	        
 SET( kueue_QRC  kueue.qrc )
 
 SET( kueue_UI   ui/detailwindow.ui
@@ -221,7 +182,7 @@ IF( WIN32 )
     ENABLE_LANGUAGE( RC )
     SET( CMAKE_RC_COMPILE_OBJECT "<CMAKE_RC_COMPILER> <FLAGS> -O coff <DEFINES> -i <SOURCE> -o <OBJECT>" )
     ADD_EXECUTABLE( kueue WIN32 ${RES_FILE} ${kueue_CPP} ${kueue_QRC_SRCS} ${kueue_UI_H} )
-    SET( WINDOWS_LINK ${QT_PHONON_LIBRARY} ) #${LIBVNCCLIENT_LIBRARIES} ${LIBVIRT_LIBRARIES} )
+    SET( WINDOWS_LINK ${QT_PHONON_LIBRARY} ) 
 ENDIF( WIN32 )
 
 #
@@ -278,10 +239,7 @@ TARGET_LINK_LIBRARIES( kueue ${QT_LIBRARIES}
                              ${QT_QTGUI_LIBRARY} 
                              ${QT_SINGLEAPP_LIBRARY}
                              ${SIMPLECRYPT_LIBRARY} 
-                             #${QT_STUDIO_LIBRARY}
                              ${QT_QTTEST_LIBRARY} 
-                             #${QVNC_LIBRARY} 
-                             #${QVIRT_LIBRARY}
                              ${LIBMAGIC_LIBRARY}
 			     ${LINUX_LINK}
                              ${WINDOWS_LINK} )
