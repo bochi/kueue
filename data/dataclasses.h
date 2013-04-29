@@ -57,6 +57,8 @@ class QueueSR
         QString alt_contact;
         QString bug;
         QString bugtitle;
+        QString owner;
+        QString subowner;
         QStringList todoList;
         qint32 age;
         qint32 lastUpdateDays;

@@ -145,7 +145,7 @@ void Data::updateQueue()
 {
     if ( !mQueueUpdateRunning )
     { 
-        QNetworkReply* r = get( "userqueue/" + Settings::engineer() );
+        QNetworkReply* r = get( "userqueue/full/" + Settings::engineer() );
     
         connect( r, SIGNAL( finished() ), 
                 this, SLOT( queueUpdateFinished() ) );
@@ -220,6 +220,8 @@ void Data::queueUpdateFinished()
             sr.service_level = list.at( i ).namedItem( "service_level" ).toElement().text().toInt();
             sr.highvalue = list.at( i ).namedItem( "highvalue" ).toElement().text().toInt(); 
             sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
+            sr.owner = list.at( i ).namedItem( "owner" ).toElement().text();
+            sr.subowner = list.at( i ).namedItem( "subowner" ).toElement().text();
             
             q.srList.append( sr );
             

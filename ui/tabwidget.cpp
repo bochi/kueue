@@ -71,9 +71,6 @@ TabWidget::TabWidget( QWidget* parent )
 
     mGrabbedWidget = 0;
     
-    connect( this, SIGNAL( currentChanged( int ) ),
-             this, SLOT( tabChanged( int ) ) );
-    
     // set the tab position 
     
     setTabsPosition();
@@ -620,11 +617,6 @@ QMenu* TabWidget::kueueMainMenu()
     connect( mActionNSA, SIGNAL( activated() ), 
              this, SLOT( makeNsaReport() ) );
     
-#ifndef IS_WIN32
-    connect( mActionClone, SIGNAL( activated() ),
-             this, SLOT( cloneSystem() ) );
-
-#endif
     return menu;
 }
 

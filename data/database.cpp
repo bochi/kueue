@@ -87,7 +87,8 @@ void Database::openDbConnection( QString dbname )
                             "  CUS_FIRSTNAME TEXT, CUS_LASTNAME TEXT, CUS_TITLE TEXT, CUS_EMAIL TEXT, CUS_PHONE TEXT, "
                             "  CUS_ONSITEPHONE TEXT, CUS_LANG TEXT, SEVERITY TEXT, STATUS TEXT, BDESC TEXT, DDESC TEXT, "
                             "  GEO TEXT, HOURS TEXT, CONTRACT TEXT, SERVICE_LEVEL INTEGER, CREATED TEXT, LASTUPDATE TEXT, "
-                            "  HIGHVALUE INTEGER, CRITSIT INTEGER, DISPLAY TEXT, ALT_CONTACT TEXT, BUG TEXT, BUGTITLE TEXT )" ) )
+                            "  HIGHVALUE INTEGER, CRITSIT INTEGER, DISPLAY TEXT, ALT_CONTACT TEXT, BUG TEXT, BUGTITLE TEXT, "
+                            "  OWNER TEXT, SUBOWNER TEXT )" ) )
         {
             qDebug() << "[DATABASE] Error:" << query.lastError();
         }
@@ -216,7 +217,7 @@ void Database::updateQueueSR( QueueSR sr, const QString& dbname )
                     "CUS_ONSITEPHONE=:cus_onsitephone, CUS_LANG=:cus_lang, SEVERITY=:severity, STATUS=:status, "
                     "BDESC=:bdesc, DDESC=:ddesc, GEO=:geo, HOURS=:hours, CONTRACT=:contract, SERVICE_LEVEL=:service_level, "
                     "CREATED=:created, LASTUPDATE=:lastupdate, HIGHVALUE=:highvalue, CRITSIT=:critsit, ALT_CONTACT=:alt_contact, "
-                    "BUG=:bug, BUGTITLE=:bugtitle WHERE ID = :id" );
+                    "BUG=:bug, BUGTITLE=:bugtitle, OWNER=:owner, SUBOWNER=:subowner WHERE ID = :id" );
     
     query.bindValue( ":srtype", sr.srtype );
     query.bindValue( ":creator", sr.creator );
@@ -244,6 +245,8 @@ void Database::updateQueueSR( QueueSR sr, const QString& dbname )
     query.bindValue( ":bug", sr.bug );
     query.bindValue( ":bugtitle", sr.bugtitle );
     query.bindValue( ":id", sr.id );
+    query.bindValue( ":owner", sr.owner );
+    query.bindValue( ":subowner", sr.subowner );
 
     if ( !query.exec() ) 
     {
@@ -259,11 +262,11 @@ void Database::insertQueueSR( QueueSR sr, const QString& dbname )
     query.prepare(  "INSERT INTO " + Settings::engineer().toUpper() +
                     "( ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
                     "  CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-                    "  CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE )"
+                    "  CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER )"
                     "VALUES" 
                     "( :id, :srtype, :creator, :cus_account, :cus_firstname, :cus_lastname, :cus_title, :cus_email, :cus_phone, "
                     "  :cus_onsitephone, :cus_lang, :severity, :status, :bdesc, :ddesc, :geo, :hours, :contract, :service_level, "
-                    "  :created, :lastupdate, :highvalue, :critsit, 'none', :alt_contact, :bug, :bugtitle )" );
+                    "  :created, :lastupdate, :highvalue, :critsit, 'none', :alt_contact, :bug, :bugtitle, :owner, :subowner )" );
         
     query.bindValue( ":id", sr.id );
     query.bindValue( ":srtype", sr.srtype );
@@ -291,6 +294,8 @@ void Database::insertQueueSR( QueueSR sr, const QString& dbname )
     query.bindValue( ":alt_contact", sr.alt_contact );
     query.bindValue( ":bug", sr.bug );
     query.bindValue( ":bugtitle", sr.bugtitle );
+    query.bindValue( ":owner", sr.owner );
+    query.bindValue( ":subowner", sr.subowner );
     
     if ( !query.exec() ) 
     {
@@ -472,13 +477,13 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname, const
         {    
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
                             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + f + " ORDER BY CREATED ASC" );
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY CREATED ASC" );
         }
         else 
         {   
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
                             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + f + " ORDER BY LASTUPDATE ASC" );
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY LASTUPDATE ASC" );
         }
     }
     else
@@ -487,13 +492,13 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname, const
         {    
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
                             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + f + " ORDER BY CREATED DESC" );
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY CREATED DESC" );
         }
         else 
         {    
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
                             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE FROM " + Settings::engineer().toUpper() + f + " ORDER BY LASTUPDATE DESC" );
+                            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY LASTUPDATE DESC" );
         }
     }
         
@@ -533,6 +538,8 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname, const
         sr.alt_contact = query.value(24).toString();
         sr.bug = query.value(25).toString();
         sr.bugtitle = query.value(26).toString();
+        sr.owner = query.value(27).toString();
+        sr.subowner = query.value(28).toString();
         
         QDateTime a = QDateTime::fromString( sr.created, "yyyy-MM-dd hh:mm:ss" );
         QDateTime u = QDateTime::fromString( sr.lastupdate, "yyyy-MM-dd hh:mm:ss" );

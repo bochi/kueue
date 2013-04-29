@@ -446,6 +446,19 @@ QString HTML::SRTable( QueueSR sr )
                             "<td class='gadgetText'>Yes <img src='qrc:/images/obacht.png'></img></td>"
                           "</tr>" );
     }
+    
+    srtab += QString( "<tr>"
+                        "<td class='gadgetText'>&nbsp;Owner</td>"
+                        "<td class='gadgetText'>" + sr.owner + "</td>"
+                      "</tr>" );
+    
+    if ( !sr.subowner.isEmpty() )
+    {
+        srtab += QString( "<tr>"
+                            "<td class='gadgetText'>&nbsp;Subowner</td>"
+                            "<td class='gadgetText'>" + sr.subowner + "</td>"
+                          "</tr>" );
+    }
 
     QStringList list = sr.todoList;
     
