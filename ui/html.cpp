@@ -217,7 +217,13 @@ QString HTML::SRTable( QueueSR sr )
 {
     QString srtab;
     QString t;
+    QString bg = "#E8E8E8";
     
+    if ( !sr.subowner.isEmpty() )
+    {
+        bg = "#A3A3A3";
+    }
+
     if ( sr.id == "00000000000" )
     {
         return "Updating...\n";
@@ -244,7 +250,7 @@ QString HTML::SRTable( QueueSR sr )
                                 "<td width='1' rowspan='4' class='dotlinevert'>\n"
                                     "<img src='qrc:/images/spacer.gif' width='1' height='1' border='0' alt=''>\n"
                                 "</td>\n"
-                                "<td width='100%' bgcolor='#E8E8E8'>\n"
+                                "<td width='100%' bgcolor='" + bg + "'>\n"
                                     "<a href='sr://" + sr.id + "'><table width='100%' cellpadding='0' cellspacing='0' border='0'>\n"
                                         "<tr width='100%'>\n"
                                             "<td class='gadgetHead' valign='center' width='15%'><font" );

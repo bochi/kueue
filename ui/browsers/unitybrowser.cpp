@@ -467,6 +467,7 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     slesmenu->addAction( "SUSE Linux Enterprise Server 11", this, SLOT( fillOutProduct() ) );
     slesmenu->addAction( "SUSE Linux Enterprise Server 11 SP1", this, SLOT( fillOutProduct() ) );
     slesmenu->addAction( "SUSE Linux Enterprise Server 11 SP2", this, SLOT( fillOutProduct() ) );
+    slesmenu->addAction( "SUSE Linux Enterprise Server 11 SP3", this, SLOT( fillOutProduct() ) );
     
     slesmenu->addSeparator();
     
