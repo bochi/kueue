@@ -65,6 +65,7 @@ class UnityPage : public QWebPage
         void setStatus( const QString& );
         void goToService();
         void exportSr();
+	void setSubowner( const QStringList&, const QString& );
 
     private slots:
         void pageLoaded();
@@ -112,6 +113,8 @@ class UnityPage : public QWebPage
         void closeSrSecond();
         void closeSrThird();
         
+	void setSubownerJob();
+	
         void addNoteAccepted();
         void addNoteRejected();
         void addNoteFirst();
@@ -150,6 +153,8 @@ class UnityPage : public QWebPage
         QString mProduct;
         QString mComponent;
         QString mSaveJS;
+	QString mSubownerSR;
+	QString mSubownerOwner;
 
         QTimer* mTimer;
 
@@ -162,6 +167,7 @@ class UnityPage : public QWebPage
         bool mSetSS;
         bool mSetSC;
         bool mCloseSR;
+	bool mSetSubowner;
         bool mAddNote;
         bool mNoJsConfirm;
         bool mPageErbert;

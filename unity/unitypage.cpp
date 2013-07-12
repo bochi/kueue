@@ -516,6 +516,11 @@ void UnityPage::newActivity()
         connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
                  this, SLOT( addNoteFirst() ) );        
     }       
+    else if ( mSetSubowner )
+    {
+        connect( mViewFrame, SIGNAL(loadFinished( bool ) ),
+                 this, SLOT( setSubownerJob() ) );
+    }
     
     QWebElementCollection fc = mViewFrame->findAllElements( "a" );
     QString newJS;
@@ -966,5 +971,6 @@ void UnityPage::saveCurrentActivity()
 #include "unitypage_note.cpp"
 #include "unitypage_status.cpp"
 #include "unitypage_export.cpp"
+#include "unitypage_subowner.cpp"
 
 #include "unitypage.moc"

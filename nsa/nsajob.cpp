@@ -60,69 +60,27 @@ void NSAJob::run()
     {
         QDateTime rundatetime;
         QDomDocument xmldoc;
-        xmldoc.setContent( &info );
-        QDomElement docElem = xmldoc.documentElement();   
-
-        QDomNode n = docElem.firstChild();
         
-         while( !n.isNull() ) 
-         {
-            QDomElement e = n.toElement(); // try to convert the node to an element.
-            
-            if( !e.isNull() )
-            {
-                if( e.tagName() == "scriptversion" )
-                {
-                    si.scriptversion = e.text();
-                }
-                else if( e.tagName() == "scriptdate" )
-                {
-                    si.scriptdate = QDate::fromString( e.text(), "yyyy MM dd" );
-                }
-                else if( e.tagName() == "rundate" )
-                {
-                    rundatetime.setDate( QDate::fromString( "20" + e.text(), "yyyyMMdd" ) );
-                }
-                else if( e.tagName() == "runtime" )
-                {
-                    rundatetime.setTime( QTime::fromString( e.text(), "hhmm" ) );
-                }
-                else if( e.tagName() == "hostname" )
-                {
-                    si.hostname = e.text();
-                }
-                else if( e.tagName() == "arch" )
-                {
-                    si.arch = e.text();
-                }
-                else if( e.tagName() == "kernel" )
-                {
-                    si.kernel = e.text();
-                }
-                else if( e.tagName() == "sles_version" )
-                {
-                    si.slesversion = e.text();
-                }
-                else if( e.tagName() == "sles_sp" )
-                {
-                    si.slessp = e.text();
-                }
-                else if( e.tagName() == "oes_version" )
-                {
-                    si.oesversion = e.text();
-                }
-                else if( e.tagName() == "oes_sp" )
-                {
-                    si.oessp = e.text();
-                }
-            }
-            
-            n = n.nextSibling();
-        }
-
-        si.rundate = rundatetime;
+	xmldoc.setContent( &info );
+        QDomNode node = xmldoc.namedItem( "summary" );
+	qDebug() << node.namedItem( "scriptversion" ).toElement().text();
+	
+	si.scriptversion = node.namedItem( "scriptversion" ).toElement().text();
+	si.scriptdate = QDate::fromString( node.namedItem( "scriptdate" ).toElement().text(), "yyyy MM dd" );
+	rundatetime.setDate( QDate::fromString( "20" + node.namedItem( "rundate" ).toElement().text(), "yyyyMMdd" ) );
+	rundatetime.setTime( QTime::fromString( node.namedItem( "runtime" ).toElement().text(), "hhmm" ) );
+	si.rundate = rundatetime;
+        si.hostname = node.namedItem( "hostname" ).toElement().text();
+        si.arch = node.namedItem( "arch" ).toElement().text();  
+	si.kernel = node.namedItem( "kernel" ).toElement().text();  
+	si.slesversion = node.namedItem( "sle_version" ).toElement().text();
+	si.slestype = node.namedItem( "sle_type" ).toElement().text();  
+	si.slessp = node.namedItem( "sle_patchlevel" ).toElement().text();  
+	si.slesversion = node.namedItem( "sle_version" ).toElement().text();  
+	si.oesversion = node.namedItem( "oes_version" ).toElement().text();
+	si.oessp = node.namedItem( "oes_patchlevel" ).toElement().text();
     }
-
+    
     output += HTML::nsaPageHeader( si );
 
     mNsaDir = QDir( QDesktopServices::storageLocation( QDesktopServices::DataLocation ) + "/nsa" );

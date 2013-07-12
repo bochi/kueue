@@ -81,6 +81,7 @@ class NSASummaryItem
         QString hostname;
         QString arch;
         QString kernel;
+	QString slestype;
         QString slesversion;
         QString slessp;
         QString oesversion;

@@ -528,6 +528,7 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     sledmenu->addAction( "SUSE Linux Enterprise Desktop 11", this, SLOT( fillOutProduct() ) );
     sledmenu->addAction( "SUSE Linux Enterprise Desktop 11 SP1", this, SLOT( fillOutProduct() ) );
     sledmenu->addAction( "SUSE Linux Enterprise Desktop 11 SP2", this, SLOT( fillOutProduct() ) );
+    sledmenu->addAction( "SUSE Linux Enterprise Desktop 11 SP3", this, SLOT( fillOutProduct() ) );
     
     sledmenu->addSeparator();
     

@@ -1091,7 +1091,7 @@ QString HTML::nsaPageHeader( NSASummaryItem summary )
                  "<tr><td><b>Report Run Date:</b></td><td>" + summary.rundate.toString( "yyyy-MM-dd - hh:mm" ) + "</td></tr>"
                  "<tr><td><b>Hostname:</b></td><td>" + summary.hostname + "</td></tr>"
                  "<tr><td>&nbsp;</td></tr>"
-                 "<tr><td><b>SLES Version:</b></td><td> SUSE Linux Enterprise Server " + summary.slesversion + " SP " + summary.slessp + "</td></tr>" );
+                 "<tr><td><b>SLE Version:</b></td><td>" + summary.slestype + " " + summary.slesversion + " SP " + summary.slessp + "</td></tr>" );
         
         if ( !summary.oesversion.isEmpty() )
         {
