@@ -77,6 +77,7 @@ class TabWidget : public QTabWidget
         QWidget* mStatsTab;
         UnityWidget* mUnityTab;
         QueueBrowser* mQueueBrowser;
+	QueueBrowser* mSubownerBrowser;
         QMonBrowser* mQmonBrowser;
         StatsBrowser* mStatsBrowser;
         UnityBrowser* mUnityBrowser;
@@ -92,10 +93,6 @@ class TabWidget : public QTabWidget
         QAction* mActionConfig;
         QAction* mActionShowSR;
         QAction* mActionShowCR;
-        QAction* mActionDisableTodo;
-        QAction* mActionTodoShowUp;
-        QAction* mActionTodoShowStat;
-        QAction* mActionTodoShowSmilies;
         QAction* mActionSortUpdate;
         QAction* mActionSortAge;
         QAction* mActionAwaitingCustomer;
@@ -139,7 +136,6 @@ class TabWidget : public QTabWidget
         void tabMiddleClicked( int, QPoint );
         void tabRightClicked( int, QPoint );
         void setMenus();
-        void toggleTodo( bool );
         void unityTabMenu( int tab, const QPoint& p );
         void permanentUnityTabMenu( const QPoint& p );
         void closeActionTriggered();
@@ -148,9 +144,6 @@ class TabWidget : public QTabWidget
         void permClipboardActionTriggered();
         void setShowSR( bool );
         void setShowCR( bool );
-        void setTodoShowUp( bool );
-        void setTodoShowStat( bool );
-        void setTodoShowSmilies( bool );
         void setSortAge( bool );
         void setSortUpdate( bool );
         void setShowAwaitingCustomer( bool );

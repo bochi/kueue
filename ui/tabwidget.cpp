@@ -467,35 +467,6 @@ QMenu* TabWidget::kueueMainMenu()
     
     view->addMenu( sortby );
     
-    QMenu* todolist = new QMenu( menu );
-    todolist->setIcon( QIcon( ":/icons/menus/todo.png" ) );
-    todolist->setTitle( "TO-DO List" );
-    
-    mActionDisableTodo = new QAction( todolist );
-    mActionDisableTodo->setText( "Disable todo" );
-    mActionDisableTodo->setCheckable( true );
-    
-    mActionTodoShowUp = new QAction( todolist );
-    mActionTodoShowUp->setText( "Update" );
-    mActionTodoShowUp->setCheckable( true );
-    
-    mActionTodoShowStat = new QAction( todolist );
-    mActionTodoShowStat->setText( "Suspicious status" );
-    mActionTodoShowStat->setCheckable( true );
-    
-    mActionTodoShowSmilies = new QAction( todolist );
-    mActionTodoShowSmilies->setText( "Show smilies" );
-    mActionTodoShowSmilies->setCheckable( true );
-    
-    todolist->addAction( mActionDisableTodo );
-    todolist->addSeparator();
-    todolist->addAction( mActionTodoShowUp );
-    todolist->addAction( mActionTodoShowStat );
-    todolist->addSeparator();
-    todolist->addAction( mActionTodoShowSmilies );
-    
-    view->addMenu( todolist );
-    
     QMenu* other = new QMenu( menu );
     other->setIcon( QIcon( ":/icons/menus/misc.png" ) );
     other->setTitle( "Other" );
@@ -577,14 +548,6 @@ QMenu* TabWidget::kueueMainMenu()
              this, SLOT( setShowSR( bool ) ) );
     connect( mActionShowCR, SIGNAL( toggled( bool ) ), 
              this, SLOT( setShowCR( bool ) ) );
-    connect( mActionDisableTodo, SIGNAL( toggled( bool ) ),
-             this, SLOT( toggleTodo( bool ) ) );
-    connect( mActionTodoShowUp, SIGNAL( toggled( bool ) ),
-             this, SLOT( setTodoShowUp( bool ) ) );
-    connect( mActionTodoShowStat, SIGNAL( toggled( bool ) ),
-             this, SLOT( setTodoShowStat( bool ) ) );
-    connect( mActionTodoShowSmilies, SIGNAL( toggled( bool ) ),
-             this, SLOT( setTodoShowSmilies( bool ) ) );
     connect( mActionSortUpdate, SIGNAL( toggled( bool ) ),
              this, SLOT( setSortUpdate( bool ) ) );
     connect( mActionSortAge, SIGNAL( toggled( bool ) ), 
@@ -618,26 +581,6 @@ QMenu* TabWidget::kueueMainMenu()
              this, SLOT( makeNsaReport() ) );
     
     return menu;
-}
-
-void TabWidget::toggleTodo( bool b )
-{
-    if ( b )
-    {
-        Settings::setTodoDisabled( true );
-        mActionTodoShowUp->setEnabled( false );
-        mActionTodoShowStat->setEnabled( false );
-        mActionTodoShowSmilies->setEnabled( false );
-    }
-    else
-    {
-        Settings::setTodoDisabled( false );
-        mActionTodoShowUp->setEnabled( true );
-        mActionTodoShowStat->setEnabled( true );
-        mActionTodoShowSmilies->setEnabled( true );
-    }
-    
-    DataThread::updateQueueBrowser();
 }
 
 void TabWidget::unityTabMenu( int tab, const QPoint& p )
@@ -744,14 +687,9 @@ void TabWidget::setMenus()
     mActionShowCR->setChecked( Settings::showCR() );
     mActionSortUpdate->setChecked( Settings::sortUpdate() );
     mActionSortAge->setChecked( Settings::sortAge() );
-    mActionDisableTodo->setChecked( Settings::todoDisabled() );
-    mActionTodoShowUp->setChecked( Settings::todoShowUp() );
-    mActionTodoShowStat->setChecked( Settings::todoShowStat() );
-    mActionTodoShowSmilies->setChecked( Settings::todoShowSmilies() );
     mActionAwaitingCustomer->setChecked( Settings::showAwaitingCustomer() );
     mActionAwaitingSupport->setChecked( Settings::showAwaitingSupport() );
     mActionOthers->setChecked( Settings::showStatusOthers() );  
-    toggleTodo( mActionDisableTodo->isChecked() );
 }
 
 void TabWidget::closeAllTables()
@@ -784,24 +722,6 @@ void TabWidget::setShowSR( bool s )
 void TabWidget::setShowCR( bool s )
 {
     Settings::setShowCR( s );
-    updateUiData();
-}
-
-void TabWidget::setTodoShowUp( bool s )
-{
-    Settings::setTodoShowUp( s );
-    updateUiData();
-}
-
-void TabWidget::setTodoShowStat( bool s )
-{
-    Settings::setTodoShowStat( s );
-    updateUiData();
-}
-
-void TabWidget::setTodoShowSmilies( bool s )
-{
-    Settings::setTodoShowSmilies( s );
     updateUiData();
 }
 

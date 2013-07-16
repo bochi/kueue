@@ -465,54 +465,6 @@ QString HTML::SRTable( QueueSR sr )
                             "<td class='gadgetText'>" + sr.subowner + "</td>"
                           "</tr>" );
     }
-
-    QStringList list = sr.todoList;
-    
-    if( !( !( Settings::todoShowEsc() ) && 
-        !(Settings::todoShowStat() ) && 
-        !( Settings::todoShowUp() ) ) &&
-        !( Settings::todoDisabled() ) )
-    {                
-        srtab+= ( "<tr><td class='gadgetText' valign='top'>&nbsp;TODO</td><td class='gadgetText'>" );
-  
-        for (int i = 0; i < list.size(); ++i) 
-        {
-            t = QString( list.at(i).toUtf8() );
-  
-            if( Settings::todoShowSmilies() ) 
-            {
-                if( t.startsWith( "[1]" ) )
-                {    
-                    srtab+=( "<img src='qrc:/images/sad.gif'></img> " + t.remove( "[1]" ) + "<br>");
-                }
-                else if( t.startsWith( "[2]" ) )
-                {
-                    srtab+=( "<img src='qrc:/images/und.gif'></img> " + t.remove( "[2]" ) + "<br>");
-                }
-                else if( t.startsWith( "[3]" ) )
-                {
-                    srtab+=( "<img src='qrc:/images/yay.gif'></img> " + t.remove( "[3]" ) + "<br>");
-                }
-            }
-            else
-            {
-                if( t.startsWith( "[1]" ) )
-                {
-                    srtab+=( "&#8226; " + t.remove( "[1]" ) + "<br>");
-                }
-                else if( t.startsWith( "[2]" ) )
-                {
-                    srtab+=( "&#8226; " + t.remove( "[2]" ) + "<br>");
-                }
-                else if( t.startsWith( "[3]" ) )
-                {
-                    srtab+=( "&#8226; " + t.remove( "[3]" ) + "<br>");
-                }
-            }
-        }
-        
-        srtab += "</td>";
-    }
     
     srtab += (   "</tr></table></a></a></td><td width='1' rowspan='4' class='dotlinevert'><img src='qrc:/images/spacer.gif'"
                 "width='1' height='1' border='0' alt=''></td></tr><tr><td colspan='3'><div class='dotlinehoriz'>"

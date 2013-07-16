@@ -45,7 +45,7 @@ class Settings
 
         static QString unityPassword();
         static void setUnityPassword( const QString& );
-        
+       
         static bool showAppWindow();
         static void setShowAppWindow( const bool& );
 
@@ -156,21 +156,6 @@ class Settings
         static bool sortAsc();
         static void setSortAsc( const bool& );
         
-        static bool todoShowUp();
-        static void setTodoShowUp( const bool& );
-        
-        static bool todoShowEsc();
-        static void setTodoShowEsc( const bool& );
-        
-        static bool todoDisabled();
-        static void setTodoDisabled( const bool& );
-        
-        static bool todoShowStat();
-        static void setTodoShowStat( const bool& );
-        
-        static bool todoShowSmilies();
-        static void setTodoShowSmilies( const bool& );
-        
         static bool showAwaitingCustomer();
         static void setShowAwaitingCustomer( const bool& );
         
@@ -180,6 +165,34 @@ class Settings
         static bool showStatusOthers();
         static void setShowStatusOthers( const bool& );
                 
+	
+        static bool subShowSR();
+        static void setSubShowSR( const bool& );
+        
+        static bool subShowCR();
+        static void setSubShowCR( const bool& );
+        
+        static bool subShowSS();
+        static void setSubShowSS( const bool& );
+        
+        static bool subSortUpdate();
+        static void setSubSortUpdate( const bool& );
+        
+        static bool subSortAge();
+        static void setSubSortAge( const bool& );
+        
+        static bool subSortAsc();
+        static void setSubSortAsc( const bool& );
+        
+        static bool subShowAwaitingCustomer();
+        static void setSubShowAwaitingCustomer( const bool& );
+        
+        static bool subShowAwaitingSupport();
+        static void setSubShowAwaitingSupport( const bool& );
+        
+        static bool subShowStatusOthers();
+        static void setSubShowStatusOthers( const bool& );
+        
         /* Monitor Group */
         
         static bool monitorEnabled();

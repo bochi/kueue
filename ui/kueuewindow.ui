@@ -120,38 +120,6 @@
     <string>No action required</string>
    </property>
   </action>
-  <action name="actionTodoShowUp">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Update</string>
-   </property>
-  </action>
-  <action name="actionTodoShowEsc">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Escalation targets</string>
-   </property>
-  </action>
-  <action name="actionTodoShowStat">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Suspicious status</string>
-   </property>
-  </action>
-  <action name="actionTodoShowSmilies">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Show smilies</string>
-   </property>
-  </action>
   <action name="actionCloseSrTables">
    <property name="checkable">
     <bool>false</bool>

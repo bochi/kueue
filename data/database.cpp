@@ -547,35 +547,6 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname, const
         sr.age = a.daysTo( now );
         sr.lastUpdateDays = u.daysTo( now );
      
-        QStringList todo;
-        
-        if ( Settings::todoShowStat() )
-        {
-            if ( sr.status == "Assigned" || sr.status == "Unassigned" ) 
-            {
-                todo.append( "[2]The SR is in status " + sr.status + ", that's probably incorrect. Please check and change status if needed." );
-            }
-        }
-      
-        if ( Settings::todoShowUp() )
-        {
-            if ( sr.status == "Awaiting Novell Support" && sr.lastUpdateDays >= 3 ) 
-            {
-                todo.append( "[1]There was no activity for " + QString::number( sr.lastUpdateDays ) + " days and the customer is waiting for Novell, please update SR asap!" );
-            }
-        }
-        else if ( sr.status != "Suspended" && sr.lastUpdateDays >= 5 ) 
-        {    
-            todo.append( "[1]There was no activity for " + QString::number( sr.lastUpdateDays ) + " days, please update SR asap!" );
-        }
-      
-        if ( todo.isEmpty() ) 
-        {
-            todo.append( "[3]Nothing." ); 
-        }
-        
-        sr.todoList = todo;
-        
         srlist.append( sr );
     }
     

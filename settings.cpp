@@ -552,71 +552,6 @@ void Settings::setSortAsc( const bool& b )
     settings.sync();
 }
 
-bool Settings::todoShowUp()
-{
-    QSettings settings;
-    return settings.value( "todoShowUp", true ).toBool();
-}
-
-void Settings::setTodoShowUp( const bool& b )
-{
-    QSettings settings;
-    settings.setValue( "todoShowUp", b );
-    settings.sync();
-}
-
-bool Settings::todoDisabled()
-{
-    QSettings settings;
-    return settings.value( "todoDisabled", false ).toBool();
-}
-
-void Settings::setTodoDisabled( const bool& b )
-{
-    QSettings settings;
-    settings.setValue( "todoDisabled", b );
-    settings.sync();
-}
-        
-bool Settings::todoShowEsc()
-{
-    QSettings settings;
-    return settings.value( "todoShowEsc", true ).toBool();
-}
-
-void Settings::setTodoShowEsc( const bool& b )
-{
-    QSettings settings;
-    settings.setValue( "todoShowEsc", b );
-    settings.sync();
-}
-        
-bool Settings::todoShowStat()
-{
-    QSettings settings;
-    return settings.value( "todoShowStat", true ).toBool();
-}
-
-void Settings::setTodoShowStat( const bool& b )
-{
-    QSettings settings;
-    settings.setValue( "todoShowStat", b );
-    settings.sync();
-}
-        
-bool Settings::todoShowSmilies()
-{
-    QSettings settings;
-    return settings.value( "todoShowSmilies", true ).toBool();
-}
-
-void Settings::setTodoShowSmilies( const bool& b )
-{
-    QSettings settings;
-    settings.setValue( "todoShowSmilies", b );
-    settings.sync();
-}
-
 bool Settings::showAwaitingCustomer()
 {
     QSettings settings;
@@ -653,6 +588,123 @@ void Settings::setShowStatusOthers( const bool& b )
 {
     QSettings settings;
     settings.setValue( "showStatusOthers", b );
+    settings.sync();
+}
+
+bool Settings::subShowSR()
+{
+    QSettings settings;
+    return settings.value( "subShowSR", true ).toBool();
+}
+
+void Settings::setSubShowSR( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "subShowSR", b );
+    settings.sync();
+}
+
+bool Settings::subShowCR()
+{
+    QSettings settings;
+    return settings.value( "subShowCR", true ).toBool();
+}
+
+void Settings::setSubShowCR( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "subShowCR", b );
+    settings.sync();
+}
+
+bool Settings::subShowSS()
+{
+    QSettings settings;
+    return settings.value( "subShowSS", false ).toBool();
+}
+
+void Settings::setSubShowSS( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "subShowSS", b );
+    settings.sync();
+}
+
+bool Settings::subSortUpdate()
+{
+    QSettings settings;
+    return settings.value( "subSortUpdate", true ).toBool();
+}
+
+void Settings::setSubSortUpdate( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "subSortUpdate", b );
+    settings.sync();
+}
+
+bool Settings::subSortAge()
+{
+    QSettings settings;
+    return settings.value( "subSortAge", false ).toBool();
+}
+
+void Settings::setSubSortAge( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "subSortAge", b );
+    settings.sync();
+}
+
+bool Settings::subSortAsc()
+{
+    QSettings settings;
+    return settings.value( "subSortAsc", true ).toBool();
+}
+
+void Settings::setSubSortAsc( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "subSortAsc", b );
+    settings.sync();
+}
+
+bool Settings::subShowAwaitingCustomer()
+{
+    QSettings settings;
+    return settings.value( "subShowAwaitingCustomer", true ).toBool();
+}
+
+void Settings::setSubShowAwaitingCustomer( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "subShowAwaitingCustomer", b );
+    settings.sync();
+}
+
+bool Settings::subShowAwaitingSupport()
+{
+    QSettings settings;
+    return settings.value( "subShowAwaitingSupport", true ).toBool();
+}
+
+void Settings::setSubShowAwaitingSupport( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "subShowAwaitingSupport", b );
+    settings.sync();
+}
+
+bool Settings::subShowStatusOthers()
+{
+    QSettings settings;
+    return settings.value( "subShowStatusOthers", true ).toBool();
+}
+
+void Settings::setSubShowStatusOthers( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "subShowStatusOthers", b );
     settings.sync();
 }
 
