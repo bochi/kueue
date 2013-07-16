@@ -116,7 +116,11 @@ TabWidget::TabWidget( QWidget* parent )
     
     mQueueBrowser = new QueueBrowser( this );
     
+    mSubownerBrowser = new QueueBrowser( this );
+    
     mPersonalTab = new BrowserWithSearch( mQueueBrowser, this );
+    
+    mSubownerTab = new BrowserWithSearch( mSubownerBrowser, this );
     
     connect( mQueueBrowser, SIGNAL( setMenus() ), 
              this, SLOT( setMenus() ) );
@@ -690,6 +694,14 @@ void TabWidget::setMenus()
     mActionAwaitingCustomer->setChecked( Settings::showAwaitingCustomer() );
     mActionAwaitingSupport->setChecked( Settings::showAwaitingSupport() );
     mActionOthers->setChecked( Settings::showStatusOthers() );  
+    
+    mActionSubShowSR->setChecked( Settings::subShowSR() );
+    mActionSubShowCR->setChecked( Settings::subShowCR() );
+    mActionSubSortUpdate->setChecked( Settings::subSortUpdate() );
+    mActionSubSortAge->setChecked( Settings::subSortAge() );
+    mActionSubAwaitingCustomer->setChecked( Settings::subShowAwaitingCustomer() );
+    mActionSubAwaitingSupport->setChecked( Settings::subShowAwaitingSupport() );
+    mActionSubOthers->setChecked( Settings::subShowStatusOthers() );  
 }
 
 void TabWidget::closeAllTables()

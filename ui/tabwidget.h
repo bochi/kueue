@@ -73,11 +73,12 @@ class TabWidget : public QTabWidget
         TabBar* mBar;
         TabButton* mMenuButton;
         QWidget* mPersonalTab;
+        QWidget* mSubownerTab;
         QWidget* mMonitorTab;
         QWidget* mStatsTab;
         UnityWidget* mUnityTab;
         QueueBrowser* mQueueBrowser;
-	QueueBrowser* mSubownerBrowser;
+    	QueueBrowser* mSubownerBrowser;
         QMonBrowser* mQmonBrowser;
         StatsBrowser* mStatsBrowser;
         UnityBrowser* mUnityBrowser;
@@ -98,6 +99,14 @@ class TabWidget : public QTabWidget
         QAction* mActionAwaitingCustomer;
         QAction* mActionAwaitingSupport;
         QAction* mActionOthers;
+        
+        QAction* mActionSubShowSR;
+        QAction* mActionSubShowCR;
+        QAction* mActionSubSortUpdate;
+        QAction* mActionSubSortAge;
+        QAction* mActionSubAwaitingCustomer;
+        QAction* mActionSubAwaitingSupport;
+        QAction* mActionSubOthers;
         
         QAction* mActionExpandSrTables;
         QAction* mActionCloseSrTables;
