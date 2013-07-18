@@ -37,6 +37,7 @@ class HTML
     public:
         static QString styleSheet();
         static QString pageHeader( const QString&, int );
+        static QString subPageHeader( int );
         static QString SRTable( QueueSR );
         static QString pageFooter();
         static QString qmonPageHeader();

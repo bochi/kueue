@@ -63,6 +63,7 @@ class QueueSR
         qint32 age;
         qint32 lastUpdateDays;
         qint32 service_level;
+        bool subowned;
         bool highvalue;
         bool critsit;
         bool isCr;

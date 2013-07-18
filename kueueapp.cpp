@@ -221,12 +221,15 @@ void KueueApp::connectDataThread()
     
     connect( mDataThread, SIGNAL( queueDataChanged( QString ) ), 
              mTabWidget, SLOT( updateQueueBrowser( const QString& ) ) );
+    
+    connect( mDataThread, SIGNAL( subownerDataChanged( QString ) ),
+             mTabWidget, SLOT( updateSubownerBrowser( const QString& ) ) );
 
     connect( mDataThread, SIGNAL( qmonDataChanged( QString ) ), 
              mTabWidget, SLOT( updateQmonBrowser( const QString& ) ) );
     
     connect( mDataThread, SIGNAL( statsDataChanged( QString ) ),
-             mTabWidget, SLOT( updateStatsBrowser(QString) ) );
+             mTabWidget, SLOT( updateStatsBrowser( QString ) ) );
 
     connect( mDataThread, SIGNAL( netError() ), 
              this, SLOT( openConfig() ) );
@@ -294,6 +297,7 @@ void KueueApp::createMainWindow()
 void KueueApp::updateUiData()
 {
     mTabWidget->updateQueueBrowser();
+    mTabWidget->updateSubownerBrowser();
     mTabWidget->updateQmonBrowser();
     mTabWidget->updateStatsBrowser();   
 }

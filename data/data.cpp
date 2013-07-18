@@ -223,6 +223,15 @@ void Data::queueUpdateFinished()
             sr.owner = list.at( i ).namedItem( "owner" ).toElement().text();
             sr.subowner = list.at( i ).namedItem( "subowner" ).toElement().text();
             
+            if ( sr.subowner.isEmpty() )
+            {
+                sr.subowned = false;
+            }
+            else
+            {
+                sr.subowned = true;
+            }
+            
             q.srList.append( sr );
             
             if ( goneList.contains( sr.id ) )
@@ -542,9 +551,11 @@ void Data::statsUpdateFinished()
 
 void Data::updateQueueBrowser( const QString& filter )
 {
+    qDebug() << "UQB";
     mCurrentQueueFilter = filter;
     
     QString html;
+    QString subhtml;
     int age = 0;
     QList<QueueSR> srlist = Database::getSrList( Settings::sortAge(), Settings::sortAsc(), mDB, mCurrentQueueFilter );
         
@@ -580,6 +591,58 @@ void Data::updateQueueBrowser( const QString& filter )
     if ( !html.isEmpty() )
     {
         emit queueDataChanged( html );
+    }
+}
+
+void Data::updateSubownerBrowser( const QString& filter )
+{
+    mCurrentSubownerFilter = filter;
+    
+    QString html;
+    int age = 0;
+    QList<QueueSR> srlist = Database::getSubSrList( Settings::subSortAge(), Settings::subSortAsc(), mDB, mCurrentSubownerFilter );
+    
+    html += HTML::styleSheet();
+    html += HTML::subPageHeader( srlist.size() );
+    
+    for ( int i = 0; i < srlist.size(); ++i )
+    {
+        if ( !Settings::subShowAwaitingCustomer() && 
+            srlist.at( i ).status == "Awaiting Customer" )
+        {
+            //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
+        }
+        else if ( !Settings::subShowAwaitingSupport() && 
+            srlist.at( i ).status == "Awaiting Novell Support" )
+        {
+            //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
+        }
+        else if ( !Settings::subShowStatusOthers() && 
+            srlist.at( i ).status != "Awaiting Customer" && 
+            srlist.at( i ).status != "Awaiting Novell Support" )
+        {
+            //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
+        }
+        else
+        {
+            html += HTML::SRTable( srlist.at( i ) );
+        }
+    }
+
+    if ( srlist.size() == 0 ) 
+    {
+        //TabWidget::showSubownerTab( false );
+    }
+    else
+    {
+        //TabWidget::showSubownerTab( true );
+    }
+    
+    int avgAge = age / srlist.size();
+    
+    if ( !html.isEmpty() )
+    {
+        emit subownerDataChanged( html );
     }
 }
 

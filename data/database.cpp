@@ -547,7 +547,7 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname, const
         sr.age = a.daysTo( now );
         sr.lastUpdateDays = u.daysTo( now );
      
-        srlist.append( sr );
+        if( sr.owner == Settings::engineer().toUpper() ) srlist.append( sr );
     }
     
     db.commit();
@@ -559,6 +559,119 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname, const
         srlist.append( sr );
     }
      
+    return srlist;
+}
+
+QList<QueueSR> Database::getSubSrList( bool s, bool a, const QString& dbname, const QString& filter )
+{
+    QSqlDatabase db = QSqlDatabase::database( dbname );
+    QStringList l;
+    QString f;
+    QDateTime now = QDateTime::currentDateTime();
+    QList<QueueSR> srlist;
+    
+    QSqlQuery query( db );
+    
+    if ( !filter.isNull() )
+    {
+        f = " WHERE ( CUS_ACCOUNT LIKE '%" + filter + "%' )"
+        "OR ( ID LIKE '%" + filter + "%' )"
+        "OR ( CREATOR LIKE '%" + filter + "%' )"
+        "OR ( CUS_FIRSTNAME LIKE '%" + filter + "%' )"
+        "OR ( CUS_LASTNAME LIKE '%" + filter + "%' )"
+        "OR ( BDESC LIKE '%" + filter + "%' ) ";
+    }
+    
+    db.transaction();
+    
+    if ( a )
+    {
+        if ( s ) 
+        {    
+            query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
+            "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
+            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY CREATED ASC" );
+        }
+        else 
+        {   
+            query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
+            "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
+            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY LASTUPDATE ASC" );
+        }
+    }
+    else
+    {
+        if ( s ) 
+        {    
+            query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
+            "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
+            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY CREATED DESC" );
+        }
+        else 
+        {    
+            query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
+            "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
+            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY LASTUPDATE DESC" );
+        }
+    }
+    
+    if ( !query.exec() ) 
+    {
+        qDebug() << query.lastError().text();
+    }
+    
+    while( query.next() )
+    {
+        QueueSR sr;
+        
+        sr.id = query.value(0).toString();
+        sr.srtype = query.value(1).toString();
+        sr.creator = query.value(2).toString();
+        sr.cus_account = query.value(3).toString();
+        sr.cus_firstname = query.value(4).toString();
+        sr.cus_lastname = query.value(5).toString();
+        sr.cus_title = query.value(6).toString();
+        sr.cus_email = query.value(7).toString();
+        sr.cus_phone = query.value(8).toString();
+        sr.cus_onsitephone = query.value(9).toString();
+        sr.cus_lang = query.value(10).toString();
+        sr.severity = query.value(11).toString();
+        sr.status = query.value(12).toString();
+        sr.bdesc = query.value(13).toString();
+        sr.ddesc = query.value(14).toString();
+        sr.geo = query.value(15).toString();
+        sr.hours = query.value(16).toString();
+        sr.contract = query.value(17).toString();
+        sr.service_level = query.value(18).toInt();
+        sr.created = query.value(19).toString();
+        sr.lastupdate = query.value(20).toString();
+        sr.highvalue = query.value(21).toBool();
+        sr.critsit = query.value(22).toBool();
+        sr.display = query.value(23).toString();
+        sr.alt_contact = query.value(24).toString();
+        sr.bug = query.value(25).toString();
+        sr.bugtitle = query.value(26).toString();
+        sr.owner = query.value(27).toString();
+        sr.subowner = query.value(28).toString();
+        
+        QDateTime a = QDateTime::fromString( sr.created, "yyyy-MM-dd hh:mm:ss" );
+        QDateTime u = QDateTime::fromString( sr.lastupdate, "yyyy-MM-dd hh:mm:ss" );
+        
+        sr.age = a.daysTo( now );
+        sr.lastUpdateDays = u.daysTo( now );
+        
+        if ( sr.subowner.toUpper() == Settings::engineer().toUpper() ) srlist.append( sr );
+    }
+    
+    db.commit();
+    
+    if ( srlist.isEmpty() )
+    {
+        QueueSR sr;
+        sr.id = "00000000000";
+        srlist.append( sr );
+    }
+    
     return srlist;
 }
 

@@ -31,6 +31,7 @@
 #include "ui/browsers/unitybrowser.h"
 #include "ui/browsers/statsbrowser.h"
 #include "ui/browsers/queuebrowser.h"
+#include "ui/browsers/subownerbrowser.h"
 #include "ui/kueuewindow.h"
 #include "ui/download/downloadmanager.h"
 #include "ui/statusbar.h"
@@ -78,7 +79,7 @@ class TabWidget : public QTabWidget
         QWidget* mStatsTab;
         UnityWidget* mUnityTab;
         QueueBrowser* mQueueBrowser;
-    	QueueBrowser* mSubownerBrowser;
+    	SubownerBrowser* mSubownerBrowser;
         QMonBrowser* mQmonBrowser;
         StatsBrowser* mStatsBrowser;
         UnityBrowser* mUnityBrowser;
@@ -107,6 +108,8 @@ class TabWidget : public QTabWidget
         QAction* mActionSubAwaitingCustomer;
         QAction* mActionSubAwaitingSupport;
         QAction* mActionSubOthers;
+        QAction* mActionSubCloseSrTables;
+        QAction* mActionSubExpandSrTables;
         
         QAction* mActionExpandSrTables;
         QAction* mActionCloseSrTables;
@@ -129,6 +132,7 @@ class TabWidget : public QTabWidget
         void showMonitorTab( bool );
         void showStatsTab( bool );
         void showPersonalTab( bool );
+        void showSubownerTab( bool );
         void showUnityTab( bool );
         void showSrInUnityBrowser( int, const QString& );
         void switchToMainUnityTab();
@@ -137,6 +141,7 @@ class TabWidget : public QTabWidget
         void openClipboardInUnity( int );
         void openInUnityImp( const QString& );
         void updateQueueBrowser( const QString& = "bla" );
+        void updateSubownerBrowser( const QString& = "bla" );
         void updateQmonBrowser( const QString& = "bla" );
         void updateStatsBrowser( const QString& = "bla" );
         void refreshTabs();

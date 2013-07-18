@@ -116,13 +116,16 @@ TabWidget::TabWidget( QWidget* parent )
     
     mQueueBrowser = new QueueBrowser( this );
     
-    mSubownerBrowser = new QueueBrowser( this );
+    mSubownerBrowser = new SubownerBrowser( this );
     
     mPersonalTab = new BrowserWithSearch( mQueueBrowser, this );
     
     mSubownerTab = new BrowserWithSearch( mSubownerBrowser, this );
     
     connect( mQueueBrowser, SIGNAL( setMenus() ), 
+             this, SLOT( setMenus() ) );
+
+    connect( mSubownerBrowser, SIGNAL( setMenus() ), 
              this, SLOT( setMenus() ) );
     
     connect( mQueueBrowser, SIGNAL( expandAll() ),
@@ -146,12 +149,13 @@ TabWidget::TabWidget( QWidget* parent )
     // ...and add them to the tabbar
     
     insertTab( 0, mPersonalTab, QIcon( ":icons/conf/targets.png" ), "Personal queue" );
-    insertTab( 1, mMonitorTab, QIcon( ":/icons/conf/monitor.png" ), "Queue monitor" );
-    insertTab( 2, mStatsTab, QIcon( ":/icons/conf/stats.png" ), "Statistics" );
+    insertTab( 1, mSubownerTab, QIcon( ":icons/conf/targets.png" ), "Subowned SRs" );
+    insertTab( 2, mMonitorTab, QIcon( ":/icons/conf/monitor.png" ), "Queue monitor" );
+    insertTab( 3, mStatsTab, QIcon( ":/icons/conf/stats.png" ), "Statistics" );
     
     if ( Settings::unityEnabled() )
     {
-        insertTab( 3, mUnityTab, QIcon( ":/icons/menus/siebel.png" ), "Unity" );    
+        insertTab( 4, mUnityTab, QIcon( ":/icons/menus/siebel.png" ), "Unity" );    
     }
     
     QShortcut* search = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
@@ -236,11 +240,23 @@ void TabWidget::showPersonalTab( bool b )
     }
 }
 
+void TabWidget::showSubownerTab( bool b )
+{
+    if ( b )
+    {
+        insertTab( 1, mSubownerTab, QIcon( ":/icons/conf/targets.png" ), "Subowned SRs" );
+    }
+    else
+    {
+        removeTab( indexOf( mSubownerTab ) );
+    }
+}
+
 void TabWidget::showMonitorTab( bool b )
 {
     if ( b )
     {
-        insertTab( 1, mMonitorTab, QIcon( ":/icons/conf/monitor.png" ), "Queue monitor" );
+        insertTab( 2, mMonitorTab, QIcon( ":/icons/conf/monitor.png" ), "Queue monitor" );
     }
     else
     {
@@ -252,7 +268,7 @@ void TabWidget::showStatsTab( bool b )
 {
     if ( b )
     {
-        insertTab( 2, mStatsTab, QIcon( ":/icons/conf/stats.png" ), "Statistics" );
+        insertTab( 3, mStatsTab, QIcon( ":/icons/conf/stats.png" ), "Statistics" );
     }
     else
     {
@@ -264,7 +280,7 @@ void TabWidget::showUnityTab( bool b )
 {
     if ( b )
     {
-        insertTab( 3, mUnityTab, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
+        insertTab( 4, mUnityTab, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
     }
     else
     {
@@ -357,6 +373,11 @@ void TabWidget::updateQmonBrowser( const QString& html )
 void TabWidget::updateQueueBrowser( const QString& html )
 {
     mQueueBrowser->update( html );
+}
+
+void TabWidget::updateSubownerBrowser( const QString& html )
+{
+    mSubownerBrowser->update( html );
 }
 
 void TabWidget::updateStatsBrowser( const QString& html )
@@ -486,6 +507,75 @@ QMenu* TabWidget::kueueMainMenu()
     
     view->addMenu( other );
     
+    QMenu* sub = new QMenu( menu );
+    sub->setIcon( QIcon( ":/icons/conf/targets.png" ) );
+    sub->setTitle( "Subowned SRs" );
+    
+    QMenu* subfilter = new QMenu( menu );
+    subfilter->setIcon( QIcon( ":/icons/menus/filter.png" ) );
+    subfilter->setTitle( "Filter" );
+    
+    mActionSubAwaitingCustomer = new QAction( subfilter );
+    mActionSubAwaitingCustomer->setText( "Awaiting Customer" );
+    mActionSubAwaitingCustomer->setCheckable( true );
+    
+    mActionSubAwaitingSupport = new QAction( subfilter );
+    mActionSubAwaitingSupport->setText( "Awaiting Support" );
+    mActionSubAwaitingSupport->setCheckable( true );
+    
+    mActionSubOthers = new QAction( subfilter );
+    mActionSubOthers->setText( "Other" );
+    mActionSubOthers->setCheckable( true );
+    
+    mActionSubShowCR = new QAction( subfilter );
+    mActionSubShowCR->setText( "Show CRs" );
+    mActionSubShowCR->setCheckable( true );
+    
+    mActionSubShowSR = new QAction( subfilter );
+    mActionSubShowSR->setText( "Show SRs" );
+    mActionSubShowSR->setCheckable( true );
+    
+    subfilter->addAction( mActionAwaitingCustomer );
+    subfilter->addAction( mActionAwaitingSupport );
+    subfilter->addAction( mActionOthers );
+    subfilter->addSeparator();
+    subfilter->addAction( mActionShowCR );
+    subfilter->addAction( mActionShowSR );
+    
+    sub->addMenu( subfilter );
+    
+    QMenu* subsortby = new QMenu( menu );
+    subsortby->setIcon( QIcon( ":/icons/menus/sort.png" ) );
+    subsortby->setTitle( "Sort by" );
+    
+    mActionSubSortUpdate = new QAction( subsortby );
+    mActionSubSortUpdate->setText( "Last activity" );
+    mActionSubSortUpdate->setCheckable( true );
+    
+    mActionSubSortAge = new QAction( subsortby );
+    mActionSubSortAge->setText( "Age" );
+    mActionSubSortAge->setCheckable( true );
+    
+    sortby->addAction( mActionSubSortUpdate );
+    sortby->addAction( mActionSubSortAge );
+    
+    sub->addMenu( subsortby );
+    
+    QMenu* subother = new QMenu( menu );
+    subother->setIcon( QIcon( ":/icons/menus/misc.png" ) );
+    subother->setTitle( "Other" );
+    
+    mActionSubCloseSrTables = new QAction( other );
+    mActionSubCloseSrTables->setText( "Close all SR tables" );
+    
+    mActionSubExpandSrTables = new QAction( other );
+    mActionSubExpandSrTables->setText( "Expand all SR tables" );
+    
+    subother->addAction( mActionSubCloseSrTables );
+    subother->addAction( mActionSubExpandSrTables );
+    
+    sub->addMenu( subother );
+    
     QMenu* qmon = new QMenu( menu );
     qmon->setIcon( QIcon( ":/icons/conf/monitor.png" ) );
     qmon->setTitle( "Queue monitor" );
@@ -539,6 +629,7 @@ QMenu* TabWidget::kueueMainMenu()
     
     menu->addMenu( kueue );
     menu->addMenu( view );
+    menu->addMenu( sub );
     menu->addMenu( qmon );
     menu->addMenu( help );
     
@@ -816,6 +907,7 @@ void TabWidget::updateUiData()
 {
     DataThread::updateQmonBrowser();
     DataThread::updateQueueBrowser();
+    DataThread::updateSubownerBrowser();
     DataThread::updateStatsBrowser();
 }
 

@@ -213,16 +213,54 @@ QString HTML::pageHeader( const QString& engineer, int total )
     return ph;
 }
 
+QString HTML::subPageHeader( int total )
+{
+    QString ph;
+    
+    ph += QString( "<div id='Head1'>\n"
+    "    <img src='qrc:/images/gfx_top_in.gif' width='32' height='80' border='0'/>\n"
+    "</div>\n"
+    
+    "<div id='Apptitle' style='left:30px; right:60px; top:0px; height: 80px'>\n"
+    "    <div id='AppTitleDiv' class='apptitle1' style='padding-top: 3px; padding-bottom: 3px; width: 100%'>\n"
+    "        <b>Subowned SRs</b>\n"
+    "    </div>\n"
+    "</div>\n"
+    
+    "<div id='logo' style='z-index:2'>\n"
+    "    <img src='qrc:/images/logo_im.gif' width='175' height='80' border='0'>\n"
+    "</div>\n"
+    
+    "<div id='Apptitle' style='left:20px; right:20px; top:0px; height: 80px; z-index: 4'>\n"
+    "    <div id='AppTitleDiv' class='apptitle2' style='text-align:right; padding-top: 21px; \n"
+    " padding-bottom: 3px; width: 100%; z-index: 3'>\n"
+    "         SRs total:&nbsp;" + QString::number( total ) + "<br>\n" );
+    
+    if ( Settings::subSortAge() )
+    {
+        ph += "Sorted by age"; 
+    }
+    else 
+    {    
+        ph += "Sorted by last activity";
+    }
+    
+    ph += QString( "<br>\n"
+    "    </div>\n"
+    "</div>\n"
+    "<div id='logo' style='z-index:2'>\n"
+    "    <img src='qrc:/images/logo_im.gif' width='175' height='80' border='0'>\n"
+    "</div>\n"
+    "<div id='content'>\n" );
+    
+    return ph;
+}
+
 QString HTML::SRTable( QueueSR sr )
 {
     QString srtab;
     QString t;
     QString bg = "#E8E8E8";
-    
-    if ( !sr.subowner.isEmpty() )
-    {
-        bg = "#A3A3A3";
-    }
 
     if ( sr.id == "00000000000" )
     {

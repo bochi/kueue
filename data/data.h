@@ -45,12 +45,14 @@ class Data : public QObject
         QString mDB;
         QStringList mIPs;
         QString mCurrentQueueFilter;
+        QString mCurrentSubownerFilter;
         QString mCurrentQmonFilter;
         bool srIsClosed( const QString& );
         bool mQueueUpdateRunning;
     
     public slots:
         void updateQueueBrowser( const QString& filter = QString::Null() );
+        void updateSubownerBrowser( const QString& filter = QString::Null() );
         void updateQmonBrowser( const QString& filter = QString::Null() );
         void updateQmon();
         void updateStatsBrowser();
@@ -65,6 +67,7 @@ class Data : public QObject
         
     signals:
         void queueDataChanged( QString );
+        void subownerDataChanged( QString );
         void dirsToDelete( QStringList );
         void qmonDataChanged( QString );
         void statsDataChanged( QString );

@@ -128,6 +128,7 @@ SET( kueue_CPP  main.cpp
                 ui/browsers/statsbrowser.cpp 
 		ui/browsers/helpbrowser.cpp
 		ui/browsers/browser.cpp
+		ui/browsers/subownerbrowser.cpp
 
 		ui/browsers/search/webviewsearch.cpp 
                 ui/browsers/search/browsersearch.cpp
