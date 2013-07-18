@@ -590,13 +590,13 @@ QList<QueueSR> Database::getSubSrList( bool s, bool a, const QString& dbname, co
         {    
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY CREATED ASC" );
+            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " WHERE SUBOWNER != '' ORDER BY CREATED ASC" );
         }
         else 
         {   
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY LASTUPDATE ASC" );
+            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + "  WHERE SUBOWNER != '' ORDER BY LASTUPDATE ASC" );
         }
     }
     else
@@ -605,13 +605,13 @@ QList<QueueSR> Database::getSubSrList( bool s, bool a, const QString& dbname, co
         {    
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY CREATED DESC" );
+            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + "  WHERE SUBOWNER != '' ORDER BY CREATED DESC" );
         }
         else 
         {    
             query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
             "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + " ORDER BY LASTUPDATE DESC" );
+            "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, OWNER, SUBOWNER FROM " + Settings::engineer().toUpper() + f + "  WHERE SUBOWNER != '' ORDER BY LASTUPDATE DESC" );
         }
     }
     
@@ -660,7 +660,10 @@ QList<QueueSR> Database::getSubSrList( bool s, bool a, const QString& dbname, co
         sr.age = a.daysTo( now );
         sr.lastUpdateDays = u.daysTo( now );
         
-        if ( sr.subowner.toUpper() == Settings::engineer().toUpper() ) srlist.append( sr );
+        if ( sr.subowner.toUpper() == Settings::engineer().toUpper() ) 
+        {
+            srlist.append( sr );
+        }
     }
     
     db.commit();

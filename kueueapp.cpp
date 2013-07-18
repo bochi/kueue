@@ -230,6 +230,9 @@ void KueueApp::connectDataThread()
     
     connect( mDataThread, SIGNAL( statsDataChanged( QString ) ),
              mTabWidget, SLOT( updateStatsBrowser( QString ) ) );
+    
+    connect( mDataThread, SIGNAL(showSubownerBrowser( bool ) ),
+             mTabWidget, SLOT( showSubownerTab( bool ) ) );
 
     connect( mDataThread, SIGNAL( netError() ), 
              this, SLOT( openConfig() ) );
@@ -300,6 +303,12 @@ void KueueApp::updateUiData()
     mTabWidget->updateSubownerBrowser();
     mTabWidget->updateQmonBrowser();
     mTabWidget->updateStatsBrowser();   
+}
+
+void KueueApp::showSubBrowser( bool b )
+{
+    if ( b ) mTabWidget->showSubownerTab( true );
+    else mTabWidget->showSubownerTab( false );
 }
 
 void KueueApp::openConfig()

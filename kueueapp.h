@@ -60,6 +60,7 @@ class KueueApp : public QObject
     private slots:
         void newDB();
         void deleteDirs( QStringList );
+        void showSubBrowser( bool );
         void deleteDirsFailed( QStringList );
         void cleanupTemp();
         void notify( QString, QString, QString, QString );

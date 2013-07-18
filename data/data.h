@@ -71,6 +71,7 @@ class Data : public QObject
         void dirsToDelete( QStringList );
         void qmonDataChanged( QString );
         void statsDataChanged( QString );
+        void showSubownerBrowser( bool );
         void netError();
         void notify( QString, QString, QString, QString );
 };

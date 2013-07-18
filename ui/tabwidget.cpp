@@ -242,13 +242,13 @@ void TabWidget::showPersonalTab( bool b )
 
 void TabWidget::showSubownerTab( bool b )
 {
-    if ( b )
+    if ( b && mSubownerTab->isHidden() )
     {
-        insertTab( 1, mSubownerTab, QIcon( ":/icons/conf/targets.png" ), "Subowned SRs" );
+        mSubownerTab->show();
     }
-    else
+    else if ( !b && mSubownerTab->isVisible() )
     {
-        removeTab( indexOf( mSubownerTab ) );
+        mSubownerTab->hide(); 
     }
 }
 
@@ -535,12 +535,12 @@ QMenu* TabWidget::kueueMainMenu()
     mActionSubShowSR->setText( "Show SRs" );
     mActionSubShowSR->setCheckable( true );
     
-    subfilter->addAction( mActionAwaitingCustomer );
-    subfilter->addAction( mActionAwaitingSupport );
-    subfilter->addAction( mActionOthers );
+    subfilter->addAction( mActionSubAwaitingCustomer );
+    subfilter->addAction( mActionSubAwaitingSupport );
+    subfilter->addAction( mActionSubOthers );
     subfilter->addSeparator();
-    subfilter->addAction( mActionShowCR );
-    subfilter->addAction( mActionShowSR );
+    subfilter->addAction( mActionSubShowCR );
+    subfilter->addAction( mActionSubShowSR );
     
     sub->addMenu( subfilter );
     
@@ -657,6 +657,26 @@ QMenu* TabWidget::kueueMainMenu()
              this, SLOT( expandAllTables() ) );
     connect( mActionCloseSrTables, SIGNAL( activated() ),
              this, SLOT( closeAllTables() ) );
+    
+        connect( mActionSubShowSR, SIGNAL( toggled( bool ) ),
+             this, SLOT( subSetShowSR( bool ) ) );
+    connect( mActionSubShowCR, SIGNAL( toggled( bool ) ), 
+             this, SLOT( subSetShowCR( bool ) ) );
+    connect( mActionSubSortUpdate, SIGNAL( toggled( bool ) ),
+             this, SLOT( subSetSortUpdate( bool ) ) );
+    connect( mActionSubSortAge, SIGNAL( toggled( bool ) ), 
+             this, SLOT( subSetSortAge( bool ) ) );
+    connect( mActionSubAwaitingCustomer, SIGNAL( toggled( bool ) ),
+             this, SLOT( subSetShowAwaitingCustomer( bool ) ) );
+    connect( mActionSubAwaitingSupport, SIGNAL( toggled( bool ) ),
+             this, SLOT( subSetShowAwaitingSupport( bool ) ) );
+    connect( mActionSubOthers, SIGNAL( toggled( bool ) ),
+             this, SLOT( subSetShowStatusOthers( bool ) ) );
+    connect( mActionSubExpandSrTables, SIGNAL( activated() ),
+             this, SLOT( subExpandAllTables() ) );
+    connect( mActionSubCloseSrTables, SIGNAL( activated() ),
+             this, SLOT( subCloseAllTables() ) );
+    
     connect( mActionAbout, SIGNAL( activated() ),
              this, SLOT( aboutDialog() ) );
     connect( mActionBug, SIGNAL( activated() ),
@@ -858,6 +878,51 @@ void TabWidget::setShowAwaitingSupport( bool s )
 void TabWidget::setShowStatusOthers( bool s )
 {
     Settings::setShowStatusOthers( s );
+    updateUiData();
+}
+
+void TabWidget::subSetShowSR( bool s )
+{
+    Settings::setSubShowSR( s );
+    updateUiData();
+}
+
+void TabWidget::subSetShowCR( bool s )
+{
+    Settings::setSubShowCR( s );
+    updateUiData();
+}
+
+void TabWidget::subSetSortAge( bool s )
+{
+    Settings::setSortUpdate( !s );
+    Settings::setSortAge( s );
+    mActionSubSortUpdate->setChecked( !s );    
+}
+
+void TabWidget::subSetSortUpdate( bool s )
+{
+    Settings::setSubSortUpdate( s );
+    Settings::setSubSortAge( !s );
+    mActionSubSortAge->setChecked( !s );
+    updateUiData();
+}
+
+void TabWidget::subSetShowAwaitingCustomer( bool s )
+{
+    Settings::setSubShowAwaitingCustomer( s );
+    updateUiData();
+}
+
+void TabWidget::subSetShowAwaitingSupport( bool s )
+{
+    Settings::setSubShowAwaitingSupport( s );
+    updateUiData();
+}
+
+void TabWidget::subSetShowStatusOthers( bool s )
+{
+    Settings::setSubShowStatusOthers( s );
     updateUiData();
 }
 

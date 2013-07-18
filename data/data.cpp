@@ -313,6 +313,7 @@ void Data::queueUpdateFinished()
         }
         
         updateQueueBrowser( mCurrentQueueFilter );
+        updateSubownerBrowser( mCurrentSubownerFilter );
     }
 
     r->deleteLater();
@@ -629,13 +630,13 @@ void Data::updateSubownerBrowser( const QString& filter )
         }
     }
 
-    if ( srlist.size() == 0 ) 
+    if ( srlist.size() == 1 )
     {
-        //TabWidget::showSubownerTab( false );
+        emit showSubownerBrowser( false );
     }
     else
     {
-        //TabWidget::showSubownerTab( true );
+        emit showSubownerBrowser( true );
     }
     
     int avgAge = age / srlist.size();

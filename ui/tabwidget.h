@@ -165,6 +165,15 @@ class TabWidget : public QTabWidget
         void setShowStatusOthers( bool );
         void expandAllTables();
         void closeAllTables();
+        void subSetShowSR( bool );
+        void subSetShowCR( bool );
+        void subSetSortAge( bool );
+        void subSetSortUpdate( bool );
+        void subSetShowAwaitingCustomer( bool );
+        void subSetShowAwaitingSupport( bool );
+        void subSetShowStatusOthers( bool );
+        //void subExpandAllTables();
+        //void subCloseAllTables();
         void aboutDialog();
         void reportBug();
         void suggestFeature();

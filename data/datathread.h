@@ -89,6 +89,7 @@ class DataThread : public QThread
         void updateSubownerBrowserRequested( QString );
         void updateQmonBrowserRequested( QString );
         void updateQmonRequested();
+        void showSubownerBrowser( bool );
         void updateStatsBrowserRequested();
         void queueDataChanged( QString );
         void subownerDataChanged( QString );

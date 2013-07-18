@@ -115,36 +115,36 @@ void SubownerBrowser::openWebInspector()
 
 void SubownerBrowser::showOnlyAwaitingSupport()
 {
-    Settings::setShowAwaitingCustomer( false );
-    Settings::setShowStatusOthers( false );
-    Settings::setShowAwaitingSupport( true );
+    Settings::setSubShowAwaitingCustomer( false );
+    Settings::setSubShowStatusOthers( false );
+    Settings::setSubShowAwaitingSupport( true );
     emit setMenus();
     DataThread::updateSubownerBrowser();
 }
 
 void SubownerBrowser::showOnlyAwaitingCustomer()
 {
-    Settings::setShowAwaitingCustomer( true );
-    Settings::setShowStatusOthers( false );
-    Settings::setShowAwaitingSupport( false );
+    Settings::setSubShowAwaitingCustomer( true );
+    Settings::setSubShowStatusOthers( false );
+    Settings::setSubShowAwaitingSupport( false );
     emit setMenus();
     DataThread::updateSubownerBrowser();
 }
 
 void SubownerBrowser::showOnlyOthers()
 {
-    Settings::setShowAwaitingCustomer( false );
-    Settings::setShowStatusOthers( true );
-    Settings::setShowAwaitingSupport( false );
+    Settings::setSubShowAwaitingCustomer( false );
+    Settings::setSubShowStatusOthers( true );
+    Settings::setSubShowAwaitingSupport( false );
     emit setMenus();
     DataThread::updateSubownerBrowser();
 }
 
 void SubownerBrowser::showAll()
 {
-    Settings::setShowAwaitingCustomer( true );
-    Settings::setShowStatusOthers( true );
-    Settings::setShowAwaitingSupport( true );
+    Settings::setSubShowAwaitingCustomer( true );
+    Settings::setSubShowStatusOthers( true );
+    Settings::setSubShowAwaitingSupport( true );
     emit setMenus();
     DataThread::updateSubownerBrowser();
 }
@@ -405,13 +405,13 @@ void SubownerBrowser::toggleInfoHeader( const QString& id )
 
 void SubownerBrowser::toggleSortOrder()
 {
-    if ( Settings::sortAsc() )
+    if ( Settings::subSortAsc() )
     {
-        Settings::setSortAsc( false );
+        Settings::setSubSortAsc( false );
     }
     else
     {
-        Settings::setSortAsc( true );
+        Settings::setSubSortAsc( true );
     }
     
     DataThread::updateSubownerBrowser();
@@ -419,13 +419,13 @@ void SubownerBrowser::toggleSortOrder()
 
 void SubownerBrowser::toggleSortType()
 {
-    if ( Settings::sortAge() )
+    if ( Settings::subSortAge() )
     {
-        Settings::setSortAge( false );
+        Settings::setSubSortAge( false );
     }
     else
     {
-        Settings::setSortAge( true );
+        Settings::setSubSortAge( true );
     }
     
     DataThread::updateSubownerBrowser();

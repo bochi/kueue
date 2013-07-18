@@ -67,7 +67,8 @@ void DataThread::run()
     createData();
     
     emit updateQueueBrowserRequested( QString::Null() );
-    
+    emit updateSubownerBrowserRequested( QString::Null() );   
+ 
     if ( Settings::monitorEnabled() )
     {
         emit updateQmonBrowserRequested( QString::Null() );
@@ -88,8 +89,8 @@ void DataThread::createData()
     connect( mData, SIGNAL( queueDataChanged( const QString& ) ), 
              this, SIGNAL( queueDataChanged( const QString& ) ) );
     
-    connect( mData, SIGNAL( subownerDataChanged( QString ) ),
-             this, SIGNAL( subownerDataChanged( QString ) ) );
+    connect( mData, SIGNAL( subownerDataChanged( const QString& ) ),
+             this, SIGNAL( subownerDataChanged( const QString& ) ) );
     
     connect( mData, SIGNAL( dirsToDelete( QStringList ) ),
              this, SIGNAL( dirsToDelete( QStringList ) ) );
@@ -105,6 +106,9 @@ void DataThread::createData()
     
     connect( this, SIGNAL( updateStatsBrowserRequested() ), 
              mData, SLOT( updateStatsBrowser() ) );
+    
+    connect( mData, SIGNAL(showSubownerBrowser( bool ) ),
+             this, SIGNAL(showSubownerBrowser( bool ) ) );
     
     connect( mData, SIGNAL( qmonDataChanged( QString ) ), 
              this, SIGNAL( qmonDataChanged( QString ) ) );
