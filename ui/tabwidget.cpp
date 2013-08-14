@@ -150,6 +150,7 @@ TabWidget::TabWidget( QWidget* parent )
     
     insertTab( 0, mPersonalTab, QIcon( ":icons/conf/targets.png" ), "Personal queue" );
     insertTab( 1, mSubownerTab, QIcon( ":icons/conf/targets.png" ), "Subowned SRs" );
+    showSubownerTab( false );
     insertTab( 2, mMonitorTab, QIcon( ":/icons/conf/monitor.png" ), "Queue monitor" );
     insertTab( 3, mStatsTab, QIcon( ":/icons/conf/stats.png" ), "Statistics" );
     
@@ -242,14 +243,16 @@ void TabWidget::showPersonalTab( bool b )
 
 void TabWidget::showSubownerTab( bool b )
 {
-    if ( b && mSubownerTab->isHidden() )
+    if ( b )
     {
-        mSubownerTab->show();
+        insertTab( 1, mSubownerTab, QIcon( ":icons/conf/targets.png" ), "Subowned SRs" );
     }
-    else if ( !b && mSubownerTab->isVisible() )
+    else if ( !b )
     {
-        mSubownerTab->hide(); 
+        removeTab( indexOf( mSubownerTab ) );
     }
+
+    rebuildMaps();
 }
 
 void TabWidget::showMonitorTab( bool b )
@@ -292,9 +295,10 @@ void TabWidget::addUnityBrowser()
 {   
     // create a new unitywidget and add it as a tab
     UnityWidget* w = new UnityWidget( this );
-    
-    int tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
-    
+   
+    int tab = count() + 1; 
+    //int tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
+    insertTab( tab, w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
     // set the tabId for the widget for tab handling 
     
     w->setTabId( tab );

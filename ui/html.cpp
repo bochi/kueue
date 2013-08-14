@@ -930,15 +930,6 @@ QString HTML::csatTable( Survey i )
     
     srtab += QString( "</tr>" );
     
-    if ( i.srsat != -1 )
-    {
-        srtab += QString ( 
-                           "<tr>"
-                             "<td class='gadgetText'>SR Satisfaction</td>"
-                             "<td class='gadgetText'>" + QString::number( i.srsat ) + "</td>"
-                           "</tr>" );
-    }
-    
     if ( i.engsat != -1 )
     {
         srtab += QString ( "<tr>"

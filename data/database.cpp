@@ -551,13 +551,6 @@ QList<QueueSR> Database::getSrList( bool s, bool a, const QString& dbname, const
     }
     
     db.commit();
-    
-    if ( srlist.isEmpty() )
-    {
-        QueueSR sr;
-        sr.id = "00000000000";
-        srlist.append( sr );
-    }
      
     return srlist;
 }
@@ -667,13 +660,6 @@ QList<QueueSR> Database::getSubSrList( bool s, bool a, const QString& dbname, co
     }
     
     db.commit();
-    
-    if ( srlist.isEmpty() )
-    {
-        QueueSR sr;
-        sr.id = "00000000000";
-        srlist.append( sr );
-    }
     
     return srlist;
 }

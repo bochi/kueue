@@ -552,7 +552,6 @@ void Data::statsUpdateFinished()
 
 void Data::updateQueueBrowser( const QString& filter )
 {
-    qDebug() << "UQB";
     mCurrentQueueFilter = filter;
     
     QString html;
@@ -587,7 +586,10 @@ void Data::updateQueueBrowser( const QString& filter )
         }
     }
 
-    int avgAge = age / srlist.size();
+    if ( srlist.size() > 0 )
+    {
+        int avgAge = age / srlist.size();
+    }
     
     if ( !html.isEmpty() )
     {
@@ -598,11 +600,19 @@ void Data::updateQueueBrowser( const QString& filter )
 void Data::updateSubownerBrowser( const QString& filter )
 {
     mCurrentSubownerFilter = filter;
-    
     QString html;
     int age = 0;
     QList<QueueSR> srlist = Database::getSubSrList( Settings::subSortAge(), Settings::subSortAsc(), mDB, mCurrentSubownerFilter );
+   
+    if ( srlist.size() == 0 )
+    {
+	emit showSubownerBrowser( false );
+    }
+    else
+    {
+        emit showSubownerBrowser( true );
     
+ 
     html += HTML::styleSheet();
     html += HTML::subPageHeader( srlist.size() );
     
@@ -630,17 +640,8 @@ void Data::updateSubownerBrowser( const QString& filter )
         }
     }
 
-    if ( srlist.size() == 1 )
-    {
-        emit showSubownerBrowser( false );
-    }
-    else
-    {
-        emit showSubownerBrowser( true );
-    }
-    
     int avgAge = age / srlist.size();
-    
+    }
     if ( !html.isEmpty() )
     {
         emit subownerDataChanged( html );
