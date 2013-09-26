@@ -70,6 +70,7 @@ class TabWidget : public QTabWidget
         TabWidget(QWidget *parent = 0L);
         ~TabWidget();
         
+        int mTabs;
         int mGrabbedWidget;
         TabBar* mBar;
         TabButton* mMenuButton;

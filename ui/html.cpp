@@ -820,7 +820,7 @@ QString HTML::statsPageHeader( Statz s )
         ph += csatTable( sl.at( i ) );
     }
     
-    ph += closedTableHeader( s.closedSr, s.srTtsAvg );
+    ph += closedTableHeader( s.closedSr, s.closedCr, s.srTtsAvg );
     
     
     for ( int i = 0; i < cl.size(); ++i ) 
@@ -949,13 +949,14 @@ QString HTML::csatTable( Survey i )
     return srtab;
 }
 
-QString HTML::closedTableHeader( int c, int a )
+QString HTML::closedTableHeader( int c, int b, int a )
 {
     QString ph;
  
     ph += QString ( "<br><p class='qph'><b>Closed SRs/Time to solution</b></p><hr>"
-                    "You closed " + QString::number( c ) + " SRs so far<br>"
-                    "Average time to solution: " + QString::number( a ) + " days<br><br>" );
+                    "You closed " + QString::number( c ) + " SRs and " + QString::number( b ) + " CRs so far<br>"
+                    "Average time to solution (SRs only): " + QString::number( a ) + " days<br><br>" 
+                    "Here is a list of closed SRs:<br><br>" );
 
     return ph;
 }

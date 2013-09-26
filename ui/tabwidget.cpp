@@ -70,6 +70,7 @@ TabWidget::TabWidget( QWidget* parent )
     qDebug() << "[TABWIDGET] Constructing";
 
     mGrabbedWidget = 0;
+    mTabs = 0;
     
     // set the tab position 
     
@@ -88,6 +89,8 @@ TabWidget::TabWidget( QWidget* parent )
     connect( mBar, SIGNAL( tabMiddleClicked( int, QPoint ) ),
              this, SLOT( tabMiddleClicked( int, QPoint ) ) );
    
+    //setStyleSheet( "QTabBar::tab:disabled { width: 0; height: 0; margin: 0; padding: 0; border: none; }" );
+    
     TabButton* newTabButton = new TabButton( this );
     TabButton* mMenuButton = new TabButton( this );
     
@@ -150,7 +153,6 @@ TabWidget::TabWidget( QWidget* parent )
     
     insertTab( 0, mPersonalTab, QIcon( ":icons/conf/targets.png" ), "Personal queue" );
     insertTab( 1, mSubownerTab, QIcon( ":icons/conf/targets.png" ), "Subowned SRs" );
-    showSubownerTab( false );
     insertTab( 2, mMonitorTab, QIcon( ":/icons/conf/monitor.png" ), "Queue monitor" );
     insertTab( 3, mStatsTab, QIcon( ":/icons/conf/stats.png" ), "Statistics" );
     
@@ -245,13 +247,13 @@ void TabWidget::showSubownerTab( bool b )
 {
     if ( b )
     {
-        insertTab( 1, mSubownerTab, QIcon( ":icons/conf/targets.png" ), "Subowned SRs" );
+        insertTab( 1, mSubownerTab, QIcon( ":/icons/conf/targets.png" ), "Subowned SRs" );
     }
-    else if ( !b )
+    else
     {
         removeTab( indexOf( mSubownerTab ) );
     }
-
+    
     rebuildMaps();
 }
 
@@ -295,10 +297,9 @@ void TabWidget::addUnityBrowser()
 {   
     // create a new unitywidget and add it as a tab
     UnityWidget* w = new UnityWidget( this );
-   
-    int tab = count() + 1; 
-    //int tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
-    insertTab( tab, w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
+    
+    int tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
+    qDebug() << "[TABWIDGET] Adding Unity Tab with ID " << QString::number( tab );
     // set the tabId for the widget for tab handling 
     
     w->setTabId( tab );

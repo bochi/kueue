@@ -46,7 +46,7 @@ class HTML
         static QString qmonTableFooter();
         static QString csatTable( Survey );
         static QString csatTableHeader( int, int, int );
-        static QString closedTableHeader( int, int );
+        static QString closedTableHeader( int, int, int );
         static QString closedTable( ClosedItem );
         static QString statsPageHeader( Statz );
         
