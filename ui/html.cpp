@@ -572,11 +572,11 @@ QString HTML::qmonSrInQueue( QmonSR sr )
 
     if (  sr.isCr )
     {
-        srtab += QString ( "<p style='line-height:0.9em;'><b>&nbsp;CR# " );
+        srtab += QString ( "<p style='line-height:0.8em;'><b>&nbsp;CR# " );
     }
     else
     {
-        srtab += QString ( "<p style='line-height:0.9em;'><b>&nbsp;SR# " );
+        srtab += QString ( "<p style='line-height:0.8em;'><b>&nbsp;SR# " );
     }
     
     srtab += QString( sr.id + "</b>" );
@@ -591,7 +591,7 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         srtab += QString( "&nbsp;<img src='qrc:/images/obacht.png'></img>" );
     }   
     
-    srtab += QString( "</p><b><font size='-1'><p style='line-height:0.6em;'>&nbsp;" + sr.geo + " (" + sr.hours + ") - " );
+    srtab += QString( "</p><b><font size='-1'><p style='line-height:0.5em;'>&nbsp;" + sr.geo + " (" + sr.hours + ") - " );
     
     if ( sr.severity == "Critical" )
     {
@@ -606,7 +606,7 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         srtab += QString( sr.severity );
     }
 
-    srtab += QString( "</font></b></p></td><td width='52%' valign='center' align='left' class='gadgetHead'>\n" );
+    srtab += QString( "</b></font></p><p style='line-height:0.5em;'><font size='-1'><i>&nbsp;" + sr.status + "</i></font></p></td><td width='52%' valign='center' align='left' class='gadgetHead'>\n" );
    
     if ( sr.cus_account.isEmpty() )
     {
