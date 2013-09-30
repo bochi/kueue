@@ -195,7 +195,16 @@ void TabWidget::refreshTabs()
     {
         showStatsTab( true );
     }
-    
+   
+    if ( !Settings::unityEnabled() )
+    {
+	showUnityTab( false );
+    }
+    else
+    {
+        showUnityTab( true );
+    } 
+
     setCurrentIndex( current );
 }
 
@@ -241,6 +250,8 @@ void TabWidget::showPersonalTab( bool b )
     {
         removeTab( indexOf( mPersonalTab ) );
     }
+
+    rebuildMaps();
 }
 
 void TabWidget::showSubownerTab( bool b )
@@ -267,6 +278,8 @@ void TabWidget::showMonitorTab( bool b )
     {
         removeTab( indexOf( mMonitorTab ) );
     }
+
+    rebuildMaps();
 }
 
 void TabWidget::showStatsTab( bool b )
@@ -279,6 +292,8 @@ void TabWidget::showStatsTab( bool b )
     {
         removeTab( indexOf( mStatsTab ) );
     }
+
+    rebuildMaps();
 }
 
 void TabWidget::showUnityTab( bool b )
@@ -291,6 +306,8 @@ void TabWidget::showUnityTab( bool b )
     {
         removeTab( indexOf( mUnityTab ) );    
     }
+
+    rebuildMaps();
 }
 
 void TabWidget::addUnityBrowser()
