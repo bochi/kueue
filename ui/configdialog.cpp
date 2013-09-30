@@ -40,6 +40,8 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     (void)parent;
 
     setupUi( this );
+    
+    pageListWidget->item( 4 )->setHidden( true );
    
     connect( cfg_unityEnabled, SIGNAL( toggled( bool ) ), 
              this, SLOT( toggleUnity(bool)) );
@@ -277,7 +279,7 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     mediumNotificationSoundButton->setEnabled( Settings::mediumNotificationSound() );
     mediumNotificationPlayButton->setEnabled( Settings::mediumNotificationSound() );
     
-    cfg_urgentNotificationSoundFile->setEnabled( Settings::urgentNotificationSound() );
+//     cfg_urgentNotificationSoundFile->setEnabled( Settings::urgentNotificationSound() );
     urgentNotificationSoundButton->setEnabled( Settings::urgentNotificationSound() );
     urgentNotificationPlayButton->setEnabled( Settings::urgentNotificationSound() );
     
