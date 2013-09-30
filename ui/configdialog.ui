@@ -100,7 +100,7 @@
        <string>Studio</string>
       </property>
       <property name="icon">
-       <iconset resource="../kueue.qrc">
+       <iconset>
         <normaloff>:/icons/conf/studio.png</normaloff>:/icons/conf/studio.png</iconset>
       </property>
      </item>
@@ -500,6 +500,13 @@
               </layout>
              </item>
             </layout>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="cfg_showEmptyQueues">
+            <property name="text">
+             <string>Show empty queues</string>
+            </property>
            </widget>
           </item>
          </layout>

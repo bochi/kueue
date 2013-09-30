@@ -535,11 +535,11 @@ QString HTML::qmonPageHeader()
     return ph;
 }
 
-QString HTML::qmonTableHeader( const QString& queue )
+QString HTML::qmonTableHeader( const QString& queue, int amount )
 {
     QString ph;
  
-    ph += QString ( "<p class='qph'><b>" + queue + "</b></p><hr>" );
+    ph += QString ( "<p class='qph'><b>" + queue + " (" + QString::number( amount ) + ")</b></p><hr>" );
 
     return ph;
 }
@@ -591,7 +591,7 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         srtab += QString( "&nbsp;<img src='qrc:/images/obacht.png'></img>" );
     }   
     
-    srtab += QString( "</p><b><font size='-1'><p style='line-height:0.5em;'>&nbsp;" + sr.geo + " (" + sr.hours + ") - " );
+    srtab += QString( "</p><b><font size='-1'><p style='line-height:0.7em;'>&nbsp;" + sr.geo + " (" + sr.hours + ") - " );
     
     if ( sr.severity == "Critical" )
     {
@@ -606,7 +606,7 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         srtab += QString( sr.severity );
     }
 
-    srtab += QString( "</b></font></p><p style='line-height:0.5em;'><font size='-1'><i>&nbsp;" + sr.status + "</i></font></p></td><td width='52%' valign='center' align='left' class='gadgetHead'>\n" );
+    srtab += QString( "</b></font></p><p style='line-height:0.7em;'><font size='-1'><i>&nbsp;" + sr.status + "</i></font></p></td><td width='52%' valign='center' align='left' class='gadgetHead'>\n" );
    
     if ( sr.cus_account.isEmpty() )
     {

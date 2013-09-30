@@ -41,7 +41,7 @@ class HTML
         static QString SRTable( QueueSR );
         static QString pageFooter();
         static QString qmonPageHeader();
-        static QString qmonTableHeader( const QString& );
+        static QString qmonTableHeader( const QString&, int );
         static QString qmonSrInQueue( QmonSR );
         static QString qmonTableFooter();
         static QString csatTable( Survey );

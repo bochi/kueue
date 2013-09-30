@@ -662,23 +662,30 @@ void Data::updateQmonBrowser( const QString& filter )
 
     for ( int i = 0; i < list.size(); ++i )
     {
-        if ( list.at( i ).split( "|" ).at( 0 ).isEmpty() )
+        QList< QmonSR > l( Database::getQmonQueue( list.at( i ).split( "|" ).at( 1 ), Settings::qmonFilter(), mDB, mCurrentQmonFilter ) );
+
+        if ( l.size() == 0 && !Settings::showEmptyQueues() )
         {
-            html += HTML::qmonTableHeader( list.at( i ).split( "|" ).at( 1 ) );
+            //qDebug() << "[DATA] Skipping empty queue";
         }
         else
         {
-            html += HTML::qmonTableHeader( list.at( i ).split( "|" ).at( 0 ) );
+            if ( list.at( i ).split( "|" ).at( 0 ).isEmpty() )
+            {
+                html += HTML::qmonTableHeader( list.at( i ).split( "|" ).at( 1 ), l.size() );
+            }
+            else
+            {
+                html += HTML::qmonTableHeader( list.at( i ).split( "|" ).at( 0 ), l.size() );
+            }
+            
+                    for ( int i = 0; i < l.size(); ++i ) 
+            {
+                html += HTML::qmonSrInQueue( l.at( i ) );
+            }
+            
+            html += HTML::qmonTableFooter();
         }
-        
-        QList< QmonSR > l( Database::getQmonQueue( list.at( i ).split( "|" ).at( 1 ), Settings::qmonFilter(), mDB, mCurrentQmonFilter ) );
-    
-        for ( int i = 0; i < l.size(); ++i ) 
-        {
-            html += HTML::qmonSrInQueue( l.at( i ) );
-        }
-        
-        html += HTML::qmonTableFooter();
     }
 
     if ( !html.isEmpty() )

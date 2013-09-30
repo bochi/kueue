@@ -173,9 +173,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     connect( cfg_highNotificationSound, SIGNAL( toggled( bool ) ), 
              highNotificationPlayButton, SLOT( setEnabled( bool ) ) );
     
-    connect( applianceDownloadDirectoryButton, SIGNAL( pressed() ),
-             this, SLOT( getApplianceDownloadDirectory() ) );
-    
     cfg_dBServer->setText( Settings::dBServer() );
     cfg_engineer->setText( Settings::engineer() );
     
@@ -190,6 +187,7 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     
     cfg_monitorEnabled->setChecked( Settings::monitorEnabled() );
     cfg_queuesToMonitor->addItems( Settings::queuesToMonitor() );
+    cfg_showEmptyQueues->setChecked( Settings::showEmptyQueues() );
     cfg_monitorPersonalBomgar->setChecked( Settings::monitorPersonalBomgar() );
     cfg_bomgarName->setText( Settings::bomgarName() );
     
@@ -404,6 +402,7 @@ void ConfigDialog::writeSettings()
     
     Settings::setQueuesToMonitor( ql );
 
+    Settings::setShowEmptyQueues( cfg_showEmptyQueues->isChecked() );
     Settings::setMonitorPersonalBomgar( cfg_monitorPersonalBomgar->isChecked() );
     Settings::setBomgarName( cfg_bomgarName->text() );
     

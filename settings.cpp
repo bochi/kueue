@@ -747,6 +747,19 @@ void Settings::setQmonFilter( const QString& s )
     settings.sync();
 }
 
+bool Settings::showEmptyQueues()
+{
+    QSettings settings;
+    return settings.value( "showEmptyQueues", true ).toBool();
+}
+
+void Settings::setShowEmptyQueues( const bool& b )
+{
+    QSettings settings;
+    settings.setValue( "showEmptyQueues", b );
+    settings.sync();
+}
+
 bool Settings::monitorPersonalBomgar()
 {
     QSettings settings;

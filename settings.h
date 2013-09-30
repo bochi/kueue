@@ -201,6 +201,9 @@ class Settings
         static QStringList queuesToMonitor();
         static void setQueuesToMonitor( const QStringList& );
         
+        static bool showEmptyQueues();
+        static void setShowEmptyQueues( const bool& );
+        
         static bool monitorPersonalBomgar();
         static void setMonitorPersonalBomgar( const bool& );
         
