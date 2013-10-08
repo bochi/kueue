@@ -34,10 +34,11 @@
 
 NSAJob::NSAJob( const QString& scfile, const QString& sc ) : KueueThread()
 {
-    qDebug() << "[NSAJOB] Constructing";
+    
 
     mSupportConfig = sc;
     mSupportConfigFile = scfile;
+    qDebug() << "[NSAJOB] Constructing" << mSupportConfig << mSupportConfigFile;
 }
 
 NSAJob::~NSAJob()
@@ -50,6 +51,7 @@ void NSAJob::run()
     QString output;
     NSASummaryItem si;
     QFile info( mSupportConfig + "/summary.xml" );
+    qDebug() << info.fileName();
     si.archive = mSupportConfigFile;
     
     if ( !info.open( QFile::ReadOnly ) )
@@ -61,24 +63,24 @@ void NSAJob::run()
         QDateTime rundatetime;
         QDomDocument xmldoc;
         
-	xmldoc.setContent( &info );
+        xmldoc.setContent( &info );
         QDomNode node = xmldoc.namedItem( "summary" );
-	qDebug() << node.namedItem( "scriptversion" ).toElement().text();
-	
-	si.scriptversion = node.namedItem( "scriptversion" ).toElement().text();
-	si.scriptdate = QDate::fromString( node.namedItem( "scriptdate" ).toElement().text(), "yyyy MM dd" );
-	rundatetime.setDate( QDate::fromString( "20" + node.namedItem( "rundate" ).toElement().text(), "yyyyMMdd" ) );
-	rundatetime.setTime( QTime::fromString( node.namedItem( "runtime" ).toElement().text(), "hhmm" ) );
-	si.rundate = rundatetime;
+        qDebug() << node.namedItem( "scriptversion" ).toElement().text();
+        
+        si.scriptversion = node.namedItem( "scriptversion" ).toElement().text();
+        si.scriptdate = QDate::fromString( node.namedItem( "scriptdate" ).toElement().text(), "yyyy MM dd" );
+        rundatetime.setDate( QDate::fromString( "20" + node.namedItem( "rundate" ).toElement().text(), "yyyyMMdd" ) );
+        rundatetime.setTime( QTime::fromString( node.namedItem( "runtime" ).toElement().text(), "hhmm" ) );
+        si.rundate = rundatetime;
         si.hostname = node.namedItem( "hostname" ).toElement().text();
         si.arch = node.namedItem( "arch" ).toElement().text();  
-	si.kernel = node.namedItem( "kernel" ).toElement().text();  
-	si.slesversion = node.namedItem( "sle_version" ).toElement().text();
-	si.slestype = node.namedItem( "sle_type" ).toElement().text();  
-	si.slessp = node.namedItem( "sle_patchlevel" ).toElement().text();  
-	si.slesversion = node.namedItem( "sle_version" ).toElement().text();  
-	si.oesversion = node.namedItem( "oes_version" ).toElement().text();
-	si.oessp = node.namedItem( "oes_patchlevel" ).toElement().text();
+        si.kernel = node.namedItem( "kernel" ).toElement().text();  
+        si.slesversion = node.namedItem( "sle_version" ).toElement().text();
+        si.slestype = node.namedItem( "sle_type" ).toElement().text();  
+        si.slessp = node.namedItem( "sles_sp" ).toElement().text();  
+        si.slesversion = node.namedItem( "sles_version" ).toElement().text();  
+        si.oesversion = node.namedItem( "oes_version" ).toElement().text();
+        si.oessp = node.namedItem( "oes_sp" ).toElement().text();
     }
     
     output += HTML::nsaPageHeader( si );
@@ -100,6 +102,11 @@ void NSAJob::run()
     }
     
     emit threadStarted( "Generating NSA Report...", files.count() );
+    
+    QList<NSATableItem> successlist;
+    QList<NSATableItem> criticallist;
+    QList<NSATableItem> warninglist;
+    QList<NSATableItem> recommendedlist;
     
     for ( int i = 0; i < files.size(); ++i ) 
     {
@@ -184,42 +191,54 @@ void NSAJob::run()
                 QString t = line.split( " = " ).at( 0 ).trimmed();
                 t.remove( "#META-LINK-" );
                 l.append( t );
-                
-                if ( t == "TID" )
-                {
-                    l.append( "http://www.novell.com/support/viewContent.do?externalId=" + line.split( " = " ).at( 1 ).trimmed() );
-                }
-                else if ( t == "BUG" )
-                {
-                    l.append( "https://bugzilla.novell.com/show_bug.cgi?id=" + line.split( " = " ).at( 1 ).trimmed() );
-                }
-                else
-                {
-                    l.append( line.split( " = " ).at( 1 ).trimmed() );
-                }
+                l.append( line.split( " = " ).at( 1 ).trimmed() );
                 
                 linkList.append( l );
             }
         }
         
         ti.linkList = linkList;
-        
+       
+        if ( ti.type == NSATableItem::Success )
+        {
+            successlist.append( ti );
+        }
         if ( ti.type == NSATableItem::Critical )
         {
-            mCritical += HTML::nsaTableItem( ti );       
+            criticallist.append( ti );
         }
         else if ( ti.type == NSATableItem::Warning )
         {
-            mWarning += HTML::nsaTableItem( ti );
+            warninglist.append( ti );
         }
         else if ( ti.type == NSATableItem::Recommended )
         {
-            mRecommended += HTML::nsaTableItem( ti );
+            recommendedlist.append( ti );
         }
 
         file.close();
     }
    
+    for ( int i = 0; i < successlist.size(); ++i ) 
+    {
+        mSuccess += HTML::nsaTableItem( successlist.at( i ) );
+    }
+    
+    for ( int i = 0; i < criticallist.size(); ++i ) 
+    {
+        mCritical += HTML::nsaTableItem( criticallist.at( i ) );
+    }
+    
+    for ( int i = 0; i < warninglist.size(); ++i ) 
+    {
+        mWarning += HTML::nsaTableItem( warninglist.at( i ) );  
+    }
+    
+    for ( int i = 0; i < recommendedlist.size(); ++i ) 
+    {
+        mRecommended += HTML::nsaTableItem( recommendedlist.at( i ) );
+    }
+    
     output += HTML::nsaTableStart( "Critical" );
     output += mCritical;
     output += HTML::nsaTableEnd();
@@ -228,6 +247,9 @@ void NSAJob::run()
     output += HTML::nsaTableEnd();
     output += HTML::nsaTableStart( "Recommended" );
     output += mRecommended;
+    output += HTML::nsaTableEnd();
+    output += HTML::nsaTableStart( "Success" );
+    output += mSuccess;
     output += HTML::nsaTableEnd();
     
     emit finishedReport( output );

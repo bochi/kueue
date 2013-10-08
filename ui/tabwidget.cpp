@@ -198,13 +198,14 @@ void TabWidget::refreshTabs()
    
     if ( !Settings::unityEnabled() )
     {
-	showUnityTab( false );
+        showUnityTab( false );
     }
     else
     {
         showUnityTab( true );
     } 
 
+    rebuildMaps();
     setCurrentIndex( current );
 }
 

@@ -146,6 +146,7 @@ void NSA::startReport()
 
 void NSA::runPS( const QString& scfile, const QString& scdir )
 {
+    qDebug() << "NSAJOB" << scfile << scdir;
     NSAJob* j = new NSAJob( scfile, scdir );
     
     connect( j, SIGNAL( finishedReport( const QString& ) ),

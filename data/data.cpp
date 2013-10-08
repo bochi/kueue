@@ -72,7 +72,7 @@ Data::Data()
         Database::dropQmon();
         
         QTimer* qmonTimer = new QTimer( this );
-        qmonTimer->start( 41219 );
+        qmonTimer->start( 24219 );
     
         connect( qmonTimer, SIGNAL( timeout() ),
                  this, SLOT( updateQmon() ) );
@@ -570,13 +570,15 @@ void Data::updateQueueBrowser( const QString& filter )
                 //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
         }
         else if ( !Settings::showAwaitingSupport() && 
-                   srlist.at( i ).status == "Awaiting Novell Support" )
+                   ( srlist.at( i ).status == "Awaiting Technical Support" ||
+                   srlist.at( i ).status == "Awaiting Novell Support" ) )
         {
                 //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
         }
         else if ( !Settings::showStatusOthers() && 
                    srlist.at( i ).status != "Awaiting Customer" && 
-                   srlist.at( i ).status != "Awaiting Novell Support" )
+                   ( srlist.at( i ).status != "Awaiting Novell Support" ||
+                   srlist.at( i ).status == "Awaiting Technical Support" ) )
         {
                 //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
         }
@@ -624,13 +626,15 @@ void Data::updateSubownerBrowser( const QString& filter )
             //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
         }
         else if ( !Settings::subShowAwaitingSupport() && 
-            srlist.at( i ).status == "Awaiting Novell Support" )
+             ( srlist.at( i ).status == "Awaiting Novell Support" ||
+               srlist.at( i ).status == "Awaiting Technical Support" ) )
         {
             //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
         }
         else if ( !Settings::subShowStatusOthers() && 
             srlist.at( i ).status != "Awaiting Customer" && 
-            srlist.at( i ).status != "Awaiting Novell Support" )
+            ( srlist.at( i ).status != "Awaiting Novell Support" ||
+            srlist.at( i ).status != "Awaiting Technical Support" ) )
         {
             //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
         }

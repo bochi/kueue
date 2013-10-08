@@ -44,6 +44,7 @@ class NSAJob : public KueueThread
         QString mSupportConfig;
         QString mSupportConfigFile;
         QString mCritical;
+        QString mSuccess;
         QString mWarning;
         QString mRecommended;
         
@@ -60,6 +61,7 @@ class NSATableItem
     public:
         enum type
         {
+            Success = 0,
             Recommended = 1,
             Warning = 3,
             Critical = 4

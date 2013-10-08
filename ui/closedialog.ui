@@ -49,12 +49,12 @@
      </item>
      <item>
       <property name="text">
-       <string>No Charge Awaiting Novell Engineering</string>
+       <string>No Charge Awaiting Engineering</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Awaiting Novell Engineering</string>
+       <string>Awaiting Engineering</string>
       </property>
      </item>
     </widget>
