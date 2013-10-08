@@ -1107,10 +1107,16 @@ QMenu* UnityWidget::statusMenu()
     QMenu* menu = new QMenu( this );
     
     menu->addAction( "Awaiting Customer" );
-    menu->addAction( "Awaiting Novell Support" );
-    menu->addAction( "Awaiting Novell Engineering" );
+    menu->addAction( "Awaiting Technical Support" );
+    menu->addAction( "Awaiting Engineering" );
+    menu->addAction( "Awaiting Third Party" );
+    menu->addAction( "Awaiting Public patch release" );
     menu->addAction( "Monitor Solution" );
     menu->addAction( "Suspended" );
+    menu->addAction( "Assigned" );
+    menu->addAction( "Escalate" );
+    menu->addAction( "Schedule For Close" );
+    menu->addAction( "Unassigned" );
     
     connect( menu, SIGNAL( triggered( QAction* ) ),
              this, SLOT( changeStatus( QAction* ) ) );
