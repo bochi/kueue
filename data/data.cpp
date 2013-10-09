@@ -564,23 +564,32 @@ void Data::updateQueueBrowser( const QString& filter )
 
     for ( int i = 0; i < srlist.size(); ++i )
     {
+        QueueSR sr = srlist.at( i );
+        
         if ( !Settings::showAwaitingCustomer() && 
-              srlist.at( i ).status == "Awaiting Customer" )
+              sr.status == "Awaiting Customer" )
         {
-                //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
+                //qDebug() << "[QUEUEBROWSER] Skipping" << sr.status << sr.id;
         }
         else if ( !Settings::showAwaitingSupport() && 
-                   ( srlist.at( i ).status == "Awaiting Technical Support" ||
-                   srlist.at( i ).status == "Awaiting Novell Support" ) )
+                   ( sr.status == "Awaiting Technical Support" ||
+                   sr.status == "Awaiting Novell Support" ) )
         {
-                //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
+                //qDebug() << "[QUEUEBROWSER] Skipping 2" << sr.status << sr.id;
         }
-        else if ( !Settings::showStatusOthers() && 
-                   srlist.at( i ).status != "Awaiting Customer" && 
-                   ( srlist.at( i ).status != "Awaiting Novell Support" ||
-                   srlist.at( i ).status == "Awaiting Technical Support" ) )
+        else if ( !Settings::showStatusOthers() &&
+                  ( sr.status == "Suspended" ||
+                    sr.status == "Unassigned" ||
+                    sr.status == "Assigned" ||
+                    sr.status == "Escalate" || 
+                    sr.status == "Monitor Solution" ||
+                    sr.status == "Schedule For Close" ||
+                    sr.status == "Awaiting Engineering" ||
+                    sr.status == "Awaiting Novell Engineering" ||
+                    sr.status == "Awaiting Third Party" ||
+                    sr.status == "Awaiting Public Patch Release" ) )
         {
-                //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
+            //qDebug() << "[QUEUEBROWSER] Skipping 3" << sr.status << sr.id;
         }
         else
         {
@@ -620,32 +629,37 @@ void Data::updateSubownerBrowser( const QString& filter )
     
     for ( int i = 0; i < srlist.size(); ++i )
     {
-        if ( !Settings::subShowAwaitingCustomer() && 
-            srlist.at( i ).status == "Awaiting Customer" )
+        QueueSR sr = srlist.at( i );
+        
+        if ( !Settings::showAwaitingCustomer() && 
+            sr.status == "Awaiting Customer" )
         {
-            //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
+            //qDebug() << "[QUEUEBROWSER] Skipping" << sr.status << sr.id;
         }
-        else if ( !Settings::subShowAwaitingSupport() && 
-             ( srlist.at( i ).status == "Awaiting Novell Support" ||
-               srlist.at( i ).status == "Awaiting Technical Support" ) )
+        else if ( !Settings::showAwaitingSupport() && 
+            ( sr.status == "Awaiting Technical Support" ||
+            sr.status == "Awaiting Novell Support" ) )
         {
-            //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
+            //qDebug() << "[QUEUEBROWSER] Skipping 2" << sr.status << sr.id;
         }
-        else if ( !Settings::subShowStatusOthers() && 
-            srlist.at( i ).status != "Awaiting Customer" && 
-            ( srlist.at( i ).status != "Awaiting Novell Support" ||
-            srlist.at( i ).status != "Awaiting Technical Support" ) )
+        else if ( !Settings::showStatusOthers() &&
+            ( sr.status == "Suspended" ||
+            sr.status == "Unassigned" ||
+            sr.status == "Assigned" ||
+            sr.status == "Escalate" || 
+            sr.status == "Monitor Solution" ||
+            sr.status == "Schedule For Close" ||
+            sr.status == "Awaiting Engineering" ||
+            sr.status == "Awaiting Novell Engineering" ||
+            sr.status == "Awaiting Third Party" ||
+            sr.status == "Awaiting Public Patch Release" ) )
         {
-            //qDebug() << "[QUEUEBROWSER] Skipping" << sr->status() << sr->id();
-        }
-        else
-        {
-            html += HTML::SRTable( srlist.at( i ) );
+            //qDebug() << "[QUEUEBROWSER] Skipping 3" << sr.status << sr.id;
         }
     }
-
-    int avgAge = age / srlist.size();
-    }
+    
+    
+    
     if ( !html.isEmpty() )
     {
         emit subownerDataChanged( html );
