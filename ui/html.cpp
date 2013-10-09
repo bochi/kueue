@@ -619,11 +619,11 @@ QString HTML::qmonSrInQueue( QmonSR sr )
                         "<td width='30%' align='right' valign='center' class='gadgetHead'><font size='-1'>\n" 
                         "<p style='line-height:0.7em;'>Age: " + timeString( sr.agesec ) + "</p>\n" );
     
-    srtab += QString( "<p style='line-height:0.7em;'>In Q: " + timeString( sr.timeinqsec ) );
+    srtab += QString( "<p style='line-height:0.7em;'>In Queue: " + timeString( sr.timeinqsec ) );
                         
     if ( sr.slasec > 0 )
     {
-        srtab += QString( " - SLA: " + timeString( sr.slasec ) );
+        srtab += QString( "</p><p style='line-height:0.7em;'>SLA left: " + timeString( sr.slasec ) );
     }
                                    
     srtab += ( "</p></font></td><td align='right'>\n"
