@@ -617,52 +617,50 @@ void Data::updateSubownerBrowser( const QString& filter )
    
     if ( srlist.size() == 0 )
     {
-	emit showSubownerBrowser( false );
+        emit showSubownerBrowser( false );
     }
     else
     {
         emit showSubownerBrowser( true );
+  
+        html += HTML::styleSheet();
+        html += HTML::subPageHeader( srlist.size() );
     
- 
-    html += HTML::styleSheet();
-    html += HTML::subPageHeader( srlist.size() );
-    
-    for ( int i = 0; i < srlist.size(); ++i )
-    {
-        QueueSR sr = srlist.at( i );
+        for ( int i = 0; i < srlist.size(); ++i )
+        {
+            QueueSR sr = srlist.at( i );
+            
+            if ( !Settings::showAwaitingCustomer() && 
+                sr.status == "Awaiting Customer" )
+            {
+                //qDebug() << "[QUEUEBROWSER] Skipping" << sr.status << sr.id;
+            }
+            else if ( !Settings::showAwaitingSupport() && 
+                ( sr.status == "Awaiting Technical Support" ||
+                sr.status == "Awaiting Novell Support" ) )
+            {
+                //qDebug() << "[QUEUEBROWSER] Skipping 2" << sr.status << sr.id;
+            }
+            else if ( !Settings::showStatusOthers() &&
+                ( sr.status == "Suspended" ||
+                sr.status == "Unassigned" ||
+                sr.status == "Assigned" ||
+                sr.status == "Escalate" || 
+                sr.status == "Monitor Solution" ||
+                sr.status == "Schedule For Close" ||
+                sr.status == "Awaiting Engineering" ||
+                sr.status == "Awaiting Novell Engineering" ||
+                sr.status == "Awaiting Third Party" ||
+                sr.status == "Awaiting Public Patch Release" ) )
+            {
+                //qDebug() << "[QUEUEBROWSER] Skipping 3" << sr.status << sr.id;
+            }
+        }
         
-        if ( !Settings::showAwaitingCustomer() && 
-            sr.status == "Awaiting Customer" )
+        if ( !html.isEmpty() )
         {
-            //qDebug() << "[QUEUEBROWSER] Skipping" << sr.status << sr.id;
+            emit subownerDataChanged( html );
         }
-        else if ( !Settings::showAwaitingSupport() && 
-            ( sr.status == "Awaiting Technical Support" ||
-            sr.status == "Awaiting Novell Support" ) )
-        {
-            //qDebug() << "[QUEUEBROWSER] Skipping 2" << sr.status << sr.id;
-        }
-        else if ( !Settings::showStatusOthers() &&
-            ( sr.status == "Suspended" ||
-            sr.status == "Unassigned" ||
-            sr.status == "Assigned" ||
-            sr.status == "Escalate" || 
-            sr.status == "Monitor Solution" ||
-            sr.status == "Schedule For Close" ||
-            sr.status == "Awaiting Engineering" ||
-            sr.status == "Awaiting Novell Engineering" ||
-            sr.status == "Awaiting Third Party" ||
-            sr.status == "Awaiting Public Patch Release" ) )
-        {
-            //qDebug() << "[QUEUEBROWSER] Skipping 3" << sr.status << sr.id;
-        }
-    }
-    
-    
-    
-    if ( !html.isEmpty() )
-    {
-        emit subownerDataChanged( html );
     }
 }
 
