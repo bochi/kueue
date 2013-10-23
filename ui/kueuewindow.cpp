@@ -119,7 +119,7 @@ void KueueWindow::closeEvent( QCloseEvent* e )
 {
     if ( e->spontaneous() )
     {
-	e->ignore();
+        e->ignore();
         hideWindow();
     }
     else

@@ -38,7 +38,7 @@ class UnityPage : public QWebPage
     Q_OBJECT
      
     public:
-        explicit UnityPage( QObject* parent = 0L, QString sr = QString::Null() );
+        explicit UnityPage( QString sr = QString::Null() );
         ~UnityPage();
         
         bool navReady() { return mNavReady; }
@@ -76,6 +76,7 @@ class UnityPage : public QWebPage
         void addFrame( QWebFrame* );
         void viewFrameStarted();
         void fixQueryBox();
+        void fixMenuBoxes();
         void goHome();
         void goHomeFirst();
         void doQuery();
@@ -181,6 +182,7 @@ class UnityPage : public QWebPage
 
     signals:
         void loggedIn( bool );
+        void loggedOutFromUnity();
         void contentChanged();
         void currentSrChanged( QString );
         void pageErbert();

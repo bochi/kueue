@@ -47,64 +47,7 @@ UnityBrowser::UnityBrowser( QWidget *parent, QString sr )
     
     if ( Settings::unityEnabled() )
     {
-        mShowPopup = true;
-        mCurrentZoom = 100;
-        
-        QWebSettings::globalSettings()->setAttribute( QWebSettings::JavaEnabled, false );
-        QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptEnabled, true );
-        QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
-        QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptCanCloseWindows, true );
-        QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptCanAccessClipboard, true );
-        
-        if ( sr != QString::Null() )
-        {
-            mUnityPage = new UnityPage( this, sr );
-        }
-        else
-        {
-            mUnityPage = new UnityPage( this );
-        }
-        
-        setPage( mUnityPage );
-    
-        connect( mUnityPage, SIGNAL( linkHovered( QString, QString, QString ) ), 
-                 this, SLOT( urlHovered( QString, QString, QString ) ) );
-        
-        connect( mUnityPage, SIGNAL( currentSrChanged( QString ) ),
-                 this, SIGNAL( currentSrChanged( QString ) ) );
-        
-        connect( mUnityPage, SIGNAL( pageErbert() ),
-                 this, SLOT( pageErbert() ) );
-        
-        connect( mUnityPage, SIGNAL( pageErbert( QString ) ),
-                 this, SLOT( pageErbert( QString ) ) );
-        
-        connect( mUnityPage, SIGNAL( pageErbertNed() ),
-                 this, SLOT( pageErbertNed() ) );
-        
-        connect( mUnityPage, SIGNAL( linkClicked( QUrl ) ),
-                 this, SLOT( linkClicked( QUrl ) ) );
-        
-        connect( mUnityPage, SIGNAL( loggedIn( bool ) ),
-                 this, SIGNAL( loggedIn( bool ) ) );
-        
-        connect( mUnityPage, SIGNAL( hideNextPopup() ), 
-                 this, SLOT( setPopupHidden() ) );
-        
-        mSendEmailSC = new QShortcut( QKeySequence( Qt::Key_F1 ), this );
-        mSaveSrSC = new QShortcut( QKeySequence( Qt::Key_F2 ), this );
-        mFileBrowserSC = new QShortcut( QKeySequence( Qt::Key_F3 ), this );
-        mGoBackSC = new QShortcut( QKeySequence( Qt::Key_F4 ), this );
-        mSsSC = new QShortcut( QKeySequence( Qt::Key_F5 ), this );
-        mScSC = new QShortcut( QKeySequence( Qt::Key_F6 ), this );
-        mAddNoteSC = new QShortcut( QKeySequence( Qt::Key_F7 ), this );
-        mCloseSrSC = new QShortcut( QKeySequence( Qt::Key_F8 ), this );
-        mExportSrSC = new QShortcut( QKeySequence( Qt::Key_F11 ), this );
-
-        mLogOutSC = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_L ), this );
-        mWebInspectorSC = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_I ), this );
-        
-        connectShortcuts();
+        createPage( sr );
     }
     else
     {
@@ -120,6 +63,98 @@ UnityBrowser::~UnityBrowser()
     }
     qDebug() << "[UNITYBROWSER] Destroying";
 }
+
+void UnityBrowser::createPage( const QString& sr )
+{
+    mShowPopup = true;
+    mCurrentZoom = 100;
+    
+    QWebSettings::globalSettings()->setAttribute( QWebSettings::JavaEnabled, false );
+    QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptEnabled, true );
+    QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
+    QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptCanCloseWindows, true );
+    QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptCanAccessClipboard, true );
+    
+    if ( sr != QString::Null() || !sr.isEmpty() )
+    {
+        
+        mUnityPage = new UnityPage( sr );
+    }
+    else
+    {
+        mUnityPage = new UnityPage();
+    }
+    
+    setPage( mUnityPage );
+    
+    connect( mUnityPage, SIGNAL( linkHovered( QString, QString, QString ) ), 
+             this, SLOT( urlHovered( QString, QString, QString ) ) );
+    
+    connect( mUnityPage, SIGNAL( currentSrChanged( QString ) ),
+             this, SIGNAL( currentSrChanged( QString ) ) );
+    
+    connect( mUnityPage, SIGNAL( pageErbert() ),
+             this, SLOT( pageErbert() ) );
+    
+    connect( mUnityPage, SIGNAL( pageErbert( QString ) ),
+             this, SLOT( pageErbert( QString ) ) );
+    
+    connect( mUnityPage, SIGNAL( pageErbertNed() ),
+             this, SLOT( pageErbertNed() ) );
+    
+    connect( mUnityPage, SIGNAL( linkClicked( QUrl ) ),
+             this, SLOT( linkClicked( QUrl ) ) );
+    
+    connect( mUnityPage, SIGNAL( loggedIn( bool ) ),
+             this, SIGNAL( loggedIn( bool ) ) );
+    
+    connect( mUnityPage, SIGNAL(loggedOutFromUnity()),
+             this, SLOT( loggedOut() ) );
+    
+    connect( mUnityPage, SIGNAL( hideNextPopup() ), 
+             this, SLOT( setPopupHidden() ) );
+    
+    mSendEmailSC = new QShortcut( QKeySequence( Qt::Key_F1 ), this );
+    mSaveSrSC = new QShortcut( QKeySequence( Qt::Key_F2 ), this );
+    mFileBrowserSC = new QShortcut( QKeySequence( Qt::Key_F3 ), this );
+    mGoBackSC = new QShortcut( QKeySequence( Qt::Key_F4 ), this );
+    mSsSC = new QShortcut( QKeySequence( Qt::Key_F5 ), this );
+    mScSC = new QShortcut( QKeySequence( Qt::Key_F6 ), this );
+    mAddNoteSC = new QShortcut( QKeySequence( Qt::Key_F7 ), this );
+    mCloseSrSC = new QShortcut( QKeySequence( Qt::Key_F8 ), this );
+    mExportSrSC = new QShortcut( QKeySequence( Qt::Key_F11 ), this );
+    
+    mLogOutSC = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_L ), this );
+    mWebInspectorSC = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_I ), this );
+    
+    connectShortcuts();
+    
+}
+
+
+void UnityBrowser::loggedOut()
+{
+qDebug() << "Browser Logged Out";
+    
+    QString sr;
+    UnityPage *p = mUnityPage;
+    
+    if (mUnityPage != 0) {
+        qDebug() << "set";
+        sr = p->currentSr();
+        disconnectShortcuts();
+        mUnityPage = 0;
+       // setPage(p);
+            
+            qDebug() << "sr" << sr;
+            delete p;
+       }
+
+       createPage( sr ); 
+        
+        
+}
+
 
 void UnityBrowser::connectShortcuts()
 {

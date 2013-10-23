@@ -44,6 +44,8 @@ SET( QT_USE_QTSQL TRUE )
 SET( QT_USE_QTNETWORK TRUE )
 SET( QT_USE_QTWEBKIT TRUE )
 SET( QT_USE_XML TRUE )
+SET(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")
+
 #
 # Configure defines for the preprocessor
 #

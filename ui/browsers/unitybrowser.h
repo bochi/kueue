@@ -67,6 +67,7 @@ class UnityBrowser : public QWebView
         void goToService();
 
     private slots:
+        void createPage( const QString& );
         void disconnectShortcuts();
         void connectShortcuts();
         void pageErbert( const QString& = QString::Null() );
@@ -89,6 +90,7 @@ class UnityBrowser : public QWebView
         void saveImage();
         void openWebInspector();
         void linkClicked( const QUrl& );
+        void loggedOut();
 
     private:
         UnityPage* mUnityPage;

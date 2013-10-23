@@ -40,7 +40,7 @@
 #include <QFileDialog>
 #include <QTest>
 
-UnityPage::UnityPage( QObject *parent, QString sr )
+UnityPage::UnityPage( QString sr )
         : QWebPage( ( QWidget* ) 0 )
 {
     qDebug() << "[UNITYPAGE] Constructing";
@@ -125,6 +125,13 @@ UnityPage::UnityPage( QObject *parent, QString sr )
 
 UnityPage::~UnityPage()
 {
+    mTimer->stop();
+    //delete mNAM;
+    //disconnect( mViewFrame, 0, 0, 0 );
+    //disconnect( mViewBarFrame, 0, 0, 0 );
+    //disconnect( mBarFrame, 0, 0, 0 );
+    //disconnect( mMenuFrame, 0, 0, 0 );
+ 
     qDebug() << "[UNITYPAGE] Destroying";
 }
 
@@ -155,6 +162,9 @@ void UnityPage::addFrame( QWebFrame* f )
     if ( f->frameName() == "_sweappmenu" )
     {
         mMenuFrame = f;
+        
+        connect( mMenuFrame, SIGNAL( loadFinished( bool ) ),
+                 this, SLOT(fixMenuBoxes()) );
     }
     
     // Set the viewBarFrame (the one that holds "show" and "queries" )
@@ -188,6 +198,21 @@ void UnityPage::fixQueryBox()
     qb.setStyleProperty( "width", "400px" );
 }
 
+void UnityPage::fixMenuBoxes()
+{     
+    QWebElementCollection c = mMenuFrame->findAllElements( "select" );
+    QWebElement ele;
+    
+    for ( int i = 0; i < c.count(); ++i ) 
+    {  
+        if ( c.at(i).attribute( "id" ).startsWith( "s_SWEAppMenu" ) )
+        {
+            ele = c.at( i );
+            ele.setStyleProperty( "width", "150px" );
+        }
+    }
+}
+
 void UnityPage::pageLoaded()
 {   
     
@@ -199,7 +224,7 @@ void UnityPage::pageLoaded()
     {
         if ( mainFrame()->findFirstElement( "input#s_swepi_1" ).attribute( "id" ) != "" )
         {
-            //qDebug() << "1";
+            qDebug() << "1";
             loginToUnity();
         }
     }
@@ -207,7 +232,7 @@ void UnityPage::pageLoaded()
     else if ( ( mainFrame()->url().toString().contains( "Logoff" ) ) ||
               ( mainFrame()->findFirstElement( "body" ).attribute( "class" ) == "loginBody" ) )
     {
-        //qDebug() << "2";
+        qDebug() << "2";
         mLoggedIn = false;
         emit loggedIn( false );
         loggedOut();
@@ -215,7 +240,7 @@ void UnityPage::pageLoaded()
     
     else if ( mainFrame()->toHtml().contains( "The server you are trying to access is either busy" ) )
     {
-        //qDebug() << "3";
+        qDebug() << "3";
         emit pageErbertNed();
         mLoggedIn = false;
         emit loggedIn( false );
@@ -225,7 +250,7 @@ void UnityPage::pageLoaded()
     else if ( ( mViewFrame != 0 ) && ( mLoggedIn ) )
     {
         QString title = mViewFrame->findFirstElement( "title" ).toInnerXml();
-   // qDebug() << "4";
+   qDebug() << "4";
         //qDebug() << "Title:" << title;
         
         if ( title.startsWith( "NSA Report -" ) )
@@ -240,31 +265,34 @@ void UnityPage::pageLoaded()
     }
     else if ( mainFrame()->url().toString() == "about:blank" )
     {
-      //  qDebug() << "Woo";
+       qDebug() << "Woo";
         mainFrame()->load( QUrl( Settings::unityURL() ) );
     }
     
     // Reset the anti idle timer
     
-    if ( mTimer->isActive() && Settings::useIdleTimeout() )
-    {
-        mTimer->stop();
-	mTimer->start( Settings::idleTimeoutMinutes() * 60000 );
-    }
+    //if ( mTimer->isActive() && Settings::useIdleTimeout() )
+    //{
+      //  mTimer->stop();
+        //mTimer->start( Settings::idleTimeoutMinutes() * 60000 );
+    //}
 }
 
 void UnityPage::loggedOut()
 {
     // Automagically relogin 
-    
-    mNAM->clearCookieJar();
+    qDebug() << "logged out";
+    triggerAction( QWebPage::Stop );
+    emit loggedOutFromUnity();
+    /*mNAM->clearCookieJar();
     mLoggedIn = false;
     mDontLogin = false;
-    mainFrame()->load(  QUrl( Settings::unityURL() ) );
+    mainFrame()->load(  QUrl( Settings::unityURL() ) );*/
 }
 
 void UnityPage::loginToUnity()
 {
+    qDebug() << "login to";
     mLoggedIn = false;
     emit loggedIn( false );
     
