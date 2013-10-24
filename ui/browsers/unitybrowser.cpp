@@ -134,27 +134,8 @@ void UnityBrowser::createPage( const QString& sr )
 
 void UnityBrowser::loggedOut()
 {
-qDebug() << "Browser Logged Out";
-    
-    QString sr;
-    UnityPage *p = mUnityPage;
-    
-    if (mUnityPage != 0) {
-        qDebug() << "set";
-        sr = p->currentSr();
-        disconnectShortcuts();
-        mUnityPage = 0;
-       // setPage(p);
-            
-            qDebug() << "sr" << sr;
-            delete p;
-       }
-
-       createPage( sr ); 
-        
-        
+    emit sessionLoggedOut( currentSR() );
 }
-
 
 void UnityBrowser::connectShortcuts()
 {
@@ -913,6 +894,9 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     connect( mUnityBrowser, SIGNAL( loggedIn( bool ) ), 
              this, SLOT( setOtherButtonsEnabled( bool ) ) );
     
+    connect( mUnityBrowser, SIGNAL(sessionLoggedOut( QString ) ),
+             this, SLOT( sessionLoggedOut(QString )) );
+    
     setLayout( unityBrowserLayout );
 
     mBackButton = new QToolButton;
@@ -1039,6 +1023,11 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
 UnityWidget::~UnityWidget()
 {
     qDebug() << "[UNITYWIDGET] Destroying id" << mTabId;
+}
+
+void UnityWidget::sessionLoggedOut( const QString& sr )
+{
+    emit loggedOut( sr, tabId() );
 }
 
 void UnityWidget::activateProgressWidget( const QString& text )

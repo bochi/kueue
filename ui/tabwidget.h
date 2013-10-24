@@ -126,6 +126,7 @@ class TabWidget : public QTabWidget
         
     public slots:
         void setTabsPosition();
+        void loggedOut( const QString&, int );
         void addUnityBrowser();
         void addUnityBrowserWithSR( QString = QString::Null() );
         void removeUnityBrowser( int );
@@ -152,7 +153,6 @@ class TabWidget : public QTabWidget
         void tabRightClicked( int, QPoint );
         void setMenus();
         void unityTabMenu( int tab, const QPoint& p );
-        void permanentUnityTabMenu( const QPoint& p );
         void closeActionTriggered();
         void clipboardActionTriggered();
         void closeAllOtherActionTriggered();

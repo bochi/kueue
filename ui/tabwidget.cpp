@@ -145,8 +145,8 @@ TabWidget::TabWidget( QWidget* parent )
 
     if ( Settings::unityEnabled() )
     {
-        mUnityTab = new UnityWidget( this );
-        mUnityBrowser = mUnityTab->browser();
+        addUnityBrowser();
+        rebuildMaps();
     }
     
     // ...and add them to the tabbar
@@ -155,12 +155,7 @@ TabWidget::TabWidget( QWidget* parent )
     insertTab( 1, mSubownerTab, QIcon( ":icons/conf/targets.png" ), "Subowned SRs" );
     insertTab( 2, mMonitorTab, QIcon( ":/icons/conf/monitor.png" ), "Queue monitor" );
     insertTab( 3, mStatsTab, QIcon( ":/icons/conf/stats.png" ), "Statistics" );
-    
-    if ( Settings::unityEnabled() )
-    {
-        insertTab( 4, mUnityTab, QIcon( ":/icons/menus/siebel.png" ), "Unity" );    
-    }
-    
+
     QShortcut* search = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
    
     connect( search, SIGNAL( activated() ), 
@@ -234,10 +229,6 @@ void TabWidget::tabRightClicked( int id, QPoint point )
     if ( mUnityBrowserMap.keys().contains( id ) )
     {
         unityTabMenu( id, point );
-    }
-    else if ( indexOf( mUnityTab ) == id )
-    {
-        permanentUnityTabMenu( point );
     }
 }
 
@@ -316,6 +307,9 @@ void TabWidget::addUnityBrowser()
     // create a new unitywidget and add it as a tab
     UnityWidget* w = new UnityWidget( this );
     
+    connect( w, SIGNAL( loggedOut( QString, int ) ),
+             this, SLOT(loggedOut( QString, int ) ) );
+    
     int tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
     qDebug() << "[TABWIDGET] Adding Unity Tab with ID " << QString::number( tab );
     // set the tabId for the widget for tab handling 
@@ -327,6 +321,22 @@ void TabWidget::addUnityBrowser()
     
     mUnityWidgetList.append( w );
     mUnityBrowserMap[ tab ] = w->browser();
+    
+    rebuildMaps();
+}
+
+void TabWidget::loggedOut( const QString& sr, int tab )
+{
+    removeUnityBrowser( tab );
+    
+    if ( sr == QString::Null() )
+    {
+        addUnityBrowser();
+    }
+    else
+    {
+        addUnityBrowserWithSR( sr );
+    }
 }
 
 void TabWidget::addUnityBrowserWithSR( QString sr )
@@ -377,14 +387,24 @@ void TabWidget::removeUnityBrowser( int tab )
 
 void TabWidget::rebuildMaps()
 {
-    mUnityBrowserMap.clear();
-    
-    for ( int i = 0; i < mUnityWidgetList.count(); ++i )
+    if ( mUnityWidgetList.isEmpty() )
     {
-        UnityWidget* tw = mUnityWidgetList.at( i );
-
-        mUnityWidgetList.at( i )->setTabId( indexOf( tw ) );
-        mUnityBrowserMap[ indexOf( tw ) ] = mUnityWidgetList.at( i )->browser();
+        addUnityBrowser();
+    }
+    else
+    {
+        mUnityBrowserMap.clear();
+    
+        for ( int i = 0; i < mUnityWidgetList.count(); ++i )
+        {
+            UnityWidget* tw = mUnityWidgetList.at( i );
+    
+            mUnityWidgetList.at( i )->setTabId( indexOf( tw ) );
+            mUnityBrowserMap[ indexOf( tw ) ] = mUnityWidgetList.at( i )->browser();
+        }
+    
+        mUnityTab = mUnityWidgetList.at( 0 );
+        mUnityBrowser = mUnityTab->browser();
     }
 }
 
@@ -728,10 +748,14 @@ void TabWidget::unityTabMenu( int tab, const QPoint& p )
     QMenu* menu = new QMenu( this );
 
     QAction* closeTab = new QAction( "Close tab", menu );
+    QAction* closeOtherTabs = new QAction( "Close other tabs", menu );
     QAction* clipboard = new QAction( "Open SR# in clipboard", menu );
 
     connect( closeTab, SIGNAL( triggered() ),
              this, SLOT( closeActionTriggered() ) );
+    
+    connect( closeOtherTabs, SIGNAL( triggered() ),
+             this, SLOT( closeAllOtherActionTriggered() ) );
 
     connect( clipboard, SIGNAL( triggered() ),
              this, SLOT( clipboardActionTriggered() ) );
@@ -744,33 +768,6 @@ void TabWidget::unityTabMenu( int tab, const QPoint& p )
     
     menu->addAction( closeTab );
     menu->addAction( clipboard );
-    
-    menu->exec( p );
-}
-
-void TabWidget::permanentUnityTabMenu( const QPoint& p )
-{
-    QMenu* menu = new QMenu( this );
-
-    QAction* closeTab = new QAction( "Close other Unity tabs", menu );
-    QAction* clipboard = new QAction( "Open SR# in clipboard", menu );
-
-    connect( closeTab, SIGNAL( triggered() ),
-             this, SLOT( closeAllOtherActionTriggered() ) );
-
-    connect( clipboard, SIGNAL( triggered() ),
-             this, SLOT( permClipboardActionTriggered() ) );
-
-    closeTab->setIcon( QIcon( ":/icons/menus/quit.png" ) );
-    clipboard->setIcon( QIcon( ":/icons/menus/clipboard.png" ) );
-    
-    menu->addAction( closeTab );
-    menu->addAction( clipboard );
-    
-    if ( mUnityBrowserMap.keys().size() < 1 )
-    {
-        closeTab->setEnabled( false );
-    }
     
     menu->exec( p );
 }
