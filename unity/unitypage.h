@@ -154,8 +154,8 @@ class UnityPage : public QWebPage
         QString mProduct;
         QString mComponent;
         QString mSaveJS;
-	QString mSubownerSR;
-	QString mSubownerOwner;
+        QString mSubownerSR;
+        QString mSubownerOwner;
 
         QTimer* mTimer;
 
@@ -168,7 +168,7 @@ class UnityPage : public QWebPage
         bool mSetSS;
         bool mSetSC;
         bool mCloseSR;
-	bool mSetSubowner;
+        bool mSetSubowner;
         bool mAddNote;
         bool mNoJsConfirm;
         bool mPageErbert;
@@ -182,7 +182,7 @@ class UnityPage : public QWebPage
 
     signals:
         void loggedIn( bool );
-        void loggedOutFromUnity();
+        void loggedOutFromUnity( QString );
         void contentChanged();
         void currentSrChanged( QString );
         void pageErbert();

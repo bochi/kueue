@@ -57,10 +57,6 @@ UnityBrowser::UnityBrowser( QWidget *parent, QString sr )
 
 UnityBrowser::~UnityBrowser()
 {
-    if ( mUnityPage != 0 )
-    {
-        delete mUnityPage;  
-    }
     qDebug() << "[UNITYBROWSER] Destroying";
 }
 
@@ -108,8 +104,8 @@ void UnityBrowser::createPage( const QString& sr )
     connect( mUnityPage, SIGNAL( loggedIn( bool ) ),
              this, SIGNAL( loggedIn( bool ) ) );
     
-    connect( mUnityPage, SIGNAL(loggedOutFromUnity()),
-             this, SLOT( loggedOut() ) );
+    connect( mUnityPage, SIGNAL(loggedOutFromUnity( QString )),
+             this, SLOT( loggedOut( QString ) ) );
     
     connect( mUnityPage, SIGNAL( hideNextPopup() ), 
              this, SLOT( setPopupHidden() ) );
@@ -132,9 +128,9 @@ void UnityBrowser::createPage( const QString& sr )
 }
 
 
-void UnityBrowser::loggedOut()
+void UnityBrowser::loggedOut( QString id )
 {
-    emit sessionLoggedOut( currentSR() );
+    emit sessionLoggedOut( id );
 }
 
 void UnityBrowser::connectShortcuts()
@@ -249,6 +245,11 @@ void UnityBrowser::goToService()
 void UnityBrowser::setStatus( const QString& status )
 {
     mUnityPage->setStatus( status );
+}
+
+void UnityBrowser::setTabID( int id )
+{
+    mTabID = id;
 }
 
 void UnityBrowser::openWebInspector()
@@ -1027,7 +1028,7 @@ UnityWidget::~UnityWidget()
 
 void UnityWidget::sessionLoggedOut( const QString& sr )
 {
-    emit loggedOut( sr, tabId() );
+    emit loggedOut( sr, mTabId );
 }
 
 void UnityWidget::activateProgressWidget( const QString& text )
@@ -1042,6 +1043,7 @@ void UnityWidget::deactivateProgressWidget()
 
 void UnityWidget::setTabId( int id )
 {
+    mUnityBrowser->setTabID( id );
     mTabId = id;
 }
 

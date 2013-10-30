@@ -34,7 +34,7 @@
 
 void UnityPage::exportSr()
 {
-    mNoJsConfirm = true;
+    /*mNoJsConfirm = true;
     emit hideNextPopup();
     
     QString js = "SWESelectAppletMenu('_self',";
@@ -53,6 +53,6 @@ void UnityPage::exportSr()
     
     mViewFrame->evaluateJavaScript( js );
     
-    qDebug() << js;
+    qDebug() << js;*/
 } 
 

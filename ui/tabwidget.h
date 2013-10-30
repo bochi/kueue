@@ -72,6 +72,7 @@ class TabWidget : public QTabWidget
         
         int mTabs;
         int mGrabbedWidget;
+        bool mSubVisible;
         TabBar* mBar;
         TabButton* mMenuButton;
         QWidget* mPersonalTab;
@@ -127,8 +128,8 @@ class TabWidget : public QTabWidget
     public slots:
         void setTabsPosition();
         void loggedOut( const QString&, int );
-        void addUnityBrowser();
-        void addUnityBrowserWithSR( QString = QString::Null() );
+        void addUnityBrowser( int = 0 );
+        void addUnityBrowserWithSR( QString = QString::Null(), int = 0 );
         void removeUnityBrowser( int );
         void rebuildMaps();
         void showMonitorTab( bool );

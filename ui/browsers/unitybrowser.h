@@ -65,6 +65,7 @@ class UnityBrowser : public QWebView
         void goBackToSr();
         void setStatus( const QString& );
         void goToService();
+        void setTabID( int );
 
     private slots:
         void createPage( const QString& );
@@ -90,7 +91,7 @@ class UnityBrowser : public QWebView
         void saveImage();
         void openWebInspector();
         void linkClicked( const QUrl& );
-        void loggedOut();
+        void loggedOut( QString );
 
     private:
         UnityPage* mUnityPage;
@@ -104,6 +105,7 @@ class UnityBrowser : public QWebView
         bool mShowPopup;
         
         int mCurrentZoom;
+        int mTabID;
     
         QShortcut* mSendEmailSC;
         QShortcut* mSaveSrSC;

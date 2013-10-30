@@ -615,7 +615,7 @@ void Data::updateSubownerBrowser( const QString& filter )
     int age = 0;
     QList<QueueSR> srlist = Database::getSubSrList( Settings::subSortAge(), Settings::subSortAsc(), mDB, mCurrentSubownerFilter );
    
-    if ( srlist.size() == 0 )
+    if ( srlist.size() == 0 && filter.isEmpty() )
     {
         emit showSubownerBrowser( false );
     }
@@ -633,13 +633,13 @@ void Data::updateSubownerBrowser( const QString& filter )
             if ( !Settings::showAwaitingCustomer() && 
                 sr.status == "Awaiting Customer" )
             {
-                //qDebug() << "[QUEUEBROWSER] Skipping" << sr.status << sr.id;
+                qDebug() << "[QUEUEBROWSER] Skipping" << sr.status << sr.id;
             }
             else if ( !Settings::showAwaitingSupport() && 
                 ( sr.status == "Awaiting Technical Support" ||
                 sr.status == "Awaiting Novell Support" ) )
             {
-                //qDebug() << "[QUEUEBROWSER] Skipping 2" << sr.status << sr.id;
+                qDebug() << "[QUEUEBROWSER] Skipping 2" << sr.status << sr.id;
             }
             else if ( !Settings::showStatusOthers() &&
                 ( sr.status == "Suspended" ||
@@ -653,7 +653,11 @@ void Data::updateSubownerBrowser( const QString& filter )
                 sr.status == "Awaiting Third Party" ||
                 sr.status == "Awaiting Public Patch Release" ) )
             {
-                //qDebug() << "[QUEUEBROWSER] Skipping 3" << sr.status << sr.id;
+                qDebug() << "[QUEUEBROWSER] Skipping 3" << sr.status << sr.id;
+            }
+            else
+            {
+                html += HTML::SRTable( sr );
             }
         }
         

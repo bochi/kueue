@@ -88,8 +88,6 @@ TabWidget::TabWidget( QWidget* parent )
     
     connect( mBar, SIGNAL( tabMiddleClicked( int, QPoint ) ),
              this, SLOT( tabMiddleClicked( int, QPoint ) ) );
-   
-    //setStyleSheet( "QTabBar::tab:disabled { width: 0; height: 0; margin: 0; padding: 0; border: none; }" );
     
     TabButton* newTabButton = new TabButton( this );
     TabButton* mMenuButton = new TabButton( this );
@@ -148,6 +146,8 @@ TabWidget::TabWidget( QWidget* parent )
         addUnityBrowser();
         rebuildMaps();
     }
+    
+    mSubVisible = true;
     
     // ...and add them to the tabbar
     
@@ -248,13 +248,15 @@ void TabWidget::showPersonalTab( bool b )
 
 void TabWidget::showSubownerTab( bool b )
 {
-    if ( b )
+    if ( b && !mSubVisible )
     {
         insertTab( 1, mSubownerTab, QIcon( ":/icons/conf/targets.png" ), "Subowned SRs" );
+        mSubVisible = true;
     }
-    else
+    else if ( !b && mSubVisible )
     {
         removeTab( indexOf( mSubownerTab ) );
+        mSubVisible = false;
     }
     
     rebuildMaps();
@@ -302,16 +304,29 @@ void TabWidget::showUnityTab( bool b )
     rebuildMaps();
 }
 
-void TabWidget::addUnityBrowser()
+void TabWidget::addUnityBrowser( int id )
 {   
     // create a new unitywidget and add it as a tab
     UnityWidget* w = new UnityWidget( this );
     
     connect( w, SIGNAL( loggedOut( QString, int ) ),
-             this, SLOT(loggedOut( QString, int ) ) );
+             this, SLOT( loggedOut( QString, int ) ) );
     
-    int tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
+    int tab;
+    
+    if ( id == 0 )
+    {
+        tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
+    }
+    else
+    {
+        tab = id;
+        insertTab( id, w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
+        switchToTab( tab );
+    }
+    
     qDebug() << "[TABWIDGET] Adding Unity Tab with ID " << QString::number( tab );
+    
     // set the tabId for the widget for tab handling 
     
     w->setTabId( tab );
@@ -321,7 +336,7 @@ void TabWidget::addUnityBrowser()
     
     mUnityWidgetList.append( w );
     mUnityBrowserMap[ tab ] = w->browser();
-    
+
     rebuildMaps();
 }
 
@@ -329,17 +344,17 @@ void TabWidget::loggedOut( const QString& sr, int tab )
 {
     removeUnityBrowser( tab );
     
-    if ( sr == QString::Null() )
+    if ( sr == QString::Null() || sr.isEmpty() )
     {
-        addUnityBrowser();
+        addUnityBrowser( tab );
     }
     else
     {
-        addUnityBrowserWithSR( sr );
+        addUnityBrowserWithSR( sr, tab );
     }
 }
 
-void TabWidget::addUnityBrowserWithSR( QString sr )
+void TabWidget::addUnityBrowserWithSR( QString sr, int id )
 {   
     if ( sr == QString::Null() )
     {
@@ -349,9 +364,24 @@ void TabWidget::addUnityBrowserWithSR( QString sr )
     if ( Kueue::isSrNr( sr ) )
     {
         UnityWidget* w = new UnityWidget( this, sr );
+         
+        connect( w, SIGNAL( loggedOut( QString, int ) ),
+                 this, SLOT( loggedOut( QString, int ) ) );
+        
+        int tab;
+        
+        if ( id == 0 )
+        {
+            tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
+        }
+        else
+        {
+            tab = id;
+            insertTab( id, w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
+        }
     
-        int tab = addTab( w, QIcon( ":/icons/menus/siebel.png" ), "Unity" );
-    
+        qDebug() << "[TABWIDGET] Adding Unity Tab with ID " << QString::number( tab );
+        
         w->setTabId( tab );
     
         mUnityWidgetList.append( w );
@@ -767,6 +797,7 @@ void TabWidget::unityTabMenu( int tab, const QPoint& p )
     clipboard->setIcon( QIcon( ":/icons/menus/clipboard.png" ) );
     
     menu->addAction( closeTab );
+    menu->addAction( closeOtherTabs );
     menu->addAction( clipboard );
     
     menu->exec( p );
@@ -949,7 +980,7 @@ void TabWidget::subSetShowStatusOthers( bool s )
 void TabWidget::aboutDialog()
 {
     QMessageBox::about( this, "About", "<b>kueue " + QApplication::applicationVersion() + 
-                              "</b><br>(C) 2011 - 2012 Stefan Bogner<br><a href='mailto:sbogner@suse.com'>sbogner@suse.com</a><br>"
+                              "</b><br>(C) 2011 - 2013 Stefan Bogner<br><a href='mailto:sbogner@suse.com'>sbogner@suse.com</a><br>"
                               "<br>Have a lot of fun :-)" );
 }
 

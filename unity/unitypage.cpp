@@ -125,13 +125,6 @@ UnityPage::UnityPage( QString sr )
 
 UnityPage::~UnityPage()
 {
-    mTimer->stop();
-    //delete mNAM;
-    //disconnect( mViewFrame, 0, 0, 0 );
-    //disconnect( mViewBarFrame, 0, 0, 0 );
-    //disconnect( mBarFrame, 0, 0, 0 );
-    //disconnect( mMenuFrame, 0, 0, 0 );
- 
     qDebug() << "[UNITYPAGE] Destroying";
 }
 
@@ -215,7 +208,6 @@ void UnityPage::fixMenuBoxes()
 
 void UnityPage::pageLoaded()
 {   
-    
     //QWebSettings::globalSettings()->clearMemoryCaches();
     //qDebug() << mainFrame()->url().toString();
         
@@ -224,7 +216,6 @@ void UnityPage::pageLoaded()
     {
         if ( mainFrame()->findFirstElement( "input#s_swepi_1" ).attribute( "id" ) != "" )
         {
-            qDebug() << "1";
             loginToUnity();
         }
     }
@@ -232,7 +223,6 @@ void UnityPage::pageLoaded()
     else if ( ( mainFrame()->url().toString().contains( "Logoff" ) ) ||
               ( mainFrame()->findFirstElement( "body" ).attribute( "class" ) == "loginBody" ) )
     {
-        qDebug() << "2";
         mLoggedIn = false;
         emit loggedIn( false );
         loggedOut();
@@ -240,7 +230,6 @@ void UnityPage::pageLoaded()
     
     else if ( mainFrame()->toHtml().contains( "The server you are trying to access is either busy" ) )
     {
-        qDebug() << "3";
         emit pageErbertNed();
         mLoggedIn = false;
         emit loggedIn( false );
@@ -250,7 +239,6 @@ void UnityPage::pageLoaded()
     else if ( ( mViewFrame != 0 ) && ( mLoggedIn ) )
     {
         QString title = mViewFrame->findFirstElement( "title" ).toInnerXml();
-   qDebug() << "4";
         //qDebug() << "Title:" << title;
         
         if ( title.startsWith( "NSA Report -" ) )
@@ -265,34 +253,26 @@ void UnityPage::pageLoaded()
     }
     else if ( mainFrame()->url().toString() == "about:blank" )
     {
-       qDebug() << "Woo";
         mainFrame()->load( QUrl( Settings::unityURL() ) );
     }
     
     // Reset the anti idle timer
     
-    //if ( mTimer->isActive() && Settings::useIdleTimeout() )
-    //{
-      //  mTimer->stop();
-        //mTimer->start( Settings::idleTimeoutMinutes() * 60000 );
-    //}
+    if ( Settings::useIdleTimeout() && mLoggedIn )
+    {
+        mTimer->stop();
+        mTimer->start( Settings::idleTimeoutMinutes() * 60000 );
+    }
 }
 
 void UnityPage::loggedOut()
 {
-    // Automagically relogin 
-    qDebug() << "logged out";
     triggerAction( QWebPage::Stop );
-    emit loggedOutFromUnity();
-    /*mNAM->clearCookieJar();
-    mLoggedIn = false;
-    mDontLogin = false;
-    mainFrame()->load(  QUrl( Settings::unityURL() ) );*/
+    emit loggedOutFromUnity( mCurrentSR );
 }
 
 void UnityPage::loginToUnity()
 {
-    qDebug() << "login to";
     mLoggedIn = false;
     emit loggedIn( false );
     
