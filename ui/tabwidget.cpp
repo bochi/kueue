@@ -791,9 +791,11 @@ void TabWidget::unityTabMenu( int tab, const QPoint& p )
              this, SLOT( clipboardActionTriggered() ) );
 
     closeTab->setData( tab );
+    closeOtherTabs->setData( tab );
     clipboard->setData( tab );
     
     closeTab->setIcon( QIcon( ":/icons/menus/quit.png" ) );
+    closeOtherTabs->setIcon( QIcon( ":/icons/menus/quit.png" ) );
     clipboard->setIcon( QIcon( ":/icons/menus/clipboard.png" ) );
     
     menu->addAction( closeTab );
@@ -830,12 +832,19 @@ void TabWidget::clipboardActionTriggered()
 
 void TabWidget::closeAllOtherActionTriggered()
 {
+    QAction* action = qobject_cast<QAction*>( QObject::sender() );
+    
     QList<int> u = mUnityBrowserMap.keys();
     
     for ( int i = 0; i < u.size(); ++i )
     {
         int tab = mUnityBrowserMap.keys().at( 0 );
-        removeUnityBrowser( tab );
+        
+        if ( tab != action->data().toInt() )
+        {
+            qDebug() << "int" << tab << "act" << action->data().toInt();
+            removeUnityBrowser( tab );
+        }
     }
 }
 

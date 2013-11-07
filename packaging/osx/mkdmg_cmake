@@ -223,9 +223,16 @@ echo "Have fun :-)"
 
 export VER=$1
 
+if [ "$2" != "noask" ]; then
+
 echo "Do you want to create a dmg now? (y(es)/n(o)/d(ebug))"
 read CONF
 
+else
+
+CONF="y"
+
+fi 
 
 if [ "$CONF" = "y" ]; then
 
