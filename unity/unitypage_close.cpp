@@ -102,6 +102,8 @@ void UnityPage::closeSrFirst()
     if ( !checkMandatoryForClose() )
     {
         QMessageBox::critical( 0, "Error", "Closing SR not possible, please check the mandatory fields" );
+        mCloseSR = false;
+        delete mCloseDialog;
     }
     else
     {   

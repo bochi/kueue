@@ -97,15 +97,15 @@ void UnityPage::setScFirst()
     
     for ( int i = 0; i < c.count(); ++i )
     {
-        if ( c.at(i).attribute( "id" ).contains( "s_2_2_20" ) )
+        if ( c.at( i ).attribute( "id" ).contains( "s_2_2_20" ) )
         {
-            changeJS = c.at(i).attribute( "onchange" );
+            changeJS = c.at( i ).attribute( "onchange" );
             
-            QWebElementCollection d = c.at(i).findAll( "*" );
+            QWebElementCollection d = c.at( i ).findAll( "*" );
             
             for ( int i = 0; i < d.count(); ++i )
             {
-                d.at(i).removeAttribute( "selected");
+                d.at( i ).removeAttribute( "selected");
                 
                 if ( d.at( i ).attribute( "value" ) == "Public" )
                 {
@@ -117,15 +117,15 @@ void UnityPage::setScFirst()
             mViewFrame->evaluateJavaScript( changeJS );
         }
         
-        else if ( c.at(i).attribute( "id" ).contains( "s_2_2_32" ) )
+        else if ( c.at( i ).attribute( "id" ).contains( "s_2_2_32" ) )
         {
-            changeJS = c.at(i).attribute( "onchange" );
+            changeJS = c.at( i ).attribute( "onchange" );
             
-            QWebElementCollection d = c.at(i).findAll( "*" );
+            QWebElementCollection d = c.at( i ).findAll( "*" );
             
             for ( int i = 0; i < d.count(); ++i )
             {
-                d.at(i).removeAttribute("selected");
+                d.at( i ).removeAttribute("selected");
                 
                 if ( d.at( i ).attribute( "value" ) == "Schedule For Close" )
                 {
@@ -197,7 +197,8 @@ void UnityPage::setScThird()
     
     for ( int i = 0; i < rc.count(); ++i ) 
     {  
-        if ( ( rc.at(i).attribute( "id" ).contains( "s_2_2" ) ) && ( rc.at(i).attribute( "tabindex" ).contains( "2008" ) ) )
+        if ( ( rc.at( i ).attribute( "id" ).contains( "s_2_2" ) ) && 
+             ( rc.at( i ).attribute( "tabindex" ).contains( "2008" ) ) )
         {
             changeJS = rc.at( i ).attribute( "onchange" );
             rc.at( i ).setAttribute( "value", mCalendarDialog->dateTime().toString( "M/d/yyyy hh:mm:ss AP" ) );
@@ -239,9 +240,9 @@ void UnityPage::setScFourth()
     
     for ( int i = 0; i < sc.count(); ++i ) 
     {  
-        if ( sc.at(i).attribute( "id" ).contains( id ) )
+        if ( sc.at( i ).attribute( "id" ).contains( id ) )
         {
-            saveJS = sc.at(i).attribute( "href" ).remove( "JavaScript:" );
+            saveJS = sc.at( i ).attribute( "href" ).remove( "JavaScript:" );
         }
     }
        
@@ -272,12 +273,12 @@ void UnityPage::setScFifth()
     
     for ( int i = 0; i < sc.count(); ++i ) 
     {  
-        if ( ( sc.at(i).attribute( "id" ).contains( "s_1_1" ) ) &&
-             ( sc.at(i).attribute( "tabindex" ) == "1005" ) )
+        if ( ( sc.at( i ).attribute( "id" ).contains( "s_1_1" ) ) &&
+             ( sc.at( i ).attribute( "tabindex" ) == "1005" ) )
         {
             changeJS = sc.at( i ).attribute( "onchange" );
             
-            QWebElementCollection d = sc.at(i).findAll( "*" );
+            QWebElementCollection d = sc.at( i ).findAll( "*" );
             
             for ( int i = 0; i < d.count(); ++i )
             {

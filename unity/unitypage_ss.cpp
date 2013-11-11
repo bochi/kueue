@@ -102,15 +102,15 @@ void UnityPage::setSSfirst()
     
     for ( int i = 0; i < c.count(); ++i )
     {
-        if ( c.at(i).attribute( "id" ).contains( audienceID ) )
+        if ( c.at( i ).attribute( "id" ).contains( audienceID ) )
         {
-            changeJS = c.at(i).attribute( "onchange" );
+            changeJS = c.at( i ).attribute( "onchange" );
             
-            QWebElementCollection d = c.at(i).findAll( "*" );
+            QWebElementCollection d = c.at( i ).findAll( "*" );
             
             for ( int i = 0; i < d.count(); ++i )
             {
-                d.at(i).removeAttribute("selected");
+                d.at( i ).removeAttribute("selected");
                 
                 if ( d.at( i ).attribute( "value" ) == mSsDialog->comboText() )
                 {
@@ -122,15 +122,15 @@ void UnityPage::setSSfirst()
             mViewFrame->evaluateJavaScript( changeJS );
         }
         
-        else if ( c.at(i).attribute( "id" ).contains( activityID ) )
+        else if ( c.at( i ).attribute( "id" ).contains( activityID ) )
         {
-            changeJS = c.at(i).attribute( "onchange" );
+            changeJS = c.at( i ).attribute( "onchange" );
             
             QWebElementCollection d = c.at(i).findAll( "*" );
             
             for ( int i = 0; i < d.count(); ++i )
             {
-                d.at(i).removeAttribute("selected");
+                d.at( i ).removeAttribute("selected");
                 
                 if ( d.at( i ).attribute( "value" ) == "Solution Suggested" )
                 {
@@ -181,7 +181,7 @@ void UnityPage::setSSsecond()
         {
             changeJS = c.at( i ).attribute( "onchange" );
             
-            QWebElementCollection d = c.at(i).findAll( "*" );
+            QWebElementCollection d = c.at( i ).findAll( "*" );
             
             for ( int i = 0; i < d.count(); ++i )
             {
@@ -235,9 +235,10 @@ void UnityPage::setSSthird()
     
     for ( int i = 0; i < rc.count(); ++i ) 
     {  
-        if ( ( rc.at(i).attribute( "id" ).contains( commentID ) ) && ( rc.at(i).attribute( "tabindex" ).contains( commentTab ) ) )
+        if ( ( rc.at( i ).attribute( "id" ).contains( commentID ) ) && 
+             ( rc.at( i ).attribute( "tabindex" ).contains( commentTab ) ) )
         {
-            rc.at(i).setInnerXml( mSsDialog->ssText() );
+            rc.at( i ).setInnerXml( mSsDialog->ssText() );
         }
     }
     
