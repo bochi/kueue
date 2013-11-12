@@ -66,6 +66,7 @@ class UnityBrowser : public QWebView
         void setStatus( const QString& );
         void goToService();
         void setTabID( int );
+        void busyWidgetCancelled();
 
     private slots:
         void createPage( const QString& );

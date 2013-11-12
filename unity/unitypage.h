@@ -65,7 +65,8 @@ class UnityPage : public QWebPage
         void setStatus( const QString& );
         void goToService();
         void exportSr();
-	void setSubowner( const QStringList&, const QString& );
+        void setSubowner( const QStringList&, const QString& );
+        void busyWidgetCancelled();
 
     private slots:
         void pageLoaded();
@@ -114,7 +115,7 @@ class UnityPage : public QWebPage
         void closeSrSecond();
         void closeSrThird();
         
-	void setSubownerJob();
+        void setSubownerJob();
 	
         void addNoteAccepted();
         void addNoteRejected();

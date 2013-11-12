@@ -81,12 +81,16 @@ UnityPage::UnityPage( QString sr )
     
     connect( this, SIGNAL( loadFinished( bool ) ),
              this, SLOT( pageLoaded() ) );
-    connect( this, SIGNAL( frameCreated(QWebFrame* ) ), 
+    
+    connect( this, SIGNAL( frameCreated( QWebFrame* ) ), 
              this, SLOT( addFrame( QWebFrame* ) ) );
+    
     connect( this, SIGNAL( unsupportedContent( QNetworkReply* ) ),
              this, SLOT( handleUnsupportedContent(QNetworkReply*) ) );
+    
     connect( this, SIGNAL( downloadRequested( QNetworkRequest ) ),
-             this, SLOT( download(QNetworkRequest)));
+             this, SLOT( download( QNetworkRequest ) ) );
+    
     connect( this, SIGNAL( selectionChanged() ), 
              this, SLOT( selectionToClipboard() ) );
    
@@ -181,6 +185,28 @@ void UnityPage::viewFrameStarted()
         mStartSR.clear();
     }
 }
+
+void UnityPage::busyWidgetCancelled()
+{
+    mSetSS = false;
+    mSetSC = false;
+    mCloseSR = false;
+    mSetSubowner = false;
+    mAddNote = false;
+    mNoJsConfirm = false;
+    mPageErbert = false;
+    mSetStatus = false;
+    
+    if ( Kueue::isSrNr( mCurrentSR ) )
+    {
+        querySR( mCurrentSR );
+    }
+    else
+    {
+        goToService();
+    }
+}
+
 
 void UnityPage::fixQueryBox()
 {     
@@ -385,7 +411,7 @@ void UnityPage::goHome()
     
     for ( int i = 0; i < fc.count(); ++i ) 
     {  
-        if ( fc.at(i).toInnerXml() == "Query" )
+        if ( fc.at( i ).toInnerXml() == "Query" )
         {
             js = fc.at( i ).attribute( "href" ).remove( "Javascript:" );
         }
@@ -430,9 +456,9 @@ void UnityPage::doQuery()
     
     for ( int i = 0; i < fc.count(); ++i ) 
     {  
-        if ( fc.at(i).attribute("id").startsWith( "s_2_2" ) )
+        if ( fc.at( i ).attribute( "id" ).startsWith( "s_2_2" ) )
         {
-            fc.at(i).setInnerXml("");
+            fc.at( i ).setInnerXml( "" );
         }
     }
     
@@ -444,7 +470,7 @@ void UnityPage::doQuery()
     
     for ( int i = 0; i < c.count(); ++i ) 
     {  
-        if ( c.at(i).toInnerXml() == "Go" )
+        if ( c.at( i ).toInnerXml() == "Go" )
         {
             js = c.at( i ).attribute( "href" ).remove( "Javascript:" );
         }
@@ -482,10 +508,10 @@ void UnityPage::goToActivities()
     
     for ( int i = 0; i < fc.count(); ++i ) 
     {  
-        if ( ( fc.at(i).attribute( "href" ).contains( "c_d" ) ) &&
-             ( fc.at(i).attribute( "id" ).contains( "s_2_2_96" ) ) )
+        if ( ( fc.at( i ).attribute( "href" ).contains( "c_d" ) ) &&
+             ( fc.at( i ).attribute( "id" ).contains( "s_2_2_96" ) ) )
         {
-            QString js = fc.at(i).attribute( "href" ).remove( "Javascript:" );
+            QString js = fc.at( i ).attribute( "href" ).remove( "Javascript:" );
             mViewFrame->evaluateJavaScript( js );
         }
     }
@@ -535,9 +561,9 @@ void UnityPage::newActivity()
     
     for ( int i = 0; i < fc.count(); ++i ) 
     {  
-        if ( fc.at(i).toInnerXml() == "New" )
+        if ( fc.at( i ).toInnerXml() == "New" )
         {
-            newJS = fc.at(i).attribute( "href" ).remove( "JavaScript:" );
+            newJS = fc.at( i ).attribute( "href" ).remove( "JavaScript:" );
         }
     }
     
