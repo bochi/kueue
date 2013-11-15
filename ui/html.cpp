@@ -406,6 +406,9 @@ QString HTML::SRTable( QueueSR sr )
         srtab+=( "<tr>"
                     "<td class='gadgetText'>&nbsp;Created by</td>"
                     "<td class='gadgetText'>" + sr.creator + "</td>"
+                 "</tr><tr>"
+                    "<td class='gadgetText'>&nbsp;Original SR</td>"
+                    "<td class='gadgetText'><a href='crsr://" + sr.crsr + "'>" + sr.crsr + "</a></td>"
                 "</tr>" );
     }
     else
@@ -740,7 +743,7 @@ QString HTML::qmonSrInQueue( QmonSR sr )
         srtab += QString( "<tr>\n"
                             "<td class='gadgetText'>&nbsp;Contract</td>\n"
                             "<td class='gadgetText'>" + sr.support_program_long + "</td>\n"
-                          "</tr>\n" );
+                          "</tr>" );
     }
     
     QString uday;

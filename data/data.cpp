@@ -222,6 +222,7 @@ void Data::queueUpdateFinished()
             sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
             sr.owner = list.at( i ).namedItem( "owner" ).toElement().text();
             sr.subowner = list.at( i ).namedItem( "subowner" ).toElement().text();
+            sr.crsr = list.at( i ).namedItem( "crsr" ).toElement().text();
             
             if ( sr.subowner.isEmpty() )
             {
@@ -272,6 +273,11 @@ void Data::queueUpdateFinished()
             for ( int i = 0; i < q.srList.size(); ++i ) 
             {
                 currentList.append( q.srList.at( i ).id );
+                
+                if ( !q.srList.at( i ).crsr.isEmpty() )
+                {
+                    currentList.append( q.srList.at( i ).crsr );
+                }
             }
             
             for ( int i = 0; i < existList.size(); ++i ) 
@@ -383,6 +389,7 @@ void Data::qmonUpdateFinished()
             sr.critsit = list.at( i ).namedItem( "critsit" ).toElement().text().toInt();
             sr.lupdate = list.at( i ).namedItem( "lastupdatedate" ).toElement().text();
             sr.cdate = list.at( i ).namedItem( "agedate" ).toElement().text();
+            sr.crsr = list.at( i ).namedItem( "crsr" ).toElement().text();
             
             if ( sr.creator.isEmpty() )
             {

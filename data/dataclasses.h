@@ -59,6 +59,7 @@ class QueueSR
         QString bugtitle;
         QString owner;
         QString subowner;
+        QString crsr;
         QStringList todoList;
         qint32 age;
         qint32 lastUpdateDays;
@@ -112,6 +113,7 @@ class QmonSR
         QString bugtitle;
         QString lupdate;
         QString cdate;
+        QString crsr;
         qint32 agesec;
         qint32 timeinqsec;
         qint32 slasec;
