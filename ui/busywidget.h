@@ -43,6 +43,7 @@ class BusyWidget : public QWidget
     public slots:
         void activate( const QString& text = QString::Null() );
         void deactivate();
+        void cancelled();
          
     private: 
         QProgressIndicator* mProgress;
@@ -51,6 +52,9 @@ class BusyWidget : public QWidget
         
     protected:
         void paintEvent( QPaintEvent* );
+        
+    signals:
+        void cancelledByUser();
 };
  
 #endif

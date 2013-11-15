@@ -48,7 +48,7 @@ BusyWidget::BusyWidget( QObject* parent )
     mButton->setStyleSheet( "background-color: rgba( 255, 255, 255, 0% );" );
     
     connect( mButton, SIGNAL( pressed() ),
-             this, SLOT( deactivate() ) );
+             this, SLOT( cancelled() ) );
 
     mButton->setIcon( QIcon(":/icons/menus/quit.png"));
     
@@ -98,5 +98,12 @@ void BusyWidget::deactivate()
     mProgress->stopAnimation();
     hide();
 }
+
+void BusyWidget::cancelled()
+{
+    deactivate();
+    emit cancelledByUser();
+}
+
 
 #include "busywidget.moc"

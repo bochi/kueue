@@ -72,8 +72,7 @@ void UnityBrowser::createPage( const QString& sr )
     QWebSettings::globalSettings()->setAttribute( QWebSettings::JavascriptCanAccessClipboard, true );
     
     if ( sr != QString::Null() || !sr.isEmpty() )
-    {
-        
+    {      
         mUnityPage = new UnityPage( sr );
     }
     else
@@ -127,6 +126,10 @@ void UnityBrowser::createPage( const QString& sr )
     
 }
 
+void UnityBrowser::busyWidgetCancelled()
+{
+    mUnityPage->busyWidgetCancelled();
+}
 
 void UnityBrowser::loggedOut( QString id )
 {
@@ -509,6 +512,7 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11", this, SLOT( fillOutProduct() ) );
     haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11 SP1", this, SLOT( fillOutProduct() ) );
     haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11 SP2", this, SLOT( fillOutProduct() ) );
+    haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11 SP3", this, SLOT( fillOutProduct() ) );
     
     slesmenu->addMenu( haemenu );
     
@@ -873,6 +877,9 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     
     mWebViewWithSearch = new WebViewWithSearch( mUnityBrowser );
     mBusyWidget = new BusyWidget( this );
+    
+    connect( mBusyWidget, SIGNAL( cancelledByUser() ), 
+             mUnityBrowser, SLOT( busyWidgetCancelled() ) );
     
     overlayLayout->addWidget( mWebViewWithSearch );
     overlayLayout->addWidget( mBusyWidget );
