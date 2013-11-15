@@ -834,19 +834,15 @@ void TabWidget::closeAllOtherActionTriggered()
 {
     QAction* action = qobject_cast<QAction*>( QObject::sender() );
     
-    QList<int> u = mUnityBrowserMap.keys();
+    QList<int> u = mUnityBrowserMap.uniqueKeys();
+    int current = action->data().toInt();
     
-    for ( int i = 0; i < u.size(); ++i )
+    while( !u.isEmpty() ) 
     {
-        int tab = mUnityBrowserMap.keys().at( 0 );
-        
-        if ( tab != action->data().toInt() )
-        {
-            qDebug() << "int" << tab << "act" << action->data().toInt();
-            removeUnityBrowser( tab );
-        }
-    }
-}
+        int t = u.takeLast();
+        if ( t != current ) removeUnityBrowser( t );
+    }       
+}  
 
 void TabWidget::permClipboardActionTriggered()
 {

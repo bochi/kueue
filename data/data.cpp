@@ -292,7 +292,7 @@ void Data::queueUpdateFinished()
                     {
                         if ( srIsClosed( sr ) )
                         {
-                            deleteList.append( Settings::downloadDirectory() + "/" + sr );
+                            Database::addGoneSR( sr, mDB );
                         }
                         else
                         {
