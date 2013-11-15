@@ -213,6 +213,12 @@ void QueueBrowser::mousePressEvent( QMouseEvent* event )
         QDesktopServices::openUrl( mUrl );
     }
     
+    if ( ( event->button() == 1 ) && 
+        ( mUrl.toString().startsWith(  "crsr" ) ) )
+    {
+        TabWidget::newUnityWithSR( mUrl.toString().remove( "crsr://" ) );
+    }
+    
     // Right mouse button     
     
     if ( ( event->button() == 2 ) && 
