@@ -512,6 +512,7 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11", this, SLOT( fillOutProduct() ) );
     haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11 SP1", this, SLOT( fillOutProduct() ) );
     haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11 SP2", this, SLOT( fillOutProduct() ) );
+    haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11 SP3", this, SLOT( fillOutProduct() ) );
     
     slesmenu->addMenu( haemenu );
     
