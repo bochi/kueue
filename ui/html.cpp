@@ -403,9 +403,12 @@ QString HTML::SRTable( QueueSR sr )
                                 
     if ( sr.isCr )
     {
+        QString mailto = "mailto:" + QUrl::toPercentEncoding( sr.creator + "@suse.com" ) + "?cc=techsup@novell.com&subject=SR" + QUrl::toPercentEncoding( " " + sr.id + " - " + sr.bdesc )
+        + "&body=" + QUrl::toPercentEncoding( sr.creator );
+        
         srtab+=( "<tr>"
                     "<td class='gadgetText'>&nbsp;Created by</td>"
-                    "<td class='gadgetText'>" + sr.creator + "</td>"
+                    "<td class='gadgetText'><a href=" + mailto + ">" + sr.creator + "</a></td>"
                  "</tr><tr>"
                     "<td class='gadgetText'>&nbsp;Original SR</td>"
                     "<td class='gadgetText'><a href='crsr://" + sr.crsr + "'>" + sr.crsr + "</a></td>"
