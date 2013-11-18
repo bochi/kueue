@@ -799,7 +799,11 @@ void TabWidget::unityTabMenu( int tab, const QPoint& p )
     clipboard->setIcon( QIcon( ":/icons/menus/clipboard.png" ) );
     
     menu->addAction( closeTab );
-    menu->addAction( closeOtherTabs );
+    
+    if ( mUnityBrowserMap.size() > 1 )
+    {
+        menu->addAction( closeOtherTabs );
+    }
     menu->addAction( clipboard );
     
     menu->exec( p );
