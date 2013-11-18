@@ -60,7 +60,7 @@ Data::Data()
     Database::openDbConnection( mDB );
     
     QTimer* queueTimer = new QTimer( this );
-    queueTimer->start( 84726 );
+    queueTimer->start( 64726 );
     
     connect( queueTimer, SIGNAL( timeout() ),
              this, SLOT( updateQueue() ) );

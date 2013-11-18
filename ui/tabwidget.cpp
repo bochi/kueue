@@ -731,7 +731,7 @@ QMenu* TabWidget::kueueMainMenu()
     connect( mActionCloseSrTables, SIGNAL( activated() ),
              this, SLOT( closeAllTables() ) );
     
-        connect( mActionSubShowSR, SIGNAL( toggled( bool ) ),
+    connect( mActionSubShowSR, SIGNAL( toggled( bool ) ),
              this, SLOT( subSetShowSR( bool ) ) );
     connect( mActionSubShowCR, SIGNAL( toggled( bool ) ), 
              this, SLOT( subSetShowCR( bool ) ) );
