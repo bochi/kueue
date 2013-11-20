@@ -276,6 +276,21 @@ void UnityPage::pageLoaded()
             mIsNsaReport = false;
             getCurrentSR();
         }
+        
+        if ( title == "Activity Attachments" )
+        {
+            QWebElement ele = mViewFrame->findFirstElement( "span#s_1_1_6_0" );
+            
+            if ( ele.toInnerXml() == "Web Update" )
+            {
+                QWebElement wu = mViewFrame->findFirstElement( "*#s_1_1_66_0" );
+                wu.setStyleProperty( "height", "500px" );
+                
+                QString text = wu.toInnerXml().replace( "\n", "<br>" );
+
+                wu.setInnerXml( text );
+            }
+        }
     }
     else if ( mainFrame()->url().toString() == "about:blank" )
     {
