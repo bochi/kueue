@@ -344,7 +344,7 @@ void TabWidget::loggedOut( const QString& sr, int tab )
 {
     removeUnityBrowser( tab );
     
-    if ( sr == QString::Null() || sr.isEmpty() )
+    if ( sr == QString::Null() || sr.isEmpty() || !Kueue::isSrNr( sr ) )
     {
         addUnityBrowser( tab );
     }
