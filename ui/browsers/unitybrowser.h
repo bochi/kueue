@@ -92,7 +92,7 @@ class UnityBrowser : public QWebView
         void saveImage();
         void openWebInspector();
         void linkClicked( const QUrl& );
-        void loggedOut( QString );
+        void loggedOut();
 
     private:
         UnityPage* mUnityPage;
@@ -124,7 +124,6 @@ class UnityBrowser : public QWebView
         void searchRequested( QString );
         void currentSrChanged( QString );
         void loggedIn( bool );
-        void sessionLoggedOut( QString );
         void disableToolbar();
         void enableToolbar();
         void enableProgressIndicator( QString );
@@ -181,10 +180,6 @@ class UnityWidget : public QWidget
         void setOtherButtonsEnabled( bool );
         void querySR();
         void changeStatus( QAction* );
-        void sessionLoggedOut( const QString& );
-        
-    signals:
-        void loggedOut( QString, int );
 };
 
 #endif

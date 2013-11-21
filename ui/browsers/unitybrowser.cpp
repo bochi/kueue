@@ -73,11 +73,11 @@ void UnityBrowser::createPage( const QString& sr )
     
     if ( sr != QString::Null() || !sr.isEmpty() )
     {      
-        mUnityPage = new UnityPage( sr );
+        mUnityPage = new UnityPage( this, sr );
     }
     else
     {
-        mUnityPage = new UnityPage();
+        mUnityPage = new UnityPage( this );
     }
     
     setPage( mUnityPage );
@@ -103,8 +103,8 @@ void UnityBrowser::createPage( const QString& sr )
     connect( mUnityPage, SIGNAL( loggedIn( bool ) ),
              this, SIGNAL( loggedIn( bool ) ) );
     
-    connect( mUnityPage, SIGNAL(loggedOutFromUnity( QString )),
-             this, SLOT( loggedOut( QString ) ) );
+    connect( mUnityPage, SIGNAL(loggedOutFromUnity()),
+             this, SLOT( loggedOut() ) );
     
     connect( mUnityPage, SIGNAL( hideNextPopup() ), 
              this, SLOT( setPopupHidden() ) );
@@ -131,9 +131,11 @@ void UnityBrowser::busyWidgetCancelled()
     mUnityPage->busyWidgetCancelled();
 }
 
-void UnityBrowser::loggedOut( QString id )
+void UnityBrowser::loggedOut()
 {
-    emit sessionLoggedOut( id );
+    QMessageBox::information( this, "kueue",
+    "Your session was logged out.\n"
+    "Please close this tab." );
 }
 
 void UnityBrowser::connectShortcuts()
@@ -537,10 +539,12 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     
     QMenu* atkmenu = new QMenu( "SUSE Appliance Toolkit", menu );
     
-    atkmenu->addAction( "SUSE Lifecycle Management Server 1.1 [Appliance - Tools]", this, SLOT( fillOutProduct() ) );
     atkmenu->addAction( "SUSE Lifecycle Management Server 1.2 [Appliance - Tools]", this, SLOT( fillOutProduct() ) );
-    atkmenu->addAction( "SUSE Studio Onsite 1.1 [Appliance - Studio]", this, SLOT( fillOutProduct() ) );
+    atkmenu->addAction( "SUSE Lifecycle Management Server 1.3", this, SLOT( fillOutProduct() ) );
+    atkmenu->addSeparator();
     atkmenu->addAction( "SUSE Studio Onsite 1.2 [Appliance - Studio]", this, SLOT( fillOutProduct() ) );
+    atkmenu->addAction( "SUSE Studio Onsite 1.3", this, SLOT( fillOutProduct() ) );
+    atkmenu->addSeparator();
     atkmenu->addAction( "WebYaST 1.1", this, SLOT( fillOutProduct() ) );
     atkmenu->addAction( "WebYaST 1.2", this, SLOT( fillOutProduct() ) );
     
@@ -902,9 +906,6 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
     connect( mUnityBrowser, SIGNAL( loggedIn( bool ) ), 
              this, SLOT( setOtherButtonsEnabled( bool ) ) );
     
-    connect( mUnityBrowser, SIGNAL(sessionLoggedOut( QString ) ),
-             this, SLOT( sessionLoggedOut(QString )) );
-    
     setLayout( unityBrowserLayout );
 
     mBackButton = new QToolButton;
@@ -1031,11 +1032,6 @@ UnityWidget::UnityWidget( QObject* parent, QString sr )
 UnityWidget::~UnityWidget()
 {
     qDebug() << "[UNITYWIDGET] Destroying id" << mTabId;
-}
-
-void UnityWidget::sessionLoggedOut( const QString& sr )
-{
-    emit loggedOut( sr, mTabId );
 }
 
 void UnityWidget::activateProgressWidget( const QString& text )

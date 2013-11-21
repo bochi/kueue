@@ -65,6 +65,11 @@ class TabWidget : public QTabWidget
             TabWidget::tw().addUnityBrowserWithSR( id );
         }
         
+        static void removeUnityTab( int id )
+        {
+            TabWidget::tw().removeUnityBrowser( id );
+        }
+        
     private:
         static TabWidget* instance;
         TabWidget(QWidget *parent = 0L);
@@ -127,7 +132,6 @@ class TabWidget : public QTabWidget
         
     public slots:
         void setTabsPosition();
-        void loggedOut( const QString&, int );
         void addUnityBrowser( int = 0 );
         void addUnityBrowserWithSR( QString = QString::Null(), int = 0 );
         void removeUnityBrowser( int );

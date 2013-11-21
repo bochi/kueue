@@ -40,8 +40,8 @@
 #include <QFileDialog>
 #include <QTest>
 
-UnityPage::UnityPage( QString sr )
-        : QWebPage( ( QWidget* ) 0 )
+UnityPage::UnityPage( QObject* parent, QString sr )
+        : QWebPage( parent )
 {
     qDebug() << "[UNITYPAGE] Constructing";
     
@@ -303,8 +303,7 @@ void UnityPage::pageLoaded()
 
 void UnityPage::loggedOut()
 {
-    triggerAction( QWebPage::Stop );
-    emit loggedOutFromUnity( mCurrentSR );
+    emit loggedOutFromUnity();
 }
 
 void UnityPage::loginToUnity()
