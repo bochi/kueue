@@ -132,7 +132,7 @@ class TabWidget : public QTabWidget
         
     public slots:
         void setTabsPosition();
-        void addUnityBrowser( int = 0 );
+        int addUnityBrowser( int = 0 );
         void addUnityBrowserWithSR( QString = QString::Null(), int = 0 );
         void removeUnityBrowser( int );
         void rebuildMaps();

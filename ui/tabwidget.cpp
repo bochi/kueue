@@ -304,7 +304,7 @@ void TabWidget::showUnityTab( bool b )
     rebuildMaps();
 }
 
-void TabWidget::addUnityBrowser( int id )
+int TabWidget::addUnityBrowser( int id )
 {   
     // create a new unitywidget and add it as a tab
     UnityWidget* w = new UnityWidget( this );
@@ -335,6 +335,7 @@ void TabWidget::addUnityBrowser( int id )
     mUnityBrowserMap[ tab ] = w->browser();
 
     rebuildMaps();
+    return tab;
 }
 
 void TabWidget::addUnityBrowserWithSR( QString sr, int id )
@@ -347,9 +348,6 @@ void TabWidget::addUnityBrowserWithSR( QString sr, int id )
     if ( Kueue::isSrNr( sr ) )
     {
         UnityWidget* w = new UnityWidget( this, sr );
-         
-        connect( w, SIGNAL( loggedOut( QString, int ) ),
-                 this, SLOT( loggedOut( QString, int ) ) );
         
         int tab;
         
@@ -400,9 +398,12 @@ void TabWidget::removeUnityBrowser( int tab )
 
 void TabWidget::rebuildMaps()
 {
+    int tab;
+    
     if ( mUnityWidgetList.isEmpty() )
     {
-        addUnityBrowser();
+        tab = addUnityBrowser();
+        switchToTab( tab );
     }
     else
     {
