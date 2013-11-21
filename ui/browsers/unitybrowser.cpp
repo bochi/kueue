@@ -133,9 +133,7 @@ void UnityBrowser::busyWidgetCancelled()
 
 void UnityBrowser::loggedOut()
 {
-    QMessageBox::information( this, "kueue",
-    "Your session was logged out.\n"
-    "Please close this tab." );
+    QMessageBox::information( this, "kueue", "Your session was logged out.\nPlease close this tab." );
 }
 
 void UnityBrowser::connectShortcuts()
