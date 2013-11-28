@@ -480,6 +480,11 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
         
         QMenu* subownermenu = new QMenu( menu );
         subownermenu->setTitle( "Set subowner to..." );
+        QAction* rs = new QAction( "Remove subowner", subownermenu );
+        rs->setData( "" );
+        
+        connect( rs, SIGNAL( triggered( bool ) ),
+                 this, SLOT( setSubowner() ) );
         
         QStringList eng = Settings::engineerList();        
         
@@ -490,6 +495,7 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
                 ownermenu->addAction( ownerAction( eng.at( i ), ownermenu ) );
             }
 
+            menu->addSeparator();
             menu->addMenu( ownermenu );
         }
         
@@ -499,8 +505,14 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
             {  
                 subownermenu->addAction( subownerAction( eng.at( i ), subownermenu ) );
             }
-
+            
+            menu->addSeparator();
             menu->addMenu( subownermenu );
+            
+            if ( !element.attribute( "value" ).isEmpty() )
+            {
+                menu->addAction( rs );
+            }
         }
         
         menu->exec( event->globalPos() );
@@ -534,15 +546,13 @@ QAction* UnityBrowser::subownerAction( QString engineer, QMenu* parent )
 void UnityBrowser::setOwner()
 {
     QAction* action = qobject_cast< QAction* >( sender() );
-    qDebug() << "setOwner to " << action->data().toString();
-    
     mUnityPage->setOwner( action->data().toString() );
 }
 
 void UnityBrowser::setSubowner()
 {
     QAction* action = qobject_cast< QAction* >( sender() );
-    qDebug() << "setSubowner to " << action->data().toString();
+    mUnityPage->setSubowner( action->data().toString() );
 }
 
 QMenu* UnityBrowser::productMenu( QMenu* parent )

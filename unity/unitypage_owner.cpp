@@ -31,43 +31,79 @@
 */
 
 #include "unitypage.h"
-/*
-void UnityPage::setSubowner( const QStringList& sr, const QString& so )
-{
-    mSubownerOwner = so;
-    mSubownerSR = sr.at( 0 );
 
-    emit pageErbert( "Setting Subowner for SR#" + mSubownerSR + " to " + so.toUpper() );
-  
-    mNoJsConfirm = true;
+void UnityPage::setOwner( const QString& engineer, const QString& sr )
+{
+    mOwner = engineer;
     
-    if ( ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Activities" ) ||
-         ( mViewFrame->findFirstElement( "title" ).toInnerXml() == "Service Request Related SRs" ) &&
-         ( mCurrentSR == mSubownerSR ) )
+    if ( sr == QString::Null() )
+    {
+        setOwnerJob();
+    }
+    else
+    {
+        mSetOwner = true;
+        querySR( sr );
+    }
+}
+
+void UnityPage::setSubowner( const QString& engineer, const QString& sr )
+{
+    mSubowner = engineer;
+    
+    if ( sr == QString::Null() )
     {
         setSubownerJob();
     }
     else
     {
         mSetSubowner = true;
-        querySR( mSubownerSR );
+        querySR( sr );
     }
-}*/
+}
+
+void UnityPage::setOwnerJob()
+{
+    QWebElementCollection c = mViewFrame->findAllElements( "input" );
+    QWebElement ele;
+    QString js;
+    
+    for ( int i = 0; i < c.count(); ++i ) 
+    {  
+        if ( ( c.at( i ).attribute( "tabindex" ) == "1028" ) && 
+            ( c.at( i ).attribute( "onchange" ).startsWith( "trackChange" ) ) &&
+            ( c.at( i ).attribute( "onchange" ).contains( "97" ) ) )
+        {
+            ele = c.at( i );
+            js = ele.attribute( "onchange" );
+        }
+    }
+    
+    ele.setAttribute( "value", mOwner );
+    mViewFrame->evaluateJavaScript( js );
+    saveCurrentSR();
+    mSetOwner = false;
+}
 
 void UnityPage::setSubownerJob()
 {
     QWebElementCollection c = mViewFrame->findAllElements( "input" );
-    QString j;
+    QWebElement ele;
+    QString js;
     
     for ( int i = 0; i < c.count(); ++i ) 
     {  
-        if ( ( c.at(i).attribute( "tabindex" ) == "1025" ) && 
-             ( c.at(i).attribute( "onchange" ).startsWith( "trackChange" ) ) )
+        if ( ( c.at( i ).attribute( "tabindex" ) == "1028" ) && 
+            ( c.at( i ).attribute( "onchange" ).startsWith( "trackChange" ) ) &&
+            ( c.at( i ).attribute( "onchange" ).contains( "98" ) ) )
         {
-            c.at(i).setAttribute( "value", mProduct );
+            ele = c.at( i );
+            js = ele.attribute( "onchange" );
         }
     }
-   
-    mSetSubowner = false;
+    
+    ele.setAttribute( "value", mSubowner );
+    mViewFrame->evaluateJavaScript( js );
     saveCurrentSR();
+    mSetSubowner = false;
 }

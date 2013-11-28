@@ -68,8 +68,8 @@ class UnityPage : public QWebPage
         void setStatus( const QString& );
         void goToService();
         void exportSr();
-        void setOwner( const QString& );
-        void setSubowner( const QString& );
+        void setOwner( const QString&, const QString& = QString::Null() );
+        void setSubowner( const QString&, const QString& = QString::Null() );
         void busyWidgetCancelled();
 
     private slots:
@@ -119,6 +119,7 @@ class UnityPage : public QWebPage
         void closeSrSecond();
         void closeSrThird();
         
+        void setOwnerJob();
         void setSubownerJob();
 	
         void addNoteAccepted();
@@ -160,7 +161,7 @@ class UnityPage : public QWebPage
         QString mComponent;
         QString mSaveJS;
         QString mOwner;
-        QString mSubowner:
+        QString mSubowner;
 
         QTimer* mTimer;
 

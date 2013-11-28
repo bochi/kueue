@@ -210,58 +210,17 @@ bool UnityPage::isSubownerField( QWebElement ele )
     return false;
 }
 
-void UnityPage::setOwner( const QString& eng )
-{
-    QWebElementCollection c = mViewFrame->findAllElements( "input" );
-    QWebElement ele;
-    QString js;
-    
-    for ( int i = 0; i < c.count(); ++i ) 
-    {  
-        if ( ( c.at( i ).attribute( "tabindex" ) == "1028" ) && 
-            ( c.at( i ).attribute( "onchange" ).startsWith( "trackChange" ) ) &&
-            ( c.at( i ).attribute( "onchange" ).contains( "97" ) ) )
-        {
-            qDebug() << "found ele";
-            ele = c.at( i );
-            js = ele.attribute( "onchange" );
-        }
-    }
-    
-    ele.setAttribute( "value", eng );
-    mViewFrame->evaluateJavaScript( js );
-    saveCurrentSR();
-}
-
-void UnityPage::setSubowner( const QString& eng )
-{
-    QWebElementCollection c = mViewFrame->findAllElements( "input" );
-    QWebElement ele;
-    
-    for ( int i = 0; i < c.count(); ++i ) 
-    {  
-        if ( ( c.at( i ).attribute( "tabindex" ) == "1028" ) && 
-            ( c.at( i ).attribute( "onchange" ).startsWith( "trackChange" ) ) &&
-            ( c.at( i ).attribute( "onchange" ).contains( "98" ) ) )
-        {
-            ele = c.at( i );
-        }
-    }
-    
-    ele.setAttribute( "value", eng );
-    saveCurrentSR();
-}
-
 void UnityPage::busyWidgetCancelled()
 {
     mSetSS = false;
     mSetSC = false;
     mCloseSR = false;
-    mSetSubowner = false;
     mAddNote = false;
     mNoJsConfirm = false;
     mPageErbert = false;
     mSetStatus = false;
+    mSetOwner = false;
+    mSetSubowner = false;   
     
     if ( Kueue::isSrNr( mCurrentSR ) )
     {
@@ -272,7 +231,6 @@ void UnityPage::busyWidgetCancelled()
         goToService();
     }
 }
-
 
 void UnityPage::fixQueryBox()
 {     
@@ -456,7 +414,9 @@ void UnityPage::querySR( const QString& sr )
              ( mSetSC ) || 
              ( mAddNote ) || 
              ( mCloseSR ) ||
-             ( mSetStatus ) )
+             ( mSetStatus ) ||
+             ( mSetOwner ) ||
+             ( mSetSubowner ) )
         {
             mPageErbert = true;
             emit pageErbert();
@@ -574,6 +534,16 @@ void UnityPage::goToActivities()
     {
         connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
                  this, SLOT( setStatusFirst() ) );
+    }
+    else if ( mSetOwner )
+    {
+        connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+                 this, SLOT( setOwnerJob() ) );
+    }
+    else if ( mSetSubowner )
+    {
+        connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+                 this, SLOT( setSubownerJob() ) );
     }
     else
     {

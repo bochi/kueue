@@ -76,6 +76,7 @@ TabWidget::TabWidget( QWidget* parent )
     
     setTabsPosition();
     mStatusBar = &mStatusBar->getInstance();
+    
     // create the tabbar
     
     mBar = new TabBar;
