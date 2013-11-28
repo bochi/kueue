@@ -332,150 +332,217 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
 {
     // Create a custom context menu plus a widget to hold the actual menu
     // This makes it look more like a KMenu (way more beautiful)
-    
-    QWebHitTestResult res = mUnityPage->getElementAt( event->pos() );
-    QWebElement element = res.element();
-    QMap<int, int> map;
-    
-    QMenu* menu = new QMenu();
-            
-    QAction* head = new QAction( menu );
-    QAction* his = new QAction( "Back", menu );
-    QAction* edit = new QAction( "Open in external editor", menu );
-    QAction* edit_f = new QAction( "Open in external editor (quoted)", menu );
-    QAction* copy = new QAction( "Copy", menu );
-    QAction* paste = new QAction( "Paste", menu );
-    QAction* back = new QAction( "Go back to SR", menu );
-    QAction* nsa = new QAction( "Save NSA Report", menu );
-    QAction* dlimg = new QAction( "Save image...", menu );
-    QAction* bz = new QAction( "Open in bugzilla...", menu );
-    
-    QWidgetAction* wa = new QWidgetAction( menu );
-    
-    connect( his, SIGNAL( triggered(bool)),
-             this, SLOT( historyBack()) );
-    
-    connect( edit, SIGNAL( triggered(bool) ), 
-             this, SLOT( openWebEditor() ) );
-    
-    connect( edit_f, SIGNAL( triggered(bool) ), 
-             this, SLOT( openWebEditorFormat() ) );
-    
-    connect( copy, SIGNAL( triggered( bool ) ), 
-             this, SLOT( copyToClipboard() ) );
-    
-    connect( back, SIGNAL( triggered( bool ) ), 
-             this, SLOT( goBackToSr() ) );
-    
-    connect( nsa, SIGNAL( triggered( bool ) ), 
-             mUnityPage, SLOT( saveNsaReport() ) );
-    
-    connect( dlimg, SIGNAL( triggered( bool ) ),
-             this, SLOT( saveImage() ) );
-    
-    connect( bz, SIGNAL( triggered(bool) ), 
-             this, SLOT( openInBugzilla() ) );
-    
-    QFont font = head->font();
-    font.setBold( true );
-    
-    QToolButton* titleButton = new QToolButton( this );
-    
-    wa->setDefaultWidget( titleButton );
-    wa->setObjectName( "MENUTITLE" );
-    
-    titleButton->setDefaultAction( head );
-    titleButton->setDown( true );
-    titleButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-    
-    his->setIcon( QIcon( ":/icons/menus/back.png" ) );
-    
-    head->setFont( font );
-    head->setIcon( QIcon( QIcon( ":/icons/kueue.png" ).pixmap( QSize( 16, 16 ) ) ) );
-    head->setText( "kueue" );
-    
-    edit->setData( QString::number( event->pos().x() ) + "||" + QString::number( event->pos().y() ) + "||" + id );
-    edit->setIcon( QIcon( ":/icons/menus/toggle.png" ) );
-    
-    edit_f->setData( QString::number( event->pos().x() ) + "||" + QString::number( event->pos().y() ) + "||" + id );
-    edit_f->setIcon( QIcon( ":/icons/menus/toggle.png" ) );
-    
-    copy->setData( selectedText() );
-    copy->setIcon( QIcon( ":/icons/menus/clipboard.png" ) );
-    
-    back->setData( mUnityPage->currentSr() );
-    back->setIcon( QIcon( ":/icons/menus/srdetails.png" ) );
-    nsa->setIcon( QIcon( ":/icons/menus/save.png" ) );
-    
-    dlimg->setData( QString::number( event->pos().x() ) + "||" + QString::number( event->pos().y() ) + "||" + id );
-    dlimg->setIcon( QIcon( ":/icons/menus/download.png" ) );
-    
-    menu->addAction( wa );
-    
-    if ( mUnityPage->history()->canGoBack() )
+ 
+    if ( mUnityPage->loggedIn() )
     {
-        menu->addAction( his );
+        QWebHitTestResult res = mUnityPage->getElementAt( event->pos() );
+        QWebElement element = res.element();
+        QMap<int, int> map;
+        
+        QMenu* menu = new QMenu();
+                
+        QAction* head = new QAction( menu );
+        QAction* his = new QAction( "Back", menu );
+        QAction* edit = new QAction( "Open in external editor", menu );
+        QAction* edit_f = new QAction( "Open in external editor (quoted)", menu );
+        QAction* copy = new QAction( "Copy", menu );
+        QAction* paste = new QAction( "Paste", menu );
+        QAction* back = new QAction( "Go back to SR", menu );
+        QAction* nsa = new QAction( "Save NSA Report", menu );
+        QAction* dlimg = new QAction( "Save image...", menu );
+        QAction* bz = new QAction( "Open in bugzilla...", menu );
+        
+        QWidgetAction* wa = new QWidgetAction( menu );
+        
+        connect( his, SIGNAL( triggered(bool)),
+                this, SLOT( historyBack()) );
+        
+        connect( edit, SIGNAL( triggered(bool) ), 
+                this, SLOT( openWebEditor() ) );
+        
+        connect( edit_f, SIGNAL( triggered(bool) ), 
+                this, SLOT( openWebEditorFormat() ) );
+        
+        connect( copy, SIGNAL( triggered( bool ) ), 
+                this, SLOT( copyToClipboard() ) );
+        
+        connect( back, SIGNAL( triggered( bool ) ), 
+                this, SLOT( goBackToSr() ) );
+        
+        connect( nsa, SIGNAL( triggered( bool ) ), 
+                mUnityPage, SLOT( saveNsaReport() ) );
+        
+        connect( dlimg, SIGNAL( triggered( bool ) ),
+                this, SLOT( saveImage() ) );
+        
+        connect( bz, SIGNAL( triggered(bool) ), 
+                this, SLOT( openInBugzilla() ) );
+        
+        QFont font = head->font();
+        font.setBold( true );
+        
+        QToolButton* titleButton = new QToolButton( this );
+        
+        wa->setDefaultWidget( titleButton );
+        wa->setObjectName( "MENUTITLE" );
+        
+        titleButton->setDefaultAction( head );
+        titleButton->setDown( true );
+        titleButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+        
+        his->setIcon( QIcon( ":/icons/menus/back.png" ) );
+        
+        head->setFont( font );
+        head->setIcon( QIcon( QIcon( ":/icons/kueue.png" ).pixmap( QSize( 16, 16 ) ) ) );
+        head->setText( "kueue" );
+        
+        edit->setData( QString::number( event->pos().x() ) + "||" + QString::number( event->pos().y() ) + "||" + id );
+        edit->setIcon( QIcon( ":/icons/menus/toggle.png" ) );
+        
+        edit_f->setData( QString::number( event->pos().x() ) + "||" + QString::number( event->pos().y() ) + "||" + id );
+        edit_f->setIcon( QIcon( ":/icons/menus/toggle.png" ) );
+        
+        copy->setData( selectedText() );
+        copy->setIcon( QIcon( ":/icons/menus/clipboard.png" ) );
+        
+        back->setData( mUnityPage->currentSr() );
+        back->setIcon( QIcon( ":/icons/menus/srdetails.png" ) );
+        nsa->setIcon( QIcon( ":/icons/menus/save.png" ) );
+        
+        dlimg->setData( QString::number( event->pos().x() ) + "||" + QString::number( event->pos().y() ) + "||" + id );
+        dlimg->setIcon( QIcon( ":/icons/menus/download.png" ) );
+        
+        menu->addAction( wa );
+        
+        if ( mUnityPage->history()->canGoBack() )
+        {
+            menu->addAction( his );
+            menu->addSeparator();
+        }
+        
+        menu->addAction( edit );
+        edit->setEnabled( false );
+        
+        if ( Settings::replyFormatEnabled() )
+        {
+            menu->addAction( edit_f );
+            edit_f->setEnabled( false );
+        }
+        
+        if ( ( element.attribute( "type" ) == "input" ) ||
+            ( element.attribute( "type" ) == "text" ) ||
+            ( isTextArea( element ) ) )
+        {
+            edit->setEnabled( true );
+            edit_f->setEnabled( true );
+        }
+        
         menu->addSeparator();
-    }
-    
-    menu->addAction( edit );
-    edit->setEnabled( false );
-    
-    if ( Settings::replyFormatEnabled() )
-    {
-        menu->addAction( edit_f );
-        edit_f->setEnabled( false );
-    }
-    
-    if ( ( element.attribute( "type" ) == "input" ) ||
-         ( element.attribute( "type" ) == "text" ) ||
-         ( isTextArea( element ) ) )
-    {
-        edit->setEnabled( true );
-        edit_f->setEnabled( true );
-    }
-    
-    menu->addSeparator();
-    menu->addAction( copy );
+        menu->addAction( copy );
 
-    if ( selectedText().isEmpty() )
-    {  
-        copy->setEnabled( false );
-    }
-    
-    menu->addSeparator();
-    
-    if ( !mUnityPage->currentSr().isEmpty() &&
-         Kueue::isSrNr( mUnityPage->currentSr() ) )
-    {
-        menu->addAction( back ), (void) this, (void) SLOT( goBackToSr() );
-    }
-
-    if ( mUnityPage->isNsaReport() )
-    {
-        (void) menu->addAction( nsa ), (void) mUnityPage, (void) SLOT( saveNsaReport() );
-    }
-
-    if ( !res.imageUrl().isEmpty() ) 
-    {
+        if ( selectedText().isEmpty() )
+        {  
+            copy->setEnabled( false );
+        }
+        
         menu->addSeparator();
-        menu->addAction( dlimg );
-    }
+        
+        if ( !mUnityPage->currentSr().isEmpty() &&
+            Kueue::isSrNr( mUnityPage->currentSr() ) )
+        {
+            menu->addAction( back ), (void) this, (void) SLOT( goBackToSr() );
+        }
+
+        if ( mUnityPage->isNsaReport() )
+        {
+            (void) menu->addAction( nsa ), (void) mUnityPage, (void) SLOT( saveNsaReport() );
+        }
+
+        if ( !res.imageUrl().isEmpty() ) 
+        {
+            menu->addSeparator();
+            menu->addAction( dlimg );
+        }
+        
+        if ( isProductField( element ) )
+        {
+            menu->addMenu( productMenu( menu ) );
+        }
+        
+        if ( ( isBugzillaField( element ) ) && ( !element.attribute( "value" ).isEmpty() ) )
+        {
+            bz->setData( element.attribute( "value" ) );
+            menu->addAction( bz );
+        }
+        
+        QMenu* ownermenu = new QMenu( menu );
+        ownermenu->setTitle( "Set owner to..." );
+        
+        QMenu* subownermenu = new QMenu( menu );
+        subownermenu->setTitle( "Set subowner to..." );
+        
+        QStringList eng = Settings::engineerList();        
+        
+        if ( mUnityPage->isOwnerField( element ) )
+        {
+            for ( int i = 0; i < eng.count(); ++i ) 
+            {  
+                ownermenu->addAction( ownerAction( eng.at( i ), ownermenu ) );
+            }
+
+            menu->addMenu( ownermenu );
+        }
+        
+        if ( mUnityPage->isSubownerField( element ) )
+        {
+            for ( int i = 0; i < eng.count(); ++i ) 
+            {  
+                subownermenu->addAction( subownerAction( eng.at( i ), subownermenu ) );
+            }
+
+            menu->addMenu( subownermenu );
+        }
+        
+        menu->exec( event->globalPos() );
+        
+        delete menu;
+    } 
+}
+
+QAction* UnityBrowser::ownerAction( QString engineer, QMenu* parent )
+{
+    QAction* action = new  QAction( engineer, parent );
+    action->setData( engineer );
     
-    if ( isProductField( element ) )
-    {
-        menu->addMenu( productMenu( menu ) );
-    }
+    connect( action, SIGNAL( triggered( bool ) ), 
+             this, SLOT( setOwner() ) );
     
-    if ( ( isBugzillaField( element ) ) && ( !element.attribute( "value" ).isEmpty() ) )
-    {
-        bz->setData( element.attribute( "value" ) );
-        menu->addAction( bz );
-    }
+    return action;
+}
+
+QAction* UnityBrowser::subownerAction( QString engineer, QMenu* parent )
+{
+    QAction* action = new  QAction( engineer, parent );
+    action->setData( engineer );
     
-    menu->exec( event->globalPos() );
+    connect( action, SIGNAL( triggered( bool ) ), 
+             this, SLOT( setSubowner() ) );
     
-    delete menu;
+    return action;
+}
+
+void UnityBrowser::setOwner()
+{
+    QAction* action = qobject_cast< QAction* >( sender() );
+    qDebug() << "setOwner to " << action->data().toString();
+    
+    mUnityPage->setOwner( action->data().toString() );
+}
+
+void UnityBrowser::setSubowner()
+{
+    QAction* action = qobject_cast< QAction* >( sender() );
+    qDebug() << "setSubowner to " << action->data().toString();
 }
 
 QMenu* UnityBrowser::productMenu( QMenu* parent )

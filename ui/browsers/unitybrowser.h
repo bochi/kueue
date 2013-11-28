@@ -93,12 +93,16 @@ class UnityBrowser : public QWebView
         void openWebInspector();
         void linkClicked( const QUrl& );
         void loggedOut();
+        void setOwner();
+        void setSubowner();
 
     private:
         UnityPage* mUnityPage;
         QUrl mUrl;
 
         QMenu* productMenu( QMenu* parent );
+        QAction* ownerAction( QString, QMenu* );
+        QAction* subownerAction( QString, QMenu* );
         bool isTextArea( QWebElement );     
         bool isProductField( QWebElement );
         bool isBugzillaField( QWebElement );

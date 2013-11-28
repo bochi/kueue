@@ -31,7 +31,7 @@
 */
 
 #include "unitypage.h"
-
+/*
 void UnityPage::setSubowner( const QStringList& sr, const QString& so )
 {
     mSubownerOwner = so;
@@ -52,7 +52,7 @@ void UnityPage::setSubowner( const QStringList& sr, const QString& so )
         mSetSubowner = true;
         querySR( mSubownerSR );
     }
-}
+}*/
 
 void UnityPage::setSubownerJob()
 {

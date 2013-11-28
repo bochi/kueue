@@ -48,7 +48,10 @@ class UnityPage : public QWebPage
         QWebHitTestResult getElementAt( const QPoint& );
         QString currentSr() { return mCurrentSR; }
         QWebFrame* viewFrame() { return mViewFrame; }
+        bool isOwnerField( QWebElement );
+        bool isSubownerField( QWebElement );
 
+        
     public slots:
         void querySR( const QString& );
         void setElementText( QWebElement, const QString& );
@@ -65,7 +68,8 @@ class UnityPage : public QWebPage
         void setStatus( const QString& );
         void goToService();
         void exportSr();
-        void setSubowner( const QStringList&, const QString& );
+        void setOwner( const QString& );
+        void setSubowner( const QString& );
         void busyWidgetCancelled();
 
     private slots:
@@ -155,8 +159,8 @@ class UnityPage : public QWebPage
         QString mProduct;
         QString mComponent;
         QString mSaveJS;
-        QString mSubownerSR;
-        QString mSubownerOwner;
+        QString mOwner;
+        QString mSubowner:
 
         QTimer* mTimer;
 
@@ -169,6 +173,7 @@ class UnityPage : public QWebPage
         bool mSetSS;
         bool mSetSC;
         bool mCloseSR;
+        bool mSetOwner;
         bool mSetSubowner;
         bool mAddNote;
         bool mNoJsConfirm;
