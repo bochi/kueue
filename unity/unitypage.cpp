@@ -1010,7 +1010,7 @@ void UnityPage::saveCurrentSR()
             saveJS = sc.at(i).attribute( "href" ).remove( "JavaScript:" );
         }
     }
-    qDebug() << saveJS << "SAVE";
+    
     mViewFrame->evaluateJavaScript( saveJS );
 }
 
