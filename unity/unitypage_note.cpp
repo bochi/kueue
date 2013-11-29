@@ -217,6 +217,7 @@ void UnityPage::addNoteSecond()
 void UnityPage::addNoteThird()
 {
     mAddNote = true;
+    mSaveAct = true;
     
     disconnect( mViewFrame, 0, 0, 0 );
 
@@ -242,5 +243,4 @@ void UnityPage::addNoteThird()
 
     delete mNoteDialog;
     mAddNote = false;
-    saveCurrentActivity();
 }

@@ -63,6 +63,8 @@ UnityPage::UnityPage( QObject* parent, QString sr )
     mNoJsConfirm = false;
     mCloseSR = false;
     mSetStatus = false;
+    mSaveSr = false;
+    mSaveAct = false;
     
     mStatusBar = &mStatusBar->getInstance();
     
@@ -568,6 +570,13 @@ void UnityPage::actionDone()
 {
     disconnect( mViewFrame, 0, 0, 0 );
     unsetJsConfirm();
+    
+    if ( mSaveSr ) saveCurrentSR();
+    if ( mSaveAct ) saveCurrentActivity();
+    
+    mSaveSr = false;
+    mSaveAct = false;
+    
     mPageErbert = false;
     emit pageErbertNed();
 }
@@ -1001,7 +1010,7 @@ void UnityPage::saveCurrentSR()
             saveJS = sc.at(i).attribute( "href" ).remove( "JavaScript:" );
         }
     }
-    
+    qDebug() << saveJS << "SAVE";
     mViewFrame->evaluateJavaScript( saveJS );
 }
 

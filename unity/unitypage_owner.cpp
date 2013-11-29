@@ -64,6 +64,13 @@ void UnityPage::setSubowner( const QString& engineer, const QString& sr )
 
 void UnityPage::setOwnerJob()
 {
+    mSaveSr = true;
+    
+    disconnect( mViewFrame, 0, 0, 0 );
+    
+    connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+             this, SLOT( actionDone() ) );
+    
     QWebElementCollection c = mViewFrame->findAllElements( "input" );
     QWebElement ele;
     QString js;
@@ -81,12 +88,19 @@ void UnityPage::setOwnerJob()
     
     ele.setAttribute( "value", mOwner );
     mViewFrame->evaluateJavaScript( js );
-    saveCurrentSR();
+
     mSetOwner = false;
 }
 
 void UnityPage::setSubownerJob()
 {
+    mSaveSr = true;
+    
+    disconnect( mViewFrame, 0, 0, 0 );
+    
+    connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
+             this, SLOT( actionDone() ) );
+    
     QWebElementCollection c = mViewFrame->findAllElements( "input" );
     QWebElement ele;
     QString js;
@@ -104,6 +118,6 @@ void UnityPage::setSubownerJob()
     
     ele.setAttribute( "value", mSubowner );
     mViewFrame->evaluateJavaScript( js );
-    saveCurrentSR();
+    
     mSetSubowner = false;
 }

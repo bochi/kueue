@@ -303,13 +303,12 @@ void UnityPage::setScFifth()
 void UnityPage::setScSixth()
 {
     mSetSC = true;
+    mSaveSr = true;
     
     disconnect( mViewFrame, 0, 0, 0 );
     
     connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
              this, SLOT( actionDone() ) );
-    
-    saveCurrentSR();
     
     delete mCalendarDialog;
     mSetSC = false;

@@ -180,12 +180,14 @@ void UnityPage::closeSrSecond()
 
 void UnityPage::closeSrThird()
 {
+    mSaveSr = true;
+    
     disconnect( mViewFrame, 0, 0, 0 );
     
     connect( mViewFrame, SIGNAL( loadFinished( bool ) ), 
              this, SLOT( actionDone() ) );
     
     mCloseSR = false;
-    saveCurrentSR();
+    
     delete mCloseDialog;
 }

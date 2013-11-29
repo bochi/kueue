@@ -182,6 +182,8 @@ class UnityPage : public QWebPage
         bool mSetStatus;
         bool mIsCr;
         bool checkMandatoryForClose();
+        bool mSaveSr;
+        bool mSaveAct;
 
     protected:
         void javaScriptAlert( QWebFrame*, const QString& );
