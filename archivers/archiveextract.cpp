@@ -211,7 +211,7 @@ void ArchiveExtract::run()
         
         if ( !info.waitForFinished( 10000 ) ) 
         {
-            return;
+            info.terminate();
         }
        
 	qDebug() << "archive info finished";
