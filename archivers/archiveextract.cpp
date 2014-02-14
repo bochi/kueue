@@ -213,10 +213,14 @@ void ArchiveExtract::run()
         {
             return;
         }
-        
+       
+	qDebug() << "archive info finished";
+ 
         QString b = info.readAllStandardOutput();
         QStringList files = b.split( "\n" );
         mFilesCnt = files.size();
+
+	qDebug() << "Files count: " << mFilesCnt;
         
         emit threadNewMaximum( mFilesCnt );
         emit threadProgress( 0, "Extracting..." );
