@@ -209,7 +209,7 @@ void ArchiveExtract::run()
         
         info.start( app, listArgs );
         
-        if ( !info.waitForFinished( -1 ) ) 
+        if ( !info.waitForFinished( 5000 ) ) 
         {
             return;
         }
