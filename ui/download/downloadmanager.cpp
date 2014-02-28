@@ -384,7 +384,7 @@ void DownloadItem::downloadProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
     QTime now = QTime::currentTime();
     
-    if ( mLastProgressTime.msecsTo( now ) < 200 )
+    if ( mLastProgressTime.msecsTo( now ) < 200 && !mReply->isFinished() )
     {
         return;
     }
