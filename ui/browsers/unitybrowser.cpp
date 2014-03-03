@@ -568,6 +568,12 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     
     slesmenu->addSeparator();
     
+    slesmenu->addAction( "SUSE Linux Enterprise Server 11 SP1 for VMware", this, SLOT( fillOutProduct() ) );
+    slesmenu->addAction( "SUSE Linux Enterprise Server 11 SP2 for VMware", this, SLOT( fillOutProduct() ) );
+    slesmenu->addAction( "SUSE Linux Enterprise Server 11 SP3 for VMware", this, SLOT( fillOutProduct() ) );
+    
+    slesmenu->addSeparator();
+    
     slesmenu->addAction( "SUSE Linux Enterprise Server 10", this, SLOT( fillOutProduct() ) );
     slesmenu->addAction( "SUSE Linux Enterprise Server 10 SP1", this, SLOT( fillOutProduct() ) );
     slesmenu->addAction( "SUSE Linux Enterprise Server 10 SP2", this, SLOT( fillOutProduct() ) );
@@ -611,7 +617,11 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     manmenu->addAction( "SUSE Manager Proxy Server 1.2", this, SLOT( fillOutProduct() ) );
     manmenu->addSeparator();
     manmenu->addAction( "SUSE Manager 1.7 Server", this, SLOT( fillOutProduct() ) );
-    
+    manmenu->addAction( "SUSE Manager 1.7 Server with Database", this, SLOT( fillOutProduct() ) );
+    manmenu->addAction( "SUSE Manager 1.7 Proxy", this, SLOT( fillOutProduct() ) );
+    manmenu->addSeparator();
+    manmenu->addAction( "SUSE Manager Management Pack for Microsoft System Center 1.3", this, SLOT( fillOutProduct() ) );
+        
     QMenu* atkmenu = new QMenu( "SUSE Appliance Toolkit", menu );
     
     atkmenu->addAction( "SUSE Lifecycle Management Server 1.2 [Appliance - Tools]", this, SLOT( fillOutProduct() ) );
@@ -622,6 +632,12 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     atkmenu->addSeparator();
     atkmenu->addAction( "WebYaST 1.1", this, SLOT( fillOutProduct() ) );
     atkmenu->addAction( "WebYaST 1.2", this, SLOT( fillOutProduct() ) );
+    
+    QMenu* cloudmenu = new QMenu( "SUSE Cloud", menu );
+    
+    cloudmenu->addAction( "SUSE Cloud 1.0", this, SLOT( fillOutProduct() ) );
+    cloudmenu->addAction( "SUSE Cloud 2.0", this, SLOT( fillOutProduct() ) );
+    cloudmenu->addAction( "SUSE Cloud 3", this, SLOT( fillOutProduct() ) );
     
     QMenu* sledmenu = new QMenu( "SUSE Linux Enterprise Desktop", menu );
           
@@ -649,14 +665,21 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     oesmenu->addAction( "Open Enterprise Server 2.0.2", this, SLOT( fillOutProduct() ) );
     oesmenu->addAction( "Open Enterprise Server 2.0.3", this, SLOT( fillOutProduct() ) );
     
+    QMenu* rhmenu = new QMenu( "Red Hat Expanded Support", menu );
+    
+    rhmenu->addAction( "RES 5 Expanded Support", this, SLOT( fillOutProduct() ) );
+    rhmenu->addAction( "RES 6 Expanded Support", this, SLOT( fillOutProduct() ) );
+    rhmenu->addAction( "RES 6 HA Expanded Support", this, SLOT( fillOutProduct() ) );
+    
     menu->addMenu( slesmenu );
     menu->addMenu( sledmenu );
     menu->addSeparator();
     menu->addMenu( atkmenu );
+    menu->addMenu( cloudmenu );
     menu->addMenu( smtmenu );
     menu->addMenu( manmenu );
     menu->addSeparator();
-    menu->addAction( "Red Hat Linux", this, SLOT( fillOutProduct() ) );
+    menu->addMenu( rhmenu );
     menu->addSeparator();
     menu->addMenu( oesmenu );
     
@@ -672,9 +695,14 @@ void UnityBrowser::fillOutProduct()
         mUnityPage->fillOutProduct( "SUSE Linux Enterprise Server", action->text() );
     }
     
-    else if ( action->text().startsWith( "Red Hat" ) )
+    else if ( action->text().startsWith( "SUSE Cloud" ) )
     {
-        mUnityPage->fillOutProduct( "Red Hat", action->text(), "Configuration", "Component Not Listed" );
+        mUnityPage->fillOutProduct( "SUSE Linux Enterprise Server", action->text() );
+    }
+    
+    else if ( action->text().startsWith( "RES" ) )
+    {
+        mUnityPage->fillOutProduct( "Red Hat", action->text() );
     }
     
     else if ( ( action->text().startsWith( "SUSE Lifecycle" ) ) ||
