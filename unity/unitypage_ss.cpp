@@ -245,4 +245,5 @@ void UnityPage::setSSthird()
     saveCurrentActivity();
     delete mSsDialog;
     mSetSS = false;
+    actionDone();
 }

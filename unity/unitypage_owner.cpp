@@ -120,4 +120,5 @@ void UnityPage::setSubownerJob()
     mViewFrame->evaluateJavaScript( js );
     
     mSetSubowner = false;
+    actionDone();
 }

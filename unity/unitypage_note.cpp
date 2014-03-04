@@ -243,4 +243,5 @@ void UnityPage::addNoteThird()
 
     delete mNoteDialog;
     mAddNote = false;
+    actionDone();
 }

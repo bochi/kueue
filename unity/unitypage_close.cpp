@@ -190,4 +190,5 @@ void UnityPage::closeSrThird()
     mCloseSR = false;
     
     delete mCloseDialog;
+    actionDone();
 }

@@ -312,4 +312,5 @@ void UnityPage::setScSixth()
     
     delete mCalendarDialog;
     mSetSC = false;
+    actionDone();
 }
