@@ -653,10 +653,14 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     
     atkmenu->addAction( "SUSE Lifecycle Management Server 1.2 [Appliance - Tools]", this, SLOT( fillOutProduct() ) );
     atkmenu->addAction( "SUSE Lifecycle Management Server 1.3", this, SLOT( fillOutProduct() ) );
+    
     atkmenu->addSeparator();
+    
     atkmenu->addAction( "SUSE Studio Onsite 1.2 [Appliance - Studio]", this, SLOT( fillOutProduct() ) );
     atkmenu->addAction( "SUSE Studio Onsite 1.3", this, SLOT( fillOutProduct() ) );
+    
     atkmenu->addSeparator();
+    
     atkmenu->addAction( "WebYaST 1.1", this, SLOT( fillOutProduct() ) );
     atkmenu->addAction( "WebYaST 1.2", this, SLOT( fillOutProduct() ) );
     
@@ -685,6 +689,7 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     
     oesmenu->addAction( "Open Enterprise Server 11 (OES 11)", this, SLOT( fillOutProduct() ) );
     oesmenu->addAction( "Open Enterprise Server 11.1", this, SLOT( fillOutProduct() ) );
+    oesmenu->addAction( "Open Enterprise Server 11.2 (OES 11 SP2)", this, SLOT( fillOutProduct() ) );
     
     oesmenu->addSeparator();
     
