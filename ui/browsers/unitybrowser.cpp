@@ -560,7 +560,11 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     QMenu* menu = new QMenu( "Set product...", parent );
     
     QMenu* slesmenu = new QMenu( "SUSE Linux Enterprise Server", menu );
+    
+    slesmenu->addAction( "SUSE Linux Enterprise Server 12 (SLES 12)", this, SLOT( fillOutProduct() ) );
           
+    slesmenu->addSeparator();
+    
     slesmenu->addAction( "SUSE Linux Enterprise Server 11", this, SLOT( fillOutProduct() ) );
     slesmenu->addAction( "SUSE Linux Enterprise Server 11 SP1", this, SLOT( fillOutProduct() ) );
     slesmenu->addAction( "SUSE Linux Enterprise Server 11 SP2", this, SLOT( fillOutProduct() ) );
@@ -597,7 +601,26 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11 SP2", this, SLOT( fillOutProduct() ) );
     haemenu->addAction( "SUSE Linux Enterprise High Availability Extension 11 SP3", this, SLOT( fillOutProduct() ) );
     
+    haemenu->addSeparator();
+    
+    haemenu->addAction( "GEO Clustering for SUSE Linux Enterprise High Availability Extension 11 SP2", this, SLOT( fillOutProduct() ) );
+    haemenu->addAction( "GEO Clustering for SUSE Linux Enterprise High Availability Extension 11 SP3", this, SLOT( fillOutProduct() ) );
+        
     slesmenu->addMenu( haemenu );
+    
+    QMenu* rtmenu = new QMenu( "SUSE Linux Enterprise Real Time", slesmenu );
+    
+    rtmenu->addAction( "SUSE Linux Enterprise Real Time 10 SP1", this, SLOT( fillOutProduct() ) );
+    rtmenu->addAction( "SUSE Linux Enterprise Real Time 10 SP2", this, SLOT( fillOutProduct() ) );
+    rtmenu->addAction( "SUSE Linux Enterprise Real Time 10 SP3", this, SLOT( fillOutProduct() ) );
+    
+    rtmenu->addSeparator();
+    
+    rtmenu->addAction( "SUSE Linux Enterprise Real Time Extension 11 SP1", this, SLOT( fillOutProduct() ) );
+    rtmenu->addAction( "SUSE Linux Enterprise Real Time Extension 11 SP2", this, SLOT( fillOutProduct() ) );
+    rtmenu->addAction( "SUSE Linux Enterprise Real Time Extension 11 SP3", this, SLOT( fillOutProduct() ) );
+    
+    slesmenu->addMenu( rtmenu );
     
     QMenu* posmenu = new QMenu( "SUSE Linux Enterprise Point of Service", slesmenu );
 
@@ -615,11 +638,15 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     
     manmenu->addAction( "SUSE Manager 1.2", this, SLOT( fillOutProduct() ) );
     manmenu->addAction( "SUSE Manager Proxy Server 1.2", this, SLOT( fillOutProduct() ) );
+    
     manmenu->addSeparator();
+    
     manmenu->addAction( "SUSE Manager 1.7 Server", this, SLOT( fillOutProduct() ) );
     manmenu->addAction( "SUSE Manager 1.7 Server with Database", this, SLOT( fillOutProduct() ) );
     manmenu->addAction( "SUSE Manager 1.7 Proxy", this, SLOT( fillOutProduct() ) );
+    
     manmenu->addSeparator();
+    
     manmenu->addAction( "SUSE Manager Management Pack for Microsoft System Center 1.3", this, SLOT( fillOutProduct() ) );
         
     QMenu* atkmenu = new QMenu( "SUSE Appliance Toolkit", menu );
@@ -727,6 +754,11 @@ void UnityBrowser::fillOutProduct()
         mUnityPage->fillOutProduct( "SUSE Linux Enterprise High Availability Extension", action->text() );
     }
     
+    else if ( action->text().startsWith( "GEO Clustering" ) )
+    {
+        mUnityPage->fillOutProduct( "SUSE Linux Enterprise High Availability Extension", action->text() );
+    }
+        
     else if ( action->text().startsWith( "SUSE Linux Enterprise Desktop" ) )
     {
         mUnityPage->fillOutProduct( "SUSE Linux Enterprise Desktop", action->text() );
