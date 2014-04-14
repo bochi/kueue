@@ -65,6 +65,8 @@ UnityPage::UnityPage( QObject* parent, QString sr )
     mSetStatus = false;
     mSaveSr = false;
     mSaveAct = false;
+    mSetOwner = false;
+    mSetSubowner = false;
     
     mStatusBar = &mStatusBar->getInstance();
     
