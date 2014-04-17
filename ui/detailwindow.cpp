@@ -50,11 +50,6 @@ DetailWindow::DetailWindow( QString id, bool nb )
     mSr = id;
     mIsCr = false;
     
-    #ifndef QT_HAS_DBUS
-    
-        kopeteCheckBox->setVisible( false );
-    
-    #endif
     
         contactLabel->setVisible( false );
         contactLabel->setTextInteractionFlags( Qt::TextSelectableByMouse );
@@ -112,14 +107,12 @@ DetailWindow::DetailWindow( QString id, bool nb )
     if ( ( nb ) || 
          ( !Settings::qbossFeatures() ) )
     {
-        kopeteCheckBox->setVisible( false );
         assignButton->setVisible( false );
         assignCombo->setVisible( false );
         assignLabel->setVisible( false );
     }
     else
     {
-        kopeteCheckBox->setVisible( true );
         assignButton->setVisible( true );
         assignCombo->setVisible( true );
         assignLabel->setVisible( true );
@@ -144,8 +137,6 @@ DetailWindow::DetailWindow( QString id, bool nb )
         takeButton->setVisible( false );
     }
     
-    kopeteCheckBox->setChecked( Settings::checkKopete() );
-
     resize( Settings::detWinSize() );
     move( Settings::detWinPos() );
     restoreState( Settings::detWinState() );
@@ -163,9 +154,6 @@ DetailWindow::DetailWindow( QString id, bool nb )
     closeButton->hide();
 #endif
     
-#ifndef QT_HAS_DBUS
-    kopeteCheckBox->setVisible( false );
-#endif
 }
 
 DetailWindow::~DetailWindow()
@@ -442,53 +430,11 @@ void DetailWindow::assignJobDone()
     {
         QMessageBox::information( this, "Done", "SR successfully assigned to " + mEngineer );
      
-        if ( kopeteCheckBox->isChecked() ) 
-        {
-            sendWithKopete();
-        }
     }
     
     else QMessageBox::critical( this, "Error", "Unknown reply: " + data );
     
     DataThread::updateQmon();
-}
-
-void DetailWindow::sendWithKopete()
-{
-    #ifdef QT_HAS_DBUS
-    
-        /* This function connects to kopete using dbus and sends a message
-        to the engineer selected in the combobox (format engineer.novell) */
-        
-        const QString dbusServiceName = "org.kde.kopete";
-        const QString dbusInterfaceName = "org.kde.Kopete";
-        const QString dbusPath = "/Kopete";
-
-        QDBusConnectionInterface* interface = QDBusConnection::sessionBus().interface();
-
-        if ( !interface || !interface->isServiceRegistered( dbusServiceName ) ) return;
-
-        QDBusMessage m = QDBusMessage::createMethodCall( dbusServiceName, dbusPath, dbusInterfaceName, "sendMessage" );
-        QList<QVariant> args;
-
-        args.append( mEngineer.toLower() + ".novell" );
-        args.append( Settings::kopeteText().replace( "$SR", mSr ) );
-
-        m.setArguments( args );
-
-        QDBusMessage replyMsg = QDBusConnection::sessionBus().call( m );
-
-        if ( replyMsg.type() == QDBusMessage::ReplyMessage )
-        {
-            if ( !replyMsg.arguments().isEmpty() ) return;
-        }
-        else if ( replyMsg.type() == QDBusMessage::ErrorMessage )
-        {
-            QMessageBox::critical( this, "Error", "Sending SR# " + mSr + " to " + mEngineer + " via Kopete failed." );
-        }
-        else QMessageBox::critical( this, "Error", "Unexpected error." );
-    
-    #endif
 }
 
 void DetailWindow::showProgress( const QString& eng )

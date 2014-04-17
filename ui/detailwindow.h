@@ -67,7 +67,6 @@ class DetailWindow : public QMainWindow, private Ui::DetailWindowDLG
         void showProgress( const QString& );
         void assignJobDone();
         void assignNow();
-        void sendWithKopete();
         void closeEvent( QCloseEvent* );
         void toggleMoreDetails();
         void fillDetails( QueueSR );

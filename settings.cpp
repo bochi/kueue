@@ -799,32 +799,6 @@ void Settings::setQbossFeatures( const bool& b )
     settings.sync();
 }
         
-bool Settings::checkKopete()
-{
-    QSettings settings;
-    return settings.value( "checkKopete", false ).toBool();
-}
-
-void Settings::setCheckKopete( const bool& b )
-{
-    QSettings settings;
-    settings.setValue( "checkKopete", b );
-    settings.sync();
-}
-
-QString Settings::kopeteText()
-{
-    QSettings settings;
-    return settings.value( "kopeteText", "Hello, I assigned $SR to you" ).toString();
-}
-
-void Settings::setKopeteText( const QString& s )
-{
-    QSettings settings;
-    settings.setValue( "kopeteText", s );
-    settings.sync();
-}
-        
 QStringList Settings::engineerList()
 {
     QSettings settings;

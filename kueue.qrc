@@ -69,6 +69,7 @@
     <file alias="spacer.gif">ui/icons/images/spacer.gif</file>
     <file alias="und.gif">ui/icons/images/und.gif</file>
     <file alias="yay.gif">ui/icons/images/yay.gif</file>
+    <file alias="ltss.png">ui/icons/images/ltss.png</file>
   </qresource>
   
 </RCC>

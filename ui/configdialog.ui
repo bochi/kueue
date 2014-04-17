@@ -79,11 +79,11 @@
      </item>
      <item>
       <property name="text">
-       <string>QBoss</string>
+       <string>Users</string>
       </property>
       <property name="icon">
        <iconset resource="../kueue.qrc">
-        <normaloff>:/icons/conf/qboss.png</normaloff>:/icons/conf/qboss.png</iconset>
+        <normaloff>:/icons/conf/targets.png</normaloff>:/icons/conf/targets.png</iconset>
       </property>
      </item>
      <item>
@@ -526,18 +526,34 @@
           </font>
          </property>
          <property name="text">
-          <string>QBoss</string>
+          <string>Users</string>
          </property>
         </widget>
        </item>
        <item row="2" column="0" colspan="2">
         <widget class="QGroupBox" name="qbossEngineersGroupBox">
          <property name="title">
-          <string>Engineers</string>
+          <string>Define a list of engineers that will show up when right-clicking on the &quot;Owner&quot; or  &quot;Subowner&quot; field in Unity</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_30">
           <item row="0" column="0">
            <widget class="QLineEdit" name="engineerLineEdit"/>
+          </item>
+          <item row="1" column="0" rowspan="2">
+           <widget class="QListWidget" name="cfg_engineerList"/>
+          </item>
+          <item row="2" column="1">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>266</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item row="0" column="1" rowspan="2">
            <layout class="QGridLayout" name="gridLayout_22">
@@ -587,86 +603,8 @@
             </item>
            </layout>
           </item>
-          <item row="2" column="1">
-           <spacer name="verticalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>266</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="0" rowspan="2">
-           <widget class="QListWidget" name="cfg_engineerList"/>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QGroupBox" name="qbossDetailsGroupBox">
-            <property name="title">
-             <string>Details window</string>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_8">
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="cfg_checkKopete">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="text">
-                <string>Check kopete checkbox by default</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <widget class="QLabel" name="kopeteLabel">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Kopete text:</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="cfg_kopeteText">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Hello, I assigned $SR to you</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
          </layout>
         </widget>
-       </item>
-       <item row="3" column="0">
-        <spacer name="verticalSpacer_7">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>

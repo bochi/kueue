@@ -218,12 +218,6 @@ class Settings
         static bool qbossFeatures();
         static void setQbossFeatures( const bool& );
         
-        static bool checkKopete();
-        static void setCheckKopete( const bool& );
-        
-        static QString kopeteText();
-        static void setKopeteText( const QString& );
-        
         static QStringList engineerList();
         static void setEngineerList( const QStringList& );  
         

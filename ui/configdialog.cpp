@@ -194,8 +194,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     cfg_bomgarName->setText( Settings::bomgarName() );
     
     cfg_qbossFeatures->setChecked( Settings::qbossFeatures() );
-    cfg_checkKopete->setChecked( Settings::checkKopete() );
-    cfg_kopeteText->setText( Settings::kopeteText() );
     cfg_engineerList->addItems( Settings::engineerList() );
     
     cfg_statsEnabled->setChecked( Settings::statsEnabled() );
@@ -292,14 +290,6 @@ ConfigDialog::ConfigDialog( QWidget *parent )
     toggleQboss( Settings::qbossFeatures() );
     toggleNotifications( Settings::notificationsDisabled() );
     toggleUnity( Settings::unityEnabled() );
-    
-    
-    #ifndef QT_HAS_DBUS
-    
-        cfg_checkKopete->setVisible( false );
-        cfg_kopeteText->setVisible( false );
-    
-    #endif
         
     #ifndef USE_PHONON
         
@@ -409,9 +399,7 @@ void ConfigDialog::writeSettings()
     Settings::setBomgarName( cfg_bomgarName->text() );
     
     Settings::setQbossFeatures( cfg_qbossFeatures->isChecked() );
-    Settings::setCheckKopete( cfg_checkKopete->isChecked() );
-    Settings::setKopeteText( cfg_kopeteText->text() );
-    
+        
     QStringList el;
     
     for ( int i = 0; i < cfg_engineerList->count(); ++i ) 
