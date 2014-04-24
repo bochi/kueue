@@ -265,7 +265,7 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
             {
                 #ifdef QT_HAS_DBUS    
                 
-                    QDBusMessage replyMsg = QDBusConnection::sessionBus().call( m );
+                    bool queued = QDBusConnection::sessionBus().send( m );
                 
                 #else
                 
@@ -285,7 +285,7 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
             {
                 #ifdef QT_HAS_DBUS
                 
-                    QDBusMessage replyMsg = QDBusConnection::sessionBus().call( m );
+                    bool queued = QDBusConnection::sessionBus().send( m );
                 
                 #else
                             
@@ -310,7 +310,7 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
             {
                 #ifdef QT_HAS_DBUS
                 
-                    QDBusMessage replyMsg = QDBusConnection::sessionBus().call( m );
+                    bool queued = QDBusConnection::sessionBus().send( m );
                         
                 #else
                             
@@ -335,7 +335,7 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
             {
                 #ifdef QT_HAS_DBUS
                 
-                    QDBusMessage replyMsg = QDBusConnection::sessionBus().call( m );
+                    bool queued = QDBusConnection::sessionBus().send( m );
                             
                 #else
                 
@@ -360,7 +360,7 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
             {
                 #ifdef QT_HAS_DBUS
                 
-                    QDBusMessage replyMsg = QDBusConnection::sessionBus().call( m );
+                    bool queued = QDBusConnection::sessionBus().send( m );
                 
                 #else
                 
@@ -385,7 +385,7 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
             {
                 #ifdef QT_HAS_DBUS
                 
-                    QDBusMessage replyMsg = QDBusConnection::sessionBus().call( m );
+                    bool queued = QDBusConnection::sessionBus().send( m );
                 
                 #else
                             
@@ -410,7 +410,7 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
             {
                 #ifdef QT_HAS_DBUS
                 
-                    QDBusMessage replyMsg = QDBusConnection::sessionBus().call( m );
+                    bool queued = QDBusConnection::sessionBus().send( m );
                 
                 #else
                 
@@ -435,7 +435,7 @@ void Systray::notify( const QString& type, QString title, QString body, const QS
             {
                 #ifdef QT_HAS_DBUS
                 
-                    QDBusMessage replyMsg = QDBusConnection::sessionBus().call( m );
+                    bool queued = QDBusConnection::sessionBus().send( m );
                 
                 #else
                 
@@ -488,7 +488,7 @@ void Systray::closeNotification( uint id )
         QDBusMessage m = QDBusMessage::createMethodCall( dbusServiceName, dbusPath, dbusInterfaceName, "closeNotification" );
         m.setArguments( args );
         
-        QDBusConnection::sessionBus().call( m );
+        QDBusConnection::sessionBus().send( m );
     
     #endif
 }
