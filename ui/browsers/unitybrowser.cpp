@@ -703,6 +703,11 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     rhmenu->addAction( "RES 6 Expanded Support", this, SLOT( fillOutProduct() ) );
     rhmenu->addAction( "RES 6 HA Expanded Support", this, SLOT( fillOutProduct() ) );
     
+    QMenu* filrmenu = new QMenu( "Filr", menu );
+    
+    filrmenu->addAction( "Filr 1.0", this, SLOT( fillOutProduct() ) );
+    filrmenu->addAction( "Filr 1.0.1", this, SLOT( fillOutProduct() ) );
+    
     menu->addMenu( slesmenu );
     menu->addMenu( sledmenu );
     menu->addSeparator();
@@ -714,6 +719,8 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     menu->addMenu( rhmenu );
     menu->addSeparator();
     menu->addMenu( oesmenu );
+    menu->addSeparator();
+    menu->addMenu( filrmenu );
     
     return menu;
 }
@@ -777,6 +784,11 @@ void UnityBrowser::fillOutProduct()
     else if ( action->text().startsWith( "SUSE Linux Enterprise Point of Service" ) )
     {
         mUnityPage->fillOutProduct( "SUSE Linux Enterprise Point of Service", action->text() );
+    }
+    
+    else if ( action->text().startsWith( "Filr" ) )
+    {
+        mUnityPage->fillOutProduct( "File/Storage Managment", action->text() );
     }
 }
 
