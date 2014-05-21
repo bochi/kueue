@@ -570,8 +570,6 @@ void UnityPage::goToActivities()
 
 void UnityPage::actionDone()
 {
-    qDebug() << "ACTION DONE";
-    
     disconnect( mViewFrame, 0, 0, 0 );
     //unsetJsConfirm();
     
