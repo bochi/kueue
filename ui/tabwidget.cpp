@@ -484,6 +484,7 @@ QMenu* TabWidget::kueueMainMenu()
     mActionQuit = new QAction( kueue );
     mActionQuit->setText( "Quit" );
     mActionQuit->setIcon( QIcon( ":/icons/menus/quit.png" ) );
+	mActionQuit->setShortcut ( QKeySequence( Qt::CTRL + Qt::Key_Q ) );
     
     kueue->addAction( mActionConfig );
     
@@ -974,7 +975,7 @@ void TabWidget::subSetShowStatusOthers( bool s )
 void TabWidget::aboutDialog()
 {
     QMessageBox::about( this, "About", "<b>kueue " + QApplication::applicationVersion() + 
-                              "</b><br>(C) 2011 - 2013 Stefan Bogner<br><a href='mailto:sbogner@suse.com'>sbogner@suse.com</a><br>"
+                              "</b><br>(C) 2011 - 2014 Stefan Bogner<br><a href='mailto:sbogner@suse.com'>sbogner@suse.com</a><br>"
                               "<br>Have a lot of fun :-)" );
 }
 

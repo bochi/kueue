@@ -646,6 +646,11 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     manmenu->addAction( "SUSE Manager 1.7 Proxy", this, SLOT( fillOutProduct() ) );
     
     manmenu->addSeparator();
+
+    manmenu->addAction( "SUSE Manager 2.1 Server", this, SLOT( fillOutProduct() ) );
+    manmenu->addAction( "SUSE Manager 2.1 Proxy", this, SLOT( fillOutProduct() ) );
+
+    manmenu->addSeparator();
     
     manmenu->addAction( "SUSE Manager Management Pack for Microsoft System Center 1.3", this, SLOT( fillOutProduct() ) );
         
