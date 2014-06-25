@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationName( "nts" );
     QApplication::setOrganizationDomain( "suse.com" );
     QApplication::setApplicationName( "kueue" );
-    QApplication::setApplicationVersion( "main" );
+    QApplication::setApplicationVersion( "git" );
     QApplication::setQuitOnLastWindowClosed( false );
 
     KueueApp kueueapp;
