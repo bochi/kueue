@@ -561,7 +561,7 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     
     QMenu* slesmenu = new QMenu( "SUSE Linux Enterprise Server", menu );
     
-    slesmenu->addAction( "SUSE Linux Enterprise Server 12 (SLES 12)", this, SLOT( fillOutProduct() ) );
+    slesmenu->addAction( "SUSE Linux Enterprise Server 12", this, SLOT( fillOutProduct() ) );
           
     slesmenu->addSeparator();
     
@@ -676,7 +676,11 @@ QMenu* UnityBrowser::productMenu( QMenu* parent )
     cloudmenu->addAction( "SUSE Cloud 3", this, SLOT( fillOutProduct() ) );
     
     QMenu* sledmenu = new QMenu( "SUSE Linux Enterprise Desktop", menu );
-          
+    
+    sledmenu->addAction( "SUSE Linux Enterprise Desktop 12", this, SLOT( fillOutProduct() ) );
+
+    sledmenu->addSeperator();      
+
     sledmenu->addAction( "SUSE Linux Enterprise Desktop 11", this, SLOT( fillOutProduct() ) );
     sledmenu->addAction( "SUSE Linux Enterprise Desktop 11 SP1", this, SLOT( fillOutProduct() ) );
     sledmenu->addAction( "SUSE Linux Enterprise Desktop 11 SP2", this, SLOT( fillOutProduct() ) );
@@ -793,7 +797,7 @@ void UnityBrowser::fillOutProduct()
     
     else if ( action->text().startsWith( "Filr" ) )
     {
-        mUnityPage->fillOutProduct( "File/Storage Managment", action->text() );
+        mUnityPage->fillOutProduct( "File/Storage Management", action->text() );
     }
 }
 
