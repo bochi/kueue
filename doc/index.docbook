@@ -22,8 +22,8 @@
     <holder>Stefan Bogner</holder>
   </copyright>
 
-  <date>DATE</date>
-  <releaseinfo>VERSION</releaseinfo>
+  <date>2015-01-15</date>
+  <releaseinfo>5.4.6</releaseinfo>
 
   <abstract>
     <para>kueue is an SR queue manager and more :-)</para>
