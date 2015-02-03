@@ -123,6 +123,7 @@ class QmonSR
         bool isChat;
         bool highvalue;
         bool critsit;
+        bool hasLTSS;
 };
 
 /* A customer satisfaction survey */

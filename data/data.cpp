@@ -390,6 +390,7 @@ void Data::qmonUpdateFinished()
             sr.lupdate = list.at( i ).namedItem( "lastupdatedate" ).toElement().text();
             sr.cdate = list.at( i ).namedItem( "agedate" ).toElement().text();
             sr.crsr = list.at( i ).namedItem( "crsr" ).toElement().text();
+            sr.hasLTSS = list.at( i ).namedItem( "ltss" ).toElement().text().toInt();
             
             if ( sr.creator.isEmpty() )
             {

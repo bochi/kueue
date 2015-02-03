@@ -596,7 +596,12 @@ QString HTML::qmonSrInQueue( QmonSR sr )
     {
         srtab += QString( "&nbsp;<img src='qrc:/images/obacht.png'></img>" );
     }   
-    
+   
+    if ( sr.hasLTSS )
+    {
+        srtab += QString( "&nbsp;<img src='qrc:/images/ltss.png'></img>" );
+    }
+ 
     srtab += QString( "</p><b><font size='-1'><p style='line-height:0.7em;'>&nbsp;" + sr.geo + " (" + sr.hours + ") - " );
     
     if ( sr.severity == "Critical" )
@@ -782,6 +787,14 @@ QString HTML::qmonSrInQueue( QmonSR sr )
                           "</tr>\n" );
     }
     
+    if ( sr.hasLTSS )
+    {
+        srtab += QString( "<tr>\n"
+                            "<td class='gadgetText'>&nbsp;LTSS</td>\n"
+                            "<td class='gadgetText'>Yes <img src='qrc:/images/ltss.png'></img></td>\n"
+                          "</tr>\n" );
+    }
+
     srtab +=( "</td></tr>\n" );
   
     srtab+= (   "</table></a></a></td><td width='1' rowspan='4' class='dotlinevert'><img src='qrc:/images/spacer.gif'"
