@@ -114,6 +114,7 @@ class QmonSR
         QString lupdate;
         QString cdate;
         QString crsr;
+        QString subowner;
         qint32 agesec;
         qint32 timeinqsec;
         qint32 slasec;

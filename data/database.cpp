@@ -129,7 +129,7 @@ void Database::openDbConnection( QString dbname )
                             "  ROUTING_PRODUCT TEXT, SUPPORT_GROUP_ROUTING TEXT, INT_TYPE TEXT, SUBTYPE TEXT, "
                             "  SERVICE_LEVEL INTEGER, CATEGORY TEXT, RESPOND_VIA TEXT, AGE TEXT, LASTUPDATE TEXT, "
                             "  TIMEINQ TEXT, SLA TEXT, HIGHVALUE INTEGER, CRITSIT INTEGER, DISPLAY TEXT, ALT_CONTACT TEXT, "
-                            "  BUG TEXT, BUGTITLE TEXT, LUPDATE TEXT, CREATEDATE TEXT, CRSR TEXT, LTSS INTEGER )" ) )
+                            "  BUG TEXT, BUGTITLE TEXT, LUPDATE TEXT, CREATEDATE TEXT, CRSR TEXT, LTSS INTEGER, SUBOWNER TEXT )" ) )
         {
             qDebug() << "[DATABASE] Error:" << query.lastError();
         }
@@ -680,7 +680,7 @@ QueueSR Database::getSrInfo( const QString& id, const QString& dbname )
     
     query.prepare(  "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, CUS_PHONE, "
                     "CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, CONTRACT, SERVICE_LEVEL, "
-                    "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, CRSR FROM " + Settings::engineer().toUpper() + " WHERE ( ID = :id )" );
+                    "CREATED, LASTUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, CRSR, SUBOWNER FROM " + Settings::engineer().toUpper() + " WHERE ( ID = :id )" );
     
     query.bindValue( ":id", id );
         
@@ -694,7 +694,7 @@ QueueSR Database::getSrInfo( const QString& id, const QString& dbname )
 
         query.prepare( "SELECT ID, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, "
                        "       CUS_PHONE, CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, SUPPORT_PROGRAM_LONG, "
-                       "       SERVICE_LEVEL, CREATEDATE, LUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, CRSR "
+                       "       SERVICE_LEVEL, CREATEDATE, LUPDATE, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, CRSR, SUBOWNER "
                        "       FROM QMON WHERE ( ID = :id )" );
         
         query.bindValue( ":id", id );
@@ -738,6 +738,7 @@ QueueSR Database::getSrInfo( const QString& id, const QString& dbname )
     sr.bug = query.value(25).toString();
     sr.bugtitle = query.value(26).toString();
     sr.crsr = query.value(27).toString();
+    sr.subowner = query.value(28).toString();
     
     if ( !sr.creator.isEmpty() )
     {
@@ -994,12 +995,12 @@ void Database::insertQmonSR( QmonSR sr, const QString& dbname )
                    "( ID, QUEUE, BOMGARQ, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, "
                    "  CUS_PHONE, CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, SOURCE, SUPPORT_PROGRAM, "
                    "  SUPPORT_PROGRAM_LONG, ROUTING_PRODUCT, SUPPORT_GROUP_ROUTING, INT_TYPE, SUBTYPE, SERVICE_LEVEL, CATEGORY, "
-                   "  RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, LUPDATE, CREATEDATE, CRSR, LTSS ) "
+                   "  RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, LUPDATE, CREATEDATE, CRSR, LTSS, SUBOWNER ) "
                    " VALUES "
                    "( :id, :queue, :bomgarq, :srtype, :creator, :cus_account, :cus_firstname, :cus_lastname, :cus_title, :cus_email, "
                    "  :cus_phone, :cus_onsitephone, :cus_lang, :severity, :status, :bdesc, :ddesc, :geo, :hours, :source, :support_program, "
                    "  :support_program_long, :routing_product, :support_group_routing, :int_type, :subtype, :service_level, :category, "
-                   "  :respond_via, :age, :lastupdate, :timeinq, :sla, :highvalue, :critsit, 'none', :alt_contact, :bug, :bugtitle, :lupdate, :createdate, :crsr, :ltss )" );
+                   "  :respond_via, :age, :lastupdate, :timeinq, :sla, :highvalue, :critsit, 'none', :alt_contact, :bug, :bugtitle, :lupdate, :createdate, :crsr, :ltss, :subowner )" );
   
     query.bindValue( ":id", sr.id );
     query.bindValue( ":queue", sr.queue );
@@ -1043,6 +1044,7 @@ void Database::insertQmonSR( QmonSR sr, const QString& dbname )
     query.bindValue( ":createdate", sr.cdate );
     query.bindValue( ":crsr", sr.crsr );
     query.bindValue( ":ltss", sr.hasLTSS );
+    query.bindValue( ":subowner", sr.subowner );
     
     if ( !query.exec() ) 
     {
@@ -1074,7 +1076,7 @@ void Database::updateQmonSR( QmonSR sr, const QString& dbname )
                    " SUPPORT_PROGRAM=:support_program, SUPPORT_PROGRAM_LONG=:support_program_long, ROUTING_PRODUCT=:routing_product, "
                    " SUPPORT_GROUP_ROUTING=:support_group_routing, INT_TYPE=:int_type, SUBTYPE=:subtype, SERVICE_LEVEL=:service_level, "
                    " CATEGORY=:category, RESPOND_VIA=:respond_via, AGE=:age, LASTUPDATE=:lastupdate, TIMEINQ=:timeinq, SLA=:sla, "
-                   " HIGHVALUE=:highvalue, CRITSIT=:critsit, ALT_CONTACT=:alt_contact, BUG=:bug, BUGTITLE=:bugtitle, LUPDATE=:lupdate, CREATEDATE=:createdate, CRSR=:crsr, LTSS=:ltss WHERE ID=:id" );
+                   " HIGHVALUE=:highvalue, CRITSIT=:critsit, ALT_CONTACT=:alt_contact, BUG=:bug, BUGTITLE=:bugtitle, LUPDATE=:lupdate, CREATEDATE=:createdate, CRSR=:crsr, LTSS=:ltss, SUBOWNER=:subowner WHERE ID=:id" );
                      
     query.bindValue( ":queue", sr.queue );
     query.bindValue( ":bomgarq", sr.bomgarQ );
@@ -1118,6 +1120,7 @@ void Database::updateQmonSR( QmonSR sr, const QString& dbname )
     query.bindValue( ":createdate", sr.cdate );    
     query.bindValue( ":crsr", sr.crsr );
     query.bindValue( ":ltss", sr.hasLTSS );
+    query.bindValue( ":subowner", sr.subowner );
     
     if ( !query.exec() )
     {
@@ -1363,19 +1366,22 @@ QList< QmonSR > Database::getQmonQueue( const QString& queue, QString geo, const
         query.prepare( "SELECT ID, QUEUE, BOMGARQ, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, "
                        "       CUS_PHONE, CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, SOURCE, SUPPORT_PROGRAM, "
                        "       SUPPORT_PROGRAM_LONG, ROUTING_PRODUCT, SUPPORT_GROUP_ROUTING, INT_TYPE, SUBTYPE, SERVICE_LEVEL, CATEGORY, "
-                       "       RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, CRSR, LTSS FROM QMON WHERE ( GEO = :geo ) AND ( QUEUE = :queue ) " + f );
+                       "       RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, CRSR, LTSS, SUBOWNER FROM QMON WHERE ( GEO = :geo ) AND ( QUEUE = :queue ) OR ( SUBOWNER = :queue1 ) " + f );
 
         query.bindValue( ":geo", geo );
         query.bindValue( ":queue", queue );
+        query.bindValue( ":queue1", queue );
+        
     }
     else
     {
         query.prepare( "SELECT ID, QUEUE, BOMGARQ, SRTYPE, CREATOR, CUS_ACCOUNT, CUS_FIRSTNAME, CUS_LASTNAME, CUS_TITLE, CUS_EMAIL, "
                        "       CUS_PHONE, CUS_ONSITEPHONE, CUS_LANG, SEVERITY, STATUS, BDESC, DDESC, GEO, HOURS, SOURCE, SUPPORT_PROGRAM, "
                        "       SUPPORT_PROGRAM_LONG, ROUTING_PRODUCT, SUPPORT_GROUP_ROUTING, INT_TYPE, SUBTYPE, SERVICE_LEVEL, CATEGORY, "
-                       "       RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, CRSR, LTSS FROM QMON WHERE ( QUEUE = :queue ) " + f  );
+                       "       RESPOND_VIA, AGE, LASTUPDATE, TIMEINQ, SLA, HIGHVALUE, CRITSIT, DISPLAY, ALT_CONTACT, BUG, BUGTITLE, CRSR, LTSS, SUBOWNER FROM QMON WHERE ( QUEUE = :queue ) OR ( SUBOWNER = :queue1 ) " + f  );
 
         query.bindValue( ":queue", queue );
+        query.bindValue( ":queue1", queue );
     }
     
     if ( !query.exec() ) 
@@ -1428,6 +1434,7 @@ QList< QmonSR > Database::getQmonQueue( const QString& queue, QString geo, const
         sr.bugtitle = query.value(38).toString();
         sr.crsr = query.value(39).toString();
         sr.hasLTSS = query.value(40).toBool();
+        sr.subowner = query.value(41).toString();
         
         if ( sr.srtype == "cr" )
         {
@@ -1460,7 +1467,7 @@ bool Database::qmonQueueChanged( QmonSR sr, const QString& dbname )
     QSqlDatabase db = QSqlDatabase::database( dbname );
     QSqlQuery query( db );
     
-    query.prepare( "SELECT QUEUE FROM QMON WHERE ( ID = :id )" );
+    query.prepare( "SELECT QUEUE, SUBOWNER FROM QMON WHERE ( ID = :id )" );
     query.bindValue( ":id", sr.id );
     
     if ( !query.exec() ) 
@@ -1470,7 +1477,7 @@ bool Database::qmonQueueChanged( QmonSR sr, const QString& dbname )
 
     if ( query.next() )
     {
-        if ( query.value( 0 ).toString() == sr.queue )
+        if ( query.value( 0 ).toString() == sr.queue ) 
         {
             return false;
         }
