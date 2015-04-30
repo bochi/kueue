@@ -814,7 +814,8 @@ QString HTML::statsPageHeader( Statz s )
     QString ph;
     QList<Survey> sl = s.surveyList;
     QList<ClosedItem> cl = s.closedList;
-    
+    int nr = sl.size();   
+ 
     ph += styleSheet();
     
     ph += QString( "<div id='Head1'><img src='qrc:/images/gfx_top_in.gif' width='32' height='80' border='0'/></div>"
@@ -832,7 +833,7 @@ QString HTML::statsPageHeader( Statz s )
         return ph + "Updating...";
     }*/
 
-    ph += csatTableHeader( s.csatRtsPercent, s.csatEngAvg, s.csatSrAvg );
+    ph += csatTableHeader( s.csatRtsPercent, s.csatEngAvg, s.csatSrAvg, nr );
     
     for ( int i = 0; i < sl.size(); ++i ) 
     {   
@@ -850,7 +851,7 @@ QString HTML::statsPageHeader( Statz s )
     return ph;
 }
 
-QString HTML::csatTableHeader( int rts, int eng, int sr )
+QString HTML::csatTableHeader( int rts, int eng, int sr, int nr )
 {
     QString ph;
     
@@ -864,6 +865,7 @@ QString HTML::csatTableHeader( int rts, int eng, int sr )
     else
     {
         ph += QString ( "<p class='qph'><b>Customer Satisfaction</b></p><hr>"
+                        "Surveys received: " + QString::number( nr ) + "<br>"
                         "Resolved to Satisfaction: " + QString::number( rts ) + "%<br>"
                         "Average SR Satisfaction: " + QString::number( sr ) + "<br>"
                         "Average Engineer Satisfaction: " + QString::number( eng ) + "<br><br>" );
