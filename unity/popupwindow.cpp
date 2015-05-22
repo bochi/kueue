@@ -36,7 +36,7 @@
 #include <QDesktopServices>
 #include <QWebInspector>
 
-PopupWindow::PopupWindow( QNetworkAccessManager* nam, QWidget* parent, bool shown )
+PopupWindow::PopupWindow( QNetworkAccessManager* nam, QWidget* parent, bool shown, QString sr )
 {
     qDebug() << "[POPUPWINDOW] Constructing";
 
@@ -45,7 +45,7 @@ PopupWindow::PopupWindow( QNetworkAccessManager* nam, QWidget* parent, bool show
     QGridLayout *l = new QGridLayout( this );
     setLayout( l );
     
-    mWebView = new PopupWindowWebView( this );
+    mWebView = new PopupWindowWebView( this, sr );
     QShortcut* wi = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_I ), this );
     
     connect( wi, SIGNAL( activated() ),
@@ -147,10 +147,12 @@ void PopupWindow::moveEvent( QMoveEvent* event )
  *
  */
 
-PopupWindowWebView::PopupWindowWebView( QWidget* parent )
+PopupWindowWebView::PopupWindowWebView( QWidget* parent, QString sr )
     : QWebView( parent )
 {
     qDebug() << "[POPUPWINDOWWEBVIEW] Constructing";
+    
+    mSr = sr;
     
     PopupWindowWebPage* p = new PopupWindowWebPage( this );
     setPage( p );
@@ -175,11 +177,18 @@ QWebPage* PopupWindowWebView::newWindow()
 
 void PopupWindowWebView::mousePressEvent( QMouseEvent* event )
 {
+    QString sr = mSr;
+    
+    if ( sr == QString::Null() )
+    {
+        sr = "kueue";
+    }
+    
     if ( event->button() == 2 )
     {
         QWebElement element = getFocusedElement( event->pos() );
 
-        contextMenu( event, "kueue" );
+        contextMenu( event, sr );
     }
       
     if ( ( event->button() == 4 ) && ( mUrl.toString().startsWith(  "sr://" ) ) )

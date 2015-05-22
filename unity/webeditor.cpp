@@ -38,7 +38,7 @@
 WebEditor::WebEditor( QWebElement element, QString sr, bool format, QObject* parent )
           : QObject( parent )
 {
-    qDebug() << "[WEBEDITOR] Constructing";
+    qDebug() << "[WEBEDITOR] Constructing for SR#" + sr;
     
     mHasValue = element.hasAttribute( "value" );
     mElement = element;

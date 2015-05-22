@@ -353,7 +353,7 @@ void UnityBrowser::contextMenu( QMouseEvent* event, const QString& id )
         QAction* bz = new QAction( "Open in bugzilla...", menu );
         
         QWidgetAction* wa = new QWidgetAction( menu );
-        
+     
         connect( his, SIGNAL( triggered(bool)),
                 this, SLOT( historyBack()) );
         
@@ -947,7 +947,7 @@ void UnityBrowser::openInBugzilla()
 
 QWebPage* UnityBrowser::newWindow()
 {
-    PopupWindow* p = new PopupWindow( page()->networkAccessManager(), this, mShowPopup );
+    PopupWindow* p = new PopupWindow( page()->networkAccessManager(), this, mShowPopup, currentSR() );
     mShowPopup = true;
     return p->webPage();
 }

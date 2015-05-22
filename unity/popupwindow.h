@@ -35,7 +35,7 @@ class PopupWindowWebView : public QWebView
     Q_OBJECT
     
     public:
-        explicit PopupWindowWebView( QWidget* parent = 0L );
+        explicit PopupWindowWebView( QWidget* parent = 0L, QString sr = QString::Null() );
         ~PopupWindowWebView();
         
     public slots:
@@ -50,6 +50,7 @@ class PopupWindowWebView : public QWebView
                   
     private:
         QUrl mUrl;
+	QString mSr;
         bool isTextArea( QWebElement );
 };
 
@@ -58,7 +59,7 @@ class PopupWindow : public QDialog
     Q_OBJECT
      
     public:
-        explicit PopupWindow( QNetworkAccessManager*, QWidget* parent = 0L, bool shown = true );
+        explicit PopupWindow( QNetworkAccessManager*, QWidget* parent = 0L, bool shown = true, QString sr = QString::Null() );
         ~PopupWindow();
         
         QWebPage* webPage() { return mWebView->page(); }
