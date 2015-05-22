@@ -166,6 +166,9 @@ void UnityPage::addFrame( QWebFrame* f )
         
         connect( mMenuFrame, SIGNAL( loadFinished( bool ) ),
                  this, SLOT(fixMenuBoxes()) );
+	
+	connect( mMenuFrame, SIGNAL( loadFinished( bool ) ),
+                 this, SLOT(getEmailJS()) );
     }
     
     // Set the viewBarFrame (the one that holds "show" and "queries" )
@@ -650,6 +653,29 @@ void UnityPage::getServiceJS()
     }
 }
 
+void UnityPage::getEmailJS()
+{
+    QWebElementCollection c = mMenuFrame->findAllElements( "select" );
+
+    for ( int i = 0; i < c.count(); ++i )
+    {
+        if ( c.at(i).attribute( "id" ).contains( "s_SWEAppMenu_s_File" ) )
+        {
+	    QWebElementCollection d = c.at( i ).findAll( "*" );
+
+            for ( int i = 0; i < d.count(); ++i )
+            {
+                if ( d.at( i ).toInnerXml().contains( "Send Email" ) )
+                {
+                    mEmailJS = d.at( i ).attribute( "value" );
+		    qDebug() << "Got Email Javascript: " << mEmailJS;
+                }
+            }    
+        }
+    }
+}
+
+
 void UnityPage::unsetJsConfirm()
 {
     disconnect( mViewFrame, 0, 0, 0 );
@@ -936,7 +962,7 @@ void UnityPage::sendEmail()
     
     if ( Kueue::isSrNr( mCurrentSR ) )
     {
-        mMenuFrame->evaluateJavaScript( "SWESubmitForm(document.SWEAppMenuForm,s_0,'','')" );
+        mMenuFrame->evaluateJavaScript( mEmailJS );
     }
 }
 

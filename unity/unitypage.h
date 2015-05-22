@@ -98,6 +98,7 @@ class UnityPage : public QWebPage
         
         void unsetJsConfirm();
         void getServiceJS();
+	void getEmailJS();
         void getCurrentSR();
         void selectionToClipboard();
         void download( const QNetworkRequest& );
@@ -160,6 +161,7 @@ class UnityPage : public QWebPage
         QString mProduct;
         QString mComponent;
         QString mSaveJS;
+	QString mEmailJS;
         QString mOwner;
         QString mSubowner;
 
